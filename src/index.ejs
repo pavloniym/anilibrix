@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>anilibria-theater</title>
-    <% if (htmlWebpackPlugin.options.nodeModules) { %>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+
+  <% if (htmlWebpackPlugin.options.nodeModules) { %>
       <!-- Add `node_modules/` to global paths so `require` works properly in development -->
       <script>
         require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')

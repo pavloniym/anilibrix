@@ -1,16 +1,19 @@
-'use strict'
+'use strict';
 
-process.env.BABEL_ENV = 'renderer'
+process.env.BABEL_ENV = 'renderer';
 
-const path = require('path')
-const { dependencies } = require('../package.json')
-const webpack = require('webpack')
+const path = require('path');
+const { dependencies } = require('../package.json');
+const webpack = require('webpack');
 
-const MinifyPlugin = require("babel-minify-webpack-plugin")
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { VueLoaderPlugin } = require('vue-loader')
+const webpackAppConfig = require('./../webpack.config');
+
+const MinifyPlugin = require('babel-minify-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 
 /**
  * List of node_modules to include in webpack bundle
@@ -19,7 +22,7 @@ const { VueLoaderPlugin } = require('vue-loader')
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-let whiteListedModules = ['vue']
+let whiteListedModules = ['vue'];
 
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -27,7 +30,8 @@ let rendererConfig = {
     renderer: path.join(__dirname, '../src/renderer/main.js')
   },
   externals: [
-    ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d))
+    ...Object.keys(dependencies || {})
+      .filter(d => !whiteListedModules.includes(d))
   ],
   module: {
     rules: [
@@ -43,12 +47,20 @@ let rendererConfig = {
         }
       },
       {
-        test: /\.scss$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
+        test: /\.s(c|a)ss$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: require('sass'),
+              sassOptions: {
+                fiber: require('fibers')
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.less$/,
@@ -121,7 +133,8 @@ let rendererConfig = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({filename: 'styles.css'}),
+    new VuetifyLoaderPlugin(),
+    new MiniCssExtractPlugin({ filename: 'styles.css' }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
@@ -145,12 +158,13 @@ let rendererConfig = {
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/renderer'),
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      ...webpackAppConfig.resolve.alias
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },
   target: 'electron-renderer'
-}
+};
 
 /**
  * Adjust rendererConfig for development settings
@@ -158,16 +172,17 @@ let rendererConfig = {
 if (process.env.NODE_ENV !== 'production') {
   rendererConfig.plugins.push(
     new webpack.DefinePlugin({
-      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
+      '__static': `"${path.join(__dirname, '../static')
+        .replace(/\\/g, '\\\\')}"`
     })
-  )
+  );
 }
 
 /**
  * Adjust rendererConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  rendererConfig.devtool = ''
+  rendererConfig.devtool = '';
 
   rendererConfig.plugins.push(
     new MinifyPlugin(),
@@ -184,7 +199,7 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
-  )
+  );
 }
 
-module.exports = rendererConfig
+module.exports = rendererConfig;

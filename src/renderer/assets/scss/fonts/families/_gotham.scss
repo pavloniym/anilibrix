@@ -1,0 +1,30 @@
+$folder: '~@assets/fonts/gotham';
+$light: $folder + '/GothamPro-Light';
+$regular: $folder + '/GothamPro';
+$bold: $folder + '/GothamPro-Bold';
+$black: $folder + '/GothamPro-Black';
+
+@font-face {
+  font-family: 'Gotham';
+  font-weight: 300;
+  src: url($light + '.woff') format("woff");
+}
+
+@font-face {
+  font-family: 'Gotham';
+  font-weight: 400;
+  src: url($regular + '.woff') format("woff");
+}
+
+
+@font-face {
+  font-family: 'Gotham';
+  font-weight: 500;
+  src: url($bold + '.woff') format("woff");
+}
+
+@font-face {
+  font-family: 'Gotham';
+  font-weight: 700;
+  src: url($black + '.woff') format("woff");
+}

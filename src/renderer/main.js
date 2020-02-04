@@ -1,18 +1,30 @@
 import Vue from 'vue';
-import axios from 'axios';
 
+// Import plugins
+import router from '@router';
+import store from '@store';
+
+// Import vendor plugins
+import vuetify from '@plugins/vuetify';
+
+// Import styles
+import '@assets/scss/fonts/_families.scss';
+
+// Import entry component
 import App from './App';
-import router from './router';
-import store from './store';
+
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
-Vue.http = Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
+
 
 /* eslint-disable no-new */
 new Vue({
+
   components: { App },
   router,
+  vuetify,
   store,
   template: '<App/>',
+
 }).$mount('#app');
