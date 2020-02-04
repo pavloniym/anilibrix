@@ -21,7 +21,7 @@
   import AppToolbar from '@components/app/toolbar';
   import AppSettings from '@components/app/settings';
 
-  import { resetStore } from '@store';
+  // import { resetStore } from '@store';
 
   export default {
     name: 'anilibria-theater',
@@ -31,7 +31,7 @@
     },
 
     mounted() {
-      resetStore();
+    //  resetStore();
     },
   };
 
