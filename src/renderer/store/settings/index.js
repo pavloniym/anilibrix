@@ -1,3 +1,3 @@
-import settingsStore from './settingsStore';
+import settingsStore from './settingsStore'
 
-export default settingsStore;
+export default settingsStore

@@ -1,3 +1,3 @@
-import AppSettings from './AppSettings';
+import AppSettings from './AppSettings'
 
-export default AppSettings;
+export default AppSettings

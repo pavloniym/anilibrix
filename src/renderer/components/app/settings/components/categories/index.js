@@ -1,3 +1,3 @@
-import SettingsCategories from './SettingsCategories';
+import SettingsCategories from './SettingsCategories'
 
-export default SettingsCategories;
+export default SettingsCategories

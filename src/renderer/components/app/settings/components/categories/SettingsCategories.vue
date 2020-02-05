@@ -2,7 +2,7 @@
   <v-list nav dense>
 
     <!-- Profile -->
-    <v-list-item link>
+    <v-list-item link @click="_setComponent('Profile')">
       <v-list-item-action>
         <v-icon size="20">mdi-account</v-icon>
       </v-list-item-action>
@@ -47,9 +47,17 @@
 </template>
 
 <script>
-  export default {
-    name: 'SettingsCategories',
-  };
+  import { mapActions } from 'vuex'
+
+export default {
+    methods: {
+
+      ...mapActions('settings', {
+        _setComponent: 'setComponent'
+      })
+
+    }
+  }
 </script>
 
 <style scoped>

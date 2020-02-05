@@ -10,7 +10,7 @@
 
 
     <!-- Settings -->
-    <v-btn icon @click="openSettingsDrawer">
+    <v-btn icon @click="_setDrawer(true)">
       <v-icon>mdi-settings</v-icon>
     </v-btn>
 
@@ -18,23 +18,16 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
 
-  import { mapActions } from 'vuex';
-
-  export default {
+export default {
     name: 'AppToolbar',
     methods: {
       ...mapActions('settings', {
-        _setDrawer: 'setDrawer',
-      }),
-
-      openSettingsDrawer() {
-        console.log('test');
-        this._setDrawer(true);
-      },
-
-    },
-  };
+        _setDrawer: 'setDrawer'
+      })
+    }
+  }
 </script>
 
 <style scoped>

@@ -1,40 +1,38 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-import { createPersistedState, createSharedMutations } from 'vuex-electron';
-import createPromiseAction from '@plugins/vuex-promise-action';
-import { getInitialState } from '@utils/store';
+import { createPersistedState, createSharedMutations } from 'vuex-electron'
+import createPromiseAction from '@plugins/vuex-promise-action'
+import { getInitialState } from '@utils/store'
 
-import settings from './settings';
+import settings from './settings'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 const modules = {
-  settings,
-};
+  settings
+}
 
-const debug = process.env.NODE_ENV !== 'production';
+const debug = process.env.NODE_ENV !== 'production'
 const store = new Vuex.Store({
   modules,
   plugins: [
     createPromiseAction(),
     createPersistedState(),
-    createSharedMutations(),
+    createSharedMutations()
   ],
-  strict: debug,
-});
-
+  strict: debug
+})
 
 /**
  * Replace store with fresh object
  *
  * @return {*}
  */
-const resetStore = () => store.replaceState(getInitialState(modules));
+const resetStore = () => store.replaceState(getInitialState(modules))
 
-
-export default store;
+export default store
 export {
   store,
-  resetStore,
-};
+  resetStore
+}

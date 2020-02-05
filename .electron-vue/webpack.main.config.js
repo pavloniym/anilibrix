@@ -1,12 +1,13 @@
-'use strict'
+'use strict';
 
-process.env.BABEL_ENV = 'main'
+process.env.BABEL_ENV = 'main';
 
-const path = require('path')
-const { dependencies } = require('../package.json')
-const webpack = require('webpack')
+const path = require('path');
+const { dependencies } = require('../package.json');
+const webpack = require('webpack');
 
-const MinifyPlugin = require("babel-minify-webpack-plugin")
+const webpackAppConfig = require('./../webpack.config');
+const MinifyPlugin = require('babel-minify-webpack-plugin');
 
 let mainConfig = {
   entry: {
@@ -17,7 +18,7 @@ let mainConfig = {
   ],
   module: {
     rules: [
-      {
+    /*  {
         test: /\.(js)$/,
         enforce: 'pre',
         exclude: /node_modules/,
@@ -27,7 +28,7 @@ let mainConfig = {
             formatter: require('eslint-friendly-formatter')
           }
         }
-      },
+      },*/
       {
         test: /\.js$/,
         use: 'babel-loader',
@@ -52,10 +53,13 @@ let mainConfig = {
     new webpack.NoEmitOnErrorsPlugin()
   ],
   resolve: {
-    extensions: ['.js', '.json', '.node']
+    extensions: ['.js', '.json', '.node'],
+    alias: {
+      ...webpackAppConfig.resolve.alias
+    }
   },
   target: 'electron-main'
-}
+};
 
 /**
  * Adjust mainConfig for development settings
@@ -63,9 +67,10 @@ let mainConfig = {
 if (process.env.NODE_ENV !== 'production') {
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
-      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
+      '__static': `"${path.join(__dirname, '../static')
+        .replace(/\\/g, '\\\\')}"`
     })
-  )
+  );
 }
 
 /**
@@ -77,7 +82,7 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
     })
-  )
+  );
 }
 
-module.exports = mainConfig
+module.exports = mainConfig;

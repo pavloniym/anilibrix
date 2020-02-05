@@ -1,15 +1,19 @@
-import { mutationsHelper } from '@utils/store';
+import { mutationsHelper } from '@utils/store'
+
+import profile from './profile'
 
 export default {
   namespaced: true,
+  modules: {
+    profile
+  },
   state: {
-    drawer: false,
-    component: 'Categories',
-
+    drawer: true,
+    component: 'Categories'
   },
 
   mutations: {
-    ...mutationsHelper,
+    ...mutationsHelper
   },
 
   actions: {
@@ -24,9 +28,15 @@ export default {
     setDrawer: ({ commit }, drawerState) =>
       commit('set', {
         k: 'drawer',
-        v: drawerState,
+        v: drawerState
       }),
 
-  },
+    setComponent: ({ commit }, component) =>
+      commit('set', {
+        k: 'component',
+        v: component
+      })
 
-};
+  }
+
+}
