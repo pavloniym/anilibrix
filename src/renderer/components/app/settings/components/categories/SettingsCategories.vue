@@ -1,65 +1,65 @@
 <template>
-  <v-list nav dense>
+  <v-layout column fill-height>
 
-    <!-- Profile -->
-    <v-list-item link @click="_setComponent('Profile')">
-      <v-list-item-action>
-        <v-icon size="20">mdi-account</v-icon>
-      </v-list-item-action>
-      <v-list-item-content>
-        <v-list-item-title>Профиль</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+    <v-toolbar class="shrink">
+      <v-toolbar-title>Настройки</v-toolbar-title>
+    </v-toolbar>
 
-    <!-- Play -->
-    <v-list-item link>
-      <v-list-item-action>
-        <v-icon size="20">mdi-play</v-icon>
-      </v-list-item-action>
-      <v-list-item-content>
-        <v-list-item-title>Воспроизведение</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-
-    <!-- Notifications -->
-    <v-list-item link>
-      <v-list-item-action>
-        <v-icon size="20">mdi-bell</v-icon>
-      </v-list-item-action>
-      <v-list-item-content>
-        <v-list-item-title>Уведомления</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+    <v-list>
 
 
-    <!-- Settings -->
-    <v-list-item link>
-      <v-list-item-action>
-        <v-icon size="20">mdi-wrench</v-icon>
-      </v-list-item-action>
-      <v-list-item-content>
-        <v-list-item-title>Настройки</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+      <!-- Profile -->
+      <v-list-item link @click="_setComponent('Profile')">
+        <v-list-item-action>
+          <v-icon size="20">mdi-account</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Профиль</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <!-- Play -->
+      <v-list-item link>
+        <v-list-item-action>
+          <v-icon size="20">mdi-play</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Воспроизведение</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <!-- Notifications -->
+      <v-list-item link>
+        <v-list-item-action>
+          <v-icon size="20">mdi-bell</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Уведомления</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
 
-  </v-list>
+      <!-- Settings -->
+      <v-list-item link>
+        <v-list-item-action>
+          <v-icon size="20">mdi-wrench</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Настройки</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+
+    </v-list>
+  </v-layout>
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import {mapActions} from 'vuex'
 
-export default {
+  export default {
     methods: {
-
-      ...mapActions('settings', {
-        _setComponent: 'setComponent'
-      })
-
+      ...mapActions('settings', {_setComponent: 'setComponent'})
     }
   }
 </script>
-
-<style scoped>
-
-</style>

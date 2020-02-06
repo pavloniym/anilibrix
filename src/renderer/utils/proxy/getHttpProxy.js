@@ -38,7 +38,7 @@ const parseHttProxy = (httpProxyString) => {
  *
  * @param pacUrl
  * @param targetUrl
- * @return {Promise<any>}
+ * @return {Promise}
  */
 export default (pacUrl, targetUrl) => new Promise((resolve, reject) => {
   axios.get(pacUrl)

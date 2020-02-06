@@ -7,14 +7,11 @@ import store from '@store'
 // Import vendor plugins
 import vuetify from '@plugins/vuetify'
 
-// Import styles
-import '@assets/scss/fonts/_families.scss'
-
 // Import entry component
 import App from './App'
 
-if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
-Vue.config.productionTip = false
+if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
@@ -25,4 +22,4 @@ new Vue({
   store,
   template: '<App/>'
 
-}).$mount('#app')
+}).$mount('#app');

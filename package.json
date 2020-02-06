@@ -57,6 +57,7 @@
     "axios": "^0.18.0",
     "axios-https-proxy-fix": "^0.17.1",
     "electron-promise-ipc": "^2.0.1",
+    "form-data": "^3.0.0",
     "https-proxy-agent": "^4.0.0",
     "lodash": "^4.17.15",
     "pac-resolver": "^4.0.0",

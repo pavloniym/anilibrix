@@ -4,8 +4,8 @@ import {LoginProxy} from '@proxies/profile'
 export default {
   namespaced: true,
   state: {
-    login: null,
-    session: null
+    session: null,
+    profile: null
   },
 
   mutations: {
@@ -22,10 +22,20 @@ export default {
      * @param password
      * @return {Promise<any>}
      */
-    authorize: ({}, {login, password}) => new Promise(() => { // eslint-disable-line
-      new LoginProxy()
-        .authorize({login, password})
-        .then(response => console.log({response}))
+    authorize: ({dispatch}, {login, password}) => {
+      return new Promise((resolve) => {
+        new LoginProxy()
+          .authorize({login, password})
+          .then(response => {
+            console.log({response});
+            resolve();
+          })
+      })
+    },
+
+    identify: ({commit}) => new Promise((resolve) => {
+      return null;
     })
+
   }
 }

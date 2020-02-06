@@ -1,16 +1,16 @@
 <template>
-  <v-navigation-drawer app right floating temporary :value="_drawer" @input="_setDrawer">
+  <v-navigation-drawer app right floating temporary width="400" :value="_drawer" @input="_setDrawer">
     <component :is="component"/>
   </v-navigation-drawer>
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex'
-import __get from 'lodash/get'
+  import {mapState, mapActions} from 'vuex'
+  import __get from 'lodash/get'
 
-import Components from './components'
+  import Components from './components'
 
-export default {
+  export default {
     name: 'AppSettings',
     computed: {
       ...mapState('settings', {
@@ -23,17 +23,14 @@ export default {
        *
        * @return {*}
        */
-      component () {
+      component() {
         return __get(Components, this._component, null)
       }
 
     },
 
     methods: {
-      ...mapActions('settings', {
-        _setDrawer: 'setDrawer'
-      })
-
+      ...mapActions('settings', {_setDrawer: 'setDrawer'})
     }
   }
 </script>

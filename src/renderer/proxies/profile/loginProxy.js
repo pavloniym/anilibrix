@@ -1,7 +1,7 @@
 import Proxy from '@proxy'
 
 export default class extends Proxy {
-  constructor (parameters = {}) {
+  constructor(parameters = {}) {
     super('https://anilibria.tv/public/login.php', parameters)
   }
 
@@ -12,10 +12,7 @@ export default class extends Proxy {
    * @param password
    * @return {Promise}
    */
-  authorize ({ login, password }) {
-    return this.submit('post', `${this.endpoint}`, {
-      mail: login,
-      passwd: password
-    })
+  authorize({login, password}) {
+    return this.submit('post', `${this.endpoint}`, {mail: login, passwd: password});
   }
 }

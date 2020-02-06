@@ -1,47 +1,52 @@
 <template>
-  <v-list dense>
+  <v-layout column fill-height>
 
-    <!-- Profile -->
-    <v-list-item link @click="authorize">
-      <v-list-item-action>
-        <v-icon size="20">mdi-account</v-icon>
-      </v-list-item-action>
-      <v-list-item-content>
-        <v-list-item-title>Профиль</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+    <v-toolbar class="shrink">
+      <v-app-bar-nav-icon @click="backToSettingsCategories">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-app-bar-nav-icon>
+      <v-toolbar-title>Профиль</v-toolbar-title>
+    </v-toolbar>
 
-  </v-list>
+    <v-layout v-if="session === null" fill-height column align-center justify-center>
+      <v-icon size="80" color="grey darken-2">mdi-account</v-icon>
+      <div class="grey--text text-center px-8 mt-2 mb-4">
+        Похоже вы еще не представились. Пожалуйста, авторизуйтесь в приложении
+      </div>
+      <v-btn color="primary" @click="dialogs.authorization = true">Авторизоваться</v-btn>
+    </v-layout>
+
+    <!-- Authorization dialog -->
+    <authorization-dialog
+      v-if="dialogs.authorization"
+      @close="dialogs.authorization = false">
+    </authorization-dialog>
+
+  </v-layout>
 </template>
 
 <script>
-  import {mapActions} from 'vuex';
+  import AuthorizationDialog from './dialogs/authorization'
+  import {mapActions, mapState} from 'vuex'
 
   export default {
-
+    components: {
+      AuthorizationDialog
+    },
     data() {
       return {
-        login: null,
-        password: null
+        dialogs: {
+          authorization: false
+        }
       };
     },
 
+    computed: {
+      ...mapState('settings/profile', ['session'])
+    },
+
     methods: {
-      ...mapActions('settings/profile', {
-        _authorize: 'authorize'
-      }),
-
-      authorize() {
-        this._authorize({
-          login: this.login,
-          password: this.password
-        });
-      }
-
+      ...mapActions('settings', ['backToSettingsCategories'])
     }
   };
 </script>
-
-<style scoped>
-
-</style>

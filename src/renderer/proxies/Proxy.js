@@ -1,5 +1,6 @@
 import axios from '@plugins/axios'
-import { getHttpProxy } from '@utils/proxy'
+import FormData from 'form-data'
+import {getHttpProxy, getHttpsAgent} from '@utils/proxy'
 
 class BaseProxy {
   /**
@@ -8,8 +9,8 @@ class BaseProxy {
    * @param {string} endpoint   The endpoint being used.
    * @param {Object} parameters The parameters for the request.
    */
-  constructor (endpoint, parameters = {}) {
-    this.endpoint = endpoint
+  constructor(endpoint, parameters = {}) {
+    this.endpoint = endpoint;
     this.parameters = parameters
   }
 
@@ -20,11 +21,11 @@ class BaseProxy {
    *
    * @returns {BaseProxy} The instance of the proxy.
    */
-  setParameters (parameters) {
+  setParameters(parameters) {
     Object.keys(parameters)
       .forEach((key) => {
         this.parameters[key] = parameters[key]
-      })
+      });
 
     return this
   }
@@ -37,8 +38,8 @@ class BaseProxy {
    *
    * @returns {BaseProxy} The instance of the proxy.
    */
-  setParameter (parameter, value) {
-    this.parameters[parameter] = value
+  setParameter(parameter, value) {
+    this.parameters[parameter] = value;
 
     return this
   }
@@ -50,10 +51,10 @@ class BaseProxy {
    *
    * @returns {BaseProxy} The instance of the proxy.
    */
-  removeParameters (parameters) {
+  removeParameters(parameters) {
     parameters.forEach((parameter) => {
       delete this.parameters[parameter]
-    })
+    });
 
     return this
   }
@@ -65,8 +66,8 @@ class BaseProxy {
    *
    * @returns {BaseProxy} The instance of the proxy.
    */
-  removeParameter (parameter) {
-    delete this.parameters[parameter]
+  removeParameter(parameter) {
+    delete this.parameters[parameter];
 
     return this
   }
@@ -81,34 +82,58 @@ class BaseProxy {
    *
    * @returns {Promise} The result in a promise.
    */
-  submit (requestType, url, data = null, parameters = null) {
-    if (1) {  // eslint-disable-line
-      this.submitWithProxy(requestType, url, data, parameters)
-    } else {
-      this.submitDirectly(requestType, url, data, parameters)
-    }
+  submit(requestType, url, data = null, parameters = null) {
+    return this.submitWithProxy(requestType, url, data, parameters)
   }
 
-  submitDirectly (requestType, url, data = null, parameters = null) {
+  /**
+   * Submit request directly, without proxy
+   *
+   * @param requestType
+   * @param url
+   * @param data
+   * @param parameters
+   * @return {Promise<any>}
+   */
+  submitDirectly(requestType, url, data = null, parameters = null) {
     return new Promise((resolve, reject) => {
-      axios[requestType](url + this.getParameterString(), data, parameters)
-        .then(response => resolve(response.data))
-        .catch(response => reject(response))
+      axios[requestType](url + this.getParameterString(), data,
+        {
+          ...parameters,
+          headers: {'Content-Type': 'multipart/form-data'},
+          transformRequest: (data) => this.getFormDataObject(data)
+        })
+        .then(response => {
+          console.log({response});
+          resolve(response.data)
+        })
+        .catch(response => {
+          console.log({response});
+          reject(response)
+        })
     })
   }
 
-  async submitWithProxy(requestType, url, data = null, parameters = null) {  // eslint-disable-line
+  /**
+   * Submit request using proxy
+   *
+   * @param requestType
+   * @param url
+   * @param data
+   * @param parameters
+   * @return {Promise<void>}
+   */
+  submitWithProxy(requestType, url, data = null, parameters = null) {
+    return new Promise((resolve, reject) => {
+      const pacUrl = 'https://antizapret.prostovpn.org/proxy.pac';
+      const targetUrl = url + this.getParameterString();
 
-    const pacUrl = 'https://antizapret.prostovpn.org/proxy.pac'
-    const targetUrl = url + this.getParameterString()
-
-    try {
-      const httpProxyConfiguration = await getHttpProxy(pacUrl, targetUrl)
-
-      console.log({ httpProxyConfiguration })
-    } catch (error) {
-      console.log({ error })
-    }
+      getHttpProxy(pacUrl, targetUrl)
+        .then(httpsProxyConfiguration => getHttpsAgent(httpsProxyConfiguration))
+        .then(httpsAgent => this.submitDirectly(requestType, url, data, {...parameters, proxy: false, httpsAgent}))
+        .then(response => resolve(response))
+        .catch(error => reject(error));
+    });
   }
 
   /**
@@ -116,7 +141,7 @@ class BaseProxy {
    *
    * @returns {Promise} The result in a promise.
    */
-  all () {
+  all() {
     return this.submit('get', `${this.endpoint}`)
   }
 
@@ -127,7 +152,7 @@ class BaseProxy {
    *
    * @returns {Promise} The result in a promise.
    */
-  find (id) {
+  find(id) {
     return this.submit('get', `${this.endpoint}/${id}`)
   }
 
@@ -138,7 +163,7 @@ class BaseProxy {
    *
    * @returns {Promise} The result in a promise.
    */
-  create (item) {
+  create(item) {
     return this.submit('post', `${this.endpoint}`, item)
   }
 
@@ -150,7 +175,7 @@ class BaseProxy {
    *
    * @returns {Promise} The result in a promise.
    */
-  update (id, item) {
+  update(id, item) {
     return this.submit('put', `${this.endpoint}/${id}`, item)
   }
 
@@ -161,7 +186,7 @@ class BaseProxy {
    *
    * @returns {Promise} The result in a promise.
    */
-  destroy (id) {
+  destroy(id) {
     return this.submit('delete', `${this.endpoint}/${id}`)
   }
 
@@ -170,14 +195,31 @@ class BaseProxy {
    *
    * @returns {string} The parameter string.
    */
-  getParameterString () {
-    const keys = Object.keys(this.parameters)
+  getParameterString() {
+    const keys = Object.keys(this.parameters);
 
     const parameterStrings = keys
       .filter(key => !!this.parameters[key])
-      .map(key => `${key}=${this.parameters[key]}`)
+      .map(key => `${key}=${this.parameters[key]}`);
 
     return parameterStrings.length === 0 ? '' : `?${parameterStrings.join('&')}`
+  }
+
+  /**
+   * Get form data from provided data object
+   *
+   * @param data
+   * @return {FormData}
+   */
+  getFormDataObject(data = null) {
+    const formData = new FormData();
+
+    Object
+      .keys(data)
+      .forEach(key => formData.append(key, data[key]));
+
+    console.log({data, formData});
+    return formData;
   }
 }
 
