@@ -1,6 +1,9 @@
-import axios from '@plugins/axios'
 import FormData from 'form-data'
+import __get from 'lodash/get'
+
+import axios from '@plugins/axios'
 import {getHttpProxy, getHttpsAgent} from '@utils/proxy'
+import store from '@store'
 
 class BaseProxy {
   /**
@@ -78,12 +81,13 @@ class BaseProxy {
    * @param {string}      requestType The request type.
    * @param {string}      url         The URL for the request.
    * @param {Object|null} data        The data to be send with the request.
+   * @param withSession
    * @param parameters
    *
    * @returns {Promise} The result in a promise.
    */
-  submit(requestType, url, data = null, parameters = null) {
-    return this.submitWithProxy(requestType, url, data, parameters)
+  submit(requestType, url, data = null, withSession = true, parameters = null) {
+    return this.submitWithProxy(requestType, url, data, withSession, parameters)
   }
 
   /**
@@ -92,25 +96,20 @@ class BaseProxy {
    * @param requestType
    * @param url
    * @param data
+   * @param withSession
    * @param parameters
    * @return {Promise<any>}
    */
-  submitDirectly(requestType, url, data = null, parameters = null) {
+  submitDirectly(requestType, url, data = null, withSession = true, parameters = null) {
     return new Promise((resolve, reject) => {
-      axios[requestType](url + this.getParameterString(), data,
-        {
-          ...parameters,
-          headers: {'Content-Type': 'multipart/form-data'},
-          transformRequest: (data) => this.getFormDataObject(data)
-        })
-        .then(response => {
-          console.log({response});
-          resolve(response.data)
-        })
-        .catch(response => {
-          console.log({response});
-          reject(response)
-        })
+      const requestUrl = url + this.getParameterString();
+      const requestData = this.getFormDataObject(data);
+      const requestCookieHeader = withSession ? `PHPSESSID=${this.getSessionCookieValue()}` : null;
+      const requestParameters = {...parameters, headers: {...requestData.getHeaders(), Cookie: requestCookieHeader}};
+
+      axios[requestType](requestUrl, requestData, requestParameters)
+        .then(response => resolve(response))
+        .catch(response => reject(response))
     })
   }
 
@@ -120,17 +119,18 @@ class BaseProxy {
    * @param requestType
    * @param url
    * @param data
+   * @param withSession
    * @param parameters
    * @return {Promise<void>}
    */
-  submitWithProxy(requestType, url, data = null, parameters = null) {
+  submitWithProxy(requestType, url, data = null, withSession = true, parameters = null) {
     return new Promise((resolve, reject) => {
       const pacUrl = 'https://antizapret.prostovpn.org/proxy.pac';
       const targetUrl = url + this.getParameterString();
 
       getHttpProxy(pacUrl, targetUrl)
         .then(httpsProxyConfiguration => getHttpsAgent(httpsProxyConfiguration))
-        .then(httpsAgent => this.submitDirectly(requestType, url, data, {...parameters, proxy: false, httpsAgent}))
+        .then(httpsAgent => this.submitDirectly(requestType, url, data, withSession, {...parameters, httpsAgent}))
         .then(response => resolve(response))
         .catch(error => reject(error));
     });
@@ -218,8 +218,18 @@ class BaseProxy {
       .keys(data)
       .forEach(key => formData.append(key, data[key]));
 
-    console.log({data, formData});
     return formData;
+  }
+
+  /**
+   * Get session cookie value from store
+   *
+   * @return string|null
+   */
+  getSessionCookieValue() {
+    const value = __get(store, 'state.settings.profile.session', null);
+    console.log({value});
+    return value;
   }
 }
 

@@ -11,7 +11,7 @@
 
     <!-- Settings -->
     <v-btn icon @click="_setDrawer(true)">
-      <v-icon>mdi-settings</v-icon>
+      <v-icon>mdi-bars</v-icon>
     </v-btn>
 
   </v-app-bar>

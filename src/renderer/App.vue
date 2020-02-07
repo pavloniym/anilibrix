@@ -18,13 +18,18 @@
 
 <script>
   import AppToolbar from '@components/app/toolbar'
-import AppSettings from '@components/app/settings'
+  import AppSettings from '@components/app/settings'
+  import {resetStore} from '@store'
 
-export default {
+  export default {
     name: 'anilibria-theater',
     components: {
       AppToolbar,
       AppSettings
+    },
+
+    mounted() {
+      resetStore();
     }
   }
 </script>

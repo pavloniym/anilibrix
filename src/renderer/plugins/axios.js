@@ -9,6 +9,6 @@
  * @see https://github.com/mzabriskie/axios
  *
  */
-import Axios from 'axios-https-proxy-fix'
+import Axios from 'axios'
 
 export default Axios.create()
