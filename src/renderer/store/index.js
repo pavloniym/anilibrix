@@ -6,14 +6,16 @@ import createPromiseAction from '@plugins/vuex-promise-action'
 import { getInitialState } from '@utils/store'
 
 import settings from './settings'
+import releases from './releases'
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const modules = {
-  settings
-}
+  settings,
+  releases
+};
 
-const debug = process.env.NODE_ENV !== 'production'
+const debug = process.env.NODE_ENV !== 'production';
 const store = new Vuex.Store({
   modules,
   plugins: [
@@ -22,14 +24,14 @@ const store = new Vuex.Store({
     createSharedMutations()
   ],
   strict: debug
-})
+});
 
 /**
  * Replace store with fresh object
  *
  * @return {*}
  */
-const resetStore = () => store.replaceState(getInitialState(modules))
+const resetStore = () => store.replaceState(getInitialState(modules));
 
 export default store
 export {

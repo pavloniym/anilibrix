@@ -11,4 +11,28 @@
  */
 import Axios from 'axios'
 
-export default Axios.create()
+const debug = process.env.NODE_ENV !== 'production';
+const axios = Axios.create();
+
+// Add a request interceptor
+axios.interceptors.request.use(
+  (config) => config,
+  (error) => {
+    if (debug) console.log('Request error', { error });
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor
+axios.interceptors.response.use(
+  (response) => {
+    if (debug) console.log({ config: response });
+    return response;
+  },
+  (error) => {
+    if (debug) console.log('Response error', { error });
+    return Promise.reject(error);
+  }
+);
+
+export default axios;

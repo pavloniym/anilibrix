@@ -1,4 +1,4 @@
-import {mutationsHelper} from '@utils/store'
+import { mutationsHelper } from '@utils/store'
 
 import profile from './profile'
 
@@ -26,8 +26,8 @@ export default {
      * @param drawerState
      * @return {*}
      */
-    setDrawer: ({commit, dispatch}, drawerState) => {
-      commit('set', {k: 'drawer', v: drawerState});
+    setDrawer: ({ commit, dispatch }, drawerState) => {
+      commit('set', { k: 'drawer', v: drawerState });
       if (drawerState === false) {
         setTimeout(() => dispatch('backToSettingsCategories'), 400)
       }
@@ -40,7 +40,7 @@ export default {
      * @param component
      * @return {*}
      */
-    setComponent: ({commit}, component) => commit('set', {k: 'component', v: component}),
+    setComponent: ({ commit }, component) => commit('set', { k: 'component', v: component }),
 
     /**
      * Reset settings component
@@ -49,7 +49,7 @@ export default {
      * @param commit
      * @return {*}
      */
-    backToSettingsCategories: ({commit}) => commit('set', {k: 'component', v: 'Categories'})
+    backToSettingsCategories: ({ commit }) => commit('set', { k: 'component', v: 'Categories' })
 
   }
 

@@ -22,7 +22,7 @@ const parseHttProxy = (httpProxyString) => {
     const port = match[2];
 
     if (host && host.length > 0 && port > 0) {
-      proxyConnections.push({host, port});
+      proxyConnections.push({ host, port });
     }
   }
 

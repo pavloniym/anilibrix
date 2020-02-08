@@ -1,5 +1,5 @@
-import {mutationsHelper} from '@utils/store'
-import {LoginProxy, ProfileProxy} from '@proxies/profile'
+import { mutationsHelper } from '@utils/store'
+import { LoginProxy, ProfileProxy } from '@proxies/profile'
 
 export default {
   namespaced: true,
@@ -23,18 +23,18 @@ export default {
      * @param password
      * @return {Promise<any>}
      */
-    authorize: ({commit, dispatch}, {login, password}) => {
+    authorize: ({ commit, dispatch }, { login, password }) => {
       return new Promise((resolve, reject) => {
         new LoginProxy()
-          .authorize({login, password})
-          .then(response => commit('set', {k: 'session', v: response}))
+          .authorize({ login, password })
+          .then(response => commit('set', { k: 'session', v: response }))
           .then(() => dispatch('identify'))
           .then(() => resolve())
           .catch(response => reject(response))
       })
     },
 
-    identify: ({commit}) => {
+    identify: ({ commit }) => {
       return new Promise((resolve, reject) => {
         new ProfileProxy()
           .identify()

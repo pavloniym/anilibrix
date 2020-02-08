@@ -1,35 +1,20 @@
 <template>
   <v-app>
-
-    <!-- Settings -->
-    <app-settings/>
-
-    <!-- Toolbar -->
-    <app-toolbar/>
-
-
-    <!-- Content -->
-    <v-content>
-      <router-view/>
-    </v-content>
-
+    <router-view/>
   </v-app>
 </template>
 
 <script>
-  import AppToolbar from '@components/app/toolbar'
-  import AppSettings from '@components/app/settings'
-  import {resetStore} from '@store'
+  import {mapActions} from 'vuex'
 
   export default {
     name: 'anilibria-theater',
-    components: {
-      AppToolbar,
-      AppSettings
+    methods: {
+      ...mapActions('releases', ['getLatestReleases'])
     },
 
-    mounted() {
-      resetStore();
+    created() {
+      this.getLatestReleases();
     }
   }
 </script>

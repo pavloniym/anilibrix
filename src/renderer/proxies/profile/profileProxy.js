@@ -11,6 +11,6 @@ export default class extends Proxy {
    * @return {Promise}
    */
   identify() {
-    return this.submit('post', this.endpoint, {query: 'user'});
+    return this.submit('post', this.endpoint, { query: 'user' });
   }
 }

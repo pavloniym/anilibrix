@@ -2,7 +2,7 @@ import FormData from 'form-data'
 import __get from 'lodash/get'
 
 import axios from '@plugins/axios'
-import {getHttpProxy, getHttpsAgent} from '@utils/proxy'
+import { getHttpProxy, getHttpsAgent } from '@utils/proxy'
 import store from '@store'
 
 class BaseProxy {
@@ -105,7 +105,7 @@ class BaseProxy {
       const requestUrl = url + this.getParameterString();
       const requestData = this.getFormDataObject(data);
       const requestCookieHeader = withSession ? `PHPSESSID=${this.getSessionCookieValue()}` : null;
-      const requestParameters = {...parameters, headers: {...requestData.getHeaders(), Cookie: requestCookieHeader}};
+      const requestParameters = { ...parameters, headers: { ...requestData.getHeaders(), Cookie: requestCookieHeader } };
 
       axios[requestType](requestUrl, requestData, requestParameters)
         .then(response => resolve(response))
@@ -130,7 +130,7 @@ class BaseProxy {
 
       getHttpProxy(pacUrl, targetUrl)
         .then(httpsProxyConfiguration => getHttpsAgent(httpsProxyConfiguration))
-        .then(httpsAgent => this.submitDirectly(requestType, url, data, withSession, {...parameters, httpsAgent}))
+        .then(httpsAgent => this.submitDirectly(requestType, url, data, withSession, { ...parameters, httpsAgent }))
         .then(response => resolve(response))
         .catch(error => reject(error));
     });
@@ -228,7 +228,7 @@ class BaseProxy {
    */
   getSessionCookieValue() {
     const value = __get(store, 'state.settings.profile.session', null);
-    console.log({value});
+    console.log({ value });
     return value;
   }
 }

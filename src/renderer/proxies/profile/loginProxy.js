@@ -14,9 +14,9 @@ export default class extends Proxy {
    * @param password
    * @return {Promise}
    */
-  authorize({login, password}) {
+  authorize({ login, password }) {
     return new Promise((resolve, reject) => {
-      return this.submit('post', `${this.endpoint}`, {mail: login, passwd: password}, false)
+      return this.submit('post', `${this.endpoint}`, { mail: login, passwd: password }, false)
         .then(response => {
           const data = response.data;
           const key = __get(data, 'key');
