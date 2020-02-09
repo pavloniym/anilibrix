@@ -26,7 +26,7 @@
 
 <script>
   import MainLayout from '@layouts/main'
-  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
     name: 'HomeView',
@@ -36,16 +36,14 @@
     },
 
     methods: {
+      ...mapActions('player', ['setTitleData', 'setStreamData']),
 
       watchRelease(release) {
-        this.$router.push({
-          name: 'player.stream',
-          params: {
-            sd: release.player.stream.sd,
-            hd: release.player.stream.hd,
-            fhd: release.player.stream.fhd
-          }
-        })
+
+        this.setTitleData({name: release.names.ru, episode: '1 серия'});
+        this.setStreamData({...release.player.stream});
+
+        this.$router.push({name: 'player.stream'});
       }
 
     }

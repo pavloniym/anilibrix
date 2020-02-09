@@ -22,9 +22,9 @@ export default class extends Transformer {
       genres: this.get(i, 'genres', []),
       player: {
         stream: {
-          sd: this.get(i, 'playlist.0.sd'),
-          hd: this.get(i, 'playlist.0.hd'),
-          fhd: this.get(i, 'playlist.0.fullhd')
+          SD: this.get(i, 'playlist.0.sd'),
+          HD: this.get(i, 'playlist.0.hd'),
+          FHD: this.get(i, 'playlist.0.fullhd')
         }
       }
     }

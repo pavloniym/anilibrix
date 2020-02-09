@@ -7,12 +7,14 @@ import { getInitialState } from '@utils/store'
 
 import settings from './settings'
 import releases from './releases'
+import player from './player'
 
 Vue.use(Vuex);
 
 const modules = {
   settings,
-  releases
+  releases,
+  player,
 };
 
 const debug = process.env.NODE_ENV !== 'production';
