@@ -8,12 +8,16 @@
     <app-toolbar/>
 
     <!-- Content -->
-    <slot />
+    <v-content>
+      <slot />
+    </v-content>
+
 
   </v-layout>
 </template>
 
 <script>
+
   import AppToolbar from '@components/app/toolbar'
   import AppSettings from '@components/app/settings'
 
@@ -23,7 +27,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>

@@ -55,10 +55,12 @@
   "dependencies": {
     "@mdi/font": "^4.8.95",
     "axios": "^0.19.2",
+    "axios-https-proxy-fix": "^0.17.1",
     "electron-promise-ipc": "^2.0.1",
     "form-data": "^3.0.0",
     "hls.js": "^0.13.1",
     "https-proxy-agent": "^5.0.0",
+    "localforage": "^1.7.3",
     "lodash": "^4.17.15",
     "pac-resolver": "^4.0.0",
     "plyr": "^3.5.7-beta.0",

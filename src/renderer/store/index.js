@@ -14,7 +14,7 @@ Vue.use(Vuex);
 const modules = {
   settings,
   releases,
-  player,
+  player
 };
 
 const debug = process.env.NODE_ENV !== 'production';

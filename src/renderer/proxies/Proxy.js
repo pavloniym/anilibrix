@@ -14,101 +14,93 @@ class BaseProxy {
    */
   constructor(endpoint, parameters = {}) {
     this.endpoint = endpoint;
-    this.parameters = parameters
+    this.parameters = parameters;
+    this.host = this.getHost();
   }
 
   /**
-   * Method used to set the query parameters.
+   * Get host
    *
-   * @param {Object} parameters The given parameters.
-   *
-   * @returns {BaseProxy} The instance of the proxy.
+   * @return {*}
    */
-  setParameters(parameters) {
-    Object.keys(parameters)
-      .forEach((key) => {
-        this.parameters[key] = parameters[key]
-      });
-
-    return this
+  getHost() {
+    return __get(store, 'state.settings.connection.host', null);
   }
 
   /**
-   * Method used to set a single parameter.
+   * Detect proxy usage in settings
+   * pac - pac url usage
+   * custom - custom proxy host
+   * direct - no proxy activated
    *
-   * @param {string} parameter The given parameter.
-   * @param {*} value The value to be set.
-   *
-   * @returns {BaseProxy} The instance of the proxy.
+   * @return {string}
    */
-  setParameter(parameter, value) {
-    this.parameters[parameter] = value;
+  getProxyUsage() {
+    const proxyConfiguration = __get(store, 'state.settings.connection.proxy');
+    const pacActive = __get(proxyConfiguration, 'pac.active', false);
+    const customActive = __get(proxyConfiguration, 'custom.active', false);
 
-    return this
+    if (pacActive) return 'pac';
+    if (customActive) return 'custom';
+
+    return 'direct';
   }
 
   /**
-   * Method used to remove all the parameters.
+   * Get proxy https agent
    *
-   * @param {Array} parameters The given parameters.
-   *
-   * @returns {BaseProxy} The instance of the proxy.
+   * @param targetUrl
+   * @return {Promise<any>}
    */
-  removeParameters(parameters) {
-    parameters.forEach((parameter) => {
-      delete this.parameters[parameter]
+  getProxyHttpsAgent(targetUrl) {
+    return new Promise((resolve, reject) => {
+      const proxyUsage = this.getProxyUsage();
+
+      if (proxyUsage === 'pac') {
+        const pacUrl = __get(store, 'state.settings.connection.proxy.pac.url');
+        if (pacUrl) {
+          getHttpProxy(pacUrl, targetUrl)
+            .then(httpsProxyConfiguration => getHttpsAgent(httpsProxyConfiguration))
+            .then(httpsAgent => resolve(httpsAgent))
+            .catch(error => reject(error));
+        } else throw new Error('Pac Url is not defined');
+      }
     });
-
-    return this
-  }
-
-  /**
-   * Method used to remove a single parameter.
-   *
-   * @param {string} parameter The given parameter.
-   *
-   * @returns {BaseProxy} The instance of the proxy.
-   */
-  removeParameter(parameter) {
-    delete this.parameters[parameter];
-
-    return this
   }
 
   /**
    * The method used to perform an AJAX-request.
    *
-   * @param {string}      requestType The request type.
+   * @param method
    * @param {string}      url         The URL for the request.
-   * @param {Object|null} data        The data to be send with the request.
-   * @param withSession
    * @param parameters
    *
    * @returns {Promise} The result in a promise.
    */
-  submit(requestType, url, data = null, withSession = true, parameters = null) {
-    return this.submitWithProxy(requestType, url, data, withSession, parameters)
+  submit(method, url, parameters = null) {
+    const proxyUsage = this.getProxyUsage();
+
+    if (proxyUsage !== 'direct') {
+      // Should use proxy
+      return this.submitWithProxy(method, url, parameters)
+    } else {
+      // Should make direct request
+      return this.submitDirectly(method, url, parameters);
+    }
   }
 
   /**
    * Submit request directly, without proxy
    *
-   * @param requestType
+   * @param method
    * @param url
-   * @param data
-   * @param withSession
    * @param parameters
    * @return {Promise<any>}
    */
-  submitDirectly(requestType, url, data = null, withSession = true, parameters = null) {
+  submitDirectly(method, url, parameters = null) {
     return new Promise((resolve, reject) => {
-      const requestUrl = url + this.getParameterString();
-      const requestData = this.getFormDataObject(data);
-      const requestCookieHeader = withSession ? `PHPSESSID=${this.getSessionCookieValue()}` : null;
-      const requestParameters = { ...parameters, headers: { ...requestData.getHeaders(), Cookie: requestCookieHeader } };
-
-      axios[requestType](requestUrl, requestData, requestParameters)
-        .then(response => resolve(response))
+      axios.request({ url, method, ...parameters })
+        .then(response => resolve(response.data))
         .catch(response => reject(response))
     })
   }
@@ -116,93 +108,22 @@ class BaseProxy {
   /**
    * Submit request using proxy
    *
-   * @param requestType
+   * @param method
    * @param url
-   * @param data
-   * @param withSession
    * @param parameters
    * @return {Promise<void>}
    */
-  submitWithProxy(requestType, url, data = null, withSession = true, parameters = null) {
-    return new Promise((resolve, reject) => {
-      const pacUrl = 'https://antizapret.prostovpn.org/proxy.pac';
-      const targetUrl = url + this.getParameterString();
+  submitWithProxy(method, url, parameters = null) {
+    return new Promise(async (resolve, reject) => {
 
-      getHttpProxy(pacUrl, targetUrl)
-        .then(httpsProxyConfiguration => getHttpsAgent(httpsProxyConfiguration))
-        .then(httpsAgent => this.submitDirectly(requestType, url, data, withSession, { ...parameters, httpsAgent }))
+      // Get httpsAgent for proxy connection
+      const httpsAgent = await this.getProxyHttpsAgent(url);
+
+      // Make direct request, but with httpsAgent (having proxy)
+      this.submitDirectly(method, url, { ...parameters, proxy: false, httpsAgent })
         .then(response => resolve(response))
-        .catch(error => reject(error));
+        .catch(response => reject(response))
     });
-  }
-
-  /**
-   * Method used to fetch all items from the API.
-   *
-   * @returns {Promise} The result in a promise.
-   */
-  all() {
-    return this.submit('get', `${this.endpoint}`)
-  }
-
-  /**
-   * Method used to fetch a single item from the API.
-   *
-   * @param {int} id The given identifier.
-   *
-   * @returns {Promise} The result in a promise.
-   */
-  find(id) {
-    return this.submit('get', `${this.endpoint}/${id}`)
-  }
-
-  /**
-   * Method used to create an item.
-   *
-   * @param {Object} item The given item.
-   *
-   * @returns {Promise} The result in a promise.
-   */
-  create(item) {
-    return this.submit('post', `${this.endpoint}`, item)
-  }
-
-  /**
-   * Method used to update an item.
-   *
-   * @param {int}    id   The given identifier.
-   * @param {Object} item The given item.
-   *
-   * @returns {Promise} The result in a promise.
-   */
-  update(id, item) {
-    return this.submit('put', `${this.endpoint}/${id}`, item)
-  }
-
-  /**
-   * Method used to destroy an item.
-   *
-   * @param {int} id The given identifier.
-   *
-   * @returns {Promise} The result in a promise.
-   */
-  destroy(id) {
-    return this.submit('delete', `${this.endpoint}/${id}`)
-  }
-
-  /**
-   * Method used to transform a parameters object to a parameters string.
-   *
-   * @returns {string} The parameter string.
-   */
-  getParameterString() {
-    const keys = Object.keys(this.parameters);
-
-    const parameterStrings = keys
-      .filter(key => !!this.parameters[key])
-      .map(key => `${key}=${this.parameters[key]}`);
-
-    return parameterStrings.length === 0 ? '' : `?${parameterStrings.join('&')}`
   }
 
   /**
@@ -215,21 +136,10 @@ class BaseProxy {
     const formData = new FormData();
 
     Object
-      .keys(data)
+      .keys(data || {})
       .forEach(key => formData.append(key, data[key]));
 
     return formData;
-  }
-
-  /**
-   * Get session cookie value from store
-   *
-   * @return string|null
-   */
-  getSessionCookieValue() {
-    const value = __get(store, 'state.settings.profile.session', null);
-    console.log({ value });
-    return value;
   }
 }
 

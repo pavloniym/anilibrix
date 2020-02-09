@@ -1,12 +1,16 @@
 import { mutationsHelper } from '@utils/store'
 
 import profile from './profile'
+import connection from './connection'
 
 export default {
   namespaced: true,
+
   modules: {
-    profile
+    profile,
+    connection
   },
+
   state: {
     drawer: true,
     component: 'Categories'

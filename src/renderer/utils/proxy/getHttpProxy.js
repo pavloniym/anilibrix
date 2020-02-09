@@ -30,7 +30,7 @@ const parseHttProxy = (httpProxyString) => {
     return proxyConnections[0];
   }
 
-  throw new Error('Can\'t parse http proxy');
+  return { host: null, port: null };
 };
 
 /**

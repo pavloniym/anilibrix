@@ -15,10 +15,11 @@ export default class extends Transformer {
         ru: this.get(i, 'names.0'),
         original: this.get(i, 'names.1')
       },
-      series: this.get('series'),
-      moon: this.get(i, 'moon'),
-      poster: this.get(i, 'poster'),
-      last: this.get(i, 'last'),
+      description: this.get(i, 'description'),
+      poster: {
+        url: this.get(i, 'poster'),
+        image: null
+      },
       genres: this.get(i, 'genres', []),
       player: {
         stream: {

@@ -1,21 +1,12 @@
 <template>
-  <div class="player__container">
+  <div class="player__container" v-if="sourceIsDefined">
+
+    <!-- Back -->
+    <v-icon @click="returnToHome">mdi-arrow-left</v-icon>
 
     <!-- Video -->
-    <video ref="player" controls playsinline v-if="source"></video>
+    <video ref="player" controls playsinline></video>
 
-    <!-- Controls -->
-    <div class="plyr__controls" ref="controls">
-
-      <!-- Back button -->
-      <v-icon @click="returnToHome">mdi-arrow-left</v-icon>
-
-
-      <v-btn icon class="plyr__control" data-plyr="rewind">
-        <v-icon>mdi-play</v-icon>
-      </v-btn>
-
-    </div>
 
   </div>
 </template>
@@ -38,10 +29,22 @@
       }
     },
     computed: {
-
       ...mapState('player', {
-        _FHD: s => s.stream.FHD, _HD: s => s.stream.HD, _SD: s => s.stream.SD,
+        _FHD: s => s.stream.FHD,
+        _HD: s => s.stream.HD,
+        _SD: s => s.stream.SD,
       }),
+
+
+      /**
+       * Get first source with max available quality
+       *
+       * @return {boolean}
+       */
+      source() {
+        const streams = [this._FHD, this._HD, this._SD].filter(stream => stream);
+        return streams[0] || null;
+      },
 
 
       /**
@@ -49,15 +52,37 @@
        *
        * @return {boolean}
        */
-      source() {
-        const streams = [this._FHD, this._HD, this._SD].filter(stream => stream);
-        return streams[0];
-      },
+      sourceIsDefined() {
+        return this.source && this.source.length > 0;
+      }
 
     },
 
     methods: {
       ...mapActions('player', ['clearPlayerData']),
+
+
+      /**
+       * Init stream player
+       * Run plyr and add hls source
+       *
+       * @return void
+       */
+      initStreamPlayer() {
+        this.$nextTick(() => {
+
+          this.player = this.$refs.player;
+          this.plyr = new Plyr(this.player, {
+            autoplay: true,
+            clickToPlay: true,
+          });
+
+          this.hls.loadSource(this.source);
+          this.hls.attachMedia(this.player);
+
+        })
+      },
+
 
       /**
        * Return to home screen
@@ -68,26 +93,24 @@
 
     },
 
-    mounted() {
-
-      if (this.source) {
-
-        this.player = this.$refs.player;
-        this.plyr = new Plyr(this.player, {
-          autoplay: false,
-          clickToPlay: false,
-          controls: this.$refs.controls,
-        });
-
-        this.hls.loadSource(this.source);
-        this.hls.attachMedia(this.player);
-      }
-    },
 
     destroyed() {
 
       // Clear player data
       this.clearPlayerData();
+    },
+
+
+    watch: {
+      sourceIsDefined: {
+        immediate: true,
+        handler(sourceIsDefined) {
+          if (sourceIsDefined) {
+            this.initStreamPlayer();
+          }
+        }
+      }
+
     }
 
   }

@@ -4,6 +4,6 @@ export default [
   {
     name: 'player.stream',
     path: '/player',
-    component: StreamPlayerView,
+    component: StreamPlayerView
   }
 ]
