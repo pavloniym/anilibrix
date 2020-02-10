@@ -4,14 +4,14 @@
     <v-spacer/>
 
     <!-- Search -->
-    <v-btn icon class="mr-1">
+    <v-btn icon class="mr-1" disabled>
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
 
 
     <!-- Settings -->
     <v-btn icon @click="_setDrawer(true)">
-      <v-icon>mdi-bars</v-icon>
+      <v-icon>mdi-menu</v-icon>
     </v-btn>
 
   </v-app-bar>
