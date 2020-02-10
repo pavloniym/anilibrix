@@ -7,7 +7,8 @@ export default {
   namespaced: true,
   state: {
     loading: false,
-    items: []
+    items: [],
+    posters: {},
   },
 
   mutations: {
@@ -29,7 +30,7 @@ export default {
         .getReleases()
         .then(releases => ReleasesTransformer.fetchCollection(releases.items))
         .then(releases => commit('set', {k: 'items', v: releases}))
-        .then(() => dispatch('getReleasesPosters'))
+        .then(() => dispatch('updateReleasesPosters'))
         .finally(() => commit('set', {k: 'loading', v: false}))
     },
 
@@ -37,21 +38,36 @@ export default {
     /**
      * Update releases posters
      * Update only empty posters
+     * Remove old releases' posters
      *
      * @param commit
      * @param state
      */
-    getReleasesPosters: ({commit, state}) => {
+    updateReleasesPosters: ({commit, state}) => {
+
+      // Remove old poster for old releases
+      let posters = state.posters;
+      Object.keys(state.posters)
+        .filter(releaseId => !state.items.find(release => release.id === releaseId))
+        .forEach(releaseId => delete posters[releaseId]);
+
+      // Set posters only with existing releases
+      commit('set', {k: 'posters', v: posters});
+
+      // Update posters for new releases
       (state.items || [])
-        .filter(release => release.poster.image === null)
-        .forEach((release, k) => {
+        .filter(release => release.poster && !state.posters[release.id])
+        .forEach(release => {
           new ReleasesProxy()
-            .getPosterImage(release.poster.url)
+            .getPosterImage(release.poster)
             .then(imageInBase64 =>
-              commit('set', {k: ['items', k, 'poster', 'image'], v: 'data:image/jpeg;base64,' + imageInBase64})
+              commit('set', {
+                k: 'posters',
+                v: {...state.posters, [release.id]: 'data:image/jpeg;base64,' + imageInBase64}
+              })
             )
             .catch(error => console.log(error))
-        })
+        });
     }
 
   }

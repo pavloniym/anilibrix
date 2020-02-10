@@ -16,10 +16,7 @@ export default class extends Transformer {
         original: this.get(i, 'names.1')
       },
       description: this.get(i, 'description'),
-      poster: {
-        url: this.get(i, 'poster'),
-        image: null
-      },
+      poster: this.get(i, 'poster'),
       genres: this.get(i, 'genres', []),
       player: {
         stream: {
