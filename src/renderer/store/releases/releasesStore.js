@@ -31,9 +31,9 @@ export default {
         .then(releases => ReleasesTransformer.fetchCollection(releases.items))
         .then(releases => commit('set', {k: 'items', v: releases}))
         .then(() => dispatch('updateReleasesPosters'))
+        .catch(error => dispatch('app/pushError', error, {root: true}))
         .finally(() => commit('set', {k: 'loading', v: false}))
     },
-
 
     /**
      * Update releases posters
@@ -43,10 +43,10 @@ export default {
      * @param commit
      * @param state
      */
-    updateReleasesPosters: ({commit, state}) => {
+    updateReleasesPosters({commit, state}) {
 
       // Remove old poster for old releases
-      let posters = state.posters;
+      const posters = state.posters;
       Object.keys(state.posters)
         .filter(releaseId => !state.items.find(release => release.id === releaseId))
         .forEach(releaseId => delete posters[releaseId]);
@@ -66,7 +66,7 @@ export default {
                 v: {...state.posters, [release.id]: 'data:image/jpeg;base64,' + imageInBase64}
               })
             )
-            .catch(error => console.log(error))
+            .catch(error => dispatch('app/pushError', error, {root: true}))
         });
     }
 

@@ -7,7 +7,6 @@ import __get from 'lodash/get'
  * @return {*}
  */
 export default (response) => {
-
   const status = __get(response, 'status', false);
   const data = __get(response, 'data', null);
   const error = __get(response, 'error.message', 'Request error');

@@ -1,21 +1,26 @@
 <template>
   <v-app>
+    <errors-toasts/>
     <router-view/>
   </v-app>
 </template>
 
 <script>
+
+  import ErrorsToasts from '@components/app/errors-toasts'
+
   import {mapActions} from 'vuex'
 
   export default {
-    name: 'anilibria-theater',
+    name: 'Anilibria',
+    components: {ErrorsToasts},
     methods: {
-      ...mapActions('releases', ['getLatestReleases'])
+      ...mapActions('releases', ['getLatestReleases']),
     },
 
     created() {
       this.getLatestReleases();
-    }
+    },
   }
 </script>
 

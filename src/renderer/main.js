@@ -6,6 +6,7 @@ import store from '@store'
 
 // Import vendor plugins
 import vuetify from '@plugins/vuetify'
+import '@plugins/vue-toasted'
 
 // Import entry component
 import App from './App'
@@ -16,7 +17,7 @@ Vue.config.productionTip = false;
 /* eslint-disable no-new */
 new Vue({
 
-  components: { App },
+  components: {App},
   router,
   vuetify,
   store,

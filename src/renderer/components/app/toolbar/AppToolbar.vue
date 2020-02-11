@@ -8,9 +8,15 @@
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
 
+    <!-- Reload -->
+    <v-btn icon class="mr-1" :disabled="loading" @click="getLatestReleases">
+      <v-icon v-if="!loading">mdi-refresh</v-icon>
+      <v-progress-circular v-if="loading" indeterminate size="20" />
+    </v-btn>
+
 
     <!-- Settings -->
-    <v-btn icon @click="_setDrawer(true)">
+    <v-btn icon @click="setDrawer(true)">
       <v-icon>mdi-menu</v-icon>
     </v-btn>
 
@@ -18,14 +24,16 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import {mapActions, mapState} from 'vuex'
 
-export default {
+  export default {
     name: 'AppToolbar',
+    computed: {
+      ...mapState('releases', ['loading'])
+    },
     methods: {
-      ...mapActions('settings', {
-        _setDrawer: 'setDrawer'
-      })
+      ...mapActions('settings', ['setDrawer']),
+      ...mapActions('releases', ['getLatestReleases']),
     }
   }
 </script>

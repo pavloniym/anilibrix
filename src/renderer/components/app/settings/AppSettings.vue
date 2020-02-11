@@ -35,3 +35,24 @@
     }
   }
 </script>
+<style lang="scss" scoped>
+
+  nav ::v-deep {
+    .v-navigation-drawer__content {
+      overflow-y: scroll;
+
+      &::-webkit-scrollbar-thumb {
+        background-color: #505050;
+      }
+
+      &::-webkit-scrollbar {
+        width: 8px;
+        background-color: #bfbfbf;
+      }
+    }
+
+
+  }
+
+
+</style>

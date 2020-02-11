@@ -5,6 +5,7 @@ import { createPersistedState, createSharedMutations } from 'vuex-electron'
 import createPromiseAction from '@plugins/vuex-promise-action'
 import { getInitialState } from '@utils/store'
 
+import app from './app'
 import settings from './settings'
 import releases from './releases'
 import player from './player'
@@ -12,6 +13,7 @@ import player from './player'
 Vue.use(Vuex);
 
 const modules = {
+  app,
   settings,
   releases,
   player
