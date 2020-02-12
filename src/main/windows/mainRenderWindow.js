@@ -1,5 +1,10 @@
 import { BrowserWindow } from 'electron'
 
+const MIN_HEIGHT = 650;
+const HEIGHT = MIN_HEIGHT;
+const MIN_WIDTH = 650;
+const WIDTH = 1000;
+
 /**
  * Init main render window
  *
@@ -7,20 +12,21 @@ import { BrowserWindow } from 'electron'
  */
 const init = () => {
   return new BrowserWindow({
-    height: 563,
-    width: 1000,
-    backgroundColor: '#282828',
+    height: HEIGHT,
+    width: WIDTH,
+    minHeight: MIN_HEIGHT,
+    minWidth: MIN_WIDTH,
+    backgroundColor: '#121212',
     darkTheme: true, // Forces dark theme (GTK+3)
     show: true,
+    frame: false,
     title: 'anilibria',
-    // titleBarStyle: 'hiddenInset', // Hide title bar (Mac)
     useContentSize: true, // Specify web page size without OS chrome
     webPreferences: {
       nodeIntegration: true,
       enableBlinkFeatures: 'AudioVideoTracks',
       plugins: true,
       experimentalFeatures: true
-      // offscreen: true,
     }
   })
 };

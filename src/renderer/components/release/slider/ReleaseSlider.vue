@@ -1,5 +1,5 @@
 <template>
-  <v-layout align-center>
+  <v-layout align-center class="release__slider">
 
     <!-- Prev -->
     <div :style="{width: '5%'}" class="d-flex justify-start">
@@ -16,8 +16,14 @@
       :show-arrows="false"
       :style="{width: '90%'}"
       @change="$emit('input', $event)">
-      <v-slide-item v-for="(release, k) in items" :key="k" v-slot:default="{ active, toggle }">
-        <v-card height="250" width="175" @click="toggle" :class="{primary: active}">
+
+      <!-- Slider Item -->
+      <v-slide-item v-for="release in items" :key="release.id" v-slot:default="{ active, toggle }">
+
+        <!-- Default Card -->
+        <v-card height="250" width="175" class="black" @click="toggle" :class="{primary: active}">
+
+          <!-- Release Poster Image -->
           <v-img
             v-if="posters[release.id]"
             height="250"
@@ -26,10 +32,13 @@
             max-width="175"
             ratio="0.7"
             eager
+            class="black"
+            :key="`poster:${release.id}`"
             :class="{'elevation-16': active}"
             :src="posters[release.id]">
             <div v-if="!active" class="fill-height" :style="{background: 'black', opacity: .75}"></div>
           </v-img>
+
         </v-card>
       </v-slide-item>
     </v-slide-group>
@@ -66,3 +75,17 @@
     props,
   }
 </script>
+
+<style scoped lang="scss">
+
+  .release__slider {
+    max-height: 250px;
+
+    ::v-deep .v-slide-group {
+      &__prev, &__next {
+        display: none !important;
+      }
+    }
+  }
+
+</style>

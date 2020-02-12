@@ -1,6 +1,5 @@
 import promiseIpc from 'electron-promise-ipc'
-
-const DISPATCH = 'promise-action-dispatch'
+const DISPATCH = 'promise-action-dispatch';
 
 export default () => (store) => {
   function renderer () {

@@ -22,7 +22,7 @@ const parseHttProxy = (httpProxyString) => {
     const port = match[2];
 
     if (host && host.length > 0 && port > 0) {
-      proxyConnections.push({host, port});
+      proxyConnections.push({ host, port });
     }
   }
 
@@ -30,7 +30,7 @@ const parseHttProxy = (httpProxyString) => {
     return proxyConnections[0];
   }
 
-  return {host: null, port: null};
+  return { host: null, port: null };
 };
 
 /**
@@ -41,7 +41,7 @@ const parseHttProxy = (httpProxyString) => {
  * @return {Promise}
  */
 export default (pacUrl, targetUrl) => new Promise((resolve, reject) => {
-  axios.get(pacUrl, {timeout: 30000})
+  axios.get(pacUrl, { timeout: 30000 })
     .then(response => pac(response.data))
     .then(findHttpProxy => findHttpProxy(targetUrl))
     .then(httpProxy => parseHttProxy(httpProxy))

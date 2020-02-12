@@ -11,16 +11,17 @@ import '@plugins/vue-toasted'
 // Import entry component
 import App from './App'
 
-if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
+if (!process.env.IS_WEB) {
+  Vue.use(require('vue-electron'));
+}
+
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
-
-  components: {App},
+  components: { App },
   router,
   vuetify,
   store,
   template: '<App/>'
-
 }).$mount('#app');

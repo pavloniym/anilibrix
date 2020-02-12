@@ -1,26 +1,51 @@
 <template>
   <v-app>
-    <errors-toasts/>
-    <router-view/>
+
+    <v-fade-transition mode="out-in" appear>
+      <!-- Loader -->
+      <template v-if="loading">
+        <loader/>
+      </template>
+
+      <!-- Content -->
+      <template v-else>
+        <v-fade-transition mode="out-in" appear>
+          <router-view/>
+        </v-fade-transition>
+      </template>
+    </v-fade-transition>
+
+    <!-- Errors Toasts -->
+    <errors/>
+
   </v-app>
 </template>
 
 <script>
 
-  import ErrorsToasts from '@components/app/errors-toasts'
+  import Loader from '@components/app/loader'
+  import Errors from '@components/app/errors'
 
   import {mapActions} from 'vuex'
 
   export default {
     name: 'Anilibria',
-    components: {ErrorsToasts},
+    components: {Errors, Loader},
+    data() {
+      return {
+        loading: false
+      }
+    },
+
     methods: {
       ...mapActions('releases', ['getLatestReleases']),
     },
 
     created() {
-      this.getLatestReleases();
-    },
+     // this.loading = true;
+      this.getLatestReleases()
+       // .finally(() => this.loading = false)
+    }
   }
 </script>
 

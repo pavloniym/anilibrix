@@ -10,7 +10,6 @@ export default class extends Transformer {
   static fetch(i) {
     return {
       id: this.get(i, 'id'),
-      code: this.get(i, 'code'),
       names: {
         ru: this.get(i, 'names.0'),
         original: this.get(i, 'names.1')
@@ -24,7 +23,8 @@ export default class extends Transformer {
           HD: this.get(i, 'playlist.0.hd'),
           FHD: this.get(i, 'playlist.0.fullhd')
         }
-      }
+      },
+      episode: this.get(i, 'playlist.0.title')
     }
   }
 }

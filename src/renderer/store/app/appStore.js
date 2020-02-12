@@ -1,9 +1,9 @@
-import {mutationsHelper} from '@utils/store'
+import { mutationsHelper } from '@utils/store'
 
 export default {
   namespaced: true,
   state: {
-    errors: [],
+    errors: []
   },
   mutations: {
     ...mutationsHelper
@@ -18,9 +18,8 @@ export default {
      * @param error
      * @return {*}
      */
-    pushError: ({commit}, error) =>
-      commit('push', {k: 'errors', v: error}),
-
+    pushError: ({ commit }, error) =>
+      commit('push', { k: 'errors', v: error }),
 
     /**
      * Remove error with provided index from errors array
@@ -29,12 +28,11 @@ export default {
      * @param state
      * @param index
      */
-    shiftError: ({commit, state}, index) => {
+    shiftError: ({ commit, state }, index) => {
       const errors = [...state.errors];
       errors.splice(index, 1);
-      commit('set', {k: 'errors', v: errors})
+      commit('set', { k: 'errors', v: errors })
     }
 
-
-  },
+  }
 }

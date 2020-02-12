@@ -12,7 +12,6 @@ export default {
    */
   set: (s, { k, v }) => __set(s, k, v),
 
-
   /**
    * Push value to array in store with provided key
    *
@@ -21,6 +20,6 @@ export default {
    * @param v
    * @return {*}
    */
-  push: (s, {k, v}) => s[k].push(v),
+  push: (s, { k, v }) => s[k].push(v)
 
 }

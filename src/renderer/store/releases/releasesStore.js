@@ -8,7 +8,7 @@ export default {
   state: {
     loading: false,
     items: [],
-    posters: {},
+    posters: {}
   },
 
   mutations: {
@@ -25,14 +25,22 @@ export default {
      * @return {Promise<any>}
      */
     getLatestReleases: ({commit, dispatch}) => {
-      commit('set', {k: 'loading', v: true});
-      return new ReleasesProxy()
-        .getReleases()
-        .then(releases => ReleasesTransformer.fetchCollection(releases.items))
-        .then(releases => commit('set', {k: 'items', v: releases}))
-        .then(() => dispatch('updateReleasesPosters'))
-        .catch(error => dispatch('app/pushError', error, {root: true}))
-        .finally(() => commit('set', {k: 'loading', v: false}))
+      return new Promise((resolve, reject) => {
+        commit('set', {k: 'loading', v: true});
+        return new ReleasesProxy()
+          .getReleases()
+          .then(releases => ReleasesTransformer.fetchCollection(releases.items))
+          .then(releases => commit('set', {k: 'items', v: releases}))
+          .then(() => dispatch('updateReleasesPosters'))
+          .catch(error => {
+            dispatch('app/pushError', error, {root: true});
+            reject();
+          })
+          .finally(() => {
+            commit('set', {k: 'loading', v: false});
+            resolve();
+          })
+      });
     },
 
     /**
@@ -44,7 +52,6 @@ export default {
      * @param state
      */
     updateReleasesPosters({commit, state}) {
-
       // Remove old poster for old releases
       const posters = state.posters;
       Object.keys(state.posters)

@@ -1,5 +1,16 @@
 <template>
-  <v-app-bar app flat color="transparent" class="px-4">
+  <v-app-bar app flat color="transparent" class="toolbar px-4">
+
+    <!-- Close -->
+    <v-btn icon small class="mr-1" @click="closeApp">
+      <v-icon small>mdi-close</v-icon>
+    </v-btn>
+
+    <!-- Minimize -->
+    <v-btn icon small class="mr-1" @click="minimizeApp">
+      <v-icon small>mdi-window-minimize</v-icon>
+    </v-btn>
+
 
     <v-spacer/>
 
@@ -24,6 +35,7 @@
 </template>
 
 <script>
+  import {remote} from 'electron'
   import {mapActions, mapState} from 'vuex'
 
   export default {
@@ -34,10 +46,34 @@
     methods: {
       ...mapActions('settings', ['setDrawer']),
       ...mapActions('releases', ['getLatestReleases']),
+
+
+      /**
+       * Close app
+       *
+       * @return void
+       */
+      closeApp() {
+        remote.app.quit();
+      },
+
+      /**
+       * Minimize app
+       *
+       * @return void
+       */
+      minimizeApp() {
+        remote.getCurrentWindow().minimize();
+      },
+
     }
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+  .toolbar {
+    -webkit-app-region: drag;
+  }
 
 </style>

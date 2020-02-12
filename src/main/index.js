@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron' // eslint-disable-line
+import { app } from 'electron' // eslint-disable-line
 import { mainRenderWindow } from './windows'
 
 import store from '@store'; // eslint-disable-line

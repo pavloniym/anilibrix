@@ -2,7 +2,7 @@ import FormData from 'form-data'
 import __get from 'lodash/get'
 
 import axios from '@plugins/axios'
-import {getHttpProxy, getHttpsAgent} from '@utils/proxy'
+import { getHttpProxy, getHttpsAgent } from '@utils/proxy'
 import store from '@store'
 
 class BaseProxy {
@@ -61,7 +61,6 @@ class BaseProxy {
   getProxyHttpsAgent(targetUrl) {
     return new Promise((resolve, reject) => {
       switch (this.getProxyUsage()) {
-
         case 'pac': // Get https agent for pac
           this.getPacProxy(targetUrl)
             .then(httpsAgent => resolve(httpsAgent))
@@ -91,7 +90,6 @@ class BaseProxy {
    */
   getPacProxy(targetUrl) {
     return new Promise((resolve, reject) => {
-
       // Get pac configuration
       // Get pac file source
       // Get pac proxy connection parameters
@@ -100,41 +98,32 @@ class BaseProxy {
       const connection = __get(config, 'connection', {});
 
       if (connection.host && connection.port) {
-
         // If have proxy connection host and port in store use them
         // Create httpsAgent from stored values
         resolve(getHttpsAgent(connection));
-
       } else if (source) {
-
         // If no stored proxy connection parameters
         // make request for new proxy host and port
         // save them in store and make httpsAgent
         getHttpProxy(source, targetUrl)
           .then(httpsProxyConfiguration => {
-
             // Save new proxy configuration in store
             store.dispatch('settings/connection/setPacProxyConnection', httpsProxyConfiguration);
 
             // Check proxy config has host and port
             // Resolve https agent
             if (httpsProxyConfiguration.host && httpsProxyConfiguration.port) {
-
               // Create httpsAgent with new proxy parameters
               resolve(getHttpsAgent(httpsProxyConfiguration))
-
             } else {
-
               // Not valid proxy config
               reject(this.getErrorObject('Ох', 'Не могу распарсить PAC прокси файл'));
             }
           })
           .catch(error => reject(error));
-
       } else reject(this.getErrorObject('Ох', 'Не получается использовать PAC прокси'));
     });
   }
-
 
   /**
    * Get custom proxy httpsAgent
@@ -142,7 +131,6 @@ class BaseProxy {
    * @return {*}
    */
   getCustomProxy() {
-
     // Get custom configuration
     // Get custom proxy connection parameters
     const config = __get(store, 'state.settings.connection.proxy.custom');
@@ -155,7 +143,6 @@ class BaseProxy {
     return null;
   }
 
-
   /**
    * The method used to perform an AJAX-request.
    *
@@ -167,9 +154,9 @@ class BaseProxy {
    */
   submit(method, url, parameters = null) {
     if (this.getProxyUsage() !== 'direct') {
-      return this.submitWithProxy(method, url, parameters)  // Should use proxy
+      return this.submitWithProxy(method, url, parameters) // Should use proxy
     } else {
-      return this.submitDirectly(method, url, parameters);  // Should make direct request
+      return this.submitDirectly(method, url, parameters); // Should make direct request
     }
   }
 
@@ -183,7 +170,7 @@ class BaseProxy {
    */
   submitDirectly(method, url, parameters = null) {
     return new Promise((resolve, reject) => {
-      axios.request({url, method, ...parameters, timeout: 60000})
+      axios.request({ url, method, ...parameters, timeout: 60000 })
         .then(response => resolve(response.data))
         .catch(error =>
           reject(this.getErrorObject(
@@ -204,40 +191,33 @@ class BaseProxy {
    */
   submitWithProxy(method, url, parameters = null) {
     return new Promise(async (resolve, reject) => {
+      // Get httpsAgent for proxy connection
+      // Make direct request, but with httpsAgent (having proxy)
+      this.getProxyHttpsAgent(url)
+        .then(httpsAgent =>
+          this.submitDirectly(method, url, { ...parameters, proxy: false, httpsAgent })
+        )
+        .then(response => resolve(response))
+        .catch(response => {
+          // If can't connect because of proxy fail
+          // For proxy retry call and pac-proxy usage only:
+          // 1. reset current proxy host
+          // 2. try to get new proxy
+          // 3. try to make new request
+          if (['ENOTFOUND', 'ECONNRESET'].includes(response.code) && this.proxyRetry === false && this.getProxyUsage() === 'pac') {
+            // Set proxyRetry flag
+            this.proxyRetry = true;
 
-        // Get httpsAgent for proxy connection
-        // Make direct request, but with httpsAgent (having proxy)
-        this.getProxyHttpsAgent(url)
-          .then(httpsAgent =>
-            this.submitDirectly(method, url, {...parameters, proxy: false, httpsAgent})
-          )
-          .then(response => resolve(response))
-          .catch(response => {
+            // Reset current proxy host parameters
+            store.dispatch('settings/connection/clearPacProxyConnection');
 
-            console.log(response);
-
-            // If can't connect because of proxy fail
-            // For proxy retry call and pac-proxy usage only:
-            // 1. reset current proxy host
-            // 2. try to get new proxy
-            // 3. try to make new request
-            if (['ENOTFOUND', 'ECONNRESET'].includes(response.code) && this.proxyRetry === false && this.getProxyUsage() === 'pac') {
-
-              // Set proxyRetry flag
-              this.proxyRetry = true;
-
-              // Reset current proxy host parameters
-              store.dispatch('settings/connection/clearPacProxyConnection');
-
-              // Try to retry request + get new proxy first
-              this.submit(method, url, parameters)
-                .then(response => resolve(response))
-                .catch(error => reject(error))
-
-
-            } else reject(response);
-          })
-      }
+            // Try to retry request + get new proxy first
+            this.submit(method, url, parameters)
+              .then(response => resolve(response))
+              .catch(error => reject(error))
+          } else reject(response);
+        })
+    }
     );
   }
 
@@ -256,7 +236,6 @@ class BaseProxy {
 
     return formData;
   }
-
 
   /**
    * Get error object
