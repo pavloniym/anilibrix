@@ -1,14 +1,29 @@
 <template>
-  <div class="player__container" v-if="sourceIsDefined">
+  <player-layout ref="container">
 
-    <!-- Back -->
-    <v-icon @click="returnToHome">mdi-arrow-left</v-icon>
+    <!-- Loading -->
+    <template v-if="isReady === false">
+      <v-overlay :value="true" absolute>
+        <v-progress-circular color="white" indeterminate size="64" />
+      </v-overlay>
+    </template>
+
+    <!-- UI -->
+    <template v-else>
+
+      <player-controls
+        :plyr="plyr"
+        :container="$refs.container.$el"
+        @back="returnToHome">
+      </player-controls>
+
+    </template>
+
+
 
     <!-- Video -->
-    <video ref="player" controls playsinline></video>
-
-
-  </div>
+    <video ref="player" v-show="isReady" controls playsinline></video>
+  </player-layout>
 </template>
 
 <script>
@@ -18,11 +33,18 @@
 
   import 'plyr/dist/plyr.css';
 
+  import PlayerLayout from '@layouts/player'
+  import {PlayerToolbar, PlayerControls} from '@components/player'
   import {mapState, mapActions} from 'vuex'
 
   export default {
+    components: {
+      PlayerLayout,
+      PlayerToolbar, PlayerControls
+    },
     data() {
       return {
+        isReady: false,
         hls: new Hls(),
         player: null,
         plyr: null,
@@ -32,7 +54,7 @@
       ...mapState('player', {
         _FHD: s => s.stream.FHD,
         _HD: s => s.stream.HD,
-        _SD: s => s.stream.SD,
+        _SD: s => s.stream.SD
       }),
 
 
@@ -75,11 +97,14 @@
           this.plyr = new Plyr(this.player, {
             autoplay: true,
             clickToPlay: true,
+            controls: null
           });
 
           this.hls.loadSource(this.source);
           this.hls.attachMedia(this.player);
 
+          // Set ready flag on player ready event
+          this.plyr.on('ready', () => this.isReady = true);
         })
       },
 
@@ -93,7 +118,6 @@
 
     },
 
-
     destroyed() {
 
       // Clear player data
@@ -106,7 +130,9 @@
         immediate: true,
         handler(sourceIsDefined) {
           if (sourceIsDefined) {
+
             this.initStreamPlayer();
+
           }
         }
       }
@@ -115,13 +141,3 @@
 
   }
 </script>
-
-<style scoped lang="scss">
-
-  .player__container {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-  }
-
-</style>
