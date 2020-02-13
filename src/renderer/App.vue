@@ -42,9 +42,9 @@
     },
 
     created() {
-     // this.loading = true;
-      this.getLatestReleases()
-       // .finally(() => this.loading = false)
+      this.loading = true;
+      this.$store.dispatchPromise('releases/getLatestReleases')
+        .finally(() => this.loading = false)
     }
   }
 </script>

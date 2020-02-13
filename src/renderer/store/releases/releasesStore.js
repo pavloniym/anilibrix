@@ -32,14 +32,12 @@ export default {
           .then(releases => ReleasesTransformer.fetchCollection(releases.items))
           .then(releases => commit('set', {k: 'items', v: releases}))
           .then(() => dispatch('updateReleasesPosters'))
+          .then(() => resolve())
           .catch(error => {
             dispatch('app/pushError', error, {root: true});
             reject();
           })
-          .finally(() => {
-            commit('set', {k: 'loading', v: false});
-            resolve();
-          })
+          .finally(() => commit('set', {k: 'loading', v: false}))
       });
     },
 
@@ -54,8 +52,8 @@ export default {
     updateReleasesPosters({commit, state}) {
       // Remove old poster for old releases
       const posters = state.posters;
-      Object.keys(state.posters)
-        .filter(releaseId => !state.items.find(release => release.id === releaseId))
+      Object.keys(posters)
+        .filter(releaseId => !!state.items.find(release => release.id === releaseId))
         .forEach(releaseId => delete posters[releaseId]);
 
       // Set posters only with existing releases

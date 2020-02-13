@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { createPersistedState, createSharedMutations } from 'vuex-electron'
+import {createPersistedState, createSharedMutations} from 'vuex-electron'
+import {getInitialState} from '@utils/store'
 import createPromiseAction from '@plugins/vuex-promise-action'
-import { getInitialState } from '@utils/store'
 
 import app from './app'
 import settings from './settings'
@@ -27,18 +27,12 @@ const store = new Vuex.Store({
     createPersistedState(),
     createSharedMutations()
   ],
-  strict: debug
+  strict: debug,
+  mutations: {
+    RESET_STORE() {
+      this.replaceState(getInitialState(modules))
+    }
+  }
 });
 
-/**
- * Replace store with fresh object
- *
- * @return {*}
- */
-const resetStore = () => store.replaceState(getInitialState(modules));
-
 export default store
-export {
-  store,
-  resetStore
-}
