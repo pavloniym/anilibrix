@@ -8,7 +8,7 @@ module.exports = {
     browser: true,
     node: true
   },
-  extends: 'airbnb-base',
+  extends: 'standard',
   globals: {
     __static: true
   },
@@ -16,14 +16,15 @@ module.exports = {
     'html'
   ],
   'rules': {
-    'global-require': 0,
-    'import/no-unresolved': 0,
-    'no-param-reassign': 0,
-    'no-shadow': 0,
-    'import/extensions': 0,
-    'import/newline-after-import': 0,
-    'no-multi-assign': 0,
+    // allow paren-less arrow functions
+    'arrow-parens': 0,
+    // allow async-await
+    'generator-star-spacing': 0,
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'no-console': process.env.NODE_ENV === 'production' ? 1 : 0,
+    'no-underscore-dangle': [1, {'allowAfterThis': true}],
+    'semi': 0,
+    'space-before-function-paren': 0,
   }
-}
+};
