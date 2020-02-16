@@ -1,5 +1,5 @@
-import { app } from 'electron' // eslint-disable-line
-import { mainRenderWindow } from './windows'
+import {app, ipcMain as ipc} from 'electron' // eslint-disable-line
+import {mainWindow, torrentWindow} from './windows'
 
 import store from '@store'; // eslint-disable-line
 
@@ -11,18 +11,46 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\') // eslint-disable-line
 }
 
-let mainWindow;
-
-const mainRenderWindowURL = process.env.NODE_ENV === 'development'
+const mainWindowURL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:9080'
   : `file://${__dirname}/index.html`;
 
-function createWindow () {
-  mainRenderWindow.init().loadURL(mainRenderWindowURL);
+const torrentWindowUrl = process.env.NODE_ENV === 'development'
+  ? `http://localhost:9080/webtorrent.html`
+  : `file://${__dirname}/webtorrent.html`;
+
+
+let mainInstance = null;
+let torrentInstance = null;
+
+
+function createWindow() {
+
+  // Init main-render-window-instance
+  // Init torrent-process-window
+  mainInstance = mainWindow.init();
+  torrentInstance = torrentWindow.init();
+
+  // Load urls
+  mainInstance.loadURL(mainWindowURL);
+  torrentInstance.loadURL(torrentWindowUrl);
+
+
+  // Send events to main window
+  ipc.on('send:main', (e, {channel, payload}) => {
+    console.log('send:main', {channel, payload});
+    mainInstance.webContents.send(channel, payload)
+  });
+
+  // Send events to torrent window
+  ipc.on('send:torrent', (e, {channel, payload}) => {
+    console.log('send:torrent', {channel, payload});
+    torrentInstance.webContents.send(channel, payload)
+  })
+
 }
 
 app.on('ready', createWindow);
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -30,10 +58,11 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (mainWindow === null) {
+  if (mainInstance === null) {
     createWindow()
   }
 });
+
 
 /**
  * Auto Updater
