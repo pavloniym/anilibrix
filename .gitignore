@@ -1,6 +1,4 @@
 .DS_Store
-dist/electron/*
-dist/web/*
 build/*
 !build/icons
 node_modules/
@@ -10,3 +8,4 @@ thumbs.db
 !.gitkeep
 .idea
 .vscode
+dist

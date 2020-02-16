@@ -147,6 +147,19 @@ let rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
+    new HtmlWebpackPlugin({ // this is extra one
+      filename: 'webtorrent.html', // used by BrowserWindow.loadUrl
+      chunks: ['webtorrent'], // should be the same with entry point name
+      template: path.resolve(__dirname, '../src/webtorrent.ejs'),
+      minify: {
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+      },
+      nodeModules: process.env.NODE_ENV !== 'production'
+        ? path.resolve(__dirname, '../node_modules')
+        : false,
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ],
@@ -185,7 +198,7 @@ if (process.env.NODE_ENV === 'production') {
   rendererConfig.devtool = '';
 
   rendererConfig.plugins.push(
-    new MinifyPlugin(),
+    // new MinifyPlugin(),
     new CopyWebpackPlugin([
       {
         from: path.join(__dirname, '../static'),

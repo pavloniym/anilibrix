@@ -1,7 +1,7 @@
-import mainRenderWindow from './mainRenderWindow'
-// import torrentProcessWindow from './torrentProcessWindow'
+import mainWindow from './mainRenderWindow'
+import torrentWindow from './torrentProcessWindow'
 
 export {
-  mainRenderWindow
-  // torrentProcessWindow
+  mainWindow,
+  torrentWindow
 }

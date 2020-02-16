@@ -61,7 +61,6 @@
 
 <script>
 
-  import screenfull from 'screenfull';
   import __get from 'lodash/get'
 
   const props = {
@@ -165,14 +164,8 @@
 
         // Create new interval
         this.mouseHandler = setTimeout(() => this.isVisible = false, this.mouseTimeout)
-      },
-
-
-      toggleFullscreen(state) {
-        if (this.container) {
-          screenfull.toggle(this.container);
-        }
       }
+
     },
 
 
@@ -192,10 +185,6 @@
             this.currentTime = this.plyr.currentTime;
           }
         });
-
-
-        //
-        // this.plyr.on('enterfullscreen', () => this.toggleFullscreen(true));
 
 
         // Hide / Show controls
