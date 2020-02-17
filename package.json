@@ -7,11 +7,13 @@
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js",
+    "dist": "electron-builder -mw",
     "dev": "node .electron-vue/dev-runner.js",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
   },
   "build": {
+    "asar": false,
     "productName": "anilibria-theater",
     "appId": "com.pavelshar.anilibria",
     "directories": {
@@ -39,7 +41,10 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "target": [
+        "portable"
+      ]
     },
     "linux": {
       "icon": "build/icons"
@@ -51,10 +56,13 @@
     "axios-https-proxy-fix": "^0.17.1",
     "electron-promise-ipc": "^2.0.1",
     "form-data": "^3.0.0",
+    "fuse.js": "^3.4.6",
     "hls.js": "^0.13.1",
     "https-proxy-agent": "^5.0.0",
     "localforage": "^1.7.3",
     "lodash": "^4.17.15",
+    "node-mac-notifier": "^1.2.0",
+    "node-notifier": "^6.0.0",
     "pac-resolver": "^4.0.0",
     "plyr": "^3.5.7-beta.0",
     "screenfull": "^5.0.2",

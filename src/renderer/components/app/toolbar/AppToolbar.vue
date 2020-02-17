@@ -35,6 +35,7 @@
 </template>
 
 <script>
+
   import {remote} from 'electron'
   import {mapActions, mapState} from 'vuex'
 

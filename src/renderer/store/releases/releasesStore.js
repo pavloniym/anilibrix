@@ -24,7 +24,7 @@ export default {
      * @param state
      * @return {Promise<any>}
      */
-    getLatestReleases: ({ commit, dispatch }) => {
+    getLatestReleases: ({ state, commit, dispatch }) => {
       return new Promise((resolve, reject) => {
         commit('set', { k: 'loading', v: true });
         return new ReleasesProxy()
@@ -33,9 +33,19 @@ export default {
           .then(releases => commit('set', { k: 'items', v: releases }))
           .then(() => dispatch('updateReleasesPosters'))
           .then(() => resolve())
+          .then(() => {
+
+            // Check releases for notification subscriptions
+            dispatch('notifications/checkReleasesForSubscription', state.items, {root: true});
+
+          })
           .catch(error => {
+
+            // On error -> push to error storage
+            // Reject
             dispatch('app/pushError', error, { root: true });
             reject();
+
           })
           .finally(() => commit('set', { k: 'loading', v: false }))
       });
@@ -50,6 +60,7 @@ export default {
      * @param state
      */
     updateReleasesPosters({ commit, state }) {
+
       // Remove old poster for old releases
       const posters = state.posters;
       Object.keys(posters)
