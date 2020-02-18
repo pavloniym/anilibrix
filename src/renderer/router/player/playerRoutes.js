@@ -1,9 +1,7 @@
-import { StreamPlayerView } from '@views/player'
-
 export default [
   {
-    name: 'player.stream',
+    name: 'player',
     path: '/player',
-    component: StreamPlayerView
+    component: () => import('@views/player')
   }
 ]

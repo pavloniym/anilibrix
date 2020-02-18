@@ -11,7 +11,9 @@
     <!-- UI -->
     <template v-else>
 
-      <player-controls v-bind="{plyr}" @back="returnToHome" />
+
+      <player-controls v-bind="{plyr}" @back="returnToHome"/>
+
     </template>
 
 
@@ -29,8 +31,9 @@
 
   import PlayerLayout from '@layouts/player'
   import {PlayerToolbar, PlayerControls} from '@components/player'
+
   import {mapState, mapActions} from 'vuex'
-  import screenfull from 'screenfull';
+  import __get from 'lodash/get'
 
   export default {
     components: {
@@ -48,10 +51,30 @@
     },
     computed: {
       ...mapState('player', {
-        _FHD: s => s.stream.FHD,
-        _HD: s => s.stream.HD,
-        _SD: s => s.stream.SD
+        _release: s => s.release,
+        _episode: s => s.release.episode,
+        _type: s => s.type,
       }),
+
+
+      /**
+       * Check if data is valid
+       *
+       * @return boolean
+       */
+      isValid() {
+        return this._release !== null && this._episode !== null;
+      },
+
+
+      /**
+       * Player is in stream mode
+       *
+       * @return boolean
+       */
+      isStream() {
+        return this._type === 'stream';
+      },
 
 
       /**
@@ -60,8 +83,19 @@
        * @return {boolean}
        */
       source() {
-        const streams = [this._FHD, this._HD, this._SD].filter(stream => stream);
-        return streams[0] || null;
+
+        if (this.isStream) {
+
+          const fhd = __get(this._episode, 'stream.fhd');
+          const hd = __get(this._episode, 'stream.hd');
+          const sd = __get(this._episode, 'stream.sd');
+
+          const streams = [fhd, hd, sd].filter(stream => stream);
+
+          return streams[0] || null;
+        }
+
+        return null;
       },
 
 
@@ -81,14 +115,21 @@
 
 
       /**
-       * Init stream player
-       * Run plyr and add hls source
-       *
-       * @return void
+       * Return to home screen
        */
-      initStreamPlayer() {
-        this.$nextTick(() => {
+      returnToHome() {
+        this.$router.replace({name: 'home'})
+      }
 
+    },
+
+
+    mounted() {
+      this.$nextTick(() => {
+        if (this.sourceIsDefined) {
+
+          // Init stream player
+          // Run plyr and add hls source
           this.player = this.$refs.player;
           this.plyr = new Plyr(this.player, {
             autoplay: true,
@@ -96,22 +137,19 @@
             controls: null,
           });
 
-          this.hls.loadSource(this.source);
-          this.hls.attachMedia(this.player);
+
+          // If it is stream -> load m3u8 playlist
+          // Attach it to player
+          if(this.isStream) {
+            this.hls.loadSource(this.source);
+            this.hls.attachMedia(this.player);
+          }
+
 
           // Set ready flag on player ready event
           this.plyr.on('loadedmetadata', () => this.isReady = true);
-        })
-      },
-
-
-      /**
-       * Return to home screen
-       */
-      returnToHome() {
-        this.$router.replace({name: 'home'})
-      }
-
+        }
+      })
     },
 
     destroyed() {
@@ -122,20 +160,16 @@
 
 
     watch: {
-      sourceIsDefined: {
+      isValid: {
         immediate: true,
-        handler(sourceIsDefined) {
-          if (sourceIsDefined) {
+        handler(isValid) {
 
-            this.initStreamPlayer();
-
-          } else {
-
+          // If data is not valid -> return to home screen
+          if (isValid === false) {
             this.returnToHome();
           }
         }
       }
-
     }
 
   }

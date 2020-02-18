@@ -1,14 +1,15 @@
 import ReleasesProxy from '@proxies/releases'
 import ReleasesTransformer from '@transformers/releases'
 
-import { mutationsHelper } from '@utils/store'
+import {mutationsHelper} from '@utils/store'
 
 export default {
   namespaced: true,
   state: {
     loading: false,
     items: [],
-    posters: {}
+    posters: {},
+    index: null,
   },
 
   mutations: {
@@ -18,19 +19,31 @@ export default {
   actions: {
 
     /**
+     * Set slider index
+     *
+     * @param commit
+     * @param index
+     * @return {*}
+     */
+    setIndex: ({commit}, index) =>
+      commit('set', {k: 'index', v: index}),
+
+
+    /**
      * Get latest releases
      *
      * @param commit
      * @param state
+     * @param dispatch
      * @return {Promise<any>}
      */
-    getLatestReleases: ({ state, commit, dispatch }) => {
+    getLatestReleases: ({state, commit, dispatch}) => {
       return new Promise((resolve, reject) => {
-        commit('set', { k: 'loading', v: true });
+        commit('set', {k: 'loading', v: true});
         return new ReleasesProxy()
           .getReleases()
           .then(releases => ReleasesTransformer.fetchCollection(releases.items))
-          .then(releases => commit('set', { k: 'items', v: releases }))
+          .then(releases => commit('set', {k: 'items', v: releases}))
           .then(() => dispatch('updateReleasesPosters'))
           .then(() => resolve())
           .then(() => {
@@ -43,11 +56,11 @@ export default {
 
             // On error -> push to error storage
             // Reject
-            dispatch('app/pushError', error, { root: true });
+            dispatch('app/pushError', error, {root: true});
             reject();
 
           })
-          .finally(() => commit('set', { k: 'loading', v: false }))
+          .finally(() => commit('set', {k: 'loading', v: false}))
       });
     },
 
@@ -59,7 +72,7 @@ export default {
      * @param commit
      * @param state
      */
-    updateReleasesPosters({ commit, state }) {
+    updateReleasesPosters({commit, state}) {
 
       // Remove old poster for old releases
       const posters = state.posters;
@@ -68,7 +81,7 @@ export default {
         .forEach(releaseId => delete posters[releaseId]);
 
       // Set posters only with existing releases
-      commit('set', { k: 'posters', v: posters });
+      commit('set', {k: 'posters', v: posters});
 
       // Update posters for new releases
       (state.items || [])
@@ -79,10 +92,10 @@ export default {
             .then(imageInBase64 =>
               commit('set', {
                 k: 'posters',
-                v: { ...state.posters, [release.id]: 'data:image/jpeg;base64,' + imageInBase64 }
+                v: {...state.posters, [release.id]: 'data:image/jpeg;base64,' + imageInBase64}
               })
             )
-            .catch(error => dispatch('app/pushError', error, { root: true }))
+            .catch(error => dispatch('app/pushError', error, {root: true}))
         });
     }
 
