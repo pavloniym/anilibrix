@@ -22,13 +22,13 @@
     <!-- Reload -->
     <v-btn icon class="mr-1" :disabled="loading" @click="getLatestReleases">
       <v-icon v-if="!loading">mdi-refresh</v-icon>
-      <v-progress-circular v-if="loading" indeterminate size="20" />
+      <v-progress-circular v-if="loading" indeterminate size="20"/>
     </v-btn>
 
 
     <!-- Settings -->
-    <v-btn icon @click="setDrawer(true)">
-      <v-icon>mdi-menu</v-icon>
+    <v-btn icon @click="setDrawer(!drawer)">
+      <v-icon>mdi-{{drawer ? 'chevron-right' : 'menu'}}</v-icon>
     </v-btn>
 
   </v-app-bar>
@@ -42,7 +42,8 @@
   export default {
     name: 'AppToolbar',
     computed: {
-      ...mapState('releases', ['loading'])
+      ...mapState('releases', ['loading']),
+      ...mapState('settings', ['drawer'])
     },
     methods: {
       ...mapActions('settings', ['setDrawer']),
@@ -74,7 +75,8 @@
 <style scoped lang="scss">
 
   .toolbar {
-    -webkit-app-region: drag;
+    z-index: 100 !important;
+    -webkit-app-region: drag !important;
   }
 
 </style>

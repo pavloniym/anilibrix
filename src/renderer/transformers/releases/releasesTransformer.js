@@ -1,5 +1,6 @@
 import Transformer from '@transformer'
 import objectHash from 'object-hash'
+import stripHtml from "string-strip-html";
 
 export default class extends Transformer {
   /**
@@ -14,10 +15,10 @@ export default class extends Transformer {
       id: this.get(release, 'id'),
       hash: this.createReleaseHash(release),
       names: {
-        ru: this.get(release, 'names.0'),
-        original: this.get(release, 'names.1')
+        ru: stripHtml(this.get(release, 'names.0')),
+        original: stripHtml(this.get(release, 'names.1'))
       },
-      description: this.get(release, 'description'),
+      description: stripHtml(this.get(release, 'description')),
       poster: this.get(release, 'poster'),
       genres: this.get(release, 'genres', []),
       year: this.get(release, 'year'),

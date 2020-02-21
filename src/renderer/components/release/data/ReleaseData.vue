@@ -7,15 +7,15 @@
       <div class="subtitle-1">{{release.names.original}}</div>
       <div class="body-2">{{release.genres.join(' | ')}}</div>
       <v-chip label color="secondary" class="mt-2 subtitle-2 font-weight-black">{{release.episode.title}}</v-chip>
-      <v-clamp class="my-2 grey--text lighten-1 data__description" autoresize max-height="75px">
-        {{ strippedDescription}}
-      </v-clamp>
+      <div class="my-2 grey--text lighten-1" :style="{maxHeight: '75px'}">
+        <v-clamp max-height="75px">{{release.description}}</v-clamp>
+      </div>
 
       <v-layout>
         <v-btn v-bind="{loading}" :disabled="loading" @click="watchRelease(release)">Смотреть</v-btn>
-        <v-btn v-bind="{loading}" class="ml-2" width="10px" disabled>
+        <!--<v-btn v-bind="{loading}" class="ml-2" width="10px" disabled>
           <v-icon>mdi-playlist-plus</v-icon>
-        </v-btn>
+        </v-btn>-->
       </v-layout>
 
     </div>
@@ -26,7 +26,7 @@
 <script>
 
   import VClamp from 'vue-clamp'
-  import stripHtml from "string-strip-html";
+  import {mapState} from 'vuex'
 
   const props = {
     release: {
@@ -43,18 +43,11 @@
         loading: false
       }
     },
+
     computed: {
-
-      /**
-       * Stripped from html description
-       *
-       * @return string|null
-       */
-      strippedDescription() {
-        return stripHtml(this.release.description || null);
-      }
-
+      ...mapState('settings/player', ['type'])
     },
+
     methods: {
 
       /**
@@ -68,7 +61,7 @@
       watchRelease(release) {
         this.loading = true;
         this.$store
-          .dispatchPromise('player/setPlayerData', {release, type: 'stream'})
+          .dispatchPromise('player/setPlayerData', {release, type: this.type})
           .then(() => this.$router.push({name: 'player'}))
           .finally(() => this.loading = false);
       }
@@ -83,12 +76,6 @@
   .release__data {
     max-height: 300px;
     user-select: none;
-
-    .data {
-      &__description {
-        height: 75px;
-      }
-    }
-
   }
+
 </style>
