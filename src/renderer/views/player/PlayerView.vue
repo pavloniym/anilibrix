@@ -16,9 +16,14 @@
         :type="_type"
         :qualities="sourceQualities"
         :quality.sync="quality"
+        @fullscreen="toggleFullscreen"
         @back="returnToHome">
-        <template v-slot:title>{{_release.names.ru}}</template>
-        <template v-slot:episode>{{_release.episode.title}}</template>
+
+        <template v-slot:info>
+          <h2>{{_release.names.ru}}</h2>
+          <h3>{{_release.episode.title}}</h3>
+        </template>
+
       </player-controls>
     </v-slide-y-reverse-transition>
 
@@ -33,6 +38,7 @@
 
   import Plyr from 'plyr';
   import Hls from 'hls.js';
+  import screenfull from 'screenfull';
 
   import 'plyr/dist/plyr.css';
 
@@ -55,9 +61,11 @@
         plyr: {
           instance: null,
           options: {
-            autoplay: false,
-            clickToPlay: true,
-            controls: null,
+            autoplay: true,
+            clickToPlay: false,
+            controls: false,
+            fullscreen: {enabled: false},
+            keyboard: {focused: true, global: true},
           }
         },
         controls: {
@@ -212,6 +220,17 @@
 
 
       /**
+       * Enter fullscreen mode
+       * Fullscreen div container with player and controls
+       *
+       * @return void
+       */
+      toggleFullscreen() {
+        screenfull.toggle(this.$refs.container.$el);
+      },
+
+
+      /**
        * Return to home screen
        */
       returnToHome() {
@@ -239,7 +258,13 @@
 
           // Hide / Show controls
           this.showControls();
-          window.addEventListener('mousemove', this.showControls, true);
+
+          // Add some event listeners
+          window.addEventListener('mousemove', this.showControls, true)
+          window.addEventListener('keydown', event => {
+            if (event.key === 'f') this.toggleFullscreen();
+          });
+
 
         }
       })
@@ -263,6 +288,7 @@
         }
       },
 
+
       sourceQualities: {
         immediate: true,
         deep: true,
@@ -276,7 +302,11 @@
         deep: true,
         handler(quality) {
           if (quality && quality.path) {
-            this.loadSource(this.source, {startPosition: this.plyr.instance.currentTime}, true);
+            this.loadSource(
+              this.source,
+              {startPosition: this.plyr.instance.currentTime},
+              this.plyr.instance.playing
+            );
           }
         }
       }

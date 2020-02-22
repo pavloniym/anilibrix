@@ -3,12 +3,7 @@
 
     <!-- Info -->
     <div class="my-4">
-      <h2>
-        <slot name="title"/>
-      </h2>
-      <h3>
-        <slot name="episode"/>
-      </h3>
+      <slot name="info"/>
     </div>
 
     <!-- Controls -->
@@ -85,7 +80,7 @@
 
 
       <!-- Fullscreen -->
-      <v-btn icon class="ml-2" @click="plyr.fullscreen.toggle()">
+      <v-btn icon class="ml-2" @click="$emit('fullscreen')">
         <v-icon>mdi-fullscreen</v-icon>
       </v-btn>
 
@@ -198,6 +193,11 @@
     mounted() {
       this.$nextTick(() => {
 
+        // Set initial values
+        this.isPlaying = this.plyr.playing;
+        this.isMuted = this.plyr.muted;
+        this.volume = this.plyr.volume;
+
         // Get duration on initial start
         this.plyr.on('progress', e => {
           this.duration = __get(e, 'detail.plyr.duration');
@@ -213,27 +213,16 @@
           }
         });
 
+
         this.plyr.on('playing', () => this.isPlaying = true);
         this.plyr.on('pause', () => this.isPlaying = false);
-
+        this.plyr.on('volumechange', e => {
+          this.isMuted = e.detail.plyr.muted;
+          this.volume = e.detail.plyr.volume;
+        })
 
       })
     },
-
-    watch: {
-      plyr: {
-        immediate: true,
-        deep: true,
-        handler(plyr) {
-          if (plyr) {
-
-            this.isMuted = plyr.muted;
-            this.volume = plyr.volume;
-            // this.duration = plyr.duration;
-          }
-        }
-      }
-    }
   }
 
 </script>
@@ -246,8 +235,9 @@
       bottom: 0;
       width: 100%;
       height: 10rem;
-      z-index: 2147483647 !important;
+      z-index: 10;
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.7) 60%);
+      user-select: none;
     }
   }
 
