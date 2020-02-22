@@ -1,12 +1,12 @@
 <template>
-  <v-navigation-drawer app right floating temporary width="400" :value="_drawer" @input="_setDrawer">
+  <v-navigation-drawer app absolute stateless right width="400" :value="_drawer">
     <component :is="component"/>
   </v-navigation-drawer>
 </template>
 
 <script>
 
-  import {mapState, mapActions} from 'vuex'
+  import {mapState} from 'vuex'
   import __get from 'lodash/get'
 
   import Components from './components'
@@ -27,12 +27,8 @@
       component() {
         return __get(Components, this._component, null)
       }
-
-    },
-
-    methods: {
-      ...mapActions('settings', {_setDrawer: 'setDrawer'})
     }
+
   }
 </script>
 <style lang="scss" scoped>
@@ -46,7 +42,7 @@
       }
 
       &::-webkit-scrollbar {
-        width: 8px;
+        width: 9px;
         background-color: #bfbfbf;
       }
     }

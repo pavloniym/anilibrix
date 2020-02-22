@@ -1,5 +1,3 @@
-import StreamPlayerView from './StreamPlayerView'
+import PlayerView from './PlayerView'
 
-export {
-  StreamPlayerView
-}
+export default PlayerView

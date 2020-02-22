@@ -9,6 +9,7 @@ import app from './app'
 import settings from './settings'
 import releases from './releases'
 import player from './player'
+import notifications from './notifications'
 
 Vue.use(Vuex);
 
@@ -16,7 +17,8 @@ const modules = {
   app,
   settings,
   releases,
-  player
+  player,
+  notifications
 };
 
 const debug = process.env.NODE_ENV !== 'production';

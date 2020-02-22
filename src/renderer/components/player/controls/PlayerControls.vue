@@ -1,6 +1,18 @@
 <template>
-  <v-slide-y-reverse-transition>
-    <v-layout class="player__controls px-4" align-center v-show="isVisible" @keyup.f.stop="enterFullscreen">
+  <div class="player__controls px-6">
+
+    <!-- Info -->
+    <div class="my-4">
+      <h2>
+        <slot name="title"/>
+      </h2>
+      <h3>
+        <slot name="episode"/>
+      </h3>
+    </div>
+
+    <!-- Controls -->
+    <v-layout align-center>
 
       <!-- Back button -->
       <v-btn icon @click="$emit('back')">
@@ -27,10 +39,12 @@
       <!-- Time / Duration -->
       <div class="subtitle-2 mx-2">{{getCurrentTimeToHuman}} / {{getDurationToHuman}}</div>
 
+
       <!-- Volume Mute -->
       <v-btn icon @click="plyr.muted = !isMuted">
         <v-icon>mdi-volume-{{isMuted ? 'off' : getVolumeState}}</v-icon>
       </v-btn>
+
 
       <!-- Volume Level -->
       <v-slider
@@ -44,8 +58,28 @@
       </v-slider>
 
 
+      <!-- Quality -->
+      <v-menu top v-if="quality">
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon>{{quality.icon}}</v-icon>
+          </v-btn>
+        </template>
+        <v-list dense width="7rem">
+          <v-list-item
+            v-for="(q, k) in getAvailableQualities"
+            :input-value="q.type === quality.type"
+            :key="k"
+            @click="$emit('update:quality', q)">
+            <v-icon class="mr-2" color="grey">{{q.icon}}</v-icon>
+            <v-list-item-subtitle v-text="q.label"/>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+
       <!-- PIP -->
-      <v-btn icon class="ml-4" @click="plyr.pip = true">
+      <v-btn icon class="ml-2" @click="plyr.pip = true">
         <v-icon>mdi-picture-in-picture-bottom-right</v-icon>
       </v-btn>
 
@@ -56,7 +90,7 @@
       </v-btn>
 
     </v-layout>
-  </v-slide-y-reverse-transition>
+  </div>
 </template>
 
 <script>
@@ -64,11 +98,19 @@
   import __get from 'lodash/get'
 
   const props = {
-    container: {
-      type: HTMLDivElement,
+    type: {
+      type: String,
       default: null
     },
     plyr: {
+      type: Object,
+      default: null
+    },
+    qualities: {
+      type: Array,
+      default: null
+    },
+    quality: {
       type: Object,
       default: null
     }
@@ -78,7 +120,6 @@
     props,
     data() {
       return {
-        isVisible: false,
         isPlaying: false,
         isMuted: false,
         isSeeking: false,
@@ -86,9 +127,6 @@
         volume: .5,
         duration: 100,
         currentTime: 0,
-
-        mouseHandler: null,
-        mouseTimeout: 2500
       }
     },
 
@@ -121,8 +159,17 @@
        */
       getCurrentTimeToHuman() {
         return this.toHHMMSS(this.currentTime);
-      }
+      },
 
+
+      /**
+       * Get available qualities
+       *
+       * @return array
+       */
+      getAvailableQualities() {
+        return (this.qualities || []).filter(quality => quality.path)
+      }
     },
 
 
@@ -144,28 +191,7 @@
           .map(v => v < 10 ? "0" + v : v)
           .filter((v, i) => v !== "00" || i > 0)
           .join(":")
-      },
-
-
-      /**
-       * Show controls
-       *
-       * @return void
-       */
-      showControls() {
-
-        // Show controls
-        this.isVisible = true;
-
-        // Clear previous interval
-        if (this.mouseHandler) {
-          clearTimeout(this.mouseHandler);
-        }
-
-        // Create new interval
-        this.mouseHandler = setTimeout(() => this.isVisible = false, this.mouseTimeout)
       }
-
     },
 
 
@@ -174,22 +200,22 @@
 
         // Get duration on initial start
         this.plyr.on('progress', e => {
-          this.duration = __get(e, 'detail.plyr.duration', 100);
+          this.duration = __get(e, 'detail.plyr.duration');
         });
 
 
         // Update current player position on time update
         // If now seek event is running
         this.plyr.on('timeupdate', () => {
-          if (this.isSeeking === false) {
-            this.currentTime = this.plyr.currentTime;
+          const time = this.plyr.currentTime;
+          if (this.isSeeking === false && time && time > 0) {
+            this.currentTime = time;
           }
         });
 
+        this.plyr.on('playing', () => this.isPlaying = true);
+        this.plyr.on('pause', () => this.isPlaying = false);
 
-        // Hide / Show controls
-        this.showControls();
-        window.addEventListener('mousemove', this.showControls, true);
 
       })
     },
@@ -200,10 +226,10 @@
         deep: true,
         handler(plyr) {
           if (plyr) {
-            this.isPlaying = plyr.playing;
+
             this.isMuted = plyr.muted;
             this.volume = plyr.volume;
-            this.duration = plyr.duration;
+            // this.duration = plyr.duration;
           }
         }
       }
@@ -219,9 +245,9 @@
       position: absolute;
       bottom: 0;
       width: 100%;
-      height: 4rem;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 2147483647;
+      height: 10rem;
+      z-index: 2147483647 !important;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.7) 60%);
     }
   }
 

@@ -18,6 +18,9 @@
     <!-- Errors Toasts -->
     <errors/>
 
+    <!-- System notifications -->
+    <notifications />
+
   </v-app>
 </template>
 
@@ -25,12 +28,17 @@
 
   import Loader from '@components/app/loader'
   import Errors from '@components/app/errors'
+  import Notifications from '@components/app/notifications/system'
 
   import {mapActions} from 'vuex'
 
   export default {
     name: 'Anilibria',
-    components: {Errors, Loader},
+    components: {
+      Errors,
+      Loader,
+      Notifications
+    },
     data() {
       return {
         loading: false
