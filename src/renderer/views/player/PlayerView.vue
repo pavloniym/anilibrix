@@ -2,30 +2,31 @@
   <player-layout ref="container">
 
     <!-- Loading -->
-    <template v-if="isReady === false">
-      <v-overlay :value="true" absolute>
-        <v-progress-circular color="white" indeterminate size="64"/>
-      </v-overlay>
+    <player-loading v-if="isReady === false"/>
+
+    <!-- Player is ready! -->
+    <template v-else>
+
+      <!-- Is buffering loader -->
+      <player-buffering v-if="isBuffering"/>
+
+      <!-- Controls -->
+      <v-slide-y-reverse-transition>
+        <player-controls
+          v-show="controls.show"
+          :plyr="plyr.instance"
+          :type="_type"
+          :qualities="sourceQualities"
+          :quality.sync="quality"
+          @fullscreen="toggleFullscreen"
+          @back="returnToHome">
+          <template v-slot:info>
+            <h2>{{_release.names.ru}}</h2>
+            <h3>{{_release.episode.title}}</h3>
+          </template>
+        </player-controls>
+      </v-slide-y-reverse-transition>
     </template>
-
-    <!-- Controls -->
-    <v-slide-y-reverse-transition v-if="isReady">
-      <player-controls
-        v-show="controls.show"
-        :plyr="plyr.instance"
-        :type="_type"
-        :qualities="sourceQualities"
-        :quality.sync="quality"
-        @fullscreen="toggleFullscreen"
-        @back="returnToHome">
-
-        <template v-slot:info>
-          <h2>{{_release.names.ru}}</h2>
-          <h3>{{_release.episode.title}}</h3>
-        </template>
-
-      </player-controls>
-    </v-slide-y-reverse-transition>
 
 
     <!-- Video -->
@@ -43,19 +44,20 @@
   import 'plyr/dist/plyr.css';
 
   import PlayerLayout from '@layouts/player'
-  import {PlayerControls} from '@components/player'
+  import {PlayerControls, PlayerBuffering, PlayerLoading} from '@components/player'
 
   import {mapState, mapActions} from 'vuex'
   import __get from 'lodash/get'
 
   export default {
     components: {
-      PlayerLayout,
+      PlayerLayout, PlayerBuffering, PlayerLoading,
       PlayerControls
     },
     data() {
       return {
         isReady: false,
+        isBuffering: true,
         hls: null,
         player: null,
         plyr: {
@@ -255,12 +257,14 @@
 
           // Set ready flag on player ready event
           this.plyr.instance.on('loadedmetadata', () => this.isReady = true);
+          this.plyr.instance.on('waiting', () => this.isBuffering = true);
+          this.plyr.instance.on('canplay', () => this.isBuffering = false);
 
           // Hide / Show controls
           this.showControls();
 
           // Add some event listeners
-          window.addEventListener('mousemove', this.showControls, true)
+          window.addEventListener('mousemove', this.showControls, true);
           window.addEventListener('keydown', event => {
             if (event.key === 'f') this.toggleFullscreen();
           });
@@ -271,8 +275,14 @@
     },
 
     destroyed() {
-      // Clear player data
-      this.$nextTick(() => this.clearPlayerData())
+      setTimeout(() => {
+
+        // Cleat player data
+        // Destroy plyr instance
+        this.clearPlayerData();
+        this.plyr.instance.destroy();
+
+      },500);
     },
 
 

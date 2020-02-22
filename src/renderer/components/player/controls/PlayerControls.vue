@@ -1,5 +1,5 @@
 <template>
-  <div class="player__controls px-6">
+  <div class="player__controls px-6" ref="controls">
 
     <!-- Info -->
     <div class="my-4">
@@ -54,7 +54,7 @@
 
 
       <!-- Quality -->
-      <v-menu top v-if="quality">
+      <v-menu top v-if="quality" :attach="$refs.controls">
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon>{{quality.icon}}</v-icon>
