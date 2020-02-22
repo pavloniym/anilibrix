@@ -10,15 +10,15 @@
 
     <!-- Posters -->
     <v-slide-group
+      v-bind="{value}"
       center-active
       mandatory
-      :value="value"
       :show-arrows="false"
       :style="{width: '90%'}"
       @change="$emit('input', $event)">
 
       <!-- Slider Item -->
-      <v-slide-item v-for="release in items" :key="release.id" v-slot:default="{ active, toggle }">
+      <v-slide-item v-for="(release, k) in items" :key="k" v-slot:default="{ active, toggle }">
 
         <!-- Default Card -->
         <v-card height="250" width="175" class="black" @click="toggle" :class="{primary: active}">
