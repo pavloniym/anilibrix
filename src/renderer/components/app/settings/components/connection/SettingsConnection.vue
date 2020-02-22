@@ -8,70 +8,32 @@
       <v-toolbar-title>Подключение</v-toolbar-title>
     </v-toolbar>
 
+    <v-card color="transparent" flat>
+      <v-card-text>
+        <div class="mb-4">В данном разделе вы можете изменить настройки подключения к серверам anilibria.tv</div>
 
-    <v-list>
-
-      <v-list-item>
-        <v-list-item-content>
-          <div class="caption grey--text">
-            В данном разделе вы можете изменить настройки подключения к серверам anilibria.tv
-          </div>
-        </v-list-item-content>
-      </v-list-item>
+        <!-- Host -->
+        <h4>Основной хост с точкой доступа API</h4>
+        <v-text-field class="mt-2" hide-details outlined :value="_host" @input="setHost"/>
+        <v-divider class="my-6"/>
 
 
-      <!-- Connection -->
-      <v-subheader>Основной хост с точкой доступа API</v-subheader>
-      <v-list-item>
-        <v-text-field hide-details outlined :value="_host" @input="setHost"/>
-      </v-list-item>
+        <!-- Proxy -->
+        <h4>Прокси</h4>
+        <v-radio-group class="mt-2" hide-details :value="getProxyType" @change="setProxyType">
+          <v-radio v-for="(proxy, k) in proxies" v-bind="proxy" :key="k" />
+        </v-radio-group>
+        <v-divider class="my-6"/>
 
 
-      <!-- Proxy -->
-      <v-subheader>Прокси</v-subheader>
-      <v-list-item>
-        <v-list-item-content class="pt-0">
-          <v-radio-group
-            hide-details
-            class="mt-2 ml-3"
-            :value="getProxyType"
-            @change="setProxyType">
-
-            <v-radio
-              v-for="(proxy, k) in proxies"
-              v-bind="proxy"
-              class="caption"
-              :key="k">
-            </v-radio>
-
-          </v-radio-group>
-        </v-list-item-content>
-      </v-list-item>
-
-
-      <!-- PAC proxy -->
-      <v-subheader>Настройка PAC прокси</v-subheader>
-      <v-list-item class="mt-0 mb-6">
-        <div class="caption grey--text">
-          <div>
-            В данной секции вы можете настроить параметры прокси-сервера, который использует PAC скрипт
-          </div>
-          <div class="pt-1">
-            Обратите внимание, что хост и порт прокси-сервера, полученные из PAC скрипта,
-            устанавливаются автоматически и редактировать их вручную, в большинстве случаев, не требуется
-          </div>
+        <!-- PAC -->
+        <h4>Настройка PAC прокси</h4>
+        <div>В данной секции вы можете настроить параметры прокси-сервера, который использует PAC скрипт</div>
+        <div class="pb-4">
+          Обратите внимание, что хост и порт прокси-сервера, полученные из PAC скрипта,
+          устанавливаются автоматически и редактировать их вручную, в большинстве случаев, не требуется
         </div>
-      </v-list-item>
-      <v-list-item>
-        <v-text-field
-          label="Источник PAC скрипта"
-          hide-details
-          outlined
-          :value="_pac.source"
-          @input="setPacSource">
-        </v-text-field>
-      </v-list-item>
-      <v-list-item>
+        <v-text-field label="Источник PAC скрипта" hide-details outlined :value="_pac.source" @input="setPacSource" />
         <v-text-field
           class="mt-2"
           label="Хост прокси-сервера"
@@ -80,8 +42,6 @@
           :value="_pac.connection.host"
           @input="host => setPacProxyConnection({host, port: _pac.connection.port})">
         </v-text-field>
-      </v-list-item>
-      <v-list-item>
         <v-text-field
           class="mt-2"
           label="Порт прокси-сервера"
@@ -90,26 +50,18 @@
           :value="_pac.connection.port"
           @input="port => setPacProxyConnection({host: _pac.connection.host, port})">
         </v-text-field>
-      </v-list-item>
-      <v-list-item class="my-4">
-        <div class="caption grey--text">
+        <div class="pt-4">
           Чтобы запросить новые параметры подключения — оставьте эти хост и порт пустыми,
           при следующем запросе на сервер приложение автоматически запросит новые данные из PAC файла
         </div>
-      </v-list-item>
+        <v-divider class="my-6"/>
 
-
-      <!-- Custom proxy -->
-      <v-subheader>Настройка собственного прокси</v-subheader>
-      <v-list-item class="mb-4">
-        <div class="caption grey--text">
+        <!-- Custom proxy -->
+        <h4>Настройка собственного прокси</h4>
+        <div>
           Вы можете указать параметры подключения к своему собственному прокси-серверу.
           Приложение не сохраняет и не передает данные авторизации, а также другие параметры подключения
         </div>
-      </v-list-item>
-
-      <!-- Custom proxy host -->
-      <v-list-item>
         <v-text-field
           class="mt-2"
           label="Хост прокси-сервера"
@@ -118,10 +70,6 @@
           :value="_custom.connection.host"
           @input="host => setCustomProxyConnection({host, port: _custom.connection.port})">
         </v-text-field>
-      </v-list-item>
-
-      <!-- Custom proxy port -->
-      <v-list-item class="pb-8">
         <v-text-field
           class="mt-2"
           label="Порт прокси-сервера"
@@ -130,9 +78,10 @@
           :value="_custom.connection.port"
           @input="port => setCustomProxyConnection({host: _custom.connection.host, port})">
         </v-text-field>
-      </v-list-item>
 
-    </v-list>
+
+      </v-card-text>
+    </v-card>
   </v-layout>
 </template>
 

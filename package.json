@@ -1,8 +1,8 @@
 {
-  "name": "anilibria-theater",
-  "version": "1.0.2",
+  "name": "anilibria",
+  "version": "1.0.3",
   "author": "PavelShar <pavloniym@gmail.com>",
-  "description": "Anilibria desktop movie app",
+  "description": "Anilibria desktop app",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -13,9 +13,8 @@
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
   },
   "build": {
-    "asar": false,
-    "productName": "anilibria-theater",
-    "appId": "com.pavelshar.anilibria",
+    "productName": "anilibria",
+    "appId": "com.anilibria.app",
     "directories": {
       "output": "build"
     },
@@ -38,16 +37,17 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "category": "public.app-category.video",
+      "icon": "src/renderer/assets/icons/anilibria.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico",
+      "icon": "src/renderer/assets/icons/anilibria.ico",
       "target": [
         "portable"
       ]
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "src/renderer/assets/icons"
     }
   },
   "dependencies": {

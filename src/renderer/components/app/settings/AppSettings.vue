@@ -33,7 +33,7 @@
 </script>
 <style lang="scss" scoped>
 
-  /*nav ::v-deep {
+  nav ::v-deep {
     .v-navigation-drawer__content {
       overflow-y: scroll;
 
@@ -42,13 +42,13 @@
       }
 
       &::-webkit-scrollbar {
-        width: 8px;
+        width: 9px;
         background-color: #bfbfbf;
       }
     }
 
 
-  }*/
+  }
 
 
 </style>

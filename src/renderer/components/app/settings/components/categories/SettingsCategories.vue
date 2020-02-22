@@ -1,12 +1,12 @@
 <template>
-  <v-layout column>
+  <v-layout column fill-height>
 
     <!--<v-toolbar class="shrink">
       <v-toolbar-title>Настройки</v-toolbar-title>
     </v-toolbar>-->
 
 
-    <v-divider />
+    <v-divider/>
     <v-list dense nav>
       <template v-for="(category, k) in categories">
         <v-subheader v-text="category.title" :key="k"/>
@@ -15,12 +15,12 @@
             <v-layout align-center>
 
               <v-list-item-action>
-                <v-icon :color="item.disabled ? 'grey' : null" v-text="item.icon" />
+                <v-icon :color="item.disabled ? 'grey' : null" v-text="item.icon"/>
               </v-list-item-action>
 
               <v-list-item-content>
-                <v-list-item-title v-text="item.title" />
-                <v-list-item-subtitle v-text="item.subtitle" />
+                <v-list-item-title v-text="item.title"/>
+                <v-list-item-subtitle v-text="item.subtitle"/>
               </v-list-item-content>
 
             </v-layout>
@@ -29,16 +29,50 @@
       </template>
     </v-list>
 
+    <!-- Credentials -->
+    <v-spacer/>
+    <v-divider />
+    <v-card class="py-3" color="transparent" flat>
+      <v-card-text class="caption">
+        <div>Версия {{app.version}}</div>
+        <div>Весь материал в приложении представлен исключительно для домашнего ознакомительного просмотра.</div>
+        <div>
+          <span class="footer__link" @click.prevent="openLink('https://anilibria.tv')">Анилибрия</span>
+          -
+          <span class="footer__link" @click.prevent="openLink('https://anilibria.tv')">Исходный код</span>
+        </div>
+      </v-card-text>
+    </v-card>
+
   </v-layout>
 </template>
 
 <script>
 
   import {mapActions} from 'vuex'
+  import {shell} from 'electron'
+  import app from '@/../package'
 
   export default {
     computed: {
 
+      /**
+       * Get application data
+       *
+       * @return object
+       */
+      app() {
+        return {
+          version: app.version
+        }
+      },
+
+
+      /**
+       * Get list of settings categories
+       *
+       * @return array
+       */
       categories() {
         return [
           {
@@ -100,11 +134,34 @@
           }
         ]
       }
-
-
     },
+
     methods: {
       ...mapActions('settings', ['setComponent']),
+
+
+      /**
+       * Open link in OS default browser
+       *
+       * @param link
+       */
+      openLink(link) {
+        shell.openExternal(link);
+      }
     }
   }
+
 </script>
+
+<style lang="scss" scoped>
+
+  .footer {
+    &__link {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+</style>

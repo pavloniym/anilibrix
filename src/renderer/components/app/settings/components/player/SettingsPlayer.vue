@@ -10,7 +10,7 @@
       <v-card-text>
 
         <!-- Player Type -->
-        <h3>Способ воспроизведения</h3>
+        <h4>Способ воспроизведения</h4>
         <div>Укажите, каким образом приложение будет воспроизводить выбранный тайтл</div>
         <v-radio-group hide-details :value="type" @change="setPlayerType">
           <v-radio v-for="(type, k) in types" v-bind="type" :key="k"/>
@@ -19,7 +19,7 @@
         <v-divider class="my-6"/>
 
         <!-- Stream Quality -->
-        <h3>Качество онлайн воспроизведения</h3>
+        <h4>Качество онлайн воспроизведения</h4>
         <div>Выберите качество онлайн воспроизведения по умолчанию</div>
         <div>Переключить качество всегда можно в плеере во время просмотра</div>
         <v-radio-group hide-details :value="streamQuality" @change="setStreamQuality">

@@ -20,13 +20,10 @@ const init = () => {
     darkTheme: true, // Forces dark theme (GTK+3)
     show: true,
     frame: false,
-    title: 'anilibria',
+    title: 'Anilibria',
     useContentSize: true, // Specify web page size without OS chrome
     webPreferences: {
       nodeIntegration: true,
-      enableBlinkFeatures: 'AudioVideoTracks',
-      plugins: true,
-      experimentalFeatures: true
     }
   })
 };
