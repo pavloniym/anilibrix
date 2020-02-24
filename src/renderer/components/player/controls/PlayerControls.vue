@@ -56,7 +56,7 @@
       <!-- Quality -->
       <v-menu top v-if="quality" :attach="$refs.controls">
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
+          <v-btn icon class="ml-2" v-on="on">
             <v-icon>{{quality.icon}}</v-icon>
           </v-btn>
         </template>
