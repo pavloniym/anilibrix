@@ -27,20 +27,20 @@ let torrentInstance = null;
 function createWindow() {
 
   // Init main-render-window-instance
-  // Init torrent-process-window
   mainInstance = mainWindow.init();
-  torrentInstance = torrentWindow.init();
-
-  // Load urls
   mainInstance.loadURL(mainWindowURL);
-  torrentInstance.loadURL(torrentWindowUrl);
-
+  mainInstance.setMenu(null);
 
   // Send events to main window
   ipc.on('send:main', (e, {channel, payload}) => {
     console.log('send:main', {channel, payload});
     mainInstance.webContents.send(channel, payload)
   });
+
+
+  // Init torrent-process-window
+  torrentInstance = torrentWindow.init();
+  torrentInstance.loadURL(torrentWindowUrl);
 
   // Send events to torrent window
   ipc.on('send:torrent', (e, {channel, payload}) => {

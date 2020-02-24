@@ -38,7 +38,7 @@ export default class extends Transformer {
   static createReleaseHash(release) {
     return objectHash({
       id: this.get(release, 'id'),
-      episodes: this.getReleaseEpisodes(release),
+      episodes: this.getReleaseEpisodes(release).length,
     })
   }
 

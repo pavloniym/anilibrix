@@ -1,6 +1,5 @@
 .DS_Store
-build/*
-!build/icons
+release/
 node_modules/
 npm-debug.log
 npm-debug.log.*

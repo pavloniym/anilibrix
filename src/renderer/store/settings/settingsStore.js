@@ -14,7 +14,7 @@ export default {
   },
 
   state: {
-    drawer: true,
+    drawer: false,
     component: 'Categories'
   },
 
