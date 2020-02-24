@@ -44,7 +44,7 @@
             });
 
             // Set as notified to prevent further notifications on content update
-            this.setReleaseAsNotified(release.id);
+           // this.setReleaseAsNotified(release.id);
 
           }
         }

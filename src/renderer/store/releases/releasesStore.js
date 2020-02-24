@@ -46,12 +46,12 @@ export default {
           .then(releases => commit('set', {k: 'items', v: releases}))
           .then(() => dispatch('updateReleasesPosters'))
           .then(() => resolve())
-          .then(() => {
+          /*.then(() => {
 
             // Check releases for notification subscriptions
-            dispatch('notifications/checkReleasesForSubscription', state.items, {root: true});
+            // dispatch('notifications/checkReleasesForSubscription', state.items, {root: true});
 
-          })
+          })*/
           .catch(error => {
 
             // On error -> push to error storage

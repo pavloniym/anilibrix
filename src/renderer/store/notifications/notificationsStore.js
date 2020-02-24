@@ -36,15 +36,8 @@ const checkSubscription = (releases, subscriptionString) => {
 export default {
   namespaced: true,
   state: {
-
     items: {},
-    subscriptions: [
-      'Небесные драконы',
-      'Ложные выводы',
-      'Моя геройская академия 3',
-      'Яркая чихая'
-    ],
-
+    subscriptions: [],
   },
 
   mutations: {
