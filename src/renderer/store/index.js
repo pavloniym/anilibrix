@@ -26,7 +26,7 @@ const store = new Vuex.Store({
   modules,
   plugins: [
     createPromiseAction(),
-    createPersistedState(),
+    //createPersistedState(),
     createSharedMutations()
   ],
   strict: debug,

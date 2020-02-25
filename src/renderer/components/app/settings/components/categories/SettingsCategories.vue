@@ -39,7 +39,7 @@
         <div>
           <span class="footer__link" @click.prevent="openLink('https://anilibria.tv')">Анилибрия</span>
           -
-          <span class="footer__link" @click.prevent="openLink('https://anilibria.tv')">Исходный код</span>
+          <span class="footer__link" @click.prevent="openLink('https://github.com/anilibria')">Исходный код</span>
         </div>
       </v-card-text>
     </v-card>
@@ -127,8 +127,7 @@
                 title: 'Система',
                 subtitle: 'Системное меню и команды',
                 icon: 'mdi-cogs',
-                disabled: true,
-                action: () => "",
+                action: () => this.setComponent('System'),
               }
             ]
           }

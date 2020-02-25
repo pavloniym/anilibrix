@@ -1,5 +1,4 @@
 import Transformer from '@transformer'
-import objectHash from 'object-hash'
 import stripHtml from "string-strip-html";
 
 export default class extends Transformer {
@@ -13,7 +12,7 @@ export default class extends Transformer {
     const episodes = this.getReleaseEpisodes(release);
     return {
       id: this.get(release, 'id'),
-      hash: this.createReleaseHash(release),
+      datetime: this.getReleaseDatetime(release),
       names: {
         ru: stripHtml(this.get(release, 'names.0')),
         original: stripHtml(this.get(release, 'names.1'))
@@ -25,21 +24,6 @@ export default class extends Transformer {
       episodes: episodes,
       episode: episodes[0] || null,
     }
-  }
-
-
-  /**
-   * Create release hash
-   * Use it's id and relative episodes
-   *
-   * @param release
-   * @return string
-   */
-  static createReleaseHash(release) {
-    return objectHash({
-      id: this.get(release, 'id'),
-      episodes: this.getReleaseEpisodes(release).length,
-    })
   }
 
 
@@ -61,11 +45,28 @@ export default class extends Transformer {
             fhd: this.get(episode, 'fullhd')
           },
           torrents: {
-            _1080p: null,
-            _1080p_HEVC: null,
+            fhd: null,
+            fhd_hevc: null,
           }
         }
       })
+  }
 
+
+  /**
+   * Get release datetime
+   *
+   * @param release
+   * @return {{system: null, human: string, timestamp: *}}
+   */
+  static getReleaseDatetime(release) {
+
+    const timestamp = this.get(release, 'last');
+    const system = timestamp ? new Date(timestamp * 1000) : null;
+    const human = system ? new Intl.DateTimeFormat(undefined, {}).format(system) : null;
+
+    return {
+      timestamp, system, human
+    }
   }
 }
