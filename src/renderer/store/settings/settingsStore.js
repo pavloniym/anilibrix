@@ -3,6 +3,7 @@ import {mutationsHelper} from '@utils/store'
 import profile from './profile'
 import player from './player'
 import connection from './connection'
+import system from './system'
 
 export default {
   namespaced: true,
@@ -10,7 +11,8 @@ export default {
   modules: {
     profile,
     player,
-    connection
+    connection,
+    system
   },
 
   state: {

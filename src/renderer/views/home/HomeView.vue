@@ -14,7 +14,6 @@
   import MainLayout from '@layouts/main'
   import {ReleaseData, ReleaseSlider} from '@components/release'
   import {mapState, mapActions} from 'vuex'
-  import __get from 'lodash/get'
 
   export default {
     name: 'HomeView',
@@ -39,7 +38,7 @@
          * @return number
          */
         get() {
-          const releaseIndex = this._releases.findIndex(release => this._index === release.hash);
+          const releaseIndex = this._releases.findIndex(release => this._index === release.id);
           return releaseIndex > -1
             ? releaseIndex
             : 0;
@@ -53,8 +52,7 @@
          * @return void
          */
         set(index) {
-          const releaseHash = __get(this._releases, [index, 'hash'], null);
-          this.setIndex(releaseHash);
+          this.setIndex(this._releases[index].id);
         }
       },
 

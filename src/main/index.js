@@ -1,7 +1,9 @@
-import {app, ipcMain as ipc} from 'electron' // eslint-disable-line
+import {app, ipcMain as ipc, dialog} from 'electron' // eslint-disable-line
 import {mainWindow, torrentWindow} from './windows'
+import { autoUpdater } from "electron-updater"
 
 import store from '@store'; // eslint-disable-line
+
 
 /**
  * Set `__static` path to static files in production
@@ -50,7 +52,16 @@ function createWindow() {
 
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+
+  // Create window
+  createWindow();
+
+  // This will immediately download an update, then install when the app quits.
+  autoUpdater.checkForUpdatesAndNotify();
+
+});
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -62,24 +73,3 @@ app.on('activate', () => {
     createWindow()
   }
 });
-
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */
