@@ -50,9 +50,9 @@
     },
 
     created() {
-      this.loading = true;
+     /* this.loading = true;
       this.$store.dispatchPromise('releases/getLatestReleases')
-        .finally(() => this.loading = false)
+        .finally(() => this.loading = false)*/
     }
   }
 </script>
@@ -62,6 +62,16 @@
 
   html, body {
     overflow-y: hidden !important;
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #505050;
+    }
+
+    ::-webkit-scrollbar {
+      width: 9px;
+      background-color: #bfbfbf;
+    }
+
   }
 
 </style>

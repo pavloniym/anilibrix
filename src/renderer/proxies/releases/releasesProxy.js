@@ -1,5 +1,5 @@
 import Proxy from '@proxy'
-import { parseBaseResponseModel } from '@utils/requests'
+import {parseBaseResponseModel} from '@utils/requests'
 
 export default class extends Proxy {
   constructor(parameters = {}) {
@@ -13,10 +13,11 @@ export default class extends Proxy {
    */
   getReleases() {
     return new Promise((resolve, reject) => {
-      const data = this.getFormDataObject({ query: 'list', perPage: 14 });
+
+      const data = this.getFormDataObject({query: 'list', perPage: 14});
       const headers = data.getHeaders();
 
-      return this.submit('POST', this.host + this.endpoint, { data, headers })
+      return this.submit('POST', this.host + this.endpoint, {data, headers})
         .then(response => resolve(parseBaseResponseModel(response)))
         .catch(error => reject(error))
     });
@@ -31,8 +32,27 @@ export default class extends Proxy {
    */
   getPosterImage(posterSrc) {
     return new Promise((resolve, reject) => {
-      return this.submit('GET', this.host + posterSrc, { responseType: 'arraybuffer' })
+      return this.submit('GET', this.host + posterSrc, {responseType: 'arraybuffer'})
         .then(response => resolve(Buffer.from(response, 'binary').toString('base64')))
+        .catch(error => reject(error))
+    })
+  }
+
+
+  /**
+   * Search releases by name
+   *
+   * @param searchQuery
+   * @return {Promise<unknown>}
+   */
+  searchReleasesByName(searchQuery) {
+    return new Promise((resolve, reject) => {
+
+      const data = this.getFormDataObject({query: 'search', search: searchQuery});
+      const headers = data.getHeaders();
+
+      return this.submit('POST', this.host + this.endpoint, {data, headers})
+        .then(response => resolve(parseBaseResponseModel(response)))
         .catch(error => reject(error))
     })
   }

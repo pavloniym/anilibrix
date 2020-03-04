@@ -1,31 +1,31 @@
 <template>
-  <main-layout>
+  <releases-layout>
     <v-layout column justify-center fill-height class="mx-4">
 
       <release-slider v-model="index" :items="_releases" :posters="_posters"/>
       <release-data v-if="release" v-bind="{release}" class="mt-4"/>
 
     </v-layout>
-  </main-layout>
+  </releases-layout>
 </template>
 
 <script>
 
-  import MainLayout from '@layouts/main'
+  import ReleasesLayout from '@layouts/releases'
   import {ReleaseData, ReleaseSlider} from '@components/release'
   import {mapState, mapActions} from 'vuex'
 
   export default {
-    name: 'HomeView',
+    name: 'ReleasesView',
     components: {
-      MainLayout,
+      ReleasesLayout,
       ReleaseSlider, ReleaseData
     },
     computed: {
       ...mapState('releases', {
-        _index: s => s.index,
-        _releases: s => s.items || [],
-        _posters: s => s.posters || {},
+        _index: s => s.items.index,
+        _releases: s => s.items.data || [],
+        _posters: s => s.items.posters || {},
       }),
 
 

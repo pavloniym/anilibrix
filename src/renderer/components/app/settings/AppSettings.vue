@@ -37,14 +37,7 @@
     .v-navigation-drawer__content {
       overflow-y: scroll;
 
-      &::-webkit-scrollbar-thumb {
-        background-color: #505050;
-      }
 
-      &::-webkit-scrollbar {
-        width: 9px;
-        background-color: #bfbfbf;
-      }
     }
 
 

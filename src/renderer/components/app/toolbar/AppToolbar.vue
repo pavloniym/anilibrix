@@ -1,30 +1,14 @@
 <template>
   <v-app-bar app flat color="transparent" class="toolbar px-4">
 
-    <!-- Close -->
-    <v-btn icon small class="mr-1" @click="closeApp">
-      <v-icon small>mdi-close</v-icon>
-    </v-btn>
-
-    <!-- Minimize -->
-    <v-btn icon small class="mr-1" @click="minimizeApp">
-      <v-icon small>mdi-window-minimize</v-icon>
-    </v-btn>
-
+    <app-remote/>
+    <slot name="left" />
 
     <v-spacer/>
 
-    <!-- Search -->
-    <v-btn icon class="mr-1" disabled>
-      <v-icon>mdi-magnify</v-icon>
-    </v-btn>
-
-    <!-- Reload -->
-    <v-btn icon class="mr-1" :disabled="loading" @click="getLatestReleases">
-      <v-icon v-if="!loading">mdi-refresh</v-icon>
-      <v-progress-circular v-if="loading" indeterminate size="20"/>
-    </v-btn>
-
+    <slot name="right" />
+    <app-releases-search v-if="noSearch === false"/>
+    <app-releases-update v-if="noUpdate === false"/>
 
     <!-- Settings -->
     <v-btn icon @click="setDrawer(!drawer)">
@@ -36,40 +20,40 @@
 
 <script>
 
-  import {remote} from 'electron'
+  import AppRemote from './components/remote'
+  import AppReleasesUpdate from "./components/update";
+  import AppReleasesSearch from "./components/search";
+
   import {mapActions, mapState} from 'vuex'
 
-  export default {
-    name: 'AppToolbar',
-    computed: {
-      ...mapState('releases', ['loading']),
-      ...mapState('settings', ['drawer'])
+  const props = {
+    noSearch: {
+      type: Boolean,
+      default: false
     },
+    noUpdate: {
+      type: Boolean,
+      default: false
+    }
+  };
+
+  export default {
+    props,
+    name: 'AppToolbar',
+    components: {
+      AppRemote,
+      AppReleasesUpdate,
+      AppReleasesSearch,
+    },
+    computed: {
+      ...mapState('settings', ['drawer']),
+    },
+
     methods: {
       ...mapActions('settings', ['setDrawer']),
-      ...mapActions('releases', ['getLatestReleases']),
-
-
-      /**
-       * Close app
-       *
-       * @return void
-       */
-      closeApp() {
-        remote.app.quit();
-      },
-
-      /**
-       * Minimize app
-       *
-       * @return void
-       */
-      minimizeApp() {
-        remote.getCurrentWindow().minimize();
-      },
-
     }
   }
+
 </script>
 
 <style scoped lang="scss">

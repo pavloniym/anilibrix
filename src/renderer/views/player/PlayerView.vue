@@ -19,7 +19,7 @@
           :qualities="sourceQualities"
           :quality.sync="quality"
           @fullscreen="toggleFullscreen"
-          @back="returnToHome">
+          @back="goBack">
           <template v-slot:info>
             <h2>{{_release.names.ru}}</h2>
             <h3>{{_release.episode.title}}</h3>
@@ -234,9 +234,10 @@
 
       /**
        * Return to home screen
+       *
        */
-      returnToHome() {
-        this.$router.replace({name: 'home'})
+      goBack() {
+        this.$router.back();
       },
 
     },
@@ -293,7 +294,7 @@
 
           // If data is not valid -> return to home screen
           if (isValid === false) {
-            this.returnToHome();
+            this.goBack();
           }
         }
       },

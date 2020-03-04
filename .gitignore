@@ -1,5 +1,5 @@
 .DS_Store
-release/
+/release/
 node_modules/
 npm-debug.log
 npm-debug.log.*

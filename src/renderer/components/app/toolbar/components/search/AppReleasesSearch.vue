@@ -1,0 +1,91 @@
+<template>
+  <v-layout class="shrink">
+
+    <!-- Search -->
+    <v-btn icon class="mr-1" @click="visible = !visible">
+      <v-icon>mdi-magnify</v-icon>
+    </v-btn>
+
+    <v-expand-x-transition appear mode="out-in">
+      <v-autocomplete
+        v-if="visible"
+        v-model="release"
+        solo
+        autofocus
+        no-filter
+        hide-details
+        hide-no-data
+        return-object
+        item-value="id"
+        item-text="names.ru"
+        :items="_items"
+        :style="{width: '40vw', maxWidth: '40vw'}"
+        :loading="_loading"
+        :allow-overflow="false"
+        :search-input.sync="search"
+        @change="openRelease($event)">
+
+        <template v-slot:item="{item}">
+          <v-list-item-content :style="{width: '35vw', maxWidth: '35vw'}">
+            <v-list-item-title v-text="item.names.ru"/>
+            <v-list-item-subtitle v-text="item.names.original"/>
+          </v-list-item-content>
+        </template>
+
+      </v-autocomplete>
+    </v-expand-x-transition>
+
+  </v-layout>
+</template>
+
+<script>
+
+  import {mapActions, mapState} from 'vuex'
+
+  export default {
+    data() {
+      return {
+        visible: false,
+        search: null,
+        release: null,
+      }
+    },
+    computed: {
+      ...mapState('releases', {
+        _loading: s => s.search.loading,
+        _items: s => s.search.data,
+      }),
+    },
+
+    methods: {
+      ...mapActions('releases', ['getReleasesByName']),
+
+      /**
+       * Open release view
+       *
+       * @param release
+       * @return void
+       */
+      openRelease(release) {
+        this.$router.push({
+          name: 'release',
+          params: {
+            releaseId: release.id
+          }
+        })
+      }
+
+    },
+
+    watch: {
+
+      search: {
+        handler(search) {
+          if (search && search.length >= 3) {
+            this.getReleasesByName(search);
+          }
+        }
+      }
+    }
+  }
+</script>
