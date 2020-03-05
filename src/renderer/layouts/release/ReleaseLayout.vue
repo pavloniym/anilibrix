@@ -17,7 +17,7 @@
     </app-toolbar>
 
     <!-- Content -->
-    <v-content>
+    <v-content :style="{overflowY: 'scroll', height: '100vh'}">
       <slot/>
     </v-content>
 

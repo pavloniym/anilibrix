@@ -1,11 +1,11 @@
 <template>
   <v-layout fill-height column>
+    <!-- Toolbar -->
+    <app-toolbar/>
 
     <!-- Settings -->
     <app-settings/>
 
-    <!-- Toolbar -->
-    <app-toolbar/>
 
     <!-- Content -->
     <v-content>

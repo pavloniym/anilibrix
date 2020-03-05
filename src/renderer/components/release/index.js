@@ -1,7 +1,5 @@
-import ReleaseData from './data'
-import ReleaseSlider from './slider'
+import ReleaseEpisodes from './episodes'
 
 export {
-  ReleaseData,
-  ReleaseSlider
+  ReleaseEpisodes
 }

@@ -12,10 +12,19 @@
       </div>
 
       <v-layout>
-        <v-btn v-bind="{loading}" :disabled="loading" @click="watchRelease(release)">Смотреть</v-btn>
-        <!--<v-btn v-bind="{loading}" class="ml-2" width="10px" disabled>
-          <v-icon>mdi-playlist-plus</v-icon>
-        </v-btn>-->
+        <v-btn
+          v-bind="{loading}"
+          :disabled="loading"
+          @click="watchRelease(release)">
+          Смотреть
+        </v-btn>
+        <v-btn
+          v-bind="{loading}"
+          class="ml-1"
+          :disabled="loading"
+          @click="toRelease">
+          Релиз
+        </v-btn>
       </v-layout>
 
     </div>
@@ -64,6 +73,19 @@
           .dispatchPromise('player/setPlayerData', {release, type: this.type})
           .then(() => this.$router.push({name: 'player'}))
           .finally(() => this.loading = false);
+      },
+
+
+      /**
+       * Go to release
+       *
+       * @return void
+       */
+      toRelease() {
+        this.$router.push({
+          name: 'release',
+          params: {releaseId: this.release.id}
+        })
       }
 
     },

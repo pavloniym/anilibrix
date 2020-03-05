@@ -21,6 +21,8 @@ export default class extends Transformer {
       poster: this.get(release, 'poster'),
       genres: this.get(release, 'genres', []),
       year: this.get(release, 'year'),
+      type: this.get(release, 'type'),
+      voices: this.get(release, 'voices'),
       episodes: episodes,
       episode: episodes[0] || null,
     }

@@ -23,6 +23,26 @@ export default class extends Proxy {
     });
   }
 
+
+  /**
+   * Get release with provided id
+   *
+   * @param releaseId
+   * @return {Promise<unknown>}
+   */
+  getRelease(releaseId) {
+    return new Promise((resolve, reject) => {
+
+      const data = this.getFormDataObject({query: 'release', id: releaseId});
+      const headers = data.getHeaders();
+
+      return this.submit('POST', this.host + this.endpoint, {data, headers})
+        .then(response => resolve(parseBaseResponseModel(response)))
+        .catch(error => reject(error))
+    });
+  }
+
+
   /**
    * Get poster image
    * Save it on disk
@@ -56,4 +76,5 @@ export default class extends Proxy {
         .catch(error => reject(error))
     })
   }
+
 }

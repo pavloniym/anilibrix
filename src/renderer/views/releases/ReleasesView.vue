@@ -2,8 +2,8 @@
   <releases-layout>
     <v-layout column justify-center fill-height class="mx-4">
 
-      <release-slider v-model="index" :items="_releases" :posters="_posters"/>
-      <release-data v-if="release" v-bind="{release}" class="mt-4"/>
+      <releases-slider v-model="index" :items="_releases" :posters="_posters"/>
+      <releases-data v-if="release" v-bind="{release}" class="mt-4"/>
 
     </v-layout>
   </releases-layout>
@@ -12,14 +12,14 @@
 <script>
 
   import ReleasesLayout from '@layouts/releases'
-  import {ReleaseData, ReleaseSlider} from '@components/release'
+  import {ReleasesData, ReleasesSlider} from '@components/releases'
   import {mapState, mapActions} from 'vuex'
 
   export default {
     name: 'ReleasesView',
     components: {
       ReleasesLayout,
-      ReleaseSlider, ReleaseData
+      ReleasesData, ReleasesSlider
     },
     computed: {
       ...mapState('releases', {

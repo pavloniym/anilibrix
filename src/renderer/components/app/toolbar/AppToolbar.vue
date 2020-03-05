@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app flat color="transparent" class="toolbar px-4">
+  <v-app-bar app flat color="transparent" class="pt-2 toolbar shrink">
 
     <app-remote/>
     <slot name="left" />
@@ -11,9 +11,11 @@
     <app-releases-update v-if="noUpdate === false"/>
 
     <!-- Settings -->
-    <v-btn icon @click="setDrawer(!drawer)">
-      <v-icon>mdi-{{drawer ? 'chevron-right' : 'menu'}}</v-icon>
-    </v-btn>
+    <v-layout class="shrink">
+      <v-btn icon @click="setDrawer(!drawer)">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
+    </v-layout>
 
   </v-app-bar>
 </template>
@@ -59,7 +61,6 @@
 <style scoped lang="scss">
 
   .toolbar {
-    z-index: 100 !important;
     -webkit-app-region: drag !important;
   }
 

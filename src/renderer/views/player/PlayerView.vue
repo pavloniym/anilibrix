@@ -22,7 +22,7 @@
           @back="goBack">
           <template v-slot:info>
             <h2>{{_release.names.ru}}</h2>
-            <h3>{{_release.episode.title}}</h3>
+            <h3>{{_episode.title}}</h3>
           </template>
         </player-controls>
       </v-slide-y-reverse-transition>
@@ -81,7 +81,7 @@
     computed: {
       ...mapState('player', {
         _release: s => s.release,
-        _episode: s => s.release.episode,
+        _episode: s => s.episode,
         _type: s => s.type,
       }),
 
@@ -182,13 +182,14 @@
         let settingsPlayerQuality = null;
         if (type === 'stream') settingsPlayerQuality = this._streamQuality;
 
-        if (settingsPlayerQuality) {
+        if (settingsPlayerQuality !== null) {
+
           const sourceQuality = sourceQualities.find(quality => quality.type === settingsPlayerQuality);
           if (sourceQuality && sourceQuality.path && sourceQuality.path.length > 0) {
             return sourceQuality;
 
           } else {
-            const sourceQualities = sourceQualities.filter(quality => quality.path);
+            const sourceQualities = (sourceQualities || []).filter(quality => quality.path);
             const sourceQuality = sourceQualities[0];
             return sourceQuality && sourceQuality.path && sourceQuality.path.length > 0
               ? sourceQuality
@@ -304,7 +305,7 @@
         immediate: true,
         deep: true,
         handler(sourceQualities) {
-          this.quality = this.getSourceQuality(this._type, sourceQualities);
+          this.quality = this.getSourceQuality(this._type, sourceQualities || []);
         }
       },
 
