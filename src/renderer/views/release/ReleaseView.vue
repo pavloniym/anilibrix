@@ -3,48 +3,10 @@
     <v-progress-circular indeterminate size="64"/>
   </v-overlay>
   <release-layout v-else>
-    <div class="pa-6 fill-height">
-      <v-layout>
-        <div :style="{width: '5%'}"></div>
-        <div class="d-flex" :style="{width: '90%'}">
-          <v-card
-            height="450"
-            width="315"
-            class="black"
-            :style="{position: 'sticky', top: 0}">
+    <div class="pa-6 fill-height" v-if="_release">
 
-            <v-img
-              v-if="_poster"
-              width="315"
-              class="black"
-              height="450"
-              max-width="315"
-              max-height="450"
-              :src="_poster">
-            </v-img>
-
-          </v-card>
-
-          <v-card
-            flat
-            class="ml-4"
-            color="transparent"
-            :style="{width: '100%'}">
-
-            <v-card-title v-text="_release.names.ru" class="pt-0"/>
-            <v-card-subtitle v-text="_release.names.original" class="pb-0"/>
-            <v-card-subtitle v-text="_release.genres.join(' | ')" class="pt-0"/>
-            <v-card-text>
-              <v-chip label>{{_release.year}}</v-chip>
-              <v-chip label>{{_release.type}}</v-chip>
-              <div class="pt-4">{{_release.description}}</div>
-            </v-card-text>
-          </v-card>
-        </div>
-        <div :style="{width: '5%'}"></div>
-      </v-layout>
-
-     <release-episodes class="py-6" :release="_release" @click="watchEpisode" />
+      <release-card :release="_release" :poster="_poster"/>
+      <release-episodes class="py-6" :release="_release" @click="watchEpisode"/>
 
     </div>
   </release-layout>
@@ -53,7 +15,7 @@
 <script>
 
   import ReleaseLayout from '@layouts/release'
-  import {ReleaseEpisodes} from '@components/release'
+  import {ReleaseEpisodes, ReleaseCard} from '@components/release'
   import {mapState, mapActions} from 'vuex'
 
   const props = {
@@ -68,7 +30,8 @@
     name: "ReleaseView",
     components: {
       ReleaseLayout,
-      ReleaseEpisodes
+      ReleaseEpisodes,
+      ReleaseCard,
     },
     data() {
       return {

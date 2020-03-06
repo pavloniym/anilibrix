@@ -261,6 +261,7 @@
           this.plyr.instance.on('loadedmetadata', () => this.isReady = true);
           this.plyr.instance.on('waiting', () => this.isBuffering = true);
           this.plyr.instance.on('canplay', () => this.isBuffering = false);
+          this.plyr.instance.on('ended', () => this.goBack());
 
           // Hide / Show controls
           this.showControls();

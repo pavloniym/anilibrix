@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app flat color="transparent" class="pt-2 toolbar shrink">
+  <v-app-bar app flat color="transparent" class="py-2 toolbar shrink">
 
     <app-remote/>
     <slot name="left" />
