@@ -6,6 +6,7 @@ import { getHttpProxy, getHttpsAgent } from '@utils/proxy'
 import store from '@store'
 
 class BaseProxy {
+
   /**
    * The constructor of the BaseProxy.
    *
@@ -13,24 +14,13 @@ class BaseProxy {
    * @param {Object} parameters The parameters for the request.
    */
   constructor(endpoint, parameters = {}) {
+
     this.endpoint = endpoint;
     this.parameters = parameters;
-
-    // Get main host url
-    this.host = this.getHost();
 
     // Flag then proxy is failed and need to make new request with new proxy
     // Used only if PAC mode is enabled
     this.proxyRetry = false;
-  }
-
-  /**
-   * Get host
-   *
-   * @return {*}
-   */
-  getHost() {
-    return __get(store, 'state.settings.connection.host', null);
   }
 
   /**
@@ -61,6 +51,7 @@ class BaseProxy {
   getProxyHttpsAgent(targetUrl) {
     return new Promise((resolve, reject) => {
       switch (this.getProxyUsage()) {
+
         case 'pac': // Get https agent for pac
           this.getPacProxy(targetUrl)
             .then(httpsAgent => resolve(httpsAgent))

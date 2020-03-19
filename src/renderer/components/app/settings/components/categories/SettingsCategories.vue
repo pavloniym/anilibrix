@@ -89,6 +89,7 @@
                 title: 'Воспроизведение',
                 subtitle: 'Настройки воспроизведения и качества',
                 icon: 'mdi-play',
+                disabled: true,
                 action: () => this.setComponent('Player'),
               },
               {
@@ -121,12 +122,14 @@
                 title: 'Подключение',
                 subtitle: 'Настройки сети и прокcи-сервер',
                 icon: 'mdi-wan',
+                disabled: true,
                 action: () => this.setComponent('Connection'),
               },
               {
                 title: 'Система',
                 subtitle: 'Системное меню и команды',
                 icon: 'mdi-cogs',
+                disabled: true,
                 action: () => this.setComponent('System'),
               }
             ]

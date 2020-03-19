@@ -52,7 +52,6 @@
     "win": {
       "icon": "build/icons/anilibria.ico",
       "target": [
-        "nsis",
         "portable",
         "zip"
       ]
@@ -71,6 +70,7 @@
     "fuse.js": "^3.4.6",
     "hls.js": "^0.13.1",
     "https-proxy-agent": "^5.0.0",
+    "jikan-node": "^1.2.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "object-hash": "^2.0.3",

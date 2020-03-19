@@ -5,7 +5,6 @@
       <v-btn
         v-on="datetime ? on : null"
         icon
-        class="mr-1"
         :disabled="_loading"
         @click="getLatestReleases">
 

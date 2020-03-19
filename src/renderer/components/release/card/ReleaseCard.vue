@@ -1,58 +1,34 @@
 <template>
-  <v-layout>
-    <div :style="{width: '5%'}"></div>
-    <div class="d-flex" :style="{width: '90%'}">
-      <v-card
-        height="450"
-        width="315"
-        class="black"
-        :style="{position: 'sticky', top: 0}">
+  <v-card flat color="transparent">
 
-        <v-img
-          v-if="poster"
-          width="315"
-          class="black"
-          height="450"
-          max-width="315"
-          max-height="450"
-          :src="poster">
-        </v-img>
+    <v-card-title
+      v-text="release.names.ru"
+      class="display-2 mb-4 font-weight-black"
+      :style="{wordBreak: 'break-word'}">
+    </v-card-title>
 
-      </v-card>
+    <v-card-subtitle v-text="release.names.original" class="pb-0"/>
+    <v-card-subtitle v-text="release.genres.join(' | ')" class="pt-0"/>
 
-      <v-card
-        flat
-        class="ml-4"
-        color="transparent"
-        :style="{width: '100%'}">
+    <v-card-text class="pb-0">
+      <v-chip label class="mb-1">{{release.year}}</v-chip>
+      <v-chip label class="mb-1">{{release.type}}</v-chip>
+      <div class="pt-4 white--text">{{release.description}}</div>
+    </v-card-text>
 
-        <v-card-title v-text="release.names.ru" class="pt-0"/>
-        <v-card-subtitle v-text="release.names.original" class="pb-0"/>
-        <v-card-subtitle v-text="release.genres.join(' | ')" class="pt-0"/>
-        <v-card-text>
-          <v-chip label class="mb-1">{{release.year}}</v-chip>
-          <v-chip label class="mb-1">{{release.type}}</v-chip>
-          <div class="pt-4">{{release.description}}</div>
-        </v-card-text>
-      </v-card>
-    </div>
-    <div :style="{width: '5%'}"></div>
-  </v-layout>
+  </v-card>
 </template>
 
 <script>
-  const props = {
-    release: {
-      type: Object,
-      default: null
-    },
-    poster: {
-      type: String,
-      default: null
-    }
-  };
+
+  import {mapState} from "vuex";
 
   export default {
-    props,
+    computed: {
+      ...mapState('releases', {
+        release: s => s.item.data,
+        poster: s => s.item.poster,
+      })
+    }
   }
 </script>

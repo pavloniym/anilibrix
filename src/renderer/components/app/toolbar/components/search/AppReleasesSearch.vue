@@ -2,7 +2,7 @@
   <v-layout class="shrink">
 
     <!-- Search -->
-    <v-btn icon class="mr-1" @click="visible = !visible">
+    <v-btn icon @click="visible = !visible">
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
 

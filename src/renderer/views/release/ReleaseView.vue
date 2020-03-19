@@ -2,20 +2,18 @@
   <v-overlay v-if="_loading" :value="true">
     <v-progress-circular indeterminate size="64"/>
   </v-overlay>
-  <release-layout v-else>
-    <div class="pa-6 fill-height" v-if="_release">
+  <release-layout v-else-if="_loading === false && _release" :poster="_poster">
 
-      <release-card :release="_release" :poster="_poster"/>
-      <release-episodes class="py-6" :release="_release" @click="watchEpisode"/>
+    <release-card/>
+    <release-playlist class="my-6" @click="watchEpisode"/>
 
-    </div>
   </release-layout>
 </template>
 
 <script>
 
   import ReleaseLayout from '@layouts/release'
-  import {ReleaseEpisodes, ReleaseCard} from '@components/release'
+  import {ReleaseCard, ReleasePlaylist} from '@components/release'
   import {mapState, mapActions} from 'vuex'
 
   const props = {
@@ -30,8 +28,8 @@
     name: "ReleaseView",
     components: {
       ReleaseLayout,
-      ReleaseEpisodes,
       ReleaseCard,
+      ReleasePlaylist,
     },
     data() {
       return {
@@ -44,7 +42,8 @@
       ...mapState('releases', {
         _loading: s => s.item.loading,
         _release: s => s.item.data,
-        _poster: s => s.item.poster
+        _poster: s => s.item.poster,
+        _jikan: s => s.item.jikan,
       })
     },
 

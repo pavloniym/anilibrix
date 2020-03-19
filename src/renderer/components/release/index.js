@@ -1,7 +1,7 @@
-import ReleaseEpisodes from './episodes'
+import ReleasePlaylist from './playlist'
 import ReleaseCard from './card'
 
 export {
-  ReleaseEpisodes,
-  ReleaseCard
+  ReleaseCard,
+  ReleasePlaylist,
 }

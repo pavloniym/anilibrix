@@ -57,9 +57,6 @@ app.on('ready', () => {
   // Create window
   createWindow();
 
-  // This will immediately download an update, then install when the app quits.
-  autoUpdater.checkForUpdatesAndNotify();
-
 });
 
 app.on('window-all-closed', () => {

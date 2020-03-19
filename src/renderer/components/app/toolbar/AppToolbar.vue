@@ -1,5 +1,9 @@
 <template>
-  <v-app-bar app flat color="transparent" class="py-2 toolbar shrink">
+  <v-app-bar
+    v-bind="{color, flat}"
+    app
+    class="px-3 toolbar shrink"
+    height="76px">
 
     <app-remote/>
     <slot name="left" />
@@ -11,11 +15,10 @@
     <app-releases-update v-if="noUpdate === false"/>
 
     <!-- Settings -->
-    <v-layout class="shrink">
-      <v-btn icon @click="setDrawer(!drawer)">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-    </v-layout>
+    <v-btn icon @click="setDrawer(!drawer)">
+      <v-icon>mdi-menu</v-icon>
+    </v-btn>
+
 
   </v-app-bar>
 </template>
@@ -36,6 +39,14 @@
     noUpdate: {
       type: Boolean,
       default: false
+    },
+    color: {
+      type: String,
+      default: 'transparent'
+    },
+    flat: {
+      type: Boolean,
+      default: true
     }
   };
 

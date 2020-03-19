@@ -1,5 +1,5 @@
 import { mutationsHelper } from '@utils/store'
-import { LoginProxy, ProfileProxy } from '@proxies/profile'
+/*import { LoginProxy, ProfileProxy } from '@proxies/profile'*/
 
 export default {
   namespaced: true,
@@ -25,21 +25,21 @@ export default {
      */
     authorize: ({ commit, dispatch }, { login, password }) => {
       return new Promise((resolve, reject) => {
-        new LoginProxy()
+        /*new LoginProxy()
           .authorize({ login, password })
           .then(response => commit('set', { k: 'session', v: response }))
           .then(() => dispatch('identify'))
           .then(() => resolve())
-          .catch(response => reject(response))
+          .catch(response => reject(response))*/
       })
     },
 
     identify: ({ commit }) => {
-      return new Promise((resolve, reject) => {
+     /* return new Promise((resolve, reject) => {
         new ProfileProxy()
           .identify()
           .then(response => console.log(response));
-      })
+      })*/
     }
 
   }

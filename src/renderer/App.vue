@@ -19,7 +19,7 @@
     <errors/>
 
     <!-- System notifications -->
-    <notifications />
+    <notifications/>
 
   </v-app>
 </template>
@@ -41,7 +41,11 @@
     },
     data() {
       return {
-        loading: false
+        loading: false,
+        update: {
+          handler: null,
+          timeout: 1000 * 60 * 10 // every 10 minutes
+        }
       }
     },
 
@@ -50,10 +54,27 @@
     },
 
     created() {
-     /* this.loading = true;
+
+      // Initial loading
+      this.loading = true;
       this.$store.dispatchPromise('releases/getLatestReleases')
-        .finally(() => this.loading = false)*/
+        .finally(() => this.loading = false);
+
+
+      // Set update interval
+      this.update.handler = setInterval(() => this.getLatestReleases(), this.update.timeout);
+
+    },
+
+
+    destroyed() {
+
+      // Clear update interval
+      if (this.update.handler) {
+        clearInterval(this.update.interval);
+      }
     }
+
   }
 </script>
 

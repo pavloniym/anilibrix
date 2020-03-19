@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import NotificationsTransformer from '@transformers/notifications'
+import NotificationsTransformer from '@transformers/anilibria/notifications'
 import {mutationsHelper} from '@utils/store'
 import __get from 'lodash/get'
 
