@@ -51,14 +51,14 @@
       }
     },
     computed: {
-      ...mapState('releases', {
-        _loading: s => s.search.loading,
-        _items: s => s.search.data,
+      ...mapState('search', {
+        _loading: s => s.loading,
+        _items: s => s.data,
       }),
     },
 
     methods: {
-      ...mapActions('releases', ['getReleasesByName']),
+      ...mapActions('search', ['getReleasesByName']),
 
       /**
        * Open release view

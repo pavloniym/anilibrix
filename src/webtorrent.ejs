@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>webtorrent-process</title>
+    <title>webtorrent</title>
     <% if (htmlWebpackPlugin.options.nodeModules) { %>
       <!-- Add `node_modules/` to global paths so `require` works properly in development -->
       <script>
@@ -11,7 +11,7 @@
     <% } %>
   </head>
   <body>
-    <div id="lostfilm-viewer"></div>
+    <div id="anilibria"></div>
     <!-- Set `__static` path to static files in production -->
     <% if (!process.browser) { %>
       <script>

@@ -1,5 +1,6 @@
 <template>
   <v-layout fill-height column>
+
     <!-- Toolbar -->
     <app-toolbar/>
 

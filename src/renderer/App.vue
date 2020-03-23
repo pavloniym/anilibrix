@@ -10,7 +10,9 @@
       <!-- Content -->
       <template v-else>
         <v-fade-transition mode="out-in" appear>
-          <router-view/>
+          <keep-alive>
+            <router-view :key="$route.fullPath"/>
+          </keep-alive>
         </v-fade-transition>
       </template>
     </v-fade-transition>
@@ -57,7 +59,8 @@
 
       // Initial loading
       this.loading = true;
-      this.$store.dispatchPromise('releases/getLatestReleases')
+      this.$store
+        .dispatchPromise('releases/getLatestReleases')
         .finally(() => this.loading = false);
 
 

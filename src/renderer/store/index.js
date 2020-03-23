@@ -8,6 +8,8 @@ import createPromiseAction from '@plugins/vuex-promise-action'
 import app from './app'
 import settings from './settings'
 import releases from './releases'
+import release from './release'
+import search from './search'
 import player from './player'
 import notifications from './notifications'
 
@@ -17,6 +19,8 @@ const modules = {
   app,
   settings,
   releases,
+  release,
+  search,
   player,
   notifications
 };

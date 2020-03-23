@@ -34,10 +34,7 @@ export default class extends Proxy {
     return new Promise((resolve, reject) => {
       new Jikan()
         .findAnime(id, 'episodes')
-        .then(response => {
-          console.log(response);
-          return __get(response, 'episodes', [])
-        })
+        .then(response => __get(response, 'episodes', []))
         .then(episodes => resolve(episodes))
         .catch(error => reject(error))
     })

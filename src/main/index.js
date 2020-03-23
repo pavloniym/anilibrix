@@ -1,9 +1,8 @@
 import {app, ipcMain as ipc, dialog} from 'electron' // eslint-disable-line
-import {mainWindow, torrentWindow} from './windows'
-import { autoUpdater } from "electron-updater"
+import {MainWindow, TorrentWindow} from './windows'
+// import {autoUpdater} from "electron-updater"
 
 import store from '@store'; // eslint-disable-line
-
 
 /**
  * Set `__static` path to static files in production
@@ -25,38 +24,20 @@ const torrentWindowUrl = process.env.NODE_ENV === 'development'
 let mainInstance = null;
 let torrentInstance = null;
 
-
 function createWindow() {
 
   // Init main-render-window-instance
-  mainInstance = mainWindow.init();
+  mainInstance = MainWindow.create();
   mainInstance.loadURL(mainWindowURL);
-  mainInstance.setMenu(null);
-
-  // Send events to main window
-  ipc.on('send:main', (e, {channel, payload}) => {
-    console.log('send:main', {channel, payload});
-    mainInstance.webContents.send(channel, payload)
-  });
-
 
   // Init torrent-process-window
-  torrentInstance = torrentWindow.init();
+  torrentInstance = TorrentWindow.create();
   torrentInstance.loadURL(torrentWindowUrl);
-
-  // Send events to torrent window
-  ipc.on('send:torrent', (e, {channel, payload}) => {
-    console.log('send:torrent', {channel, payload});
-    torrentInstance.webContents.send(channel, payload)
-  })
-
 }
 
+
 app.on('ready', () => {
-
-  // Create window
   createWindow();
-
 });
 
 app.on('window-all-closed', () => {
@@ -70,3 +51,5 @@ app.on('activate', () => {
     createWindow()
   }
 });
+
+export default {}

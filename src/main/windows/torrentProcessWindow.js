@@ -1,27 +1,54 @@
 import { BrowserWindow } from 'electron'
 
-let instance = null
+/**
+ * Store instance
+ *
+ * @type {null}
+ */
+let instance = null;
+
 
 /**
- * Init torrent process window
- * It is hidden
+ * Get window instance
+ * @return {null}
+ */
+const get = () => instance;
+
+
+/**
+ * Init main render window
  *
  * @return {Electron.BrowserWindow}
  */
-const init = () => {
+const create = () => {
   instance = new BrowserWindow({
     show: false,
     skipTaskbar: true,
+    title: 'torrent-process-window',
+    useContentSize: true,
     webPreferences: {
       nodeIntegration: true,
-      devTools: false
+      enableBlinkFeatures: 'AudioVideoTracks',
+      devTools: true
     }
-  })
+  });
 
   return instance;
-}
+};
+
+
+/**
+ * Send to main channel
+ * @param channel
+ * @param payload
+ */
+const send = (channel, payload) => {
+  console.log('send:torrent', {channel, payload});
+  instance.webContents.send(channel, payload)
+};
 
 export default {
-  instance,
-  init
+  create,
+  get,
+  send
 }

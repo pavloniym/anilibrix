@@ -25,9 +25,8 @@
 
   export default {
     computed: {
-      ...mapState('releases', {
-        release: s => s.item.data,
-        poster: s => s.item.poster,
+      ...mapState('release', {
+        release: s => s.data,
       })
     }
   }

@@ -36,7 +36,6 @@ export default class extends Proxy {
   }
 
 
-
   /**
    * Get last 14 releases
    *
@@ -76,7 +75,6 @@ export default class extends Proxy {
 
   /**
    * Get poster image
-   * Save it on disk
    *
    * @param posterSrc
    * @return {Promise<any>}
@@ -91,18 +89,33 @@ export default class extends Proxy {
 
 
   /**
+   * Get torrent file
+   *
+   * @param torrentUrl
+   * @return {Promise<unknown>}
+   */
+  getTorrentFile(torrentUrl) {
+    return new Promise((resolve, reject) => {
+      return this.submit('GET', this.getHost() + torrentUrl, {responseType: 'blob'})
+        .then(response => response.data)
+        .catch(error => reject(error))
+    })
+  }
+
+  /**
    * Search releases by name
    *
    * @param searchQuery
+   * @param parameters
    * @return {Promise<unknown>}
    */
-  searchReleasesByName(searchQuery) {
+  searchReleasesByName(searchQuery, parameters) {
     return new Promise((resolve, reject) => {
 
       const data = this.getFormDataObject({query: 'search', search: searchQuery});
       const headers = data.getHeaders();
 
-      return this.submit('POST', this.getHost() + this.endpoint, {data, headers})
+      return this.submit('POST', this.getHost() + this.endpoint, {...parameters, data, headers})
         .then(response => resolve(this.parseResponse(response)))
         .catch(error => reject(error))
     })

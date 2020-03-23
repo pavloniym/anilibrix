@@ -19,7 +19,7 @@
         <v-list-item :key="k" @click="$emit('click', item)">
           <v-list-item-content>
             <v-list-item-title v-text="item.title"/>
-            <v-list-item-subtitle v-text="item.jikan.title" />
+            <v-list-item-subtitle v-if="item.mal" v-text="item.mal.title"/>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -46,10 +46,11 @@
       }
     },
     computed: {
-      ...mapState('releases', {
-        release: s => s.item.data,
-        jikan: s => s.item.jikan,
+      ...mapState('release', {
+        release: s => s.data,
+        mal: s => s.mal,
       }),
+
 
       /**
        * Get playlist
@@ -57,17 +58,14 @@
        * @return Array
        */
       playlist() {
-        const episodes = __get(this.jikan, 'episodes', []);
-        return __get(this.release, 'episodes', []).map(episode => {
-
-          const jikan = (episodes || []).find(e => e.id === episode.id);
-          return {
-            ...episode,
-            jikan: {
-              title: __get(jikan, 'title'),
+        const malEpisodes = __get(this.mal, 'episodes') || [];
+        return __get(this.release, 'episodes', [])
+          .map(episode => {
+            return {
+              ...episode,
+              mal: (malEpisodes || []).find(e => e.id === episode.id)
             }
-          }
-        });
+          });
       },
 
 

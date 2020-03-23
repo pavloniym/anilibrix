@@ -13,6 +13,21 @@ import {ipcRenderer as ipc} from 'electron'
 let torrentStore = null;
 let serverStore = null;
 
+
+const getTorrent = ({torrentBuffer, torrentId}) => {
+
+  console.log('tettt');
+
+  /*if (WebTorrentClient && torrentBuffer) {
+    WebTorrentClient.add(torrentBuffer);
+    WebTorrentClient.on('torrent', (torrentInstance) => {
+      ipc.send(`main:torrent:instance:${torrentId}`, torrentInstance);
+    })
+  } else {
+    ipc.send(`main:torrent:instance:${torrentId}`, null);
+  }*/
+};
+
 /**
  * Start torrent from provided source
  *
@@ -83,7 +98,12 @@ const destroyTorrent = () => torrentStore ? torrentStore.destroy() : null;
 const destroyServer = () => serverStore ? serverStore.destroy() : null;
 
 (() => {
+
+  console.log('test from webtorrent');
+
+  ipc.on('torrent:get', (e, payload) => getTorrent(payload));
   ipc.on('torrent:start', (e, {torrentSource}) => startTorrent({torrentSource}));
   ipc.on('torrent:destroy', () => destroyTorrent());
   ipc.on('server:destroy', () => destroyServer())
+
 })();

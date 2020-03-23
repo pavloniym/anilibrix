@@ -24,8 +24,8 @@
   export default {
     computed: {
       ...mapState('releases', {
-        _loading: s => s.items.loading,
-        _datetime: s => s.items.datetime,
+        _loading: s => s.loading,
+        _datetime: s => s.datetime,
       }),
 
 

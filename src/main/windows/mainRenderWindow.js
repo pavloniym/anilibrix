@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import {BrowserWindow} from 'electron'
 
 const MIN_HEIGHT = 650;
 const HEIGHT = MIN_HEIGHT;
@@ -6,12 +6,27 @@ const MIN_WIDTH = 650;
 const WIDTH = 1000;
 
 /**
+ * Store instance
+ *
+ * @type {null}
+ */
+let instance = null;
+
+
+/**
+ * Get window instance
+ * @return {null}
+ */
+const get = () => instance;
+
+
+/**
  * Init main render window
  *
  * @return {Electron.BrowserWindow}
  */
-const init = () => {
-  return new BrowserWindow({
+const create = () => {
+  instance = new BrowserWindow({
     height: HEIGHT,
     width: WIDTH,
     minHeight: MIN_HEIGHT,
@@ -25,9 +40,24 @@ const init = () => {
     webPreferences: {
       nodeIntegration: true,
     }
-  })
+  });
+
+  return instance;
+};
+
+
+/**
+ * Send to main channel
+ * @param channel
+ * @param payload
+ */
+const send = (channel, payload) => {
+  console.log('send:main', {channel, payload});
+  instance.webContents.send(channel, payload)
 };
 
 export default {
-  init
+  create,
+  get,
+  send
 }
