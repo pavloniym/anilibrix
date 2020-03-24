@@ -9,7 +9,7 @@
       <template v-slot:right>
 
         <!-- Return to releases page -->
-        <v-btn icon @click="$router.push({name: 'releases'})">
+        <v-btn icon @click="toReleases">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
 
@@ -33,6 +33,8 @@
   import AppToolbar from '@components/app/toolbar'
   import AppSettings from '@components/app/settings'
 
+  import {mapActions} from 'vuex'
+
   const props = {
     poster: {
       type: String,
@@ -43,7 +45,27 @@
   export default {
     props,
     components: {
-      AppToolbar, AppSettings
+      AppToolbar,
+      AppSettings
+    },
+
+    methods: {
+      ...mapActions('release', ['clearRelease']),
+
+      /**
+       * Go to releases page
+       * Clear release data
+       *
+       * @return void
+       */
+      toReleases() {
+
+        // Go to releases
+        this.$router.push({name: 'releases'});
+
+        // Clear release data
+        this.clearRelease();
+      }
     }
   }
 </script>

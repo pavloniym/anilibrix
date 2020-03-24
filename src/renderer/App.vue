@@ -10,9 +10,7 @@
       <!-- Content -->
       <template v-else>
         <v-fade-transition mode="out-in" appear>
-          <keep-alive>
-            <router-view :key="$route.fullPath"/>
-          </keep-alive>
+          <router-view :key="$route.fullPath"/>
         </v-fade-transition>
       </template>
     </v-fade-transition>

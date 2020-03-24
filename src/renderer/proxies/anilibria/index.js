@@ -1,3 +1,3 @@
-import anilibriaProxy from './anilibriaProxy'
+import AnilibriaProxy from './AnilibriaProxy'
 
-export default anilibriaProxy
+export default AnilibriaProxy

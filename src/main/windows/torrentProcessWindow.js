@@ -28,8 +28,7 @@ const create = () => {
     useContentSize: true,
     webPreferences: {
       nodeIntegration: true,
-      enableBlinkFeatures: 'AudioVideoTracks',
-      devTools: true
+      devTools: false
     }
   });
 

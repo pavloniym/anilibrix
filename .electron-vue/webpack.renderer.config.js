@@ -3,7 +3,7 @@
 process.env.BABEL_ENV = 'renderer';
 
 const path = require('path');
-const { dependencies } = require('../package.json');
+const {dependencies} = require('../package.json');
 const webpack = require('webpack');
 
 const webpackAppConfig = require('./../webpack.config');
@@ -13,7 +13,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
-const { VueLoaderPlugin } = require('vue-loader');
+const {VueLoaderPlugin} = require('vue-loader');
 
 /**
  * List of node_modules to include in webpack bundle
@@ -27,7 +27,8 @@ let whiteListedModules = ['vue'];
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
   entry: {
-    renderer: path.join(__dirname, '../src/renderer/main.js')
+    renderer: path.join(__dirname, '../src/renderer/main.js'),
+    webtorrent: path.join(__dirname, '../src/renderer/webtorrent.js')
   },
   externals: [
     ...Object.keys(dependencies || {})
@@ -134,7 +135,7 @@ let rendererConfig = {
   plugins: [
     new VueLoaderPlugin(),
     new VuetifyLoaderPlugin(),
-    new MiniCssExtractPlugin({ filename: 'styles.css' }),
+    new MiniCssExtractPlugin({filename: 'styles.css'}),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['renderer'],
@@ -199,7 +200,7 @@ if (process.env.NODE_ENV === 'production') {
   rendererConfig.devtool = '';
 
   rendererConfig.plugins.push(
-     new MinifyPlugin(),
+    new MinifyPlugin(),
     new CopyWebpackPlugin([
       {
         from: path.join(__dirname, '../static'),

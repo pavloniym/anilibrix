@@ -14,7 +14,7 @@
   import {mapState, mapActions} from 'vuex'
 
   export default {
-    name: 'ReleasesView',
+    name: 'Releases',
     components: {
       ReleasesLayout,
       ReleasesData, ReleasesSlider

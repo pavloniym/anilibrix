@@ -3,11 +3,7 @@ import {mutationsHelper} from '@utils/store'
 export default {
   namespaced: true,
   state: {
-    type: 'stream',
-    stream: {
-      quality: 'fhd'
-    }
-
+    source: 'fhd',
   },
 
   mutations: {
@@ -18,25 +14,14 @@ export default {
   actions: {
 
     /**
-     * Set default player type
+     * Set source
      *
      * @param commit
-     * @param type
+     * @param source
      * @return {*}
      */
-    setPlayerType: ({commit}, type) =>
-      commit('set', {k: 'type', v: type}),
-
-
-    /**
-     * Set stream quality
-     *
-     * @param commit
-     * @param quality
-     * @return {*}
-     */
-    setStreamQuality: ({commit}, quality) =>
-      commit('set', {k: 'stream.quality', v: quality}),
+    setSource: ({commit}, source) =>
+      commit('set', {k: 'source', v: source}),
 
   }
 }

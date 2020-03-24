@@ -3,28 +3,22 @@
     <div :style="{width: '5%'}"></div>
     <div :style="{width: '90%'}">
 
+      <!-- Release Data -->
       <div class="display-2 font-weight-black text-truncate">{{release.names.ru}}</div>
       <div class="subtitle-1">{{release.names.original}}</div>
       <div class="body-2">{{release.genres.join(' | ')}}</div>
+
+      <!-- Episode -->
       <v-chip label color="secondary" class="mt-2 subtitle-2 font-weight-black">{{release.episode.title}}</v-chip>
+
+      <!-- Description -->
       <div class="my-2 grey--text lighten-1" :style="{maxHeight: '75px'}">
         <v-clamp max-height="75px">{{release.description}}</v-clamp>
       </div>
 
       <v-layout>
-        <v-btn
-          v-bind="{loading}"
-          :disabled="loading"
-          @click="watchRelease(release)">
-          Смотреть
-        </v-btn>
-        <v-btn
-          v-bind="{loading}"
-          class="ml-1"
-          :disabled="loading"
-          @click="toRelease">
-          Релиз
-        </v-btn>
+        <v-btn v-bind="{loading}" :disabled="loading" @click="watchEpisode">Смотреть</v-btn>
+        <v-btn v-bind="{loading}" class="ml-1" :disabled="loading" @click="toRelease">Релиз</v-btn>
       </v-layout>
 
     </div>
@@ -60,17 +54,17 @@
     methods: {
 
       /**
-       * Watch release
-       * Set player data:
-       * -> release title and episode
-       * -> stream data
+       * Watch episode
        *
-       * @param release
+       * @return void
        */
-      watchRelease(release) {
+      watchEpisode() {
         this.loading = true;
         this.$store
-          .dispatchPromise('player/setPlayerData', {release, type: this.type})
+          .dispatchPromise('player/watch', {
+            release: this.release,
+            episode: this.release.episode
+          })
           .then(() => this.$router.push({name: 'player'}))
           .finally(() => this.loading = false);
       },

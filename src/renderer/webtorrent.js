@@ -1,31 +1,36 @@
 // To keep the UI snappy, we run WebTorrent in its own hidden window, a separate
 // process from the main window.
-const WebTorrent = require('webtorrent');
+const webTorrent = require('webtorrent');
+const parseTorrent = require('parse-torrent');
 
 // Create WebTorrentClient
 // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
 // client, as explained here: https://webtorrent.io/faq
-const WebTorrentClient = new WebTorrent();
+const torrentClient = new webTorrent();
 
 // Send & receive messages from the main window
 import {ipcRenderer as ipc} from 'electron'
 
-let torrentStore = null;
-let serverStore = null;
 
+/**
+ * Get torrent data from torrent stream
+ *
+ * @param blob
+ * @param id
+ */
+const getTorrent = ({blob, id}) => {
 
-const getTorrent = ({torrentBuffer, torrentId}) => {
+  let data = null;
 
-  console.log('tettt');
+  // If blob is provided -> try to create buffer with torrent file
+  // Try to parse torrent
+  if (blob !== null) {
+    data = parseTorrent(new Buffer(blob));
+  }
 
-  /*if (WebTorrentClient && torrentBuffer) {
-    WebTorrentClient.add(torrentBuffer);
-    WebTorrentClient.on('torrent', (torrentInstance) => {
-      ipc.send(`main:torrent:instance:${torrentId}`, torrentInstance);
-    })
-  } else {
-    ipc.send(`main:torrent:instance:${torrentId}`, null);
-  }*/
+  // Send result to main process
+  ipc.send(`main:torrent:data:${id}`, data);
+
 };
 
 /**
@@ -34,11 +39,11 @@ const getTorrent = ({torrentBuffer, torrentId}) => {
  * @param torrentSource
  */
 const startTorrent = ({torrentSource}) => {
-  if (WebTorrentClient && torrentSource) {
+  if (torrentClient && torrentSource) {
 
     // Create torrent instance
-    WebTorrentClient.add(torrentSource);
-    WebTorrentClient.on('torrent', (torrentInstance) => {
+    torrentClient.add(torrentSource);
+    torrentClient.on('torrent', (torrentInstance) => {
 
       // Save torrent instance
       torrentStore = torrentInstance;
@@ -98,12 +103,8 @@ const destroyTorrent = () => torrentStore ? torrentStore.destroy() : null;
 const destroyServer = () => serverStore ? serverStore.destroy() : null;
 
 (() => {
-
-  console.log('test from webtorrent');
-
   ipc.on('torrent:get', (e, payload) => getTorrent(payload));
   ipc.on('torrent:start', (e, {torrentSource}) => startTorrent({torrentSource}));
   ipc.on('torrent:destroy', () => destroyTorrent());
   ipc.on('server:destroy', () => destroyServer())
-
 })();

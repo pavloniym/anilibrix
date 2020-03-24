@@ -21,23 +21,17 @@ const torrentWindowUrl = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/webtorrent.html`;
 
 
-let mainInstance = null;
-let torrentInstance = null;
-
-function createWindow() {
-
-  // Init main-render-window-instance
-  mainInstance = MainWindow.create();
-  mainInstance.loadURL(mainWindowURL);
-
-  // Init torrent-process-window
-  torrentInstance = TorrentWindow.create();
-  torrentInstance.loadURL(torrentWindowUrl);
+/**
+ * Create windows
+ */
+function createWindows() {
+  MainWindow.create().loadURL(mainWindowURL);
+  TorrentWindow.create().loadURL(torrentWindowUrl);
 }
 
 
 app.on('ready', () => {
-  createWindow();
+  createWindows();
 });
 
 app.on('window-all-closed', () => {
@@ -47,9 +41,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (mainInstance === null) {
-    createWindow()
+  if (MainWindow.get() === null) {
+    createWindows()
   }
 });
-
-export default {}

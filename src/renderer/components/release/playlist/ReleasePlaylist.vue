@@ -16,7 +16,7 @@
     <v-list v-if="items.length > 0" dense dark>
       <template v-for="(item, k) in items">
         <v-divider v-if="k > 0" :key="`d:${k}`"/>
-        <v-list-item :key="k" @click="$emit('click', item)">
+        <v-list-item :key="k" @click="watchEpisode(item)">
           <v-list-item-content>
             <v-list-item-title v-text="item.title"/>
             <v-list-item-subtitle v-if="item.mal" v-text="item.mal.title"/>
@@ -43,12 +43,18 @@
     data() {
       return {
         search: null,
+        searchOptions: {
+          shouldSort: true,
+          tokenize: true,
+          matchAllTokens: true,
+          keys: ['title']
+        },
       }
     },
     computed: {
       ...mapState('release', {
-        release: s => s.data,
-        mal: s => s.mal,
+        _release: s => s.data,
+        _mal: s => s.mal,
       }),
 
 
@@ -58,8 +64,8 @@
        * @return Array
        */
       playlist() {
-        const malEpisodes = __get(this.mal, 'episodes') || [];
-        return __get(this.release, 'episodes', [])
+        const malEpisodes = __get(this._mal, 'episodes') || [];
+        return __get(this._release, 'episodes', [])
           .map(episode => {
             return {
               ...episode,
@@ -75,17 +81,7 @@
        * @return Object
        */
       playlistSearchable() {
-        return new Fuse(this.playlist, {
-          shouldSort: true,
-          tokenize: true,
-          matchAllTokens: true,
-          threshold: 0.35,
-          location: 0,
-          distance: 100,
-          maxPatternLength: 128,
-          minMatchCharLength: 1,
-          keys: ['title']
-        });
+        return new Fuse(this.playlist, this.searchOptions);
       },
 
 
@@ -99,6 +95,23 @@
           ? this.playlistSearchable.search(this.search)
           : this.playlist;
       }
+
+    },
+
+
+    methods: {
+
+
+      /**
+       * Watch episode
+       *
+       * @param episode
+       */
+      watchEpisode(episode) {
+        this.$store
+          .dispatchPromise('player/watch', {release: this._release, episode})
+          .then(() => this.$router.push({name: 'player'}));
+      },
 
     }
   }

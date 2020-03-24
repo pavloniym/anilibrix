@@ -1,3 +1,3 @@
-import notificationsTransformer from './notificationsTransformer'
+import AnilibriaNotificationTransformer from './AnilibriaNotificationTransformer'
 
-export default notificationsTransformer
+export default AnilibriaNotificationTransformer

@@ -34,45 +34,25 @@
 
     computed: {
       ...mapState('release', {
-        release: s => s.data,
         loading: s => s.loading,
         poster: s => s.poster,
+        release: s => s.data,
       })
     },
 
     methods: {
       ...mapActions('release', ['getRelease']),
-
-
-      /**
-       * Watch release
-       * Set player data:
-       * -> release title and episode
-       * -> stream data
-       *
-       * @param episode
-       */
-      /*watchEpisode(episode) {
-
-        const payload = {
-          episode: episode,
-          release: this._release,
-          type: this.type
-        };
-
-        this.$store
-          .dispatchPromise('player/setPlayerData', payload)
-          .then(() => this.$router.push({name: 'player'}))
-          .finally(() => this.loading = false);
-      },*/
     },
-
 
     watch: {
       releaseId: {
         immediate: true,
         handler(releaseId) {
-          this.getRelease(releaseId);
+
+          // Update if release data changed
+          if(this.release === null || this.release.id !== parseInt(releaseId)) {
+            this.getRelease(releaseId);
+          }
         }
       }
     }

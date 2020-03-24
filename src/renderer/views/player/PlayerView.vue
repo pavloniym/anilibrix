@@ -14,16 +14,16 @@
       <v-slide-y-reverse-transition>
         <player-controls
           v-show="controls.show"
-          :plyr="plyr.instance"
-          :type="_type"
-          :qualities="sourceQualities"
-          :quality.sync="quality"
+          v-bind="{sources, source, plyr: plyr.instance}"
+          @source="switchSource"
           @fullscreen="toggleFullscreen"
           @back="goBack">
+
           <template v-slot:info>
             <h2>{{_release.names.ru}}</h2>
             <h3>{{_episode.title}}</h3>
           </template>
+
         </player-controls>
       </v-slide-y-reverse-transition>
     </template>
@@ -82,11 +82,10 @@
       ...mapState('player', {
         _release: s => s.release,
         _episode: s => s.episode,
-        _type: s => s.type,
       }),
 
       ...mapState('settings/player', {
-        _streamQuality: s => s.stream.quality
+        _source: s => s.source
       }),
 
 
@@ -96,51 +95,72 @@
        * @return boolean
        */
       isValid() {
-        return this._release !== null && this._episode !== null;
+        return (
+          this._release !== null &&
+          this._episode !== null &&
+          this.sources &&
+          this.sources.length > 0
+        );
       },
 
 
       /**
-       * Get available source qualities
+       * Get sources list
        *
-       * @return array
+       * @return Array
        */
-      sourceQualities() {
-        if (this._type === 'stream') {
-          return [
-            {type: 'fhd', label: '1080', path: __get(this._episode, 'stream.fhd'), icon: 'mdi-high-definition'},
-            {type: 'hd', label: '720', path: __get(this._episode, 'stream.hd'), icon: 'mdi-high-definition'},
-            {type: 'sd', label: '480', path: __get(this._episode, 'stream.sd'), icon: 'mdi-standard-definition'},
-          ]
-        }
+      sources() {
+        return __get(this._episode, 'sources') || [];
       },
 
 
       /**
        * Get first source with max available quality
        *
-       * @return {boolean}
+       * @return Object|null
        */
       source() {
-        return this.quality && this.quality.path
-          ? this.quality.path
-          : null;
-      },
-
-
-      /**
-       * Check if any source is defined
-       *
-       * @return {boolean}
-       */
-      sourceIsDefined() {
-        return this.source && this.source.length > 0;
+        return this.sources.find(source => source.alias === this._source) || this.sources[0];
       }
 
     },
 
     methods: {
-      ...mapActions('player', ['clearPlayerData']),
+      ...mapActions('player', ['clear']),
+      ...mapActions('settings/player', ['setSource']),
+
+
+      /**
+       * Get payload from provided source
+       *
+       * @return String|null
+       */
+      async getPayload(source) {
+        if (source) {
+
+          const type = __get(source, 'type');
+
+          // Get source for "server" source type
+          // Simple playlist url from payload property
+          if (type === 'server') {
+            return __get(source, 'payload');
+          }
+
+        }
+
+        return null;
+      },
+
+
+      /**
+       * Switch source
+       * Save in settings
+       *
+       * @return void
+       */
+      switchSource(source) {
+        this.setSource(source.alias || null);
+      },
 
 
       /**
@@ -151,53 +171,34 @@
        *
        * @return void
        */
-      loadSource(source, hlsOptions = {}, shouldPlay = false) {
+      loadSource(payload, hlsOptions = {}, shouldPlay = false) {
 
+        // Destroy previous hls instance if exists
+        // No other way to update source without glitches and crashes
         if (this.hls) {
           this.hls.destroy();
           this.hls = null;
         }
 
-        if (source) {
+        // If payload provided - create new hls instance
+        if (payload) {
+
+          // Create hls and attach media element
           this.hls = new Hls(hlsOptions);
           this.hls.attachMedia(this.player);
+
+          // When hls instance attached -> load source payload
           this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-            this.hls.loadSource(source);
-            if (shouldPlay) {
-              this.plyr.instance.play();
-            }
+
+            // Load source payload
+            this.hls.loadSource(payload);
+
+            // If play should play -> play source automatically
+            if (shouldPlay) this.plyr.instance.play();
           });
         }
       },
 
-
-      /**
-       * Get stream quality
-       * Check default user settings
-       * Check links existence
-       *
-       * @return string|null
-       */
-      getSourceQuality(type, sourceQualities) {
-        let settingsPlayerQuality = null;
-        if (type === 'stream') settingsPlayerQuality = this._streamQuality;
-
-        if (settingsPlayerQuality !== null) {
-
-          const sourceQuality = sourceQualities.find(quality => quality.type === settingsPlayerQuality);
-          if (sourceQuality && sourceQuality.path && sourceQuality.path.length > 0) {
-            return sourceQuality;
-
-          } else {
-            const sourceQualities = (sourceQualities || []).filter(quality => quality.path);
-            const sourceQuality = sourceQualities[0];
-            return sourceQuality && sourceQuality.path && sourceQuality.path.length > 0
-              ? sourceQuality
-              : null;
-          }
-        }
-        return null;
-      },
 
       /**
        * Show player controls
@@ -210,15 +211,10 @@
         this.controls.show = true;
 
         // Clear previous interval
-        if (this.controls.mouseHandler) {
-          clearTimeout(this.controls.mouseHandler);
-        }
+        if (this.controls.mouseHandler) clearTimeout(this.controls.mouseHandler);
 
         // Create new interval
-        this.controls.mouseHandler = setTimeout(() =>
-            this.controls.show = false,
-          this.controls.mouseTimeout
-        )
+        this.controls.mouseHandler = setTimeout(() => this.controls.show = false, this.controls.mouseTimeout)
       },
 
 
@@ -234,8 +230,9 @@
 
 
       /**
-       * Return to home screen
+       * Return to back
        *
+       * @return void
        */
       goBack() {
         this.$router.back();
@@ -245,51 +242,52 @@
 
 
     mounted() {
-      this.$nextTick(() => {
-        if (this.sourceIsDefined) {
+      this.$nextTick(async () => {
 
-          // Init stream player
-          // Run plyr and add hls source
-          this.player = this.$refs.player;
-          this.plyr.instance = new Plyr(this.player, this.plyr.options);
+        // Init stream player
+        // Run plyr and add hls source
+        this.player = this.$refs.player;
+        this.plyr.instance = new Plyr(this.player, this.plyr.options);
 
-          // If it is stream -> load m3u8 playlist
-          // Attach it to player
-          this.loadSource(this.source);
+        // If it is stream -> load m3u8 playlist
+        // Attach it to player
+        this.loadSource(await this.getPayload(this.source));
 
-          // Set ready flag on player ready event
-          this.plyr.instance.on('loadedmetadata', () => this.isReady = true);
-          this.plyr.instance.on('waiting', () => this.isBuffering = true);
-          this.plyr.instance.on('canplay', () => this.isBuffering = false);
-          this.plyr.instance.on('ended', () => this.goBack());
+        // Set ready flag on player ready event
+        this.plyr.instance.on('loadedmetadata', () => this.isReady = true);
+        this.plyr.instance.on('waiting', () => this.isBuffering = true);
+        this.plyr.instance.on('canplay', () => this.isBuffering = false);
+        this.plyr.instance.on('ended', () => this.goBack());
 
-          // Hide / Show controls
-          this.showControls();
+        // Hide / Show controls
+        this.showControls();
 
-          // Add some event listeners
-          window.addEventListener('mousemove', this.showControls, true);
-          window.addEventListener('keydown', event => {
-            if (event.key === 'f') this.toggleFullscreen();
-          });
+        // Add some event listeners
+        window.addEventListener('mousemove', this.showControls, true);
+        window.addEventListener('keydown', event => {
+          if (event.key === 'f') {
+            this.toggleFullscreen();
+          }
+        });
 
-
-        }
       })
     },
+
 
     destroyed() {
       setTimeout(() => {
 
         // Cleat player data
         // Destroy plyr instance
-        this.clearPlayerData();
+        this.clear();
         this.plyr.instance.destroy();
 
-      },500);
+      }, 500);
     },
 
 
     watch: {
+
       isValid: {
         immediate: true,
         handler(isValid) {
@@ -302,24 +300,25 @@
       },
 
 
-      sourceQualities: {
-        immediate: true,
+      source: {
         deep: true,
-        handler(sourceQualities) {
-          this.quality = this.getSourceQuality(this._type, sourceQualities || []);
-        }
-      },
+        async handler(source) {
+          if (source) {
+
+            // Get payload for provided source
+            const payload = await this.getPayload(source);
+
+            // Get hls options
+            // Get current play time to continue after source changed
+            const options = {startPosition: this.plyr.instance.currentTime};
+
+            // Get player playing state
+            // Continue playing if it was playing
+            const playing = this.plyr.instance.playing;
 
 
-      quality: {
-        deep: true,
-        handler(quality) {
-          if (quality && quality.path) {
-            this.loadSource(
-              this.source,
-              {startPosition: this.plyr.instance.currentTime},
-              this.plyr.instance.playing
-            );
+            // Load new source
+            this.loadSource(payload, options, playing);
           }
         }
       }

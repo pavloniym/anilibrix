@@ -1,5 +1,5 @@
 import AnilibriaProxy from '@proxies/anilibria'
-import AnilibriaReleasesTransformer from '@transformers/anilibria/releases'
+import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 
 import {mutationsHelper} from '@utils/store'
 
@@ -44,7 +44,7 @@ export default {
         commit('set', {k: 'datetime', v: new Date()});
         return new AnilibriaProxy()
           .getReleases()
-          .then(releases => AnilibriaReleasesTransformer.fetchCollection(releases.items))
+          .then(async releases => await AnilibriaReleaseTransformer.fetchCollection(releases.items))
           .then(releases => commit('set', {k: 'data', v: releases}))
           .then(() => dispatch('getReleasesPosters'))
           .then(() => resolve())

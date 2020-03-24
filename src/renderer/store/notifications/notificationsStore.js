@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import NotificationsTransformer from '@transformers/anilibria/notifications'
+import AnilibriaNotificationTransformer from '@transformers/anilibria/notifications'
 import {mutationsHelper} from '@utils/store'
 import __get from 'lodash/get'
 
@@ -66,7 +66,7 @@ export default {
           if (!state.items.hasOwnProperty(release.id)) {
 
             // Create notification item -> add notification data object to release item
-            const notificationItem = NotificationsTransformer.fetchItem(release);
+            const notificationItem = AnilibriaNotificationTransformer.fetchItem(release);
 
             // Update notifications items
             commit('set', {k: 'items', v: {...state.items, [release.id]: notificationItem}})

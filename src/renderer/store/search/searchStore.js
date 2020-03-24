@@ -1,5 +1,6 @@
 import AnilibriaProxy from "@proxies/anilibria";
-import AnilibriaReleasesTransformer from "@transformers/anilibria/releases";
+import AnilibriaReleaseTransformer from "@transformers/anilibria/release";
+
 import {mutationsHelper} from "@utils/store";
 import axios from 'axios'
 
@@ -42,10 +43,10 @@ export default {
 
         new AnilibriaProxy()
           .searchReleasesByName(searchQuery, {cancelToken: state.request.token})
-          .then(releases => AnilibriaReleasesTransformer.fetchCollection(releases))
+          .then(releases => AnilibriaReleaseTransformer.fetchCollection(releases))
           .then(releases => commit('set', {k: 'data', v: releases}))
-          .then(releases => commit('set', {k: 'loading', v: false}))
-          .catch(error => null)
+          .then(() => commit('set', {k: 'loading', v: false}))
+          .catch(() => null)
       })
     },
 

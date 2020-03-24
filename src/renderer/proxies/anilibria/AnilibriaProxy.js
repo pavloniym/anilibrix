@@ -96,8 +96,8 @@ export default class extends Proxy {
    */
   getTorrentFile(torrentUrl) {
     return new Promise((resolve, reject) => {
-      return this.submit('GET', this.getHost() + torrentUrl, {responseType: 'blob'})
-        .then(response => response.data)
+      return this.submit('GET', this.getHost() + torrentUrl, {responseType: 'arraybuffer'})
+        .then(response => resolve(response))
         .catch(error => reject(error))
     })
   }

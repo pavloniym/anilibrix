@@ -1,8 +1,8 @@
 import AnilibriaProxy from '@proxies/anilibria'
-import AnilibriaReleasesTransformer from '@transformers/anilibria/releases'
+import MyAnimeListProxy from '@proxies/my-anime-list'
 
-import MALProxy from '@proxies/mal'
-import {MALAnimeTransformer, MALEpisodeTransformer} from '@transformers/mal'
+import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
+import {MyAnimeListAnimeTransformer, MyAnimeListEpisodeTransformer} from '@transformers/my-anime-list'
 
 import {mutationsHelper} from "@utils/store";
 
@@ -43,20 +43,28 @@ export default {
 
           // Get release data from anilibria
           .getRelease(releaseId)
-          .then(release => AnilibriaReleasesTransformer.fetchItem(release))
+          .then(release => AnilibriaReleaseTransformer.fetchItem(release))
           .then(release => commit('set', {k: 'data', v: release}))
 
           // Try to get poster from anilibria server
           .then(() => dispatch('getReleasePoster', state.data.poster))
           .then(poster => commit('set', {k: 'poster', v: poster}))
+          .then(() => {
 
-          // Resolve release request
-          // Disable loading state
-          .then(() => resolve(state.data))
-          .then(() => () => commit('set', {k: 'loading', v: false}))
+            // Resolve release request
+            // Disable loading state
+            commit('set', {k: 'loading', v: false});
+            resolve(state.data);
 
-          // Make jikan api request for more anime data
-          .then(() => dispatch('getMALData'))
+            try {
+              // Get my anime list release data
+              // Make it in background
+              dispatch('getMALData')
+
+            } catch (e) {
+              console.log('my anime list api error', e);
+            }
+          })
 
           // Catch errors
           .catch(error => {
@@ -98,17 +106,30 @@ export default {
       return new Promise((resolve, reject) => {
         commit('set', {k: 'mal.anime', v: null});
         commit('set', {k: 'mal.episodes', v: []});
-        new MALProxy()
+        new MyAnimeListProxy()
           .getAnimeByName(state.data.names.original)
-          .then(anime => MALAnimeTransformer.fetchItem(anime))
+          .then(anime => MyAnimeListAnimeTransformer.fetchItem(anime))
           .then(anime => commit('set', {k: 'mal.anime', v: anime}))
-          .then(() => new MALProxy().getAnimeEpisodes(state.mal.anime.id))
-          .then(episodes => MALEpisodeTransformer.fetchCollection(episodes))
+          .then(() => new MyAnimeListProxy().getAnimeEpisodes(state.mal.anime.id))
+          .then(episodes => MyAnimeListEpisodeTransformer.fetchCollection(episodes))
           .then(episodes => commit('set', {k: 'mal.episodes', v: episodes}))
           .then(() => resolve())
           .catch(error => reject(error))
       })
     },
+
+
+    /**
+     * Clear release data
+     *
+     * @param commit
+     */
+    clearRelease: ({commit}) => {
+      commit('set', {k: 'data', v: null});
+      commit('set', {k: 'mal.anime', v: null});
+      commit('set', {k: 'mal.episodes', v: []});
+      commit('set', {k: 'poster', v: null});
+    }
 
   }
 }
