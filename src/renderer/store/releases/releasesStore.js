@@ -45,6 +45,7 @@ export default {
         return new AnilibriaProxy()
           .getReleases()
           .then(async releases => await AnilibriaReleaseTransformer.fetchCollection(releases.items))
+          //.then(releases => releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system)))
           .then(releases => commit('set', {k: 'data', v: releases}))
           .then(() => dispatch('getReleasesPosters'))
           .then(() => resolve())

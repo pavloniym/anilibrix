@@ -25,8 +25,15 @@ const torrentWindowUrl = process.env.NODE_ENV === 'development'
  * Create windows
  */
 function createWindows() {
+
   MainWindow.create().loadURL(mainWindowURL);
   TorrentWindow.create().loadURL(torrentWindowUrl);
+
+  // Set events between windows
+  ipc.on('torrent:start', (e, payload) => TorrentWindow.send('torrent:start', payload));
+  ipc.on('torrent:destroy', () => TorrentWindow.send('torrent:destroy'));
+  ipc.on('torrent:server', (e, payload) => MainWindow.send('torrent:server', payload));
+
 }
 
 

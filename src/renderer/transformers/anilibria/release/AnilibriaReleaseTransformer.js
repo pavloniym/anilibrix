@@ -1,6 +1,7 @@
 import Transformer from '@transformer'
 import AnilibriaProxy from '@proxies/anilibria'
 import stripHtml from "string-strip-html";
+import __camelCase from 'lodash/camelCase'
 
 import {TorrentWindow} from '@/main/windows'
 import {ipcMain as ipc} from 'electron'
@@ -107,63 +108,13 @@ export default class extends Transformer {
 
       const episodes = {};
       const playlist = this.get(release, 'playlist') || [];
-      // const torrents = await this._getTorrents(release);
+      // const torrents = await this._getTorrents(release) || [];
 
+      // Parse playlist
+      this._parsePlaylist(playlist, episodes);
 
-      /**
-       * Create episode entity
-       *
-       * @param number
-       */
-      const createEpisode = (number) => {
-        if (episodes.hasOwnProperty(number) === false) {
-          episodes[number] = {
-            id: null,
-            title: null,
-            sources: [],
-          }
-        }
-      };
-
-
-      /**
-       * Create episode source
-       *
-       * @param type
-       * @param label
-       * @param alias
-       * @param payload
-       * @return {{payload: *, alias: *, label: *, type: *}}
-       */
-      const createSource = (type, label, alias, payload) => {
-        return {
-          type,
-          label,
-          alias,
-          payload
-        }
-      };
-
-
-      // Parse stream quality episodes
-      playlist.forEach(episode => {
-
-        // Get episode number
-        // It is same as id in anilibria API
-        const number = this.get(episode, 'id');
-
-        // Create episode if it not exists
-        createEpisode(number);
-
-        // Set episode data
-        episodes[number].id = number;
-        episodes[number].title = this.get(episode, 'title');
-        episodes[number].sources.push(createSource('server', '1080', 'fhd', this.get(episode, 'fullhd')));
-        episodes[number].sources.push(createSource('server', '720', 'hd', this.get(episode, 'hd')));
-        episodes[number].sources.push(createSource('server', '480', 'sd', this.get(episode, 'sd')));
-
-      });
-
+      // Parse torrents
+     //  this._parseTorrents(torrents, episodes);
 
       // Resolve episodes
       // Filter all sources without payload
@@ -172,12 +123,46 @@ export default class extends Transformer {
         Object
           .values(episodes)
           .map(episode => {
-            return {...episode, sources: episode.sources.filter(source => source.payload !== null),}
+            return {
+              ...episode,
+              sources: episode.sources.filter(source => source.payload !== null)
+            }
           })
           .reverse()
       );
     });
   }
+
+
+  /**
+   * Create episode entity
+   *
+   * @param number
+   * @param episodes
+   */
+  static _createEpisode(number, episodes) {
+    if (episodes.hasOwnProperty(number) === false) {
+      episodes[number] = {
+        id: null,
+        title: null,
+        sources: [],
+      }
+    }
+  };
+
+
+  /**
+   * Create episode source
+   *
+   * @param type
+   * @param label
+   * @param alias
+   * @param payload
+   * @return {{payload: *, alias: *, label: *, type: *}}
+   */
+  static _createSource(type, label, alias, payload) {
+    return {type, label, alias, payload}
+  };
 
 
   /**
@@ -198,18 +183,18 @@ export default class extends Transformer {
           requests.push(
             new Promise((resolve, reject) => {
 
-              const url = torrent.url;
-              const id = torrent.id;
+              const torrentUrl = torrent.url;
+              const torrentId = torrent.id;
 
               // Get blob torrent file from server
               // Send to torrent for parsing data
               new AnilibriaProxy()
-                .getTorrentFile(url)
-                .then(blob => TorrentWindow.send('torrent:get', {id, blob}));
+                .getTorrentFile(torrentUrl)
+                .then(blob => TorrentWindow.send('torrent:get', {torrentId, blob}));
 
               // Listen event with torrent data to main process
               // Resolve when event is caught
-              ipc.on(`main:torrent:data:${id}`, (e, data) => {
+              ipc.on(`torrent:data:${torrentId}`, (e, {data}) => {
                 torrents.push({torrent, data});
                 resolve();
               });
@@ -222,4 +207,102 @@ export default class extends Transformer {
         .catch(error => reject(error))
     })
   }
+
+
+  /**
+   * Parse playlist
+   *
+   * @param playlist
+   * @param episodes
+   * @private
+   */
+  static _parsePlaylist(playlist, episodes) {
+
+    // Parse server playlists
+    playlist.forEach(item => {
+
+      // Get episode number
+      // It is same as id in anilibria API
+      const episode = this.get(item, 'id');
+
+      // Create episode if it not exists
+      this._createEpisode(episode, episodes);
+
+      // Set episode data
+      episodes[episode].id = episode;
+      episodes[episode].title = this.get(item, 'title');
+      episodes[episode].sources.push(this._createSource('server', '1080', 'fhd', this.get(item, 'fullhd')));
+      episodes[episode].sources.push(this._createSource('server', '720', 'hd', this.get(item, 'hd')));
+      episodes[episode].sources.push(this._createSource('server', '480', 'sd', this.get(item, 'sd')));
+
+    });
+  }
+
+
+  /**
+   * Parse torrents
+   *
+   * @param torrents
+   * @param episodes
+   * @private
+   */
+  static _parseTorrents(torrents, episodes) {
+    torrents.forEach(item => {
+
+      const type = 'torrent';
+      const label = this.get(item, 'torrent.quality') || null;
+      const alias = label ? __camelCase(label) : null;
+      const files = this.get(item, 'data.files') || [];
+
+      files.forEach((file, k) => {
+
+        const episode = this._parseEpisodeFromTorrentFilename(this.get(file, 'name'));
+        if (episode !== null) {
+
+          // Create episode if it not exists
+          this._createEpisode(episode, episodes);
+
+          // Set episode data
+          episodes[episode].id = episode;
+          episodes[episode].title = episodes[episode].title || `Серия ${episode}`;
+          episodes[episode].sources.push(
+            this._createSource(
+              type, label, alias,
+              {
+                index: k,
+                torrent: {
+                  id: this.get(item, 'torrent.id')
+                },
+                file: {
+                  name: this.get(file, 'name'),
+                  path: this.get(file, 'path')
+                }
+              }
+            )
+          );
+        }
+      })
+    });
+  }
+
+
+  /**
+   * Parse episode from torrent filename
+   *
+   * @param filename
+   * @return {null|*}
+   * @private
+   */
+  static _parseEpisodeFromTorrentFilename(filename) {
+    if (filename && typeof filename === 'string') {
+      const episode = this.get(filename.match(/_\[(\d+)\]_/), [1]) || null;
+
+      return episode !== null
+        ? parseInt(episode, 10)
+        : null;
+    }
+
+    return null;
+  }
+
 }

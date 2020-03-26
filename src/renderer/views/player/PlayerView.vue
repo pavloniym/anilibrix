@@ -46,6 +46,7 @@
   import PlayerLayout from '@layouts/player'
   import {PlayerControls, PlayerBuffering, PlayerLoading} from '@components/player'
 
+  import {ipcRenderer as ipc} from 'electron'
   import {mapState, mapActions} from 'vuex'
   import __get from 'lodash/get'
 
@@ -135,20 +136,60 @@
        *
        * @return String|null
        */
-      async getPayload(source) {
+      getPayload(source) {
+        return new Promise((resolve, reject) => {
+          if (source) {
+
+            const type = __get(source, 'type');
+
+            // Get source for "server" source type
+            // Simple playlist url from payload property
+            if (type === 'server') {
+              resolve(__get(source, 'payload'));
+            }
+
+            // Get source from "torrent" source type
+            //
+            if (type === 'torrent') {
+
+              const payload = __get(source, 'payload');
+              const torrentId = __get(payload, 'torrent.id') || null;
+
+              // Send event to start server with provided torrent id
+              ipc.send('torrent:start', {torrentId});
+
+              // Listen event with torrent server data
+              // Resolve when event is caught
+              ipc.on(`torrent:server`, (e, server) => {
+                if (server.torrentId === torrentId) {
+                  resolve(`${server.url}/${payload.index}/${encodeURIComponent(payload.file.name)}`);
+                }
+              });
+            }
+          } else {
+            reject('Source is not defined');
+          }
+        });
+      },
+
+
+      /**
+       * Destory payload
+       *
+       * @param source
+       * @return void
+       */
+      destroyPayload(source) {
         if (source) {
 
           const type = __get(source, 'type');
 
-          // Get source for "server" source type
-          // Simple playlist url from payload property
-          if (type === 'server') {
-            return __get(source, 'payload');
+          // Destroy torrent source
+          if (type === 'torrent') {
+            ipc.send('torrent:destroy');
           }
 
         }
-
-        return null;
       },
 
 
@@ -194,7 +235,9 @@
             this.hls.loadSource(payload);
 
             // If play should play -> play source automatically
-            if (shouldPlay) this.plyr.instance.play();
+            if (shouldPlay) {
+              this.plyr.instance.play();
+            }
           });
         }
       },
@@ -279,8 +322,10 @@
 
         // Cleat player data
         // Destroy plyr instance
+        // Destroy active payload
         this.clear();
         this.plyr.instance.destroy();
+        this.destroyPayload(this.source);
 
       }, 500);
     },
@@ -302,24 +347,42 @@
 
       source: {
         deep: true,
-        async handler(source) {
+        handler(source, previous) {
           if (source) {
 
+            // Set buffering
+            this.isBuffering = true;
+
             // Get payload for provided source
-            const payload = await this.getPayload(source);
+            this.getPayload(source)
+              .then(payload => {
 
-            // Get hls options
-            // Get current play time to continue after source changed
-            const options = {startPosition: this.plyr.instance.currentTime};
+                // Get hls options
+                // Get current play time to continue after source changed
+                const options = {startPosition: this.plyr.instance.currentTime};
 
-            // Get player playing state
-            // Continue playing if it was playing
-            const playing = this.plyr.instance.playing;
+                // Get player playing state
+                // Continue playing if it was playing
+                const playing = this.plyr.instance.playing;
 
+                // Load new source
+                this.loadSource(payload, options, playing);
 
-            // Load new source
-            this.loadSource(payload, options, playing);
+                // Disable buffering
+                this.isBuffering = false;
+
+              })
+              .catch(error => {
+
+                // Disable buffering
+                this.isBuffering = false;
+
+              });
           }
+
+          // Destroy previous payload
+          this.destroyPayload(previous);
+
         }
       }
     }

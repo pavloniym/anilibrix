@@ -54,13 +54,13 @@
 
 
       <!-- Quality -->
-      <v-menu v-if="source" top :attach="$refs.controls">
+      <v-menu v-if="source" top nudge-left="60" nudge-top="45" :attach="$refs.controls">
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" icon class="ml-2">
             <v-icon>{{getSourceIcon(source)}}</v-icon>
           </v-btn>
         </template>
-        <v-list dense width="7rem">
+        <v-list dense width="150px">
           <v-list-item
             v-for="(s, k) in sources"
             :input-value="s.alias === source.alias"
@@ -189,7 +189,7 @@
         if (type === 'server') {
           if (alias === 'sd') return 'mdi-standard-definition';
           if (alias === 'hd' || alias === 'fhd') return 'mdi-high-definition';
-        }
+        } else if (type === 'torrent') return 'mdi-alpha-t';
 
         return null;
       }
