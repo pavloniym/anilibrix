@@ -1,12 +1,12 @@
 <template>
-  <v-layout>
+  <v-layout class="shrink">
     <!-- Close -->
     <v-btn icon small class="mr-1" @click="closeApp">
       <v-icon small>mdi-close</v-icon>
     </v-btn>
 
     <!-- Minimize -->
-    <v-btn icon small class="mr-1" @click="minimizeApp">
+    <v-btn icon small @click="minimizeApp">
       <v-icon small>mdi-window-minimize</v-icon>
     </v-btn>
   </v-layout>

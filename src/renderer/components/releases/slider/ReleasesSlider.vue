@@ -10,11 +10,11 @@
 
     <!-- Posters -->
     <v-slide-group
-      v-bind="{value}"
       center-active
       mandatory
-      :show-arrows="false"
+      :value="value"
       :style="{width: '90%'}"
+      :show-arrows="false"
       @change="$emit('input', $event)">
 
       <!-- Slider Item -->
@@ -73,6 +73,78 @@
 
   export default {
     props,
+    methods: {
+
+
+      /**
+       * Move to next slide
+       *
+       * @return void
+       */
+      showNext() {
+        if (this.value < this.items.length - 1) {
+          this.$emit('input', this.value + 1);
+        }
+      },
+
+
+      /**
+       * Move to previous slide
+       *
+       * @return void
+       */
+      showPrev() {
+        if (this.value > 0) {
+          this.$emit('input', this.value - 1);
+        }
+      },
+
+
+      /**
+       * Scroll slider using scroll direction
+       *
+       * @param e
+       */
+      scrollSlider(e) {
+
+        if (e.deltaY > 0 || e.deltaX > 0) this.showNext(); // Move to next
+        if (e.deltaY < 0 || e.deltaX < 0) this.showPrev(); // Move to previous
+
+      },
+
+
+      /**
+       * Switch slider using keyboard
+       *
+       * @param e
+       */
+      switchSlider(e) {
+
+        const code = e.which || e.keyCode;
+
+        if (code === 37) this.showPrev(); // Left arrow
+        if (code === 39) this.showNext(); // Right arrow
+      }
+
+    },
+
+    mounted() {
+
+      // Set scroll listener
+      // Listen keyboard events
+      document.addEventListener('wheel', this.scrollSlider, true);
+      document.addEventListener('keydown', this.switchSlider, true);
+
+
+    },
+
+    destroyed() {
+
+      // Remove scroll and keyboard listeners
+      document.removeEventListener('wheel', this.scrollSlider);
+      document.removeEventListener('keydown', this.switchSlider);
+    }
+
   }
 </script>
 

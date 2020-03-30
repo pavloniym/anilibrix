@@ -1,26 +1,21 @@
 <template>
-  <v-app-bar
-    v-bind="{color, flat}"
-    app
-    class="px-3 toolbar shrink"
-    height="76px">
+    <v-app-bar v-bind="{color, flat}" app class="px-2 toolbar shrink">
 
-    <app-remote/>
-    <slot name="left" />
+      <app-remote/>
+      <slot name="left" />
 
-    <v-spacer/>
+      <v-spacer/>
 
-    <slot name="right" />
-    <app-releases-search v-if="noSearch === false"/>
-    <app-releases-update v-if="noUpdate === false"/>
+      <slot name="right" />
+      <app-releases-search v-if="noSearch === false"/>
+      <app-releases-update v-if="noUpdate === false"/>
 
-    <!-- Settings -->
-    <v-btn icon @click="setDrawer(!drawer)">
-      <v-icon>mdi-menu</v-icon>
-    </v-btn>
+      <!-- Settings -->
+      <v-btn icon @click="setDrawer(!drawer)">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
 
-
-  </v-app-bar>
+    </v-app-bar>
 </template>
 
 <script>

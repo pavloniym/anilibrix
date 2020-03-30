@@ -33,22 +33,42 @@ export default {
     /**
      * Get latest releases
      *
-     * @param commit
      * @param state
+     * @param commit
      * @param dispatch
      * @return {Promise<any>}
      */
     getLatestReleases: ({state, commit, dispatch}) => {
       return new Promise((resolve, reject) => {
         commit('set', {k: 'loading', v: true});
-        commit('set', {k: 'datetime', v: new Date()});
         return new AnilibriaProxy()
           .getReleases()
           .then(async releases => await AnilibriaReleaseTransformer.fetchCollection(releases.items))
-          //.then(releases => releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system)))
+          .then(releases => releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system)))
           .then(releases => commit('set', {k: 'data', v: releases}))
+
+          // Get posters
+          // Update releases poster
           .then(() => dispatch('getReleasesPosters'))
+
+          // Resolve request
           .then(() => resolve())
+
+          // Get updates
+          // Send them to notification store
+          .then(() =>
+            state.data
+              .filter(release =>
+                state.datetime
+                  ? new Date(release.datetime.system) > state.datetime
+                  : false
+              )
+              .forEach(release => dispatch('notifications/addRelease', release,  {root: true}))
+          )
+
+          // Create update datetime
+          .then(() => commit('set', {k: 'datetime', v: new Date()}))
+
           .catch(error => {
             dispatch('app/pushError', error, {root: true});
             reject();

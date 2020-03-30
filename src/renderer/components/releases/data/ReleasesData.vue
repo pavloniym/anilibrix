@@ -53,6 +53,20 @@
 
     methods: {
 
+
+      /**
+       * Listen keyboard event
+       *
+       * @param e
+       * @return void
+       */
+      listenKeyboard(e) {
+        const code = e.which || e.keyCode;
+
+        if (code === 32) this.watchEpisode(); // space
+      },
+
+
       /**
        * Watch episode
        *
@@ -83,6 +97,16 @@
       }
 
     },
+
+    mounted() {
+      document.addEventListener('keydown', this.listenKeyboard, true);
+    },
+
+
+    destroyed() {
+      document.removeEventListener('keydown', this.listenKeyboard);
+    }
+
   }
 
 </script>

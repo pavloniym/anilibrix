@@ -9,43 +9,32 @@
       ...mapState('notifications', ['items']),
       ...mapState('releases', ['posters']),
 
-
-      /**
-       * Get notifications from store
-       * Get only not notified releases
-       *
-       * @return array
-       */
-      releases() {
-        return Object
-          .values(this.items || {})
-          .filter(release => release.notification.isNotified === false)
-      }
     },
 
     methods: {
-      ...mapActions('notifications', ['setReleaseAsNotified']),
+      ...mapActions('notifications', ['removeRelease']),
     },
 
     watch: {
 
-      releases: {
+      items: {
         deep: true,
         immediate: true,
         handler(releases) {
           if (releases && releases.length > 0) {
 
+            // Get release data
             const release = releases[0];
 
             // Show notification
-            const notification = new Notification(release.names.ru, {
-              body: release.episode,
+            new Notification(release.names.ru, {
+              body: release.episode.title,
               icon: __get(this.posters, release.id, null)
             });
 
-            // Set as notified to prevent further notifications on content update
-           // this.setReleaseAsNotified(release.id);
 
+            // Set as notified to prevent further notifications on content update
+            setTimeout(() => this.removeRelease(0), 5000)
           }
         }
       }
