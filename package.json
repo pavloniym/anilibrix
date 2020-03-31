@@ -1,6 +1,6 @@
 {
   "name": "anilibria",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Anilibria",
   "description": "Anilibria desktop app",
   "license": null,
@@ -86,7 +86,7 @@
     "vue-toasted": "^1.1.27",
     "vuetify": "^2.2.8",
     "vuex": "^3.0.1",
-    "vuex-electron": "^1.0.0",
+    "vuex-electron": "MaverickMartyn/vuex-electron",
     "webtorrent": "^0.107.17"
   },
   "devDependencies": {

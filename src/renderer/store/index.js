@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { createPersistedState, createSharedMutations } from 'vuex-electron'
-import { getInitialState } from '@utils/store'
+import {createPersistedState, createSharedMutations} from 'vuex-electron'
+import {getInitialState} from '@utils/store'
 import createPromiseAction from '@plugins/vuex-promise-action'
 
 import app from './app'
@@ -30,7 +30,10 @@ const store = new Vuex.Store({
   modules,
   plugins: [
     createPromiseAction(),
-    //createPersistedState(),
+    createPersistedState({
+      invertIgnored: true,
+      ignoredPaths: ['settings'],
+    }),
     createSharedMutations()
   ],
   strict: debug,
