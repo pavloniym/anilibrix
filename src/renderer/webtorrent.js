@@ -1,89 +1,143 @@
 // To keep the UI snappy, we run WebTorrent in its own hidden window, a separate
 // process from the main window.
-const WebTorrent = require('webtorrent');
+const webTorrent = require('webtorrent');
+const parseTorrent = require('parse-torrent');
 
 // Create WebTorrentClient
 // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
 // client, as explained here: https://webtorrent.io/faq
-const WebTorrentClient = new WebTorrent();
+const torrentClient = new webTorrent();
 
 // Send & receive messages from the main window
 import {ipcRenderer as ipc} from 'electron'
 
-let torrentStore = null;
-let serverStore = null;
+
+// Create local store for torrents
+const store = {
+  torrents: {},
+  torrent: {
+    data: null,
+    instance: null,
+    server: null
+  },
+};
+
+
+/**
+ * Get torrent data from torrent stream
+ *
+ * @param blob
+ * @param id
+ */
+const getTorrent = ({blob, torrentId}) => {
+
+  let data = null;
+
+  if (blob !== null) {
+
+    // If blob is provided -> try to create buffer with torrent file
+    // Try to parse torrent
+    data = parseTorrent(new Buffer(blob));
+
+    // Save torrent data to store
+    store.torrents[torrentId] = data;
+
+  }
+
+  // Send result to main process
+  ipc.send(`torrent:data:${torrentId}`, {torrentId, data});
+
+};
 
 /**
  * Start torrent from provided source
  *
  * @param torrentSource
  */
-const startTorrent = ({torrentSource}) => {
-  if (WebTorrentClient && torrentSource) {
+const startTorrent = ({torrentId}) => {
+  if (torrentClient && torrentId !== null) {
 
-    // Create torrent instance
-    WebTorrentClient.add(torrentSource);
-    WebTorrentClient.on('torrent', (torrentInstance) => {
+    const torrent = store.torrents[torrentId];
 
-      // Save torrent instance
-      torrentStore = torrentInstance;
+    if (torrent) {
 
-      // Send event with torrent
-      const torrentFiles = (torrentInstance.files || []).map(torrentFile => ({name: torrentFile.name}));
 
-      // Send ready event
-      ipc.send('send:main', {channel: 'torrent:ready', payload: {torrentFiles, torrentSource}});
+      torrentClient.add(torrent, async instance => {
 
-      // Start http server for this torrent's instance
-      startServer({torrentInstance, torrentSource})
+        // Save torrent data and instance to store
+        store.torrent.data = torrent;
+        store.torrent.instance = instance;
 
-    })
+        // Start http server for this torrent's instance
+        const result = await _startServer(instance);
 
+        // Send event with server
+        console.log('torrent', 'torrent:server', result);
+        ipc.send(`torrent:server`, {...result, torrentId});
+
+      });
+    }
   }
 };
 
 /**
- * Start server from torrent instance
+ * Destroy torrent
+ * Destroy server
+ * Clear torrent data
  *
- * @param torrentInstance
- * @param torrentSource
+ * @return void
  */
-const startServer = ({torrentInstance, torrentSource}) => {
+const destroyTorrent = () => {
 
-  if (serverStore) return;
+  // Destroy torrent
+  if (store.torrent.instance) {
+    store.torrent.instance.destroy();
+    store.torrent.instance = null;
+  }
 
-  // Create new server
-  const serverInstance = torrentInstance.createServer();
+  // Stop server
+  if (store.torrent.server) {
+    store.torrent.server.destroy();
+    store.torrent.server = null;
+  }
 
-  // Save server store
-  serverStore = serverInstance;
+  // Clear torrent data
+  store.torrent.data = null;
 
-  // Start server
-  serverInstance.listen(0, () => {
-
-    // Create server url
-    const serverUrl = `http://localhost:${serverInstance.address().port}`;
-
-    // Send event with server data
-    ipc.send('send:main', {channel: 'server:ready', payload: {torrentSource, serverUrl}})
-
-  })
 };
 
-/**
- * Destroy torrent
- *
- */
-const destroyTorrent = () => torrentStore ? torrentStore.destroy() : null;
 
 /**
- * Destroy server
+ * Start server from torrent instance
  *
+ * @param instance
  */
-const destroyServer = () => serverStore ? serverStore.destroy() : null;
+const _startServer = (instance) => {
+  return new Promise(resolve => {
+
+    // Create new server
+    const server = instance.createServer();
+
+    // Save server instance to store
+    store.torrent.server = server;
+
+
+    // Start server
+    server.listen(0, () => {
+
+      // Create server url
+      const url = `http://localhost:${server.address().port}`;
+
+      // Resolve url
+      resolve({url, server});
+    })
+
+  });
+};
+
 
 (() => {
-  ipc.on('torrent:start', (e, {torrentSource}) => startTorrent({torrentSource}));
+  ipc.on('torrent:get', (e, payload) => getTorrent(payload));
+  ipc.on('torrent:start', (e, payload) => startTorrent(payload));
   ipc.on('torrent:destroy', () => destroyTorrent());
-  ipc.on('server:destroy', () => destroyServer())
 })();

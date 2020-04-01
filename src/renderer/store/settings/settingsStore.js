@@ -7,14 +7,12 @@ import system from './system'
 
 export default {
   namespaced: true,
-
   modules: {
     profile,
     player,
     connection,
     system
   },
-
   state: {
     drawer: false,
     component: 'Categories'

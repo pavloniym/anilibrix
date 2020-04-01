@@ -10,7 +10,7 @@
       <!-- Content -->
       <template v-else>
         <v-fade-transition mode="out-in" appear>
-          <router-view/>
+          <router-view :key="$route.fullPath"/>
         </v-fade-transition>
       </template>
     </v-fade-transition>
@@ -19,7 +19,7 @@
     <errors/>
 
     <!-- System notifications -->
-    <notifications />
+    <notifications/>
 
   </v-app>
 </template>
@@ -41,7 +41,11 @@
     },
     data() {
       return {
-        loading: false
+        loading: false,
+        update: {
+          handler: null,
+          timeout: 1000 * 60 * 10 // every 10 minutes
+        }
       }
     },
 
@@ -50,10 +54,28 @@
     },
 
     created() {
+
+      // Initial loading
       this.loading = true;
-      this.$store.dispatchPromise('releases/getLatestReleases')
-        .finally(() => this.loading = false)
+      this.$store
+        .dispatchPromise('releases/getLatestReleases')
+        .finally(() => this.loading = false);
+
+
+      // Set update interval
+      this.update.handler = setInterval(() => this.getLatestReleases(), this.update.timeout);
+
+    },
+
+
+    destroyed() {
+
+      // Clear update interval
+      if (this.update.handler) {
+        clearInterval(this.update.interval);
+      }
     }
+
   }
 </script>
 
@@ -62,6 +84,16 @@
 
   html, body {
     overflow-y: hidden !important;
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #505050;
+    }
+
+    ::-webkit-scrollbar {
+      width: 9px;
+      background-color: #bfbfbf;
+    }
+
   }
 
 </style>

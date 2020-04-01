@@ -1,7 +1,7 @@
-import ReleaseData from './data'
-import ReleaseSlider from './slider'
+import ReleasePlaylist from './playlist'
+import ReleaseCard from './card'
 
 export {
-  ReleaseData,
-  ReleaseSlider
+  ReleaseCard,
+  ReleasePlaylist,
 }

@@ -1,5 +1,5 @@
-import ReleasesProxy from '@proxies/releases'
-import ReleasesTransformer from '@transformers/releases'
+import AnilibriaProxy from '@proxies/anilibria'
+import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 
 import {mutationsHelper} from '@utils/store'
 
@@ -7,9 +7,10 @@ export default {
   namespaced: true,
   state: {
     loading: false,
-    items: [],
+    data: [],
     posters: {},
     index: null,
+    datetime: null,
   },
 
   mutations: {
@@ -32,37 +33,50 @@ export default {
     /**
      * Get latest releases
      *
-     * @param commit
      * @param state
+     * @param commit
      * @param dispatch
      * @return {Promise<any>}
      */
     getLatestReleases: ({state, commit, dispatch}) => {
       return new Promise((resolve, reject) => {
         commit('set', {k: 'loading', v: true});
-        return new ReleasesProxy()
+        return new AnilibriaProxy()
           .getReleases()
-          .then(releases => ReleasesTransformer.fetchCollection(releases.items))
-          .then(releases => commit('set', {k: 'items', v: releases}))
-          .then(() => dispatch('updateReleasesPosters'))
+          .then(async releases => await AnilibriaReleaseTransformer.fetchCollection(releases.items))
+          .then(releases => releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system)))
+          .then(releases => commit('set', {k: 'data', v: releases}))
+
+          // Get posters
+          // Update releases poster
+          .then(() => dispatch('getReleasesPosters'))
+
+          // Resolve request
           .then(() => resolve())
-          /*.then(() => {
 
-            // Check releases for notification subscriptions
-            // dispatch('notifications/checkReleasesForSubscription', state.items, {root: true});
+          // Get updates
+          // Send them to notification store
+          .then(() =>
+            state.data
+              .filter(release =>
+                state.datetime
+                  ? new Date(release.datetime.system) > state.datetime
+                  : false
+              )
+              .forEach(release => dispatch('notifications/addRelease', release,  {root: true}))
+          )
 
-          })*/
+          // Create update datetime
+          .then(() => commit('set', {k: 'datetime', v: new Date()}))
+
           .catch(error => {
-
-            // On error -> push to error storage
-            // Reject
             dispatch('app/pushError', error, {root: true});
             reject();
-
           })
           .finally(() => commit('set', {k: 'loading', v: false}))
       });
     },
+
 
     /**
      * Update releases posters
@@ -71,29 +85,30 @@ export default {
      *
      * @param commit
      * @param state
+     * @param dispatch
      */
-    updateReleasesPosters({commit, state}) {
+    getReleasesPosters({commit, state, dispatch}) {
+
+      const posters = state.posters;
+      const items = state.data || [];
 
       // Remove old poster for old releases
-      const posters = state.posters;
       Object.keys(posters)
-        .filter(releaseId => !!state.items.find(release => release.id === releaseId))
+        .filter(releaseId => !!items.find(release => release.id === releaseId))
         .forEach(releaseId => delete posters[releaseId]);
 
       // Set posters only with existing releases
       commit('set', {k: 'posters', v: posters});
 
       // Update posters for new releases
-      (state.items || [])
+      items
         .filter(release => release.poster && !state.posters[release.id])
         .forEach(release => {
-          new ReleasesProxy()
+          new AnilibriaProxy()
             .getPosterImage(release.poster)
-            .then(imageInBase64 =>
-              commit('set', {
-                k: 'posters',
-                v: {...state.posters, [release.id]: 'data:image/jpeg;base64,' + imageInBase64}
-              })
+            .then(image => `data:image/jpeg;base64,${image}`)
+            .then(image =>
+              commit('set', {k: 'posters', v: {...state.posters, [release.id]: image}})
             )
             .catch(error => dispatch('app/pushError', error, {root: true}))
         });

@@ -1,12 +1,19 @@
 <template>
-  <v-navigation-drawer app absolute stateless right width="400" :value="_drawer">
+  <v-navigation-drawer
+    v-model="drawer"
+    app
+    right
+    temporary
+    width="400">
+
     <component :is="component"/>
+
   </v-navigation-drawer>
 </template>
 
 <script>
 
-  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
   import __get from 'lodash/get'
 
   import Components from './components'
@@ -19,6 +26,30 @@
         _component: s => s.component
       }),
 
+
+      drawer: {
+
+        /**
+         * Get drawer state
+         *
+         * @return boolean
+         */
+        get() {
+          return this._drawer;
+        },
+
+        /**
+         * Set drawer state
+         *
+         * @param state
+         * @return void
+         */
+        set(state) {
+          this.setDrawer(state);
+        }
+      },
+
+
       /**
        * Get active component
        *
@@ -27,6 +58,10 @@
       component() {
         return __get(Components, this._component, null)
       }
+    },
+
+    methods: {
+      ...mapActions('settings', ['setDrawer']),
     }
 
   }
@@ -37,14 +72,7 @@
     .v-navigation-drawer__content {
       overflow-y: scroll;
 
-      &::-webkit-scrollbar-thumb {
-        background-color: #505050;
-      }
 
-      &::-webkit-scrollbar {
-        width: 9px;
-        background-color: #bfbfbf;
-      }
     }
 
 

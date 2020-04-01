@@ -1,6 +1,6 @@
 {
   "name": "anilibria",
-  "version": "1.0.7",
+  "version": "1.1.1",
   "author": "Anilibria",
   "description": "Anilibria desktop app",
   "license": null,
@@ -11,8 +11,8 @@
   },
   "scripts": {
     "build": "node .electron-vue/build.js",
-    "dist": "electron-builder -m",
-    "release": "electron-builder build -w --publish onTagOrDraft",
+    "dist": "electron-builder -mwl",
+    "release": "electron-builder build -mwl --publish onTagOrDraft",
     "dev": "node .electron-vue/dev-runner.js",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
@@ -52,9 +52,7 @@
     "win": {
       "icon": "build/icons/anilibria.ico",
       "target": [
-        "nsis",
-        "portable",
-        "zip"
+        "portable"
       ]
     },
     "linux": {
@@ -71,10 +69,12 @@
     "fuse.js": "^3.4.6",
     "hls.js": "^0.13.1",
     "https-proxy-agent": "^5.0.0",
+    "jikan-node": "^1.2.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "object-hash": "^2.0.3",
     "pac-resolver": "^4.0.0",
+    "parse-torrent": "^7.0.1",
     "plyr": "^3.5.7-beta.0",
     "screenfull": "^5.0.2",
     "set-cookie-parser": "^2.4.3",
@@ -86,7 +86,7 @@
     "vue-toasted": "^1.1.27",
     "vuetify": "^2.2.8",
     "vuex": "^3.0.1",
-    "vuex-electron": "^1.0.0",
+    "vuex-electron": "MaverickMartyn/vuex-electron",
     "webtorrent": "^0.107.17"
   },
   "devDependencies": {

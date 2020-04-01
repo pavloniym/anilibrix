@@ -1,0 +1,3 @@
+import AnilibriaNotificationTransformer from './AnilibriaNotificationTransformer'
+
+export default AnilibriaNotificationTransformer

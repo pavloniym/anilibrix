@@ -54,20 +54,20 @@
 
 
       <!-- Quality -->
-      <v-menu top v-if="quality" :attach="$refs.controls">
+      <v-menu v-if="source" top nudge-left="60" nudge-top="45" :attach="$refs.controls">
         <template v-slot:activator="{ on }">
-          <v-btn icon class="ml-2" v-on="on">
-            <v-icon>{{quality.icon}}</v-icon>
+          <v-btn v-on="on" icon class="ml-2">
+            <v-icon>{{getSourceIcon(source)}}</v-icon>
           </v-btn>
         </template>
-        <v-list dense width="7rem">
+        <v-list dense width="150px">
           <v-list-item
-            v-for="(q, k) in getAvailableQualities"
-            :input-value="q.type === quality.type"
+            v-for="(s, k) in sources"
+            :input-value="s.alias === source.alias"
             :key="k"
-            @click="$emit('update:quality', q)">
-            <v-icon class="mr-2" color="grey">{{q.icon}}</v-icon>
-            <v-list-item-subtitle v-text="q.label"/>
+            @click="$emit('source', s)">
+            <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
+            <v-list-item-subtitle v-text="s.label"/>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -93,19 +93,15 @@
   import __get from 'lodash/get'
 
   const props = {
-    type: {
-      type: String,
-      default: null
-    },
     plyr: {
       type: Object,
       default: null
     },
-    qualities: {
+    sources: {
       type: Array,
       default: null
     },
-    quality: {
+    source: {
       type: Object,
       default: null
     }
@@ -154,16 +150,6 @@
        */
       getCurrentTimeToHuman() {
         return this.toHHMMSS(this.currentTime);
-      },
-
-
-      /**
-       * Get available qualities
-       *
-       * @return array
-       */
-      getAvailableQualities() {
-        return (this.qualities || []).filter(quality => quality.path)
       }
     },
 
@@ -186,7 +172,28 @@
           .map(v => v < 10 ? "0" + v : v)
           .filter((v, i) => v !== "00" || i > 0)
           .join(":")
+      },
+
+
+      /**
+       * Get source icon
+       *
+       * @param source
+       * @return {string|null}
+       */
+      getSourceIcon(source) {
+
+        const type = __get(source, 'type');
+        const alias = __get(source, 'alias');
+
+        if (type === 'server') {
+          if (alias === 'sd') return 'mdi-standard-definition';
+          if (alias === 'hd' || alias === 'fhd') return 'mdi-high-definition';
+        } else if (type === 'torrent') return 'mdi-alpha-t';
+
+        return null;
       }
+
     },
 
 

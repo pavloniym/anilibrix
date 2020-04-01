@@ -31,14 +31,12 @@
 
     <!-- Credentials -->
     <v-spacer/>
-    <v-divider />
     <v-card class="py-3" color="transparent" flat>
       <v-card-text class="caption">
         <div>Версия {{app.version}}</div>
         <div>Весь материал в приложении представлен исключительно для домашнего ознакомительного просмотра.</div>
-        <div>
+        <div class="footer__links">
           <span class="footer__link" @click.prevent="openLink('https://anilibria.tv')">Анилибрия</span>
-          -
           <span class="footer__link" @click.prevent="openLink('https://github.com/anilibria')">Исходный код</span>
         </div>
       </v-card-text>
@@ -89,6 +87,7 @@
                 title: 'Воспроизведение',
                 subtitle: 'Настройки воспроизведения и качества',
                 icon: 'mdi-play',
+                disabled: true,
                 action: () => this.setComponent('Player'),
               },
               {
@@ -127,6 +126,7 @@
                 title: 'Система',
                 subtitle: 'Системное меню и команды',
                 icon: 'mdi-cogs',
+                disabled: true,
                 action: () => this.setComponent('System'),
               }
             ]
@@ -157,10 +157,33 @@
   .footer {
     &__link {
       cursor: pointer;
+
       &:hover {
         text-decoration: underline;
       }
     }
+
+    &__links {
+      display: flex;
+
+      > span {
+        &::after {
+          content: "-";
+          display: inline-block;
+          padding: 0 3px;
+          text-decoration: none;
+        }
+
+        &:last-child {
+          &::after {
+            content: none;
+          }
+        }
+      }
+
+    }
+
+
   }
 
 </style>

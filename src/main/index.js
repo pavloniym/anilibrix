@@ -1,9 +1,8 @@
 import {app, ipcMain as ipc, dialog} from 'electron' // eslint-disable-line
-import {mainWindow, torrentWindow} from './windows'
-import { autoUpdater } from "electron-updater"
+import {MainWindow, TorrentWindow} from './windows'
+// import {autoUpdater} from "electron-updater"
 
 import store from '@store'; // eslint-disable-line
-
 
 /**
  * Set `__static` path to static files in production
@@ -22,44 +21,24 @@ const torrentWindowUrl = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/webtorrent.html`;
 
 
-let mainInstance = null;
-let torrentInstance = null;
+/**
+ * Create windows
+ */
+function createWindows() {
 
+  MainWindow.create().loadURL(mainWindowURL);
+  TorrentWindow.create().loadURL(torrentWindowUrl);
 
-function createWindow() {
-
-  // Init main-render-window-instance
-  mainInstance = mainWindow.init();
-  mainInstance.loadURL(mainWindowURL);
-  mainInstance.setMenu(null);
-
-  // Send events to main window
-  ipc.on('send:main', (e, {channel, payload}) => {
-    console.log('send:main', {channel, payload});
-    mainInstance.webContents.send(channel, payload)
-  });
-
-
-  // Init torrent-process-window
-  torrentInstance = torrentWindow.init();
-  torrentInstance.loadURL(torrentWindowUrl);
-
-  // Send events to torrent window
-  ipc.on('send:torrent', (e, {channel, payload}) => {
-    console.log('send:torrent', {channel, payload});
-    torrentInstance.webContents.send(channel, payload)
-  })
+  // Set events between windows
+  ipc.on('torrent:start', (e, payload) => TorrentWindow.send('torrent:start', payload));
+  ipc.on('torrent:destroy', () => TorrentWindow.send('torrent:destroy'));
+  ipc.on('torrent:server', (e, payload) => MainWindow.send('torrent:server', payload));
 
 }
 
+
 app.on('ready', () => {
-
-  // Create window
-  createWindow();
-
-  // This will immediately download an update, then install when the app quits.
-  autoUpdater.checkForUpdatesAndNotify();
-
+  createWindows();
 });
 
 app.on('window-all-closed', () => {
@@ -69,7 +48,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (mainInstance === null) {
-    createWindow()
+  if (MainWindow.get() === null) {
+    createWindows()
   }
 });

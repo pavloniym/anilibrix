@@ -1,0 +1,121 @@
+<template>
+  <v-layout class="release__data">
+    <div :style="{width: '5%'}"></div>
+    <div :style="{width: '90%'}">
+
+      <!-- Release Data -->
+      <div class="display-2 font-weight-black text-truncate">{{release.names.ru}}</div>
+      <div class="subtitle-1">{{release.names.original}}</div>
+      <div class="body-2">{{release.genres.join(' | ')}}</div>
+
+      <!-- Episode -->
+      <v-chip label color="secondary" class="mt-2 subtitle-2 font-weight-black">{{release.episode.title}}</v-chip>
+
+      <!-- Description -->
+      <div class="my-2 grey--text lighten-1" :style="{maxHeight: '75px'}">
+        <v-clamp max-height="75px">{{release.description}}</v-clamp>
+      </div>
+
+      <v-layout>
+        <v-btn v-bind="{loading}" :disabled="loading" @click="watchEpisode">Смотреть</v-btn>
+        <v-btn v-bind="{loading}" class="ml-1" :disabled="loading" @click="toRelease">Релиз</v-btn>
+      </v-layout>
+
+    </div>
+    <div :style="{width: '5%'}"></div>
+  </v-layout>
+</template>
+
+<script>
+
+  import VClamp from 'vue-clamp'
+  import {mapState} from 'vuex'
+
+  const props = {
+    release: {
+      type: Object,
+      default: null
+    }
+  };
+
+  export default {
+    props,
+    components: {VClamp},
+    data() {
+      return {
+        loading: false
+      }
+    },
+
+    computed: {
+      ...mapState('settings/player', ['type'])
+    },
+
+    methods: {
+
+
+      /**
+       * Listen keyboard event
+       *
+       * @param e
+       * @return void
+       */
+      listenKeyboard(e) {
+        const code = e.which || e.keyCode;
+
+        if (code === 32) this.watchEpisode(); // space
+      },
+
+
+      /**
+       * Watch episode
+       *
+       * @return void
+       */
+      watchEpisode() {
+        this.loading = true;
+        this.$store
+          .dispatchPromise('player/watch', {
+            release: this.release,
+            episode: this.release.episode
+          })
+          .then(() => this.$router.push({name: 'player'}))
+          .finally(() => this.loading = false);
+      },
+
+
+      /**
+       * Go to release
+       *
+       * @return void
+       */
+      toRelease() {
+        this.$router.push({
+          name: 'release',
+          params: {releaseId: this.release.id}
+        })
+      }
+
+    },
+
+    mounted() {
+      document.addEventListener('keydown', this.listenKeyboard, true);
+    },
+
+
+    destroyed() {
+      document.removeEventListener('keydown', this.listenKeyboard);
+    }
+
+  }
+
+</script>
+
+<style lang="scss" scoped>
+
+  .release__data {
+    max-height: 300px;
+    user-select: none;
+  }
+
+</style>
