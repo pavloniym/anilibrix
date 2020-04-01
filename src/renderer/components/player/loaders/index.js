@@ -1,4 +1,4 @@
-import PlayerLoading from './buffering'
+import PlayerLoading from './loading'
 import PlayerBuffering from './buffering'
 
 export {

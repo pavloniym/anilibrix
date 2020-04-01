@@ -47,16 +47,16 @@
     },
     "mac": {
       "category": "public.app-category.video",
-      "icon": "build/icons/anilibria.icns"
+      "icon": "build/icons/app/anilibria.icns"
     },
     "win": {
-      "icon": "build/icons/anilibria.ico",
+      "icon": "build/icons/app/anilibria.ico",
       "target": [
         "portable"
       ]
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons/app"
     }
   },
   "dependencies": {

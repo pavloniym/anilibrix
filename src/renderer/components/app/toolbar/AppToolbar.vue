@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar v-bind="{color, flat}" app class="px-2 toolbar shrink">
+  <v-app-bar v-bind="{color, flat}" app class="pa-2 toolbar shrink">
 
     <app-remote/>
     <slot name="left"/>

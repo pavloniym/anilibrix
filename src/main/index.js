@@ -1,7 +1,6 @@
-import {app, ipcMain as ipc, dialog} from 'electron' // eslint-disable-line
+import {app, ipcMain as ipc, Tray, nativeImage, Menu} from 'electron' // eslint-disable-line
 import {MainWindow, TorrentWindow} from './windows'
-// import {autoUpdater} from "electron-updater"
-
+import path from 'path'
 import store from '@store'; // eslint-disable-line
 
 /**
@@ -24,7 +23,7 @@ const torrentWindowUrl = process.env.NODE_ENV === 'development'
 /**
  * Create windows
  */
-function createWindows() {
+const createWindows = () => {
 
   MainWindow.create().loadURL(mainWindowURL);
   TorrentWindow.create().loadURL(torrentWindowUrl);
@@ -34,11 +33,23 @@ function createWindows() {
   ipc.on('torrent:destroy', () => TorrentWindow.send('torrent:destroy'));
   ipc.on('torrent:server', (e, payload) => MainWindow.send('torrent:server', payload));
 
-}
+};
+
+
+const createTray = () => {
+
+  // Get icon path
+  const iconPath = path.join(__dirname, '../../build/icons/tray/icon.png');
+
+  // Create tray with icon
+  const tray = new Tray(nativeImage.createFromPath(iconPath));
+
+};
 
 
 app.on('ready', () => {
   createWindows();
+  createTray();
 });
 
 app.on('window-all-closed', () => {
