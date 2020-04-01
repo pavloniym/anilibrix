@@ -92,7 +92,10 @@
       toRelease() {
         this.$router.push({
           name: 'release',
-          params: {releaseId: this.release.id}
+          params: {
+            releaseId: this.release.id,
+            releaseTitle: this.release.names.ru,
+          }
         })
       }
 

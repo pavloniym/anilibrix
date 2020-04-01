@@ -5,18 +5,19 @@ import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 import {MyAnimeListAnimeTransformer, MyAnimeListEpisodeTransformer} from '@transformers/my-anime-list'
 
 import {mutationsHelper} from "@utils/store";
-
+import axios from "axios";
 
 export default {
   namespaced: true,
   state: {
     loading: false,
+    request: null,
     data: null,
+    poster: null,
     mal: {
       anime: null,
       episodes: [],
     },
-    poster: null,
   },
 
   mutations: {
@@ -38,11 +39,19 @@ export default {
      */
     getRelease: ({commit, dispatch, state}, releaseId) => {
       return new Promise((resolve, reject) => {
+
+        // Cancel previous request if it was stored
+        if (state.request !== null) {
+          state.request.cancel();
+        }
+
         commit('set', {k: 'loading', v: true});
+        commit('set', {k: 'request', v: axios.CancelToken.source()});
+
         new AnilibriaProxy()
 
           // Get release data from anilibria
-          .getRelease(releaseId)
+          .getRelease(releaseId, {cancelToken: state.request.token})
           .then(release => AnilibriaReleaseTransformer.fetchItem(release))
           .then(release => commit('set', {k: 'data', v: release}))
 
@@ -59,7 +68,7 @@ export default {
             try {
               // Get my anime list release data
               // Make it in background
-              dispatch('getMALData')
+              dispatch('getMyAnimeListData')
 
             } catch (e) {
               console.log('my anime list api error', e);
@@ -102,10 +111,12 @@ export default {
      * @param state
      * @return {Promise<unknown>}
      */
-    getMALData: ({commit, state}) => {
+    getMyAnimeListData: ({commit, state}) => {
       return new Promise((resolve, reject) => {
+
         commit('set', {k: 'mal.anime', v: null});
         commit('set', {k: 'mal.episodes', v: []});
+
         new MyAnimeListProxy()
           .getAnimeByName(state.data.names.original)
           .then(anime => MyAnimeListAnimeTransformer.fetchItem(anime))

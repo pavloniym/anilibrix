@@ -1,5 +1,5 @@
 <template>
-  <div class="player__controls px-6" ref="controls">
+  <div class="player__interface__controls px-6" ref="controls">
 
     <!-- Info -->
     <div class="my-4">
@@ -15,8 +15,14 @@
       </v-btn>
 
       <!-- Play / Pause -->
-      <v-btn icon class="ml-2" @click="plyr.togglePlay()">
+      <v-btn
+        icon
+        class="ml-2"
+        :disabled="isBuffering"
+        @click="plyr.togglePlay()">
+
         <v-icon>mdi-{{isPlaying ? 'pause': 'play'}}</v-icon>
+
       </v-btn>
 
       <!-- Slider -->
@@ -60,7 +66,7 @@
             <v-icon>{{getSourceIcon(source)}}</v-icon>
           </v-btn>
         </template>
-        <v-list dense width="150px">
+        <v-list dense>
           <v-list-item
             v-for="(s, k) in sources"
             :input-value="s.alias === source.alias"
@@ -111,6 +117,7 @@
     props,
     data() {
       return {
+        isBuffering: false,
         isPlaying: false,
         isMuted: false,
         isSeeking: false,
@@ -221,12 +228,21 @@
         });
 
 
+        // Watch for plyr playing and pause events
         this.plyr.on('playing', () => this.isPlaying = true);
         this.plyr.on('pause', () => this.isPlaying = false);
+
+        // Watch for plyr volume change
+        // Update player interface
         this.plyr.on('volumechange', e => {
           this.isMuted = e.detail.plyr.muted;
           this.volume = e.detail.plyr.volume;
-        })
+        });
+
+
+        // Handler buffering events
+        this.plyr.on('waiting', () => this.isBuffering = true);
+        this.plyr.on('canplay', () => this.isBuffering = false);
 
       })
     },
@@ -237,15 +253,18 @@
 <style scoped lang="scss">
 
   .player {
-    &__controls {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 10rem;
-      z-index: 10;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.7) 60%);
-      user-select: none;
+    &__interface {
+      &__controls {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 10rem;
+        z-index: 10;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.7) 60%);
+        user-select: none;
+      }
     }
+
   }
 
 </style>

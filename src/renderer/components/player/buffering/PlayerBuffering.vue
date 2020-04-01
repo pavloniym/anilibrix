@@ -1,10 +1,43 @@
 <template>
-  <v-fade-transition appear>
-    <v-layout class="player__buffering" fill-height align-center justify-center>
-      <v-progress-circular color="white" indeterminate size="64"/>
-    </v-layout>
-  </v-fade-transition>
+  <v-layout column class="fill-height">
+
+    <!-- Content -->
+    <slot />
+
+    <!-- Loader -->
+    <v-fade-transition appear>
+      <v-layout
+        v-if="isReady && isBuffering"
+        class="player__buffering"
+        fill-height
+        align-center
+        justify-center>
+
+        <v-progress-circular color="white" indeterminate size="64"/>
+
+      </v-layout>
+    </v-fade-transition>
+
+  </v-layout>
 </template>
+
+<script>
+
+  const props = {
+    isReady: {
+      type: Boolean,
+      default: false
+    },
+    isBuffering: {
+      type: Boolean,
+      default: false
+    }
+  };
+
+  export default {
+    props,
+  }
+</script>
 
 <style scoped lang="scss">
 
