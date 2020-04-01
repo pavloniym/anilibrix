@@ -88,8 +88,6 @@
       getPayload(source) {
         return new Promise((resolve, reject) => {
 
-          console.log('getPayload', source);
-
           // Get payload type
           const type = __get(source, 'type') || null;
 

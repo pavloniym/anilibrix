@@ -32,13 +32,10 @@
 <script>
 
 
+  import PlayerVideo from '@components/player/video'
   import PlayerLayout from '@layouts/player'
-  import {
-    PlayerVideo,
-    PlayerLoading,
-    PlayerBuffering,
-    PlayerInterface,
-  } from '@components/player'
+  import PlayerInterface from '@components/player/interface'
+  import {PlayerLoading, PlayerBuffering} from '@components/player/loaders'
 
   import {mapState, mapActions} from 'vuex'
 
