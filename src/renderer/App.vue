@@ -56,14 +56,14 @@
     created() {
 
       // Initial loading
-     /* this.loading = true;
+      this.loading = true;
       this.$store
         .dispatchPromise('releases/getLatestReleases')
         .finally(() => this.loading = false);
 
 
       // Set update interval
-      this.update.handler = setInterval(() => this.getLatestReleases(), this.update.timeout);*/
+      this.update.handler = setInterval(() => this.getLatestReleases(), this.update.timeout);
 
     },
 

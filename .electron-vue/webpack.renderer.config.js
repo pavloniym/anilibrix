@@ -140,6 +140,18 @@ let rendererConfig = {
       filename: 'index.html',
       chunks: ['renderer'],
       template: path.resolve(__dirname, '../src/index.ejs'),
+      templateParameters(compilation, assets, options) {
+        return {
+          compilation: compilation,
+          webpack: compilation.getStats().toJson(),
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            files: assets,
+            options: options
+          },
+          process,
+        };
+      },
       minify: {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
@@ -153,6 +165,18 @@ let rendererConfig = {
       filename: 'webtorrent.html', // used by BrowserWindow.loadUrl
       chunks: ['webtorrent'], // should be the same with entry point name
       template: path.resolve(__dirname, '../src/webtorrent.ejs'),
+      templateParameters(compilation, assets, options) {
+        return {
+          compilation: compilation,
+          webpack: compilation.getStats().toJson(),
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            files: assets,
+            options: options
+          },
+          process,
+        };
+      },
       minify: {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
