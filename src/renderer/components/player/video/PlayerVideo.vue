@@ -2,7 +2,14 @@
   <v-layout column class="fill-height">
 
     <!-- Video container -->
-    <video ref="player" v-show="isReady" controls playsinline/>
+    <video
+      v-show="isReady"
+      controls
+      playsinline
+      ref="player"
+      type="video/mp4"
+      :src="payload">
+    </video>
 
     <!-- Interface slot -->
     <slot v-if="isReady" v-bind="{sources, source, plyr: plyr.instance}"/>
@@ -12,14 +19,14 @@
 
 <script>
 
-  import Plyr from "plyr";
+  import Plyr from 'plyr';
   import Hls from 'hls.js';
 
   import 'plyr/dist/plyr.css';
 
-  import __get from "lodash/get";
-  import {mapState} from "vuex";
-  import {ipcRenderer as ipc} from "electron";
+  import __get from 'lodash/get';
+  import { mapState } from 'vuex';
+  import { ipcRenderer as ipc } from 'electron';
 
   const props = {
     episode: {
@@ -42,19 +49,21 @@
             autoplay: true,
             clickToPlay: false,
             controls: false,
-            fullscreen: {enabled: false},
-            keyboard: {focused: true, global: true},
+            fullscreen: { enabled: false },
+            keyboard: {
+              focused: true,
+              global: true
+            },
           }
         },
+        payload: null,
       }
     },
-
 
     computed: {
       ...mapState('settings/player', {
         _source: s => s.source
       }),
-
 
       /**
        * Get sources list
@@ -64,7 +73,6 @@
       sources() {
         return __get(this.episode, 'sources') || [];
       },
-
 
       /**
        * Get first source with max available quality
@@ -79,11 +87,10 @@
 
     methods: {
 
-
       /**
        * Get payload from provided source
        *
-       * @return String|null
+       * @return Promise
        */
       getPayload(source) {
         return new Promise((resolve, reject) => {
@@ -108,7 +115,7 @@
             const torrentId = __get(payload, 'torrent.id') || null;
 
             // Send event to start server with provided torrent id
-            ipc.send('torrent:start', {torrentId});
+            ipc.send('torrent:start', { torrentId });
 
             // Listen event with torrent server data
             // Resolve when event is caught
@@ -123,7 +130,6 @@
           }
         });
       },
-
 
       /**
        * Load hls source
@@ -163,7 +169,7 @@
         }
       },
 
-
+      
       /**
        * Destroy payload
        *
@@ -181,7 +187,6 @@
 
         }
       },
-
 
     },
 
@@ -206,7 +211,8 @@
 
           // Get payload
           // Load payload to player
-          this.loadPayload(await this.getPayload(this.source));
+          //this.loadPayload(await this.getPayload(this.source));
+          this.payload = await this.getPayload(this.source);
 
         } catch {
 
@@ -215,7 +221,6 @@
         }
       })
     },
-
 
     beforeDestroy() {
       setTimeout(() => {
@@ -228,7 +233,6 @@
 
       }, 500);
     },
-
 
     watch: {
 
@@ -264,10 +268,12 @@
 
                 // Get hls options
                 // Get current play time to continue after source changed
-                const options = {startPosition: this.plyr.instance.currentTime};
+                const options = { startPosition: this.plyr.instance.currentTime };
 
                 // Load new source
-                this.loadPayload(payload, options, playing);
+                //this.loadPayload(payload, options, playing);
+
+                this.payload = payload;
 
                 // Disable buffering
                 this.isBuffering = false;

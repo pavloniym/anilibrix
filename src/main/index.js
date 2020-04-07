@@ -3,6 +3,7 @@ import {MainWindow, TorrentWindow} from './windows'
 import path from 'path'
 import store from '@store'; // eslint-disable-line
 
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
