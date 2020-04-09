@@ -7,23 +7,27 @@
       <!-- Player is buffering -->
       <player-buffering v-bind="{isBuffering, isReady}">
 
-        <!-- Player video container -->
-        <player-video
-          v-bind="{episode}"
-          @is-ready="isReady = $event"
-          @is-buffering="isBuffering = $event"
-          @no-source="toNoSource">
+        <component
+          v-bind="{sources, source, time}"
+          :is="component"
+          :is-ready.sync="isReady"
+          :is-buffering.sync="isBuffering"
+          @ended="goBack">
 
-          <!-- Player interface -->
-          <template v-slot="{plyr, sources, source}">
+          <template v-slot:default="{player}">
             <player-interface
-              v-bind="{plyr, sources, source, release, episode}"
+              v-if="player"
+              v-bind="{player, sources, source, release, episode}"
               :container="$refs.container.$el"
-              @back="goBack">
+              @time="time = $event"
+              @back="goBack"
+              @source="setSource($event.alias)">
             </player-interface>
           </template>
 
-        </player-video>
+        </component>
+
+
       </player-buffering>
     </player-loading>
   </player-layout>
@@ -31,17 +35,16 @@
 
 <script>
 
-
-  import PlayerVideo from '@components/player/video'
   import PlayerLayout from '@layouts/player'
   import PlayerInterface from '@components/player/interface'
-  import {PlayerLoading, PlayerBuffering} from '@components/player/loaders'
+  import { PlayerLoading, PlayerBuffering } from '@components/player/loaders'
+  import { PlayerSourcesServer, PlayerSourcesTorrent } from '@components/player/sources'
 
-  import {mapState, mapActions} from 'vuex'
+  import __get from 'lodash/get';
+  import { mapState, mapActions } from 'vuex'
 
   export default {
     components: {
-      PlayerVideo,
       PlayerLayout,
       PlayerLoading,
       PlayerBuffering,
@@ -51,6 +54,7 @@
       return {
         isReady: false,
         isBuffering: false,
+        time: 0
       }
     },
     computed: {
@@ -58,13 +62,61 @@
         release: s => s.release,
         episode: s => s.episode,
       }),
+      ...mapState('settings/player', { _source: s => s.source }),
 
+      /**
+       * Get sources list
+       *
+       * @return Array
+       */
+      sources() {
+        return __get(this.episode, 'sources') || [];
+      },
+
+      /**
+       * Get first source with max available quality
+       *
+       * @return Object|null
+       */
+      source() {
+        return this.sources.find(source => source.alias === this._source) || this.sources[0];
+      },
+
+      /**
+       * Get active type
+       *
+       * @return string|null
+       */
+      type() {
+        return __get(this.source, 'type') || null;
+      },
+
+      /**
+       * Get available components
+       *
+       * @return Object
+       */
+      components() {
+        return {
+          server: PlayerSourcesServer,
+          torrent: PlayerSourcesTorrent
+        }
+      },
+
+      /**
+       * Get active component
+       *
+       * @return Object|null
+       */
+      component() {
+        return __get(this.components, this.type) || null;
+      }
 
     },
 
     methods: {
-      ...mapActions('player', ['clear']),
-
+      ...mapActions('settings/player', ['setSource']),
+      ...mapActions('player', { _clearPlayer: 'clear' }),
 
       /**
        * Return to back
@@ -75,27 +127,34 @@
         this.$router.back();
       },
 
+    },
 
-      /**
-       * Go to no-source view
-       *
-       * @return void
-       */
-      toNoSource() {
-        this.$router.replace({
-          name: 'player.no-source'
-        })
+    beforeDestroy() {
+      setTimeout(() => this._clearPlayer(), 500);
+    },
+
+    watch: {
+
+      type: {
+        immediate: true,
+        handler() {
+          this.isBuffering = true;
+        }
+      },
+
+      source: {
+        deep: true,
+        immediate: true,
+        handler(source) {
+          if (!source) {
+            this.$router.push({
+              name: 'player.source.empty'
+            })
+          }
+        }
       }
 
-    },
-
-
-    destroyed() {
-
-      // Clear player data
-      setTimeout(() => this.clear(), 500);
-    },
-
+    }
 
   }
 </script>

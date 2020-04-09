@@ -178,6 +178,7 @@ export default class extends Transformer {
       const torrents = [];
 
       (this.get(release, 'torrents') || [])
+        .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false)
         .forEach(torrent => {
           requests.push(
             new Promise((resolve, reject) => {

@@ -90,6 +90,8 @@ const startTorrent = ({torrentId}) => {
  */
 const destroyTorrent = () => {
 
+  console.log(store.torrent);
+
   // Destroy torrent
   if (store.torrent.instance) {
     store.torrent.instance.destroy();
@@ -118,8 +120,6 @@ const _startServer = (instance) => {
 
     // Create new server
     const server = instance.createServer();
-
-    console.log(server);
 
     // Save server instance to store
     store.torrent.server = server;

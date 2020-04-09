@@ -169,7 +169,7 @@
         }
       },
 
-      
+
       /**
        * Destroy payload
        *
@@ -208,6 +208,7 @@
         // Attach it to player
         // If no source is found -> go to no-source view
         try {
+
 
           // Get payload
           // Load payload to player

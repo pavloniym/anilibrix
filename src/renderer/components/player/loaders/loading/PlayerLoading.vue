@@ -5,7 +5,7 @@
     <slot v-show="isReady"/>
 
     <!-- Loading -->
-    <v-overlay v-show="isReady === false" :value="true" absolute>
+    <v-overlay v-show="!isReady" :value="true" absolute>
       <v-layout column align-center>
         <v-progress-circular indeterminate size="64"/>
         <div class="my-5 caption text-center">

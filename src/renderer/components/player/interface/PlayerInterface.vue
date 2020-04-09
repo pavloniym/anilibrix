@@ -11,9 +11,10 @@
     <v-slide-y-reverse-transition>
       <interface-controls
         v-show="visible"
-        v-bind="{plyr, sources, source}"
+        v-bind="{player, sources, source}"
+        @time="$emit('time', $event)"
         @back="$emit('back')"
-        @source="switchSource"
+        @source="$emit('source', $event)"
         @fullscreen="toggleFullscreen">
 
         <!-- Info -->
@@ -37,7 +38,7 @@
   import {mapActions} from "vuex";
 
   const props = {
-    plyr: {
+    player: {
       type: Object,
       default: null
     },
@@ -77,19 +78,7 @@
       }
     },
 
-
     methods: {
-      ...mapActions('settings/player', ['setSource']),
-
-      /**
-       * Switch source
-       * Save in settings
-       *
-       * @return void
-       */
-      switchSource({alias}) {
-        this.setSource(alias || null);
-      },
 
 
       /**

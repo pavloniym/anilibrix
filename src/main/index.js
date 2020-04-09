@@ -1,8 +1,9 @@
-import {app, ipcMain as ipc, Tray, nativeImage, Menu} from 'electron' // eslint-disable-line
-import {MainWindow, TorrentWindow} from './windows'
+import { app, ipcMain as ipc, Tray, nativeImage, Menu } from 'electron' // eslint-disable-line
+import { MainWindow, TorrentWindow } from './windows'
 import path from 'path'
 import store from '@store'; // eslint-disable-line
 
+let tray = null;
 
 /**
  * Set `__static` path to static files in production
@@ -20,7 +21,6 @@ const torrentWindowUrl = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080/webtorrent.html`
   : `file://${__dirname}/webtorrent.html`;
 
-
 /**
  * Create windows
  */
@@ -36,17 +36,36 @@ const createWindows = () => {
 
 };
 
-
 const createTray = () => {
 
   // Get icon path
   const iconPath = path.join(__dirname, '../../build/icons/tray/icon.png');
 
   // Create tray with icon
-  const tray = new Tray(nativeImage.createFromPath(iconPath));
+  tray = new Tray(nativeImage.createFromPath(iconPath));
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Свернуть',
+      type: 'normal',
+      role: 'minimize',
+    },
+    {
+      label: 'Отключить уведомления',
+      type: 'normal',
+      enabled: false
+    },
+    {
+      label: 'Закрыть Anilibria',
+      type: 'normal',
+      role: 'quit'
+    },
+  ]);
+
+  tray.setToolTip('Это мое приложение.');
+  tray.setContextMenu(contextMenu)
 
 };
-
 
 app.on('ready', () => {
   createWindows();
