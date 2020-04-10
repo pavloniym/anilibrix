@@ -44,6 +44,7 @@ const createTray = () => {
   // Create tray with icon
   tray = new Tray(nativeImage.createFromPath(iconPath));
 
+  // Create context menu
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Свернуть',
@@ -63,7 +64,20 @@ const createTray = () => {
   ]);
 
   tray.setToolTip('Это мое приложение.');
-  tray.setContextMenu(contextMenu)
+  tray.setIgnoreDoubleClickEvents(true);
+  tray.setContextMenu(contextMenu);
+
+  tray.on('double-click', () => {
+
+    // Restore window if it is minimized
+    if (MainWindow.get().isMinimized()) {
+      MainWindow.get().restore();
+    }
+
+    // Focus on window
+    MainWindow.get().focus();
+
+  });
 
 };
 

@@ -260,8 +260,15 @@ export default class extends Transformer {
 
       files.forEach((file, k) => {
 
-        const episode = this._parseEpisodeFromTorrentFilename(this.get(file, 'name'));
-        if (episode !== null) {
+        // Parse episode from torrent filename
+        let episode = this._parseEpisodeFromTorrentFilename(this.get(file, 'name'));
+
+        if (episode !== null || files.length === 1) {
+
+          // If there is only one file in torrent
+          // And if can't parse episode number -> make it as first (1) episode
+          // This is a little bit hack
+          if(files.length === 1) episode = 1;
 
           // Create episode if it not exists
           this._createEpisode(episode, episodes);
