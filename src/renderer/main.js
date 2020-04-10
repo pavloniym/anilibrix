@@ -6,6 +6,9 @@ import store from '@store'
 
 // Import vendor plugins
 import vuetify from '@plugins/vuetify'
+
+// Import plugins
+import '@plugins/plyr'
 import '@plugins/vue-toasted'
 
 // Import entry component

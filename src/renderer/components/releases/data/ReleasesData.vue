@@ -4,16 +4,16 @@
     <div :style="{width: '90%'}">
 
       <!-- Release Data -->
-      <div class="display-2 font-weight-black text-truncate">{{release.names.ru}}</div>
-      <div class="subtitle-1">{{release.names.original}}</div>
-      <div class="body-2">{{release.genres.join(' | ')}}</div>
+      <div class="display-2 font-weight-black text-truncate">{{data.names.ru}}</div>
+      <div class="subtitle-1">{{data.names.original}}</div>
+      <div class="body-2">{{data.genres.join(' | ')}}</div>
 
       <!-- Episode -->
-      <v-chip label color="secondary" class="mt-2 subtitle-2 font-weight-black">{{release.episode.title}}</v-chip>
+      <v-chip label color="secondary" class="mt-2 subtitle-2 font-weight-black">{{data.episode.title}}</v-chip>
 
       <!-- Description -->
       <div class="my-2 grey--text lighten-1" :style="{maxHeight: '75px'}">
-        <v-clamp max-height="75px">{{release.description}}</v-clamp>
+        <v-clamp max-height="75px">{{data.description}}</v-clamp>
       </div>
 
       <v-layout>
@@ -30,6 +30,7 @@
 
   import VClamp from 'vue-clamp'
   import {mapState} from 'vuex'
+  import __get from 'lodash/get'
 
   const props = {
     release: {
@@ -48,7 +49,21 @@
     },
 
     computed: {
-      ...mapState('settings/player', ['type'])
+      ...mapState('settings/player', ['type']),
+
+      data() {
+       return {
+         names: {
+           ru: __get(this.release, 'names.ru'),
+           original: __get(this.release, 'names.original')
+         },
+         description: __get(this.release, 'description'),
+         genres: __get(this.release, 'genres') || [],
+         episode: {
+           title:  __get(this.release, 'episode.title'),
+         }
+       }
+      }
     },
 
     methods: {
@@ -60,10 +75,8 @@
        * @param e
        * @return void
        */
-      listenKeyboard(e) {
-        const code = e.which || e.keyCode;
-
-        if (code === 32) this.watchEpisode(); // space
+      handleKeyboardEvents(e) {
+        if (e.key === 32) this.watchEpisode(); // space
       },
 
 
@@ -92,19 +105,22 @@
       toRelease() {
         this.$router.push({
           name: 'release',
-          params: {releaseId: this.release.id}
+          params: {
+            releaseId: this.release.id,
+            releaseTitle: this.release.names.ru,
+          }
         })
       }
 
     },
 
     mounted() {
-      document.addEventListener('keydown', this.listenKeyboard, true);
+      document.addEventListener('keydown', this.handleKeyboardEvents, true);
     },
 
 
     destroyed() {
-      document.removeEventListener('keydown', this.listenKeyboard);
+      document.removeEventListener('keydown', this.handleKeyboardEvents);
     }
 
   }

@@ -1,8 +1,9 @@
-import {app, ipcMain as ipc, dialog} from 'electron' // eslint-disable-line
-import {MainWindow, TorrentWindow} from './windows'
-// import {autoUpdater} from "electron-updater"
-
+import { app, ipcMain as ipc, Tray, nativeImage, Menu } from 'electron' // eslint-disable-line
+import { MainWindow, TorrentWindow } from './windows'
+import path from 'path'
 import store from '@store'; // eslint-disable-line
+
+let tray = null;
 
 /**
  * Set `__static` path to static files in production
@@ -20,11 +21,10 @@ const torrentWindowUrl = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080/webtorrent.html`
   : `file://${__dirname}/webtorrent.html`;
 
-
 /**
  * Create windows
  */
-function createWindows() {
+const createWindows = () => {
 
   MainWindow.create().loadURL(mainWindowURL);
   TorrentWindow.create().loadURL(torrentWindowUrl);
@@ -34,11 +34,56 @@ function createWindows() {
   ipc.on('torrent:destroy', () => TorrentWindow.send('torrent:destroy'));
   ipc.on('torrent:server', (e, payload) => MainWindow.send('torrent:server', payload));
 
-}
+};
 
+const createTray = () => {
+
+  // Get icon path
+  const iconPath = path.join(__dirname, '../../build/icons/tray/icon.png');
+
+  // Create tray with icon
+  tray = new Tray(nativeImage.createFromPath(iconPath));
+
+  // Create context menu
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Свернуть',
+      type: 'normal',
+      role: 'minimize',
+    },
+    {
+      label: 'Отключить уведомления',
+      type: 'normal',
+      enabled: false
+    },
+    {
+      label: 'Закрыть Anilibria',
+      type: 'normal',
+      role: 'quit'
+    },
+  ]);
+
+  tray.setToolTip('Это мое приложение.');
+  tray.setIgnoreDoubleClickEvents(true);
+  tray.setContextMenu(contextMenu);
+
+  tray.on('double-click', () => {
+
+    // Restore window if it is minimized
+    if (MainWindow.get().isMinimized()) {
+      MainWindow.get().restore();
+    }
+
+    // Focus on window
+    MainWindow.get().focus();
+
+  });
+
+};
 
 app.on('ready', () => {
   createWindows();
+  createTray();
 });
 
 app.on('window-all-closed', () => {

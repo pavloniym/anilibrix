@@ -1,5 +1,5 @@
 <template>
-  <div class="player__controls px-6" ref="controls">
+  <div class="player__interface__controls px-6" ref="controls">
 
     <!-- Info -->
     <div class="my-4">
@@ -15,8 +15,14 @@
       </v-btn>
 
       <!-- Play / Pause -->
-      <v-btn icon class="ml-2" @click="plyr.togglePlay()">
+      <v-btn
+        icon
+        class="ml-2"
+        :disabled="isBuffering"
+        @click="player.togglePlay()">
+
         <v-icon>mdi-{{isPlaying ? 'pause': 'play'}}</v-icon>
+
       </v-btn>
 
       <!-- Slider -->
@@ -28,7 +34,7 @@
         :value="currentTime"
         @start="isSeeking = true"
         @end="isSeeking = false"
-        @change="plyr.currentTime = $event">
+        @change="player.currentTime = $event">
       </v-slider>
 
       <!-- Time / Duration -->
@@ -36,7 +42,7 @@
 
 
       <!-- Volume Mute -->
-      <v-btn icon @click="plyr.muted = !isMuted">
+      <v-btn icon @click="player.muted = !isMuted">
         <v-icon>mdi-volume-{{isMuted ? 'off' : getVolumeState}}</v-icon>
       </v-btn>
 
@@ -49,7 +55,7 @@
         hide-details
         :value="volume"
         :style="{maxWidth: '70px'}"
-        @input="plyr.volume = $event">
+        @input="player.volume = $event">
       </v-slider>
 
 
@@ -60,7 +66,7 @@
             <v-icon>{{getSourceIcon(source)}}</v-icon>
           </v-btn>
         </template>
-        <v-list dense width="150px">
+        <v-list dense>
           <v-list-item
             v-for="(s, k) in sources"
             :input-value="s.alias === source.alias"
@@ -74,7 +80,7 @@
 
 
       <!-- PIP -->
-      <v-btn icon class="ml-2" @click="plyr.pip = true">
+      <v-btn icon class="ml-2" @click="player.pip = true">
         <v-icon>mdi-picture-in-picture-bottom-right</v-icon>
       </v-btn>
 
@@ -93,7 +99,7 @@
   import __get from 'lodash/get'
 
   const props = {
-    plyr: {
+    player: {
       type: Object,
       default: null
     },
@@ -111,6 +117,7 @@
     props,
     data() {
       return {
+        isBuffering: false,
         isPlaying: false,
         isMuted: false,
         isSeeking: false,
@@ -134,7 +141,6 @@
         if (this.volume > .66) return 'high';
       },
 
-
       /**
        * Get total duration in human format
        *
@@ -153,7 +159,6 @@
       }
     },
 
-
     methods: {
 
       /**
@@ -169,11 +174,10 @@
         const seconds = sec_num % 60;
 
         return [hours, minutes, seconds]
-          .map(v => v < 10 ? "0" + v : v)
-          .filter((v, i) => v !== "00" || i > 0)
-          .join(":")
+          .map(v => v < 10 ? '0' + v : v)
+          .filter((v, i) => v !== '00' || i > 0)
+          .join(':')
       },
-
 
       /**
        * Get source icon
@@ -196,40 +200,54 @@
 
     },
 
-
     mounted() {
       this.$nextTick(() => {
 
         // Set initial values
-        this.isPlaying = this.plyr.playing;
-        this.isMuted = this.plyr.muted;
-        this.volume = this.plyr.volume;
+        this.isPlaying = this.player.playing;
+        this.isMuted = this.player.muted;
+        this.volume = this.player.volume;
 
         // Get duration on initial start
-        this.plyr.on('progress', e => {
+        this.player.on('progress', e => {
           this.duration = __get(e, 'detail.plyr.duration');
         });
 
-
         // Update current player position on time update
         // If now seek event is running
-        this.plyr.on('timeupdate', () => {
-          const time = this.plyr.currentTime;
+        this.player.on('timeupdate', () => {
+          const time = this.player.currentTime;
           if (this.isSeeking === false && time && time > 0) {
             this.currentTime = time;
           }
         });
 
+        // Watch for player playing and pause events
+        this.player.on('playing', () => this.isPlaying = true);
+        this.player.on('pause', () => this.isPlaying = false);
 
-        this.plyr.on('playing', () => this.isPlaying = true);
-        this.plyr.on('pause', () => this.isPlaying = false);
-        this.plyr.on('volumechange', e => {
+        // Watch for player volume change
+        // Update player interface
+        this.player.on('volumechange', e => {
           this.isMuted = e.detail.plyr.muted;
           this.volume = e.detail.plyr.volume;
-        })
+        });
+
+        // Handler buffering events
+        this.player.on('waiting', () => this.isBuffering = true);
+        this.player.on('canplay', () => this.isBuffering = false);
 
       })
     },
+
+    watch: {
+      currentTime: {
+        immediate: true,
+        handler(time) {
+          this.$emit('time', time);
+        }
+      }
+    }
   }
 
 </script>
@@ -237,15 +255,18 @@
 <style scoped lang="scss">
 
   .player {
-    &__controls {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 10rem;
-      z-index: 10;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.7) 60%);
-      user-select: none;
+    &__interface {
+      &__controls {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 10rem;
+        z-index: 10;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.7) 60%);
+        user-select: none;
+      }
     }
+
   }
 
 </style>

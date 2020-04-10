@@ -9,6 +9,7 @@ const resolve = function (dir) {
 module.exports = {
   resolve: {
     alias: {
+      'electron': resolve('node_modules/electron-nightly'),
       '@': resolve('src'),
       '@main': resolve('src/main'),
       '@package': resolve('package.json'),

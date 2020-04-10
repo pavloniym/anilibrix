@@ -1,19 +1,18 @@
 import Transformer from '@transformer'
 import AnilibriaProxy from '@proxies/anilibria'
-import stripHtml from "string-strip-html";
+import stripHtml from 'string-strip-html';
 import __camelCase from 'lodash/camelCase'
 
-import {TorrentWindow} from '@/main/windows'
-import {ipcMain as ipc} from 'electron'
+import { TorrentWindow } from '@/main/windows'
+import { ipcMain as ipc } from 'electron'
 
 export default class extends Transformer {
-
 
   /**
    * Method used to transform a fetched collection.
    *
    * @param items The items to be transformed.
-   * @returns {Array} The transformed items.
+   * @returns Promise The transformed items.
    */
   static fetchCollection(items) {
     return new Promise((resolve, reject) => {
@@ -36,7 +35,6 @@ export default class extends Transformer {
     });
   }
 
-
   /**
    * Method used to transform a fetched item
    *
@@ -46,7 +44,6 @@ export default class extends Transformer {
   static async fetchItem(item) {
     return this.fetch(item);
   }
-
 
   /**
    * Transform incoming data
@@ -78,7 +75,6 @@ export default class extends Transformer {
     }
   }
 
-
   /**
    * Get release datetime
    *
@@ -92,29 +88,30 @@ export default class extends Transformer {
     const human = system ? new Intl.DateTimeFormat(undefined, {}).format(system) : null;
 
     return {
-      timestamp, system, human
+      timestamp,
+      system,
+      human
     }
   }
-
 
   /**
    * Get release episodes
    *
    * @param release
-   * @return array
+   * @return Promise
    */
   static getReleaseEpisodes(release) {
     return new Promise(async (resolve, reject) => {
 
       const episodes = {};
       const playlist = this.get(release, 'playlist') || [];
-      // const torrents = await this._getTorrents(release) || [];
+      const torrents = await this._getTorrents(release) || [];
 
       // Parse playlist
       this._parsePlaylist(playlist, episodes);
 
       // Parse torrents
-     //  this._parseTorrents(torrents, episodes);
+      this._parseTorrents(torrents, episodes);
 
       // Resolve episodes
       // Filter all sources without payload
@@ -133,7 +130,6 @@ export default class extends Transformer {
     });
   }
 
-
   /**
    * Create episode entity
    *
@@ -150,7 +146,6 @@ export default class extends Transformer {
     }
   };
 
-
   /**
    * Create episode source
    *
@@ -161,9 +156,13 @@ export default class extends Transformer {
    * @return {{payload: *, alias: *, label: *, type: *}}
    */
   static _createSource(type, label, alias, payload) {
-    return {type, label, alias, payload}
+    return {
+      type,
+      label,
+      alias,
+      payload
+    }
   };
-
 
   /**
    * Get torrents data
@@ -179,6 +178,7 @@ export default class extends Transformer {
       const torrents = [];
 
       (this.get(release, 'torrents') || [])
+        .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false)
         .forEach(torrent => {
           requests.push(
             new Promise((resolve, reject) => {
@@ -190,12 +190,18 @@ export default class extends Transformer {
               // Send to torrent for parsing data
               new AnilibriaProxy()
                 .getTorrentFile(torrentUrl)
-                .then(blob => TorrentWindow.send('torrent:get', {torrentId, blob}));
+                .then(blob => TorrentWindow.send('torrent:get', {
+                  torrentId,
+                  blob
+                }));
 
               // Listen event with torrent data to main process
               // Resolve when event is caught
-              ipc.on(`torrent:data:${torrentId}`, (e, {data}) => {
-                torrents.push({torrent, data});
+              ipc.on(`torrent:data:${torrentId}`, (e, { data }) => {
+                torrents.push({
+                  torrent,
+                  data
+                });
                 resolve();
               });
             })
@@ -207,7 +213,6 @@ export default class extends Transformer {
         .catch(error => reject(error))
     })
   }
-
 
   /**
    * Parse playlist
@@ -238,7 +243,6 @@ export default class extends Transformer {
     });
   }
 
-
   /**
    * Parse torrents
    *
@@ -256,8 +260,15 @@ export default class extends Transformer {
 
       files.forEach((file, k) => {
 
-        const episode = this._parseEpisodeFromTorrentFilename(this.get(file, 'name'));
-        if (episode !== null) {
+        // Parse episode from torrent filename
+        let episode = this._parseEpisodeFromTorrentFilename(this.get(file, 'name'));
+
+        if (episode !== null || files.length === 1) {
+
+          // If there is only one file in torrent
+          // And if can't parse episode number -> make it as first (1) episode
+          // This is a little bit hack
+          if(files.length === 1) episode = 1;
 
           // Create episode if it not exists
           this._createEpisode(episode, episodes);
@@ -284,7 +295,6 @@ export default class extends Transformer {
       })
     });
   }
-
 
   /**
    * Parse episode from torrent filename

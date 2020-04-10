@@ -58,15 +58,16 @@ export default class extends Proxy {
    * Get release with provided id
    *
    * @param releaseId
+   * @param parameters
    * @return {Promise<unknown>}
    */
-  getRelease(releaseId) {
+  getRelease(releaseId, parameters = {}) {
     return new Promise((resolve, reject) => {
 
       const data = this.getFormDataObject({query: 'release', id: releaseId});
       const headers = data.getHeaders();
 
-      return this.submit('POST', this.getHost() + this.endpoint, {data, headers})
+      return this.submit('POST', this.getHost() + this.endpoint, {...parameters, data, headers})
         .then(response => resolve(this.parseResponse(response)))
         .catch(error => reject(error))
     });

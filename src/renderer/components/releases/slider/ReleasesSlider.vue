@@ -56,6 +56,8 @@
 
 <script>
 
+  import {Lethargy} from 'lethargy'
+
   const props = {
     value: {
       type: Number,
@@ -73,6 +75,7 @@
 
   export default {
     props,
+    lethargy: new Lethargy(),
     methods: {
 
 
@@ -106,10 +109,12 @@
        * @param e
        */
       scrollSlider(e) {
+        if (this.$options.lethargy.check(e) !== false) {
 
-        if (e.deltaY > 0 || e.deltaX > 0) this.showNext(); // Move to next
-        if (e.deltaY < 0 || e.deltaX < 0) this.showPrev(); // Move to previous
+          if (e.deltaY > 0 || e.deltaX > 0) this.showNext(); // Move to next
+          if (e.deltaY < 0 || e.deltaX < 0) this.showPrev(); // Move to previous
 
+        }
       },
 
 
@@ -132,7 +137,7 @@
 
       // Set scroll listener
       // Listen keyboard events
-      document.addEventListener('wheel', this.scrollSlider, true);
+      // document.addEventListener('wheel', this.scrollSlider, true);
       document.addEventListener('keydown', this.switchSlider, true);
 
 
@@ -141,7 +146,7 @@
     destroyed() {
 
       // Remove scroll and keyboard listeners
-      document.removeEventListener('wheel', this.scrollSlider);
+      // document.removeEventListener('wheel', this.scrollSlider);
       document.removeEventListener('keydown', this.switchSlider);
     }
 

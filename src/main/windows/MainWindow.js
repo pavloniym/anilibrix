@@ -39,6 +39,7 @@ const create = () => {
     useContentSize: true, // Specify web page size without OS chrome
     webPreferences: {
       nodeIntegration: true,
+      plugins: true,
     }
   });
 

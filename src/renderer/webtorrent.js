@@ -3,6 +3,8 @@
 const webTorrent = require('webtorrent');
 const parseTorrent = require('parse-torrent');
 
+const http = require('http');
+
 // Create WebTorrentClient
 // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
 // client, as explained here: https://webtorrent.io/faq
@@ -72,7 +74,6 @@ const startTorrent = ({torrentId}) => {
         const result = await _startServer(instance);
 
         // Send event with server
-        console.log('torrent', 'torrent:server', result);
         ipc.send(`torrent:server`, {...result, torrentId});
 
       });
@@ -88,6 +89,8 @@ const startTorrent = ({torrentId}) => {
  * @return void
  */
 const destroyTorrent = () => {
+
+  console.log(store.torrent);
 
   // Destroy torrent
   if (store.torrent.instance) {
@@ -120,7 +123,6 @@ const _startServer = (instance) => {
 
     // Save server instance to store
     store.torrent.server = server;
-
 
     // Start server
     server.listen(0, () => {
