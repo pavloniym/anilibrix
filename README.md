@@ -1,6 +1,6 @@
-# anilibria-theater
+# AniLibrix
 
-> Anilibria desktop movie app
+> Anilibria desktop app
 
 #### Build Setup
 

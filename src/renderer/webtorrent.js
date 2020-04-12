@@ -1,9 +1,9 @@
 // To keep the UI snappy, we run WebTorrent in its own hidden window, a separate
 // process from the main window.
+
 const webTorrent = require('webtorrent');
 const parseTorrent = require('parse-torrent');
-
-const http = require('http');
+const path = require('path');
 
 // Create WebTorrentClient
 // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
@@ -11,7 +11,7 @@ const http = require('http');
 const torrentClient = new webTorrent();
 
 // Send & receive messages from the main window
-import {ipcRenderer as ipc} from 'electron'
+import { ipcRenderer as ipc } from 'electron'
 
 
 // Create local store for torrents
@@ -63,8 +63,7 @@ const startTorrent = ({torrentId}) => {
 
     if (torrent) {
 
-
-      torrentClient.add(torrent, async instance => {
+      torrentClient.add(torrent,async instance => {
 
         // Save torrent data and instance to store
         store.torrent.data = torrent;
@@ -89,8 +88,6 @@ const startTorrent = ({torrentId}) => {
  * @return void
  */
 const destroyTorrent = () => {
-
-  console.log(store.torrent);
 
   // Destroy torrent
   if (store.torrent.instance) {

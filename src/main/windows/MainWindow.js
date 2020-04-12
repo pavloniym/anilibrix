@@ -35,7 +35,7 @@ const create = () => {
     darkTheme: true, // Forces dark theme (GTK+3)
     show: true,
     frame: false,
-    title: 'Anilibria',
+    title: 'AniLibrix',
     useContentSize: true, // Specify web page size without OS chrome
     webPreferences: {
       nodeIntegration: true,

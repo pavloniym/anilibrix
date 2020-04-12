@@ -33,7 +33,7 @@
   import {mapActions} from 'vuex'
 
   export default {
-    name: 'Anilibria',
+    name: 'AniLibrix',
     components: {
       Errors,
       Loader,
@@ -64,7 +64,6 @@
 
       // Set update interval
       this.update.handler = setInterval(() => this.getLatestReleases(), this.update.timeout);
-
     },
 
 

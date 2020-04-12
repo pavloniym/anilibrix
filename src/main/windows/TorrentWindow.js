@@ -28,7 +28,7 @@ const create = () => {
     useContentSize: true,
     webPreferences: {
       nodeIntegration: true,
-      devTools: true
+      devTools: false
     }
   });
 

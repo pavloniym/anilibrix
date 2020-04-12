@@ -41,14 +41,14 @@
         player: null,
         payload: null,
         options: {
-          autoplay: true,
-          clickToPlay: false,
           controls: false,
-          fullscreen: { enabled: false },
+          autoplay: true,
           keyboard: {
             focused: true,
             global: true
           },
+          fullscreen: { enabled: false },
+          clickToPlay: true,
         }
       }
     },

@@ -3,7 +3,7 @@
 
     <!-- Header -->
     <v-toolbar class="shrink">
-      <v-app-bar-nav-icon @click="backToSettingsCategories">
+      <v-app-bar-nav-icon @click="backToSettingsCategories" class="tttt">
         <v-icon>mdi-arrow-left</v-icon>
       </v-app-bar-nav-icon>
       <v-toolbar-title class="body-1">Подключение</v-toolbar-title>
@@ -120,3 +120,10 @@
   }
 </script>
 
+<style lang="scss" scoped>
+
+  .tttt {
+    -webkit-app-region: no-drag !important;
+  }
+
+</style>
