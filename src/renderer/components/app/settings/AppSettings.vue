@@ -3,8 +3,10 @@
     v-model="drawer"
     app
     right
+    fixed
     temporary
-    width="400">
+    width="400"
+    class="settings">
 
     <component :is="component"/>
 
@@ -13,8 +15,8 @@
 
 <script>
 
-  import {mapState, mapActions} from 'vuex'
   import __get from 'lodash/get'
+  import { mapState, mapActions } from 'vuex'
 
   import Components from './components'
 
@@ -25,7 +27,6 @@
         _drawer: s => s.drawer,
         _component: s => s.component
       }),
-
 
       drawer: {
 
@@ -49,7 +50,6 @@
         }
       },
 
-
       /**
        * Get active component
        *
@@ -68,14 +68,16 @@
 </script>
 <style lang="scss" scoped>
 
-  nav ::v-deep {
-    .v-navigation-drawer__content {
-      overflow-y: scroll;
+  .settings {
+    z-index: 10;
 
+    ::v-deep {
+      .v-navigation-drawer__content {
+        overflow-y: scroll;
+
+      }
 
     }
-
-
   }
 
 

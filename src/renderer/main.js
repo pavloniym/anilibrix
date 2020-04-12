@@ -27,4 +27,4 @@ new Vue({
   vuetify,
   store,
   template: '<App/>'
-}).$mount('#app');
+}).$mount('#anilibrix');

@@ -35,7 +35,6 @@
   import InterfaceToolbar from './components/toolbar'
 
   import screenfull from 'screenfull';
-  import {mapActions} from "vuex";
 
   const props = {
     player: {

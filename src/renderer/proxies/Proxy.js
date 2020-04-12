@@ -161,7 +161,7 @@ class BaseProxy {
    */
   submitDirectly(method, url, parameters = null) {
     return new Promise((resolve, reject) => {
-      axios.request({ url, method, ...parameters, timeout: 60000 })
+      axios.request({ url, method, ...parameters, timeout: 30000 })
         .then(response => resolve(response.data))
         .catch(error =>
           reject(this.getErrorObject(

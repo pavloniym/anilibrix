@@ -46,13 +46,13 @@
         player: null,
         options: {
           autoplay: true,
-          clickToPlay: false,
           controls: false,
-          fullscreen: { enabled: false },
           keyboard: {
             focused: true,
             global: true
           },
+          fullscreen: { enabled: false },
+          clickToPlay: true,
         }
       }
     },

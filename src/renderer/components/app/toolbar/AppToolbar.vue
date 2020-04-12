@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar v-bind="{color, flat}" app class="px-2 toolbar shrink">
+  <v-app-bar v-bind="{color, flat}" app class="px-2 toolbar">
 
     <app-remote/>
     <slot name="left"/>
@@ -21,10 +21,10 @@
 <script>
 
   import AppRemote from './components/remote'
-  import AppReleasesUpdate from "./components/update";
-  import AppReleasesSearch from "./components/search";
+  import AppReleasesUpdate from './components/update';
+  import AppReleasesSearch from './components/search';
 
-  import {mapActions, mapState} from 'vuex'
+  import { mapActions, mapState } from 'vuex'
 
   const props = {
     noSearch: {
@@ -68,10 +68,21 @@
 
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
   .toolbar {
-    -webkit-app-region: drag !important;
+
+    ::v-deep {
+      > div {
+        z-index: 0;
+        -webkit-app-region: drag;
+
+        > * {
+          -webkit-app-region: no-drag;
+        }
+      }
+    }
+
   }
 
 </style>

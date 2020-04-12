@@ -1,9 +1,6 @@
 <template>
   <v-layout fill-height column>
 
-    <!-- Settings -->
-    <app-settings/>
-
     <!-- Toolbar -->
     <app-toolbar no-update color="dark" :flat="false">
       <template v-slot:right>
@@ -15,6 +12,9 @@
 
       </template>
     </app-toolbar>
+
+    <!-- Settings -->
+    <app-settings/>
 
 
     <!-- Content -->

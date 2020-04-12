@@ -36,7 +36,12 @@ const createWindows = () => {
 
 };
 
-const createTray = () => {
+/**
+ * Create tray icon
+ *
+ * @return void
+ */
+const createTrayIcon = () => {
 
   // Get icon path
   const iconPath = path.join(__dirname, '../../build/icons/tray/icon.png');
@@ -57,17 +62,17 @@ const createTray = () => {
       enabled: false
     },
     {
-      label: 'Закрыть Anilibria',
+      label: 'Закрыть',
       type: 'normal',
       role: 'quit'
     },
   ]);
 
-  tray.setToolTip('Это мое приложение.');
+  tray.setToolTip('AniLibrix.');
   tray.setIgnoreDoubleClickEvents(true);
   tray.setContextMenu(contextMenu);
 
-  tray.on('double-click', () => {
+  tray.on('click', () => {
 
     // Restore window if it is minimized
     if (MainWindow.get().isMinimized()) {
@@ -81,9 +86,18 @@ const createTray = () => {
 
 };
 
+/**
+ * Set data folder
+ *
+ */
+const setDataFolder = () => {
+  app.setPath('userData', `${path.dirname(app.getPath('exe'))}/Data/`);
+};
+
 app.on('ready', () => {
   createWindows();
-  createTray();
+  setDataFolder();
+  createTrayIcon();
 });
 
 app.on('window-all-closed', () => {
