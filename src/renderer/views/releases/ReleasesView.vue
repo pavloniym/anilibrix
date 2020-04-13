@@ -11,13 +11,15 @@
 
   import ReleasesLayout from '@layouts/releases'
   import {ReleasesData, ReleasesSlider} from '@components/releases'
+
   import {mapState, mapActions} from 'vuex'
 
   export default {
     name: 'Releases',
     components: {
+      ReleasesData,
       ReleasesLayout,
-      ReleasesData, ReleasesSlider
+      ReleasesSlider,
     },
     computed: {
       ...mapState('releases', {

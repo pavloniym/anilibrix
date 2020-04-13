@@ -9,11 +9,6 @@
     <!-- Controls -->
     <v-layout align-center>
 
-      <!-- Back button -->
-      <v-btn icon @click="$emit('back')">
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
-
       <!-- Play / Pause -->
       <v-btn
         icon

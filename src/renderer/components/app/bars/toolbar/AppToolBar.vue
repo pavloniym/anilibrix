@@ -1,7 +1,6 @@
 <template>
-  <v-app-bar v-bind="{color, flat}" app class="px-2 toolbar">
+  <v-app-bar v-bind="{color, flat}" class="px-4 toolbar shrink">
 
-    <app-remote/>
     <slot name="left"/>
 
     <v-spacer/>
@@ -20,7 +19,6 @@
 
 <script>
 
-  import AppRemote from './components/remote'
   import AppReleasesUpdate from './components/update';
   import AppReleasesSearch from './components/search';
 
@@ -53,7 +51,6 @@
     props,
     name: 'AppToolbar',
     components: {
-      AppRemote,
       AppReleasesUpdate,
       AppReleasesSearch,
     },
@@ -67,22 +64,3 @@
   }
 
 </script>
-
-<style lang="scss" scoped>
-
-  .toolbar {
-
-    ::v-deep {
-      > div {
-        z-index: 0;
-        -webkit-app-region: drag;
-
-        > * {
-          -webkit-app-region: no-drag;
-        }
-      }
-    }
-
-  }
-
-</style>

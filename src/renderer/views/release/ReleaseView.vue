@@ -1,22 +1,24 @@
 <template>
 
   <!-- Loading -->
-  <v-overlay v-if="loading" :value="true">
-    <v-layout column align-center>
-      <v-progress-circular indeterminate size="64"/>
-      <div class="my-5 caption text-center">
-        <div v-if="releaseTitle" class="body-1 font-weight-bold">{{releaseTitle}}</div>
-        <div>Загрузка данных по релизу</div>
-        <div>Пожалуйста, подождите</div>
+  <v-overlay v-if="_loading" :value="true">
+    <v-layout align-center>
+      <v-progress-circular indeterminate size="78"/>
+
+      <div class="ml-8 caption">
+        <div v-if="releaseTitle" class="title">{{releaseTitle}}</div>
+        <div class="caption">Загрузка данных по релизу ...</div>
+        <div class="mt-4">
+          <v-btn @click="toReleases">Назад</v-btn>
+        </div>
       </div>
-      <v-btn text @click="toReleases">
-        Назад
-      </v-btn>
+
     </v-layout>
   </v-overlay>
 
+
   <!-- Release -->
-  <release-layout v-else-if="loading === false && release" v-bind="{poster}">
+  <release-layout v-else-if="_loading === false && _release" :poster="_poster">
     <release-card/>
     <release-playlist class="my-6"/>
   </release-layout>
@@ -50,10 +52,9 @@
 
     computed: {
       ...mapState('release', {
-        loading: s => s.loading,
-        poster: s => s.poster,
-        release: s => s.data,
-        request: s => s.request,
+        _poster: s => s.poster,
+        _loading: s => s.loading,
+        _release: s => s.data
       })
     },
 
@@ -80,7 +81,7 @@
         handler(releaseId) {
 
           // Update if release data changed
-          if (this.release === null || this.release.id !== parseInt(releaseId)) {
+          if (this._release === null || this._release.id !== parseInt(releaseId)) {
             this.getRelease(releaseId);
           }
         }

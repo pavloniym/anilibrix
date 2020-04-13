@@ -3,7 +3,7 @@
 
     <!-- Player Interface Toolbar -->
     <v-slide-y-transition>
-      <interface-toolbar v-show="visible"/>
+      <interface-toolbar v-show="visible" @back="$emit('back')" />
     </v-slide-y-transition>
 
 
@@ -13,7 +13,6 @@
         v-show="visible"
         v-bind="{player, sources, source}"
         @time="$emit('time', $event)"
-        @back="$emit('back')"
         @source="$emit('source', $event)"
         @fullscreen="toggleFullscreen">
 

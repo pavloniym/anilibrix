@@ -1,9 +1,9 @@
 <template>
   <v-layout fill-height column>
 
-    <!-- Toolbar -->
-    <app-toolbar no-update color="dark" :flat="false">
-      <template v-slot:right>
+    <app-system-bar/>
+    <app-tool-bar no-update flat color="dark">
+      <template v-slot:left>
 
         <!-- Return to releases page -->
         <v-btn icon @click="toReleases">
@@ -11,9 +11,7 @@
         </v-btn>
 
       </template>
-    </app-toolbar>
-
-    <!-- Settings -->
+    </app-tool-bar>
     <app-settings/>
 
 
@@ -30,8 +28,8 @@
 
 <script>
 
-  import AppToolbar from '@components/app/toolbar'
   import AppSettings from '@components/app/settings'
+  import {AppSystemBar, AppToolBar} from '@components/app/bars'
 
   import {mapActions} from 'vuex'
 
@@ -45,8 +43,9 @@
   export default {
     props,
     components: {
-      AppToolbar,
-      AppSettings
+      AppToolBar,
+      AppSettings,
+      AppSystemBar,
     },
 
     methods: {

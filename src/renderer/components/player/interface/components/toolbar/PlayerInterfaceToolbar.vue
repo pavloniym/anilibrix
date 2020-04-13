@@ -1,19 +1,27 @@
 <template>
-  <app-toolbar
-    no-update
-    no-search
-    no-drawer
-    class="player__interface__toolbar">
-  </app-toolbar>
+  <div class="player__interface__toolbar">
+
+    <app-system-bar color="transparent"  />
+    <app-tool-bar>
+
+      <!-- Back button -->
+      <v-btn icon slot="left" @click="$emit('back')">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+
+    </app-tool-bar>
+
+  </div>
 </template>
 
 <script>
 
-  import AppToolbar from "@components/app/toolbar";
+  import {AppSystemBar, AppToolBar} from "@components/app/bars";
 
   export default {
     components: {
-      AppToolbar
+      AppSystemBar,
+      AppToolBar
     }
   }
 </script>
@@ -22,6 +30,9 @@
   .player {
     &__interface {
       &__toolbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
         background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.25) 15%, rgba(0, 0, 0, 0.7) 85%);
       }
     }

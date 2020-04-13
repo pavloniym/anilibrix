@@ -1,31 +1,27 @@
 <template>
   <v-layout fill-height column>
 
-    <!-- Toolbar -->
-    <app-toolbar/>
-
-
-    <!-- Settings -->
+    <app-system-bar />
+    <app-tool-bar/>
     <app-settings/>
 
-
-    <!-- Content -->
     <v-content>
       <slot />
     </v-content>
-
 
   </v-layout>
 </template>
 
 <script>
 
-  import AppToolbar from '@components/app/toolbar'
   import AppSettings from '@components/app/settings'
+  import {AppSystemBar, AppToolBar} from '@components/app/bars'
 
   export default {
     components: {
-      AppToolbar, AppSettings
+      AppToolBar,
+      AppSettings,
+      AppSystemBar,
     }
   }
 </script>
