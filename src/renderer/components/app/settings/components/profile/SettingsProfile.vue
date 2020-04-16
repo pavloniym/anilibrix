@@ -42,11 +42,11 @@
     },
 
     computed: {
-      ...mapState('settings/profile', ['session'])
+      ...mapState('app/settings/profile', {_session: 'session'})
     },
 
     methods: {
-      ...mapActions('settings', ['backToSettingsCategories'])
+      ...mapActions('app/settings', {_backToSettingsCategories: 'backToSettingsCategories'})
     }
   };
 </script>

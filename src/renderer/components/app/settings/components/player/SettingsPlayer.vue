@@ -53,15 +53,15 @@
       }
     },
     computed: {
-      ...mapState('settings/player', {
+      ...mapState('app/settings/player', {
         type: s => s.type,
         streamQuality: s => s.stream.quality,
       })
     },
 
     methods: {
-      ...mapActions('settings', ['backToSettingsCategories']),
-      ...mapActions('settings/player', ['setPlayerType', 'setStreamQuality'])
+      ...mapActions('app/settings', ['backToSettingsCategories']),
+      ...mapActions('app/settings/player', ['setPlayerType', 'setStreamQuality'])
     }
   }
 </script>

@@ -7,7 +7,7 @@ export default {
     proxy: {
 
       pac: {
-        active: true,
+        active: false,
         source: 'https://antizapret.prostovpn.org/proxy.pac',
         connection: {
           host: null,

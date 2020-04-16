@@ -1,8 +1,8 @@
 import {BrowserWindow} from 'electron'
 
-const MIN_HEIGHT = 650;
+const MIN_HEIGHT = 720;
 const HEIGHT = MIN_HEIGHT;
-const MIN_WIDTH = 650;
+const MIN_WIDTH = 720;
 const WIDTH = 1000;
 
 /**

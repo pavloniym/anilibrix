@@ -13,7 +13,7 @@ export default class extends Proxy {
    * @return {*}
    */
   getHost() {
-    return __get(store, 'state.settings.connection.host', null);
+    return __get(store, 'state.app.settings.connection.host', null);
   }
 
 

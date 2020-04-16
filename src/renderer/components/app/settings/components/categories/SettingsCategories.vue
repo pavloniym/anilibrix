@@ -1,11 +1,6 @@
 <template>
   <v-layout column fill-height>
 
-    <!--<v-toolbar class="shrink">
-      <v-toolbar-title>Настройки</v-toolbar-title>
-    </v-toolbar>-->
-
-
     <v-divider/>
     <v-list dense nav>
       <template v-for="(category, k) in categories">
@@ -47,9 +42,9 @@
 
 <script>
 
-  import {mapActions} from 'vuex'
-  import {shell} from 'electron'
   import app from '@/../package'
+  import {shell} from 'electron'
+  import {mapActions} from 'vuex'
 
   export default {
     computed: {
@@ -77,39 +72,38 @@
             title: 'Основные',
             items: [
               {
-                title: 'Профиль',
-                subtitle: 'Авторизация и управление акканутом',
                 icon: 'mdi-account',
+                title: 'Профиль',
+                action: () => this._setComponent('Profile'),
+                subtitle: 'Авторизация и управление акканутом',
                 disabled: true,
-                action: () => this.setComponent('Profile'),
               },
               {
-                title: 'Воспроизведение',
-                subtitle: 'Настройки воспроизведения и качества',
                 icon: 'mdi-play',
+                title: 'Воспроизведение',
+                action: () => this._setComponent('Player'),
+                subtitle: 'Настройки воспроизведения и качества',
                 disabled: true,
-                action: () => this.setComponent('Player'),
               },
               {
-                title: 'Торрент',
-                subtitle: 'Список раздач, настройки торрент-воспроизведения',
                 icon: 'mdi-upload',
-                disabled: true,
-                action: () => "",
+                title: 'Торрент',
+                action: () => this._setComponent('Torrents'),
+                subtitle: 'Список раздач, настройки торрент-воспроизведения',
               },
               {
-                title: 'Плейлист',
-                subtitle: 'Управление плейлистом',
                 icon: 'mdi-playlist-play',
-                disabled: true,
+                title: 'Плейлист',
                 action: () => "",
+                subtitle: 'Управление плейлистом',
+                disabled: true,
               },
               {
-                title: 'Уведомления',
-                subtitle: 'Настройка уведомлений',
                 icon: 'mdi-bell',
-                disabled: true,
+                title: 'Уведомления',
                 action: () => "",
+                subtitle: 'Настройка уведомлений',
+                disabled: true,
               },
             ]
           },
@@ -117,17 +111,17 @@
             title: 'Приложение',
             items: [
               {
-                title: 'Подключение',
-                subtitle: 'Настройки сети и прокcи-сервер',
                 icon: 'mdi-wan',
-                action: () => this.setComponent('Connection'),
+                title: 'Подключение',
+                action: () => this._setComponent('Connection'),
+                subtitle: 'Настройки сети и прокcи-сервер',
               },
               {
-                title: 'Система',
-                subtitle: 'Системное меню и команды',
                 icon: 'mdi-cogs',
+                title: 'Система',
+                action: () => this._setComponent('System'),
+                subtitle: 'Системное меню и команды',
                 disabled: true,
-                action: () => this.setComponent('System'),
               }
             ]
           }
@@ -136,7 +130,7 @@
     },
 
     methods: {
-      ...mapActions('settings', ['setComponent']),
+      ...mapActions('app/settings', {_setComponent: 'setComponent'}),
 
 
       /**

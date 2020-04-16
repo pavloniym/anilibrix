@@ -38,14 +38,14 @@
     },
 
     computed: {
-      ...mapState('settings/connection', {
+      ...mapState('app/settings/connection', {
         _host: s => s.host,
       }),
     },
 
 
     methods: {
-      ...mapActions('settings/connection', ['setHost']),
+      ...mapActions('app/settings/connection', {_setHost: 'setHost'}),
 
       /**
        * Show dialog
@@ -63,7 +63,7 @@
        * @return void
        */
       saveHost() {
-        this.setHost(this.host);
+        this._setHost(this.host);
         this.visible = false;
       }
     },

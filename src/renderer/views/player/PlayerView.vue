@@ -62,7 +62,7 @@
         release: s => s.release,
         episode: s => s.episode,
       }),
-      ...mapState('settings/player', { _source: s => s.source }),
+      ...mapState('app/settings/player', { _source: s => s.source }),
 
       /**
        * Get sources list
@@ -115,7 +115,7 @@
     },
 
     methods: {
-      ...mapActions('settings/player', ['setSource']),
+      ...mapActions('app/settings/player', ['setSource']),
       ...mapActions('player', { _clearPlayer: 'clear' }),
 
       /**

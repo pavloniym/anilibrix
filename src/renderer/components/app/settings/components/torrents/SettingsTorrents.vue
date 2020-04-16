@@ -6,14 +6,14 @@
       <v-app-bar-nav-icon @click="_backToSettingsCategories">
         <v-icon>mdi-arrow-left</v-icon>
       </v-app-bar-nav-icon>
-      <v-toolbar-title class="body-1">Подключение</v-toolbar-title>
+      <v-toolbar-title class="body-1">Торренты</v-toolbar-title>
     </v-toolbar>
-    <v-divider/>
 
-    <v-card ref="card" class="fill-height">
-      <v-subheader class="font-weight-black">Настройки подключения</v-subheader>
+
+    <v-card ref="card">
       <v-list dense>
         <template v-for="(item, k) in settings">
+          <v-divider v-if="k > 0" :key="`d:${k}`"/>
           <v-list-item :key="k" @click="item.action">
             <v-list-item-content>
               <v-list-item-title v-text="item.title"/>
@@ -43,42 +43,17 @@
 
 <script>
 
-  import HostDialog from './dialogs/host'
-  import ProxyDialog from './dialogs/proxy'
-
   import {mapActions, mapState} from 'vuex'
 
   export default {
     data() {
       return {
         isMounted: false,
-        proxies: {
-          direct: 'Без прокси',
-          pac: 'PAC прокси',
-          custom: 'Собственный прокси сервер',
-        },
       }
     },
 
     computed: {
-      ...mapState('app/settings/connection', {
-        _host: s => s.host,
-        _pac: s => s.proxy.pac,
-        _custom: s => s.proxy.custom,
-      }),
-
-
-      /**
-       * Get proxy connection type
-       *
-       * @return {string}
-       */
-      getProxyType() {
-        if (this._pac.active) return 'pac';
-        if (this._custom.active) return 'custom';
-
-        return 'direct';
-      },
+      ...mapState('app/settings/connection', {}),
 
 
       /**
@@ -89,14 +64,9 @@
       settings() {
         return [
           {
-            title: 'Точка доступа',
-            value: this._host,
-            action: () => this.$refs.host[0].showDialog(),
-          },
-          {
-            title: 'Тип подключения',
-            value: this.proxies[this.getProxyType],
-            action: () => this.$refs.proxy[0].showDialog(),
+            title: 'Использовать торренты',
+            value: true,
+            action: () => ""
           }
         ]
       },
@@ -109,14 +79,16 @@
        */
       dialogs() {
         return [
-          {component: HostDialog, ref: 'host'},
-          {component: ProxyDialog, ref: 'proxy'},
+          //  {component: HostDialog, ref: 'host'},
+          // {component: ProxyDialog, ref: 'proxy'},
         ]
       }
+
 
     },
     methods: {
       ...mapActions('app/settings', {_backToSettingsCategories: 'backToSettingsCategories'}),
+
     },
 
     mounted() {

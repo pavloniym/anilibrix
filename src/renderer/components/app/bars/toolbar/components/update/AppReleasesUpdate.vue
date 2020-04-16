@@ -1,19 +1,25 @@
 <template>
   <!-- Reload -->
-  <v-tooltip bottom>
+  <v-tooltip left>
+
     <template v-slot:activator="{ on }">
       <v-btn
         v-on="datetime ? on : null"
         icon
         :disabled="_loading"
         @click="getLatestReleases">
-
-        <v-progress-circular v-if="_loading" indeterminate size="20"/>
-        <v-icon v-else>mdi-refresh</v-icon>
-
+        <v-fade-transition mode="out-in">
+          <v-progress-circular v-if="_loading" indeterminate size="20"/>
+          <v-icon v-else>mdi-refresh</v-icon>
+        </v-fade-transition>
       </v-btn>
     </template>
-    <span>Обновлено в {{datetime}}</span>
+
+    <span>
+      <div>Обновить последние релизы</div>
+      <div class="caption">Обновлено в {{datetime}}</div>
+    </span>
+
   </v-tooltip>
 </template>
 
@@ -36,8 +42,7 @@
        */
       datetime() {
         return this._datetime
-          ? new Intl.DateTimeFormat(undefined, {hour: 'numeric', minute: 'numeric', second: 'numeric'})
-            .format(this._datetime)
+          ? this._datetime.toLocaleString()
           : null
       }
 

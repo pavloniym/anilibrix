@@ -1,7 +1,11 @@
+import settings from './settings'
 import {mutationsHelper} from '@utils/store'
 
 export default {
   namespaced: true,
+  modules: {
+    settings
+  },
   state: {
     errors: [],
   },

@@ -49,7 +49,7 @@
     },
 
     computed: {
-      ...mapState('settings/player', ['type']),
+      ...mapState('app/settings/player', ['type']),
 
       data() {
        return {

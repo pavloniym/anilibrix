@@ -1,5 +1,7 @@
 import Transformer from '@transformer'
 import AnilibriaProxy from '@proxies/anilibria'
+
+import store from '@store'
 import stripHtml from 'string-strip-html';
 import __camelCase from 'lodash/camelCase'
 
@@ -113,20 +115,15 @@ export default class extends Transformer {
       // Parse torrents
       this._parseTorrents(torrents, episodes);
 
-      // Resolve episodes
       // Filter all sources without payload
       // Reverse to descending order
-      resolve(
-        Object
-          .values(episodes)
-          .map(episode => {
-            return {
-              ...episode,
-              sources: episode.sources.filter(source => source.payload !== null)
-            }
-          })
-          .reverse()
-      );
+      const items =  Object
+        .values(episodes)
+        .map(episode => ({...episode, sources: episode.sources.filter(source => source.payload !== null)}))
+        .reverse();
+
+      // Resolve episodes
+      resolve(items);
     });
   }
 
@@ -172,46 +169,50 @@ export default class extends Transformer {
    * @private
    */
   static _getTorrents(release) {
-    return new Promise((resolve, reject) => {
+    if(this.get(store, 'state.app.settings.torrents.process') === true) {
 
-      const requests = [];
-      const torrents = [];
+      return new Promise((resolve, reject) => {
 
-      (this.get(release, 'torrents') || [])
-        .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false)
-        .forEach(torrent => {
-          requests.push(
-            new Promise((resolve, reject) => {
+        const requests = [];
+        const torrents = [];
 
-              const torrentUrl = torrent.url;
-              const torrentId = torrent.id;
+        (this.get(release, 'torrents') || [])
+          .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false)
+          .forEach(torrent => {
+            requests.push(
+              new Promise((resolve, reject) => {
 
-              // Get blob torrent file from server
-              // Send to torrent for parsing data
-              new AnilibriaProxy()
-                .getTorrentFile(torrentUrl)
-                .then(blob => TorrentWindow.send('torrent:get', {
-                  torrentId,
-                  blob
-                }));
+                const torrentUrl = torrent.url;
+                const torrentId = torrent.id;
 
-              // Listen event with torrent data to main process
-              // Resolve when event is caught
-              ipc.on(`torrent:data:${torrentId}`, (e, { data }) => {
-                torrents.push({
-                  torrent,
-                  data
+                // Get blob torrent file from server
+                // Send to torrent for parsing data
+                new AnilibriaProxy()
+                  .getTorrentFile(torrentUrl)
+                  .then(blob => TorrentWindow.send('torrent:get', {
+                    torrentId,
+                    blob
+                  }));
+
+                // Listen event with torrent data to main process
+                // Resolve when event is caught
+                ipc.on(`torrent:data:${torrentId}`, (e, { data }) => {
+                  torrents.push({
+                    torrent,
+                    data
+                  });
+                  resolve();
                 });
-                resolve();
-              });
-            })
-          )
-        });
+              })
+            )
+          });
 
-      Promise.all(requests)
-        .then(() => resolve(torrents))
-        .catch(error => reject(error))
-    })
+        Promise.all(requests)
+          .then(() => resolve(torrents))
+          .catch(error => reject(error))
+      })
+
+    }
   }
 
   /**

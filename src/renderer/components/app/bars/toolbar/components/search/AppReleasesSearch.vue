@@ -2,9 +2,14 @@
   <v-layout class="shrink">
 
     <!-- Search -->
-    <v-btn icon @click="visible = !visible">
-      <v-icon>mdi-magnify</v-icon>
-    </v-btn>
+    <v-tooltip left>
+      <template v-slot:activator="{on}">
+        <v-btn v-on="on" icon @click="visible = !visible">
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+      </template>
+      <span>Поиск релизов</span>
+    </v-tooltip>
 
     <v-expand-x-transition appear mode="out-in">
       <v-autocomplete

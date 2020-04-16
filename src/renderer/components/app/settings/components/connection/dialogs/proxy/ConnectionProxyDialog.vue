@@ -7,7 +7,7 @@
         <v-card-text>
 
           <!-- Proxy type -->
-          <v-radio-group hide-details class="mt-0" :value="getProxyType" @change="setProxyType">
+          <v-radio-group hide-details class="mt-0" :value="getProxyType" @change="_setProxyType">
             <v-radio v-for="(proxy, k) in proxies" v-bind="proxy" :key="k"/>
           </v-radio-group>
 
@@ -19,7 +19,7 @@
               hide-details
               label="Источник PAC скрипта"
               :value="_pac.source"
-              @input="setPacSource">
+              @input="_setPacSource">
             </v-text-field>
           </template>
 
@@ -30,14 +30,14 @@
               hide-details
               label="Хост прокси-сервера"
               :value="_custom.connection.host"
-              @input="host => setCustomProxyConnection({host, port: _custom.connection.port})">
+              @input="host => _setCustomProxyConnection({host, port: _custom.connection.port})">
             </v-text-field>
             <v-text-field
               hide-details
               class="mt-2"
               label="Порт прокси-сервера"
               :value="_custom.connection.port"
-              @input="port => setCustomProxyConnection({host: _custom.connection.host, port})">
+              @input="port => _setCustomProxyConnection({host: _custom.connection.host, port})">
             </v-text-field>
           </template>
 
@@ -76,7 +76,7 @@
     },
 
     computed: {
-      ...mapState('settings/connection', {
+      ...mapState('app/settings/connection', {
         _pac: s => s.proxy.pac,
         _custom: s => s.proxy.custom,
       }),
@@ -97,11 +97,11 @@
 
 
     methods: {
-      ...mapActions('settings/connection', [
-        'setProxyType',
-        'setPacSource',
-        'setCustomProxyConnection'
-      ]),
+      ...mapActions('app/settings/connection', {
+        _setProxyType: 'setProxyType',
+        _setPacSource: 'setPacSource',
+        _setCustomProxyConnection: 'setCustomProxyConnection'
+      }),
 
 
       /**

@@ -48,7 +48,7 @@
       }
     },
     computed: {
-      ...mapState('settings/system', {
+      ...mapState('app/settings/system', {
         _updatesAuto: s => s.updates.auto
       }),
 
@@ -66,8 +66,8 @@
 
     },
     methods: {
-      ...mapActions('settings', ['backToSettingsCategories']),
-      ...mapActions('settings/system', [
+      ...mapActions('app/settings', ['backToSettingsCategories']),
+      ...mapActions('app/settings/system', [
         'setUpdatesAutoState'
       ]),
 

@@ -23,7 +23,7 @@
   export default {
     name: 'AppSettings',
     computed: {
-      ...mapState('settings', {
+      ...mapState('app/settings', {
         _drawer: s => s.drawer,
         _component: s => s.component
       }),
@@ -46,7 +46,7 @@
          * @return void
          */
         set(state) {
-          this.setDrawer(state);
+          this._setDrawer(state);
         }
       },
 
@@ -61,7 +61,7 @@
     },
 
     methods: {
-      ...mapActions('settings', ['setDrawer']),
+      ...mapActions('app/settings', {_setDrawer: 'setDrawer'}),
     }
 
   }

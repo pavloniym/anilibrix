@@ -61,7 +61,7 @@
     },
 
     computed: {
-      ...mapState('settings/player', {
+      ...mapState('app/settings/player', {
         _source: s => s.source
       }),
 

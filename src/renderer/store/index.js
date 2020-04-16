@@ -6,22 +6,20 @@ import {getInitialState} from '@utils/store'
 import createPromiseAction from '@plugins/vuex-promise-action'
 
 import app from './app'
-import settings from './settings'
-import releases from './releases'
-import release from './release'
-import search from './search'
 import player from './player'
+import search from './search'
+import release from './release'
+import releases from './releases'
 import notifications from './notifications'
 
 Vue.use(Vuex);
 
 const modules = {
   app,
-  settings,
-  releases,
-  release,
   search,
   player,
+  release,
+  releases,
   notifications
 };
 
@@ -32,7 +30,7 @@ const store = new Vuex.Store({
     createPromiseAction(),
     createPersistedState({
       invertIgnored: true,
-      ignoredPaths: ['settings'],
+      ignoredPaths: ['app'],
     }),
     createSharedMutations()
   ],

@@ -32,7 +32,7 @@ class BaseProxy {
    * @return {string}
    */
   getProxyUsage() {
-    const proxyConfiguration = __get(store, 'state.settings.connection.proxy');
+    const proxyConfiguration = __get(store, 'state.app.settings.connection.proxy');
     const pacActive = __get(proxyConfiguration, 'pac.active', false);
     const customActive = __get(proxyConfiguration, 'custom.active', false);
 
@@ -84,7 +84,7 @@ class BaseProxy {
       // Get pac configuration
       // Get pac file source
       // Get pac proxy connection parameters
-      const config = __get(store, 'state.settings.connection.proxy.pac');
+      const config = __get(store, 'state.app.settings.connection.proxy.pac');
       const source = __get(config, 'source');
       const connection = __get(config, 'connection', {});
 
@@ -99,7 +99,7 @@ class BaseProxy {
         getHttpProxy(source, targetUrl)
           .then(httpsProxyConfiguration => {
             // Save new proxy configuration in store
-            store.dispatch('settings/connection/setPacProxyConnection', httpsProxyConfiguration);
+            store.dispatch('app/settings/connection/setPacProxyConnection', httpsProxyConfiguration);
 
             // Check proxy config has host and port
             // Resolve https agent
@@ -124,7 +124,7 @@ class BaseProxy {
   getCustomProxy() {
     // Get custom configuration
     // Get custom proxy connection parameters
-    const config = __get(store, 'state.settings.connection.proxy.custom');
+    const config = __get(store, 'state.app.settings.connection.proxy.custom');
     const connection = __get(config, 'connection', {});
 
     if (connection.host && connection.port) {
@@ -200,7 +200,7 @@ class BaseProxy {
             this.proxyRetry = true;
 
             // Reset current proxy host parameters
-            store.dispatch('settings/connection/clearPacProxyConnection');
+            store.dispatch('app/settings/connection/clearPacProxyConnection');
 
             // Try to retry request + get new proxy first
             this.submit(method, url, parameters)

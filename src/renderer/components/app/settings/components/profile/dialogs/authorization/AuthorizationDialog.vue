@@ -75,7 +75,7 @@
     },
 
     methods: {
-      ...mapActions('settings/profile', {_authorize: 'authorize'}),
+      ...mapActions('app/settings/profile', {_authorize: 'authorize'}),
 
       /**
        * Close auth dialog

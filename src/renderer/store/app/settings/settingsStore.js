@@ -1,17 +1,19 @@
 import {mutationsHelper} from '@utils/store'
 
-import profile from './profile'
 import player from './player'
-import connection from './connection'
 import system from './system'
+import profile from './profile'
+import torrents from './torrents'
+import connection from './connection'
 
 export default {
   namespaced: true,
   modules: {
-    profile,
+    system,
     player,
+    profile,
+    torrents,
     connection,
-    system
   },
   state: {
     drawer: false,

@@ -1,13 +1,15 @@
-import Categories from './categories'
-import Profile from './profile'
 import Player from './player'
-import Connection from './connection'
 import System from './system'
+import Profile from './profile'
+import Torrents from './torrents'
+import Categories from './categories'
+import Connection from './connection'
 
 export default {
-  Categories,
-  Profile,
   Player,
+  System,
+  Profile,
+  Torrents,
+  Categories,
   Connection,
-  System
 }

@@ -6,11 +6,15 @@
     <v-spacer/>
 
     <slot name="right"/>
+
+    <!-- Release Search -->
     <app-releases-search v-if="noSearch === false"/>
+
+    <!-- Releases Update -->
     <app-releases-update v-if="noUpdate === false"/>
 
     <!-- Settings -->
-    <v-btn v-if="noDrawer === false" icon @click="setDrawer(!drawer)">
+    <v-btn v-if="noDrawer === false" icon @click="_setDrawer(!_drawer)">
       <v-icon>mdi-menu</v-icon>
     </v-btn>
 
@@ -55,11 +59,11 @@
       AppReleasesSearch,
     },
     computed: {
-      ...mapState('settings', ['drawer']),
+      ...mapState('app/settings', {_drawer: 'drawer'}),
     },
 
     methods: {
-      ...mapActions('settings', ['setDrawer']),
+      ...mapActions('app/settings', {_setDrawer: 'setDrawer'}),
     }
   }
 
