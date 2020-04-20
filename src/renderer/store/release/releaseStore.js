@@ -77,7 +77,7 @@ export default {
 
           // Catch errors
           .catch(error => {
-            dispatch('app/pushError', error, {root: true});
+            dispatch('app/errors/push', error, {root: true});
             reject();
           })
 

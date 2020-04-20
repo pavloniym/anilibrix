@@ -1,14 +1,10 @@
 <template>
   <v-layout fill-height column>
-
-    <app-system-bar />
     <app-tool-bar/>
     <app-settings/>
-
     <v-content>
       <slot />
     </v-content>
-
   </v-layout>
 </template>
 

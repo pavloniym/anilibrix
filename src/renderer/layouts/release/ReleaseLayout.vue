@@ -1,7 +1,6 @@
 <template>
   <v-layout fill-height column>
 
-    <app-system-bar/>
     <app-tool-bar no-update flat color="dark">
       <template v-slot:left>
 

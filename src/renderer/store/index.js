@@ -37,8 +37,22 @@ const store = new Vuex.Store({
   strict: debug,
   mutations: {
     RESET_STORE() {
-      this.replaceState(getInitialState(modules))
+      this.replaceState(getInitialState(modules));
     }
+  },
+  actions: {
+
+    /**
+     * Reset store
+     *
+     */
+    RESET_STORE({commit}) {
+      return new Promise(resolve => {
+        commit('RESET_STORE');
+        resolve();
+      })
+    }
+
   }
 });
 

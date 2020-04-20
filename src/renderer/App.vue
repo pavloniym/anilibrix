@@ -1,10 +1,13 @@
 <template>
   <v-app>
 
+    <!-- System Bar -->
+    <app-system-bar />
+
     <v-fade-transition mode="out-in" appear>
       <!-- Loader -->
       <template v-if="loading">
-        <loader/>
+        <app-loader/>
       </template>
 
       <!-- Content -->
@@ -16,28 +19,30 @@
     </v-fade-transition>
 
     <!-- Errors Toasts -->
-    <errors/>
+    <app-errors/>
 
     <!-- System notifications -->
-    <notifications/>
+    <app-notifications/>
 
   </v-app>
 </template>
 
 <script>
 
-  import Loader from '@components/app/loader'
-  import Errors from '@components/app/errors'
-  import Notifications from '@components/app/notifications/system'
+  import AppLoader from '@components/app/loader'
+  import AppErrors from '@components/app/errors'
+  import AppSystemBar from "@components/app/bars/system";
+  import AppNotifications from '@components/app/notifications/system'
 
   import {mapActions} from 'vuex'
 
   export default {
     name: 'AniLibrix',
     components: {
-      Errors,
-      Loader,
-      Notifications
+      AppErrors,
+      AppLoader,
+      AppSystemBar,
+      AppNotifications
     },
     data() {
       return {
@@ -50,7 +55,7 @@
     },
 
     methods: {
-      ...mapActions('releases', ['getLatestReleases']),
+      ...mapActions('releases', {_getLatestReleases: 'getLatestReleases'}),
     },
 
     created() {
@@ -63,7 +68,7 @@
 
 
       // Set update interval
-      this.update.handler = setInterval(() => this.getLatestReleases(), this.update.timeout);
+      this.update.handler = setInterval(() => this._getLatestReleases(), this.update.timeout);
     },
 
 

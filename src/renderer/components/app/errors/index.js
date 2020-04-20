@@ -1,3 +1,3 @@
-import ErrorsToasts from './ErrorsToasts'
+import AppErrors from './AppErrors'
 
-export default ErrorsToasts
+export default AppErrors

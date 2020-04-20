@@ -1,7 +1,5 @@
 <template>
   <div class="player__interface__toolbar">
-
-    <app-system-bar color="transparent"  />
     <app-tool-bar>
 
       <!-- Back button -->
@@ -10,7 +8,6 @@
       </v-btn>
 
     </app-tool-bar>
-
   </div>
 </template>
 
@@ -30,8 +27,6 @@
   .player {
     &__interface {
       &__toolbar {
-        position: fixed;
-        top: 0;
         width: 100%;
         background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.25) 15%, rgba(0, 0, 0, 0.7) 85%);
       }

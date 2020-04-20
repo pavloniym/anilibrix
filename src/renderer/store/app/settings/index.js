@@ -1,3 +1,3 @@
-import settingsStore from './settingsStore'
+import appSettingsStore from './appSettingsStore'
 
-export default settingsStore
+export default appSettingsStore

@@ -6,10 +6,10 @@ import {mutationsHelper} from '@utils/store'
 export default {
   namespaced: true,
   state: {
-    loading: false,
     data: [],
-    posters: {},
     index: null,
+    posters: {},
+    loading: false,
     datetime: null,
   },
 
@@ -70,7 +70,7 @@ export default {
           .then(() => commit('set', {k: 'datetime', v: new Date()}))
 
           .catch(error => {
-            dispatch('app/pushError', error, {root: true});
+            dispatch('app/errors/push', error, {root: true});
             reject();
           })
           .finally(() => commit('set', {k: 'loading', v: false}))
@@ -110,7 +110,7 @@ export default {
             .then(image =>
               commit('set', {k: 'posters', v: {...state.posters, [release.id]: image}})
             )
-            .catch(error => dispatch('app/pushError', error, {root: true}))
+            .catch(error => dispatch('app/errors/push', error, {root: true}))
         });
     }
 

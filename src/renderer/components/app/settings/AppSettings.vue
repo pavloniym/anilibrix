@@ -8,25 +8,56 @@
     width="400"
     class="settings">
 
-    <component :is="component"/>
+
+    <!-- Header -->
+    <v-toolbar flat class="shrink" color="#363636">
+      <v-app-bar-nav-icon @click="drawer = false">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-app-bar-nav-icon>
+      <v-toolbar-title class="body-1">Настройки приложения</v-toolbar-title>
+    </v-toolbar>
+    <v-divider />
+
+
+    <!-- Categories -->
+    <component v-for="(category, k) in categories" class="mb-2" :is="category" :key="k"/>
+
+
+    <!-- Credentials -->
+    <credentials />
+
 
   </v-navigation-drawer>
 </template>
 
 <script>
 
-  import __get from 'lodash/get'
-  import { mapState, mapActions } from 'vuex'
+  import Credentials from './components/credentials'
+  import PlayerSettings from './categories/player'
+  import SystemSettings from './categories/system'
+  import ConnectionSettings from './categories/connection'
 
-  import Components from './components'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
-    name: 'AppSettings',
+    components: {
+      Credentials
+    },
     computed: {
-      ...mapState('app/settings', {
-        _drawer: s => s.drawer,
-        _component: s => s.component
-      }),
+      ...mapState('app/settings', {_drawer: s => s.drawer}),
+
+      /**
+       * Get categories components
+       *
+       * @return Array
+       */
+      categories() {
+        return [
+          ConnectionSettings,
+          PlayerSettings,
+          SystemSettings,
+        ]
+      },
 
       drawer: {
 
@@ -36,7 +67,7 @@
          * @return boolean
          */
         get() {
-          return this._drawer;
+          return !!this._drawer;
         },
 
         /**
@@ -48,20 +79,13 @@
         set(state) {
           this._setDrawer(state);
         }
-      },
-
-      /**
-       * Get active component
-       *
-       * @return {*}
-       */
-      component() {
-        return __get(Components, this._component, null)
       }
+
     },
 
     methods: {
       ...mapActions('app/settings', {_setDrawer: 'setDrawer'}),
+
     }
 
   }
@@ -69,16 +93,13 @@
 <style lang="scss" scoped>
 
   .settings {
-    z-index: 10;
 
     ::v-deep {
       .v-navigation-drawer__content {
         overflow-y: scroll;
-
       }
 
     }
   }
-
 
 </style>

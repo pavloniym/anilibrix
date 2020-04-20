@@ -3,7 +3,7 @@
 
     <!-- Player Interface Toolbar -->
     <v-slide-y-transition>
-      <interface-toolbar v-show="visible" @back="$emit('back')" />
+     <!-- <interface-toolbar v-show="visible" @back="$emit('back')" />-->
     </v-slide-y-transition>
 
 

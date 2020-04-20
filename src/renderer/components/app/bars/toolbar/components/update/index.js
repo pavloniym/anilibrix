@@ -1,3 +1,3 @@
-import AppReleasesUpdate from './AppReleasesUpdate'
+import AppToolbarUpdate from './AppToolbarUpdate'
 
-export default AppReleasesUpdate
+export default AppToolbarUpdate

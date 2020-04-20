@@ -96,6 +96,7 @@
 <style lang="scss" scoped>
 
   .system-bar {
+    z-index: 5;
     -webkit-app-region: drag;
   }
 

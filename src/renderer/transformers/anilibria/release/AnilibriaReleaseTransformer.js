@@ -169,7 +169,7 @@ export default class extends Transformer {
    * @private
    */
   static _getTorrents(release) {
-    if(this.get(store, 'state.app.settings.torrents.process') === true) {
+    if(this.get(store, 'state.app.settings.player.torrents.process') === true) {
 
       return new Promise((resolve, reject) => {
 

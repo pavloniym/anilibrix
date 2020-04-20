@@ -1,3 +1,3 @@
-import AppReleasesSearch from './AppReleasesSearch'
+import AppToolbarSearch from './AppToolbarSearch'
 
-export default AppReleasesSearch
+export default AppToolbarSearch

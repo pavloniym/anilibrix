@@ -3,7 +3,12 @@ import {mutationsHelper} from '@utils/store'
 export default {
   namespaced: true,
   state: {
-    source: 'fhd',
+    server: {
+        type: 'stream'
+    },
+    torrents: {
+      process: false,
+    }
   },
 
   mutations: {
@@ -14,14 +19,14 @@ export default {
   actions: {
 
     /**
-     * Set source
+     * Set torrents process
      *
      * @param commit
-     * @param source
+     * @param state
      * @return {*}
      */
-    setSource: ({commit}, source) =>
-      commit('set', {k: 'source', v: source}),
+    setTorrentsProcess: ({commit}, state) =>
+      commit('set', {k: 'torrents.process', v: state}),
 
   }
 }

@@ -1,32 +1,26 @@
 <template>
   <v-app-bar v-bind="{color, flat}" class="px-4 toolbar shrink">
-
     <slot name="left"/>
-
     <v-spacer/>
-
     <slot name="right"/>
 
     <!-- Release Search -->
-    <app-releases-search v-if="noSearch === false"/>
+    <app-toolbar-search v-if="!noSearch"/>
 
     <!-- Releases Update -->
-    <app-releases-update v-if="noUpdate === false"/>
+    <app-toolbar-update v-if="!noUpdate"/>
 
     <!-- Settings -->
-    <v-btn v-if="noDrawer === false" icon @click="_setDrawer(!_drawer)">
-      <v-icon>mdi-menu</v-icon>
-    </v-btn>
+   <app-toolbar-settings v-if="!noSettings" />
 
   </v-app-bar>
 </template>
 
 <script>
 
-  import AppReleasesUpdate from './components/update';
-  import AppReleasesSearch from './components/search';
-
-  import { mapActions, mapState } from 'vuex'
+  import AppToolbarUpdate from './components/update';
+  import AppToolbarSearch from './components/search';
+  import AppToolbarSettings from './components/settings'
 
   const props = {
     noSearch: {
@@ -37,7 +31,7 @@
       type: Boolean,
       default: false
     },
-    noDrawer: {
+    noSettings: {
       type: Boolean,
       default: false
     },
@@ -55,16 +49,11 @@
     props,
     name: 'AppToolbar',
     components: {
-      AppReleasesUpdate,
-      AppReleasesSearch,
-    },
-    computed: {
-      ...mapState('app/settings', {_drawer: 'drawer'}),
+      AppToolbarUpdate,
+      AppToolbarSearch,
+      AppToolbarSettings
     },
 
-    methods: {
-      ...mapActions('app/settings', {_setDrawer: 'setDrawer'}),
-    }
   }
 
 </script>
