@@ -70,7 +70,7 @@ export default {
           .then(() => commit('set', {k: 'datetime', v: new Date()}))
 
           .catch(error => {
-            dispatch('app/errors/push', error, {root: true});
+            dispatch('app/settings/system/pushError', error, {root: true});
             reject();
           })
           .finally(() => commit('set', {k: 'loading', v: false}))
@@ -110,7 +110,7 @@ export default {
             .then(image =>
               commit('set', {k: 'posters', v: {...state.posters, [release.id]: image}})
             )
-            .catch(error => dispatch('app/errors/push', error, {root: true}))
+            .catch(error => dispatch('app/settings/system/pushError', error, {root: true}))
         });
     }
 

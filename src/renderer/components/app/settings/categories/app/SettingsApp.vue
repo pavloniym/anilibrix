@@ -32,8 +32,8 @@
 
 <script>
 
-  import UpdatesTimeoutDialog from './dialogs/updates/timeout'
-  import {mapState, mapActions} from 'vuex'
+  import ExitDialog from './dialogs/exit'
+  import CacheDialog from './dialogs/cache'
 
   export default {
     data() {
@@ -43,11 +43,6 @@
     },
 
     computed: {
-      ...mapState('app/settings/system', {
-        _updates: s => s.updates.enabled,
-        _timeout: s => s.updates.timeout
-      }),
-
 
       /**
        * Get settings items
@@ -57,15 +52,13 @@
       settings() {
         return [
           {
-            title: 'Автоматическое обновление релизов',
-            value: this._updates ? 'Да' : 'Нет',
-            action: () => this._setUpdates(!this._updates),
+            title: 'Сбросить кеш приложения',
+            action: () => this.$refs.cache[0].showDialog(),
           },
           {
-            title: 'Периодичность обновления релизов',
-            value: this._timeout + ' мин',
-            action: () => this.$refs['updatesTimeout'][0].showDialog(),
-          },
+            title: 'Закрыть приложение',
+            action: () => this.$refs.exit[0].showDialog(),
+          }
         ]
       },
 
@@ -77,14 +70,10 @@
        */
       dialogs() {
         return [
-          {component: UpdatesTimeoutDialog, ref: 'updatesTimeout'},
+          {component: ExitDialog, ref: 'exit'},
+          {component: CacheDialog, ref: 'cache'}
         ]
       }
-
-    },
-
-    methods: {
-      ...mapActions('app/settings/system', {_setUpdates: 'setUpdates'})
     },
 
     mounted() {

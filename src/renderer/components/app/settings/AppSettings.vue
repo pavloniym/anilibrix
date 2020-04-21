@@ -33,6 +33,8 @@
 <script>
 
   import Credentials from './components/credentials'
+
+  import AppSettings from './categories/app'
   import PlayerSettings from './categories/player'
   import SystemSettings from './categories/system'
   import ConnectionSettings from './categories/connection'
@@ -44,7 +46,7 @@
       Credentials
     },
     computed: {
-      ...mapState('app/settings', {_drawer: s => s.drawer}),
+      ...mapState('app/settings/system', {_drawer: s => s.drawer}),
 
       /**
        * Get categories components
@@ -56,6 +58,7 @@
           ConnectionSettings,
           PlayerSettings,
           SystemSettings,
+          AppSettings,
         ]
       },
 
@@ -84,7 +87,7 @@
     },
 
     methods: {
-      ...mapActions('app/settings', {_setDrawer: 'setDrawer'}),
+      ...mapActions('app/settings/system', {_setDrawer: 'setDrawer'}),
 
     }
 

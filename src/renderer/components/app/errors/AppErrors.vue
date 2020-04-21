@@ -5,10 +5,10 @@
   export default {
     render: () => null,
     computed: {
-      ...mapState('app/errors', {_errors: s => s.items}),
+      ...mapState('app/settings/system', {_errors: s => s.errors}),
     },
     methods: {
-      ...mapActions('app/errors', {_shift: 'shift'})
+      ...mapActions('app/settings/system', {_removeError: 'removeError'})
     },
 
     watch: {
@@ -19,7 +19,7 @@
             .map(error => typeof error === 'object' ? `${error.code}: ${error.message}` : error)
             .forEach((error, k) => {
               this.$toasted.show(error, {type: 'error'});
-              this._shift(k);
+              this._removeError(k);
             })
         }
       }

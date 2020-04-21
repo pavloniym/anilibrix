@@ -34,7 +34,7 @@
   import AppSystemBar from "@components/app/bars/system";
   import AppNotifications from '@components/app/notifications/system'
 
-  import {mapActions} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
     name: 'AniLibrix',
@@ -48,14 +48,42 @@
       return {
         loading: false,
         update: {
-          handler: null,
-          timeout: 1000 * 60 * 10 // every 10 minutes
+          handler: null
         }
       }
     },
 
+
+    computed: {
+      ...mapState('app/settings/system', {
+        _updates: s => s.updates.enabled,
+        _timeout: s => (s.updates.timeout || 1) * 60 * 1000
+      })
+
+    },
+
     methods: {
       ...mapActions('releases', {_getLatestReleases: 'getLatestReleases'}),
+
+
+      /**
+       * Toggle releases updates
+       *
+       * @return void
+       */
+      toggleUpdates() {
+
+        // Clear update interval
+        if (this.update.handler) {
+          clearInterval(this.update.handler);
+          this.update.handler = null;
+        }
+
+        if(this._updates === true) {
+          this.update.handler = setInterval(() => this._getLatestReleases(), this._timeout);
+        }
+      }
+
     },
 
     created() {
@@ -65,19 +93,23 @@
       this.$store
         .dispatchPromise('releases/getLatestReleases')
         .finally(() => this.loading = false);
-
-
-      // Set update interval
-      this.update.handler = setInterval(() => this._getLatestReleases(), this.update.timeout);
     },
 
+    watch: {
 
-    destroyed() {
+      _updates: {
+        immediate: true,
+        handler() {
+          this.toggleUpdates();
+        }
+      },
 
-      // Clear update interval
-      if (this.update.handler) {
-        clearInterval(this.update.interval);
+      _timeout: {
+        handler() {
+          this.toggleUpdates();
+        }
       }
+
     }
 
   }

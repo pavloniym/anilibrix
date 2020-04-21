@@ -15,11 +15,11 @@
 
   export default {
     computed: {
-      ...mapState('app/settings', {_drawer: 'drawer'}),
+      ...mapState('app/settings/system', {_drawer: 'drawer'}),
     },
 
     methods: {
-      ...mapActions('app/settings', {_setDrawer: 'setDrawer'}),
+      ...mapActions('app/settings/system', {_setDrawer: 'setDrawer'}),
     }
   }
 </script>
