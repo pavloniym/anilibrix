@@ -1,97 +1,66 @@
 <template>
-  <div class="player__interface__controls px-6" ref="controls">
+  <v-layout align-center justify-end ref="controls">
 
-    <!-- Info -->
-    <div class="my-4">
-      <slot name="info"/>
-    </div>
-
-    <!-- Controls -->
-    <v-layout align-center>
-
-      <!-- Play / Pause -->
-      <v-btn
-        icon
-        class="ml-2"
-        :disabled="isBuffering"
-        @click="player.togglePlay()">
-
-        <v-icon>mdi-{{isPlaying ? 'pause': 'play'}}</v-icon>
-
-      </v-btn>
-
-      <!-- Slider -->
-      <v-slider
-        class="mx-4"
-        hide-details
-        :min="0"
-        :max="duration"
-        :value="currentTime"
-        @start="isSeeking = true"
-        @end="isSeeking = false"
-        @change="player.currentTime = $event">
-      </v-slider>
-
-      <!-- Time / Duration -->
-      <div class="subtitle-2 mx-2">{{getCurrentTimeToHuman}} / {{getDurationToHuman}}</div>
+    <!-- Volume Mute -->
+    <v-btn icon large @click="player.muted = !isMuted">
+      <v-icon size="24">mdi-volume-{{isMuted ? 'off' : getVolumeState}}</v-icon>
+    </v-btn>
 
 
-      <!-- Volume Mute -->
-      <v-btn icon @click="player.muted = !isMuted">
-        <v-icon>mdi-volume-{{isMuted ? 'off' : getVolumeState}}</v-icon>
-      </v-btn>
+    <!-- Volume Level -->
+    <v-slider
+      hide-details
+      min="0"
+      max="1"
+      step=".1"
+      class="mr-2"
+      :value="volume"
+      :style="{maxWidth: '70px'}"
+      @input="player.volume = $event">
+    </v-slider>
 
 
-      <!-- Volume Level -->
-      <v-slider
-        min="0"
-        max="1"
-        step=".1"
-        hide-details
-        :value="volume"
-        :style="{maxWidth: '70px'}"
-        @input="player.volume = $event">
-      </v-slider>
+    <!-- Quality -->
+    <v-menu v-if="source" top nudge-left="60" nudge-top="45" :attach="$refs.controls">
+      <template v-slot:activator="{ on }">
+        <v-btn v-on="on" icon large class="ml-2">
+          <v-icon size="24">{{getSourceIcon(source)}}</v-icon>
+        </v-btn>
+      </template>
+      <v-list dense>
+        <v-list-item
+          v-for="(s, k) in sources"
+          :input-value="s.alias === source.alias"
+          :key="k"
+          @click="_setQuality(s.alias)">
+          <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
+          <v-list-item-subtitle v-text="s.label"/>
+        </v-list-item>
+      </v-list>
+    </v-menu>
 
 
-      <!-- Quality -->
-      <v-menu v-if="source" top nudge-left="60" nudge-top="45" :attach="$refs.controls">
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon class="ml-2">
-            <v-icon>{{getSourceIcon(source)}}</v-icon>
-          </v-btn>
-        </template>
-        <v-list dense>
-          <v-list-item
-            v-for="(s, k) in sources"
-            :input-value="s.alias === source.alias"
-            :key="k"
-            @click="$emit('source', s)">
-            <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
-            <v-list-item-subtitle v-text="s.label"/>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+    <!-- PIP -->
+    <v-btn icon large class="mx-2" @click="player.pip = true">
+      <v-icon size="24">mdi-picture-in-picture-bottom-right</v-icon>
+    </v-btn>
 
 
-      <!-- PIP -->
-      <v-btn icon class="ml-2" @click="player.pip = true">
-        <v-icon>mdi-picture-in-picture-bottom-right</v-icon>
-      </v-btn>
+    <!-- Fullscreen -->
+    <v-btn icon large @click="toggleFullscreen">
+      <v-icon size="24">mdi-fullscreen</v-icon>
+    </v-btn>
 
-
-      <!-- Fullscreen -->
-      <v-btn icon class="ml-2" @click="$emit('fullscreen')">
-        <v-icon>mdi-fullscreen</v-icon>
-      </v-btn>
-
-    </v-layout>
-  </div>
+  </v-layout>
 </template>
 
 <script>
 
   import __get from 'lodash/get'
+  import screenfull from "screenfull";
+  import {mapActions} from "vuex";
+
+
 
   const props = {
     player: {
@@ -105,6 +74,10 @@
     source: {
       type: Object,
       default: null
+    },
+    container: {
+      type: HTMLDivElement,
+      default: null
     }
   };
 
@@ -112,8 +85,6 @@
     props,
     data() {
       return {
-        isBuffering: false,
-        isPlaying: false,
         isMuted: false,
         isSeeking: false,
 
@@ -136,43 +107,10 @@
         if (this.volume > .66) return 'high';
       },
 
-      /**
-       * Get total duration in human format
-       *
-       * @return string
-       */
-      getDurationToHuman() {
-        return this.toHHMMSS(this.duration);
-      },
-
-      /**
-       * Get current time in human format
-       * @return {*}
-       */
-      getCurrentTimeToHuman() {
-        return this.toHHMMSS(this.currentTime);
-      }
     },
 
     methods: {
-
-      /**
-       * Convert seconds to human readable format
-       *
-       * @param secs
-       * @return {string}
-       */
-      toHHMMSS(secs) {
-        const sec_num = parseInt(secs, 10);
-        const hours = Math.floor(sec_num / 3600);
-        const minutes = Math.floor(sec_num / 60) % 60;
-        const seconds = sec_num % 60;
-
-        return [hours, minutes, seconds]
-          .map(v => v < 10 ? '0' + v : v)
-          .filter((v, i) => v !== '00' || i > 0)
-          .join(':')
-      },
+      ...mapActions('app/settings/player', {_setQuality: 'setQuality'}),
 
       /**
        * Get source icon
@@ -191,7 +129,34 @@
         } else if (type === 'torrent') return 'mdi-alpha-t';
 
         return null;
-      }
+      },
+
+
+      /**
+       * Handle keyboard event
+       *
+       * @param e
+       * @return void
+       */
+      handleKeyboardEvent(e) {
+        if (e.key === 'f') {
+          this.toggleFullscreen();
+        }
+      },
+
+
+      /**
+       * Enter fullscreen mode
+       * Fullscreen div container with player and controls
+       *
+       * @return void
+       */
+      toggleFullscreen() {
+        if (this.container) {
+          screenfull.toggle(this.container);
+        }
+      },
+
 
     },
 
@@ -199,27 +164,8 @@
       this.$nextTick(() => {
 
         // Set initial values
-        this.isPlaying = this.player.playing;
         this.isMuted = this.player.muted;
         this.volume = this.player.volume;
-
-        // Get duration on initial start
-        this.player.on('progress', e => {
-          this.duration = __get(e, 'detail.plyr.duration');
-        });
-
-        // Update current player position on time update
-        // If now seek event is running
-        this.player.on('timeupdate', () => {
-          const time = this.player.currentTime;
-          if (this.isSeeking === false && time && time > 0) {
-            this.currentTime = time;
-          }
-        });
-
-        // Watch for player playing and pause events
-        this.player.on('playing', () => this.isPlaying = true);
-        this.player.on('pause', () => this.isPlaying = false);
 
         // Watch for player volume change
         // Update player interface
@@ -228,40 +174,17 @@
           this.volume = e.detail.plyr.volume;
         });
 
-        // Handler buffering events
-        this.player.on('waiting', () => this.isBuffering = true);
-        this.player.on('canplay', () => this.isBuffering = false);
+        // Add some event listeners
+        window.addEventListener('keydown', this.handleKeyboardEvent, true);
 
       })
     },
 
-    watch: {
-      currentTime: {
-        immediate: true,
-        handler(time) {
-          this.$emit('time', time);
-        }
-      }
+
+    destroyed() {
+      window.removeEventListener('keydown', this.handleKeyboardEvent);
     }
+
   }
 
 </script>
-
-<style scoped lang="scss">
-
-  .player {
-    &__interface {
-      &__controls {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 10rem;
-        z-index: 10;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.7) 60%);
-        user-select: none;
-      }
-    }
-
-  }
-
-</style>

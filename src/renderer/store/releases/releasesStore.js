@@ -50,6 +50,16 @@ export default {
           // Get posters
           // Update releases poster
           .then(() => dispatch('getReleasesPosters'))
+          .then(() => state.data.map(release => {
+            return {
+              ...release,
+              poster: {
+                path: release.poster.path,
+                image: state.posters[release.id]
+              }
+            }
+          }))
+          .then(releases => commit('set', {k: 'data', v: releases}))
 
           // Resolve request
           .then(() => resolve())
@@ -63,7 +73,7 @@ export default {
                   ? new Date(release.datetime.system) > state.datetime
                   : false
               )
-              .forEach(release => dispatch('notifications/addRelease', release,  {root: true}))
+              .forEach(release => dispatch('notifications/addRelease', release, {root: true}))
           )
 
           // Create update datetime
@@ -86,32 +96,46 @@ export default {
      * @param commit
      * @param state
      * @param dispatch
+     * @return Promise
      */
     getReleasesPosters({commit, state, dispatch}) {
+      return new Promise((resolve, reject) => {
 
-      const posters = state.posters;
-      const items = state.data || [];
+        const requests = [];
+        const posters = state.posters;
+        const items = state.data || [];
 
-      // Remove old poster for old releases
-      Object.keys(posters)
-        .filter(releaseId => !!items.find(release => release.id === releaseId))
-        .forEach(releaseId => delete posters[releaseId]);
+        // Remove old poster for old releases
+        Object.keys(posters)
+          .filter(releaseId => !!items.find(release => release.id === releaseId))
+          .forEach(releaseId => delete posters[releaseId]);
 
-      // Set posters only with existing releases
-      commit('set', {k: 'posters', v: posters});
+        // Set posters only with existing releases
+        commit('set', {k: 'posters', v: posters});
 
-      // Update posters for new releases
-      items
-        .filter(release => release.poster && !state.posters[release.id])
-        .forEach(release => {
-          new AnilibriaProxy()
-            .getPosterImage(release.poster)
-            .then(image => `data:image/jpeg;base64,${image}`)
-            .then(image =>
-              commit('set', {k: 'posters', v: {...state.posters, [release.id]: image}})
-            )
-            .catch(error => dispatch('app/settings/system/pushError', error, {root: true}))
-        });
+        // Update posters for new releases
+        items
+          .filter(release => release.poster.path && !state.posters[release.id])
+          .forEach(release => {
+            requests.push(
+              new Promise((resolve, reject) => {
+                new AnilibriaProxy()
+                  .getPosterImage(release.poster.path)
+                  .then(image => `data:image/jpeg;base64,${image}`)
+                  .then(image => commit('set', {k: 'posters', v: {...state.posters, [release.id]: image}}))
+                  .then(() => resolve())
+                  .catch(error => reject(error))
+              })
+            );
+          });
+
+
+        Promise
+          .all(requests)
+          .then(() => resolve())
+          .catch(error => reject(error))
+
+      });
     }
 
   }

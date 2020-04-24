@@ -6,6 +6,7 @@ export default {
     server: {
         type: 'stream'
     },
+    quality: null,
     torrents: {
       process: false,
     }
@@ -25,8 +26,17 @@ export default {
      * @param state
      * @return {*}
      */
-    setTorrentsProcess: ({commit}, state) =>
-      commit('set', {k: 'torrents.process', v: state}),
+    setTorrentsProcess: ({commit}, state) => commit('set', {k: 'torrents.process', v: state}),
+
+
+    /**
+     * Set quality alias
+     *
+     * @param commit
+     * @param quality
+     * @return {*}
+     */
+    setQuality: ({commit}, quality) => commit('set', {k: 'quality', v: quality})
 
   }
 }

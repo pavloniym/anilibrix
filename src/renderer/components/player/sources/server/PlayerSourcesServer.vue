@@ -2,10 +2,10 @@
   <v-layout column class="fill-height">
 
     <!-- Video container -->
-    <video v-show="isReady" playsinline ref="player"/>
+    <video playsinline ref="player"/>
 
     <!-- Interface slot -->
-    <slot v-if="isReady" v-bind="{player}"/>
+    <slot v-if="player" v-bind="{player}"/>
 
   </v-layout>
 </template>
@@ -51,7 +51,7 @@
             focused: true,
             global: true
           },
-          fullscreen: { enabled: false },
+          fullscreen: {enabled: false},
           clickToPlay: true,
         }
       }
@@ -114,8 +114,7 @@
 
         // Get payload
         // Load payload to player
-        this.processPayload(this.getPayload(this.source), { startPosition: this.time || 0}, true);
-
+        this.processPayload(this.getPayload(this.source), {startPosition: this.time || 0}, true);
       })
     },
 
@@ -153,7 +152,7 @@
 
               // Get hls options
               // Get current play time to continue after source changed
-              const options = { startPosition: this.time || 0};
+              const options = {startPosition: this.time || 0};
 
               // Get player playing state
               // Continue playing if it was playing

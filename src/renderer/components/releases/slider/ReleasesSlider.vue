@@ -18,7 +18,7 @@
       @change="$emit('input', $event)">
 
       <!-- Slider Item -->
-      <v-slide-item v-for="(release, k) in items" :key="k" v-slot:default="{ active, toggle }">
+      <v-slide-item v-for="(release, k) in releases" :key="k" v-slot:default="{ active, toggle }">
 
         <!-- Default Card -->
         <v-card height="250" width="175" class="black" @click="toggle" :class="{primary: active}">
@@ -26,16 +26,16 @@
           <!-- Release Poster Image -->
           <v-img
             v-if="posters[release.id]"
-            height="250"
-            max-height="250"
-            width="175"
-            max-width="175"
-            ratio="0.7"
             eager
+            ratio="0.7"
             class="black"
+            width="175"
+            height="250"
+            max-width="175"
+            max-height="250"
+            :src="posters[release.id]"
             :key="`poster:${release.id}`"
-            :class="{'elevation-16': active}"
-            :src="posters[release.id]">
+            :class="{'elevation-16': active}">
             <div v-if="!active" class="fill-height" :style="{background: 'black', opacity: .75}"></div>
           </v-img>
 
@@ -46,7 +46,7 @@
 
     <!-- Next -->
     <div :style="{width: '5%'}" class="d-flex justify-end">
-      <v-btn icon :disabled="value >= items.length - 1" @click="$emit('input', value + 1)">
+      <v-btn icon :disabled="value >= releases.length - 1" @click="$emit('input', value + 1)">
         <v-icon>mdi-arrow-right</v-icon>
       </v-btn>
     </div>
@@ -56,14 +56,12 @@
 
 <script>
 
-  import {Lethargy} from 'lethargy'
-
   const props = {
     value: {
       type: Number,
       default: null
     },
-    items: {
+    releases: {
       type: Array,
       default: null
     },
@@ -75,7 +73,6 @@
 
   export default {
     props,
-    lethargy: new Lethargy(),
     methods: {
 
 
@@ -85,7 +82,7 @@
        * @return void
        */
       showNext() {
-        if (this.value < this.items.length - 1) {
+        if (this.value < this.releases.length - 1) {
           this.$emit('input', this.value + 1);
         }
       },
@@ -99,21 +96,6 @@
       showPrev() {
         if (this.value > 0) {
           this.$emit('input', this.value - 1);
-        }
-      },
-
-
-      /**
-       * Scroll slider using scroll direction
-       *
-       * @param e
-       */
-      scrollSlider(e) {
-        if (this.$options.lethargy.check(e) !== false) {
-
-          if (e.deltaY > 0 || e.deltaX > 0) this.showNext(); // Move to next
-          if (e.deltaY < 0 || e.deltaX < 0) this.showPrev(); // Move to previous
-
         }
       },
 

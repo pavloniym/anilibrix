@@ -5,8 +5,8 @@ import store from '@store'
 import stripHtml from 'string-strip-html';
 import __camelCase from 'lodash/camelCase'
 
-import { TorrentWindow } from '@/main/windows'
-import { ipcMain as ipc } from 'electron'
+import {TorrentWindow} from '@/main/windows'
+import {ipcMain as ipc} from 'electron'
 
 export default class extends Transformer {
 
@@ -67,7 +67,10 @@ export default class extends Transformer {
         original: stripHtml(this.get(release, 'names.1'))
       },
       description: stripHtml(this.get(release, 'description')),
-      poster: this.get(release, 'poster'),
+      poster: {
+        path: this.get(release, 'poster'),
+        image: null,
+      },
       genres: this.get(release, 'genres', []),
       year: this.get(release, 'year'),
       type: this.get(release, 'type'),
@@ -117,7 +120,7 @@ export default class extends Transformer {
 
       // Filter all sources without payload
       // Reverse to descending order
-      const items =  Object
+      const items = Object
         .values(episodes)
         .map(episode => ({...episode, sources: episode.sources.filter(source => source.payload !== null)}))
         .reverse();
@@ -169,7 +172,7 @@ export default class extends Transformer {
    * @private
    */
   static _getTorrents(release) {
-    if(this.get(store, 'state.app.settings.player.torrents.process') === true) {
+    if (this.get(store, 'state.app.settings.player.torrents.process') === true) {
 
       return new Promise((resolve, reject) => {
 
@@ -196,7 +199,7 @@ export default class extends Transformer {
 
                 // Listen event with torrent data to main process
                 // Resolve when event is caught
-                ipc.on(`torrent:data:${torrentId}`, (e, { data }) => {
+                ipc.on(`torrent:data:${torrentId}`, (e, {data}) => {
                   torrents.push({
                     torrent,
                     data
@@ -269,7 +272,7 @@ export default class extends Transformer {
           // If there is only one file in torrent
           // And if can't parse episode number -> make it as first (1) episode
           // This is a little bit hack
-          if(files.length === 1) episode = 1;
+          if (files.length === 1) episode = 1;
 
           // Create episode if it not exists
           this._createEpisode(episode, episodes);

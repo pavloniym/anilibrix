@@ -1,9 +1,10 @@
 import {BrowserWindow} from 'electron'
 
+const MIN_WIDTH = 1000;
 const MIN_HEIGHT = 720;
+
+const WIDTH = MIN_WIDTH;
 const HEIGHT = MIN_HEIGHT;
-const MIN_WIDTH = 720;
-const WIDTH = 1000;
 
 /**
  * Store instance

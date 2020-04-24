@@ -1,7 +1,7 @@
 <template>
   <releases-layout>
     <v-layout column justify-center fill-height class="mx-4">
-      <releases-slider v-model="selection" v-bind="{items, posters}"/>
+      <releases-slider v-model="index" :releases="_releases" :posters="_posters"/>
       <releases-data v-if="release" v-bind="{release}" class="mt-4"/>
     </v-layout>
   </releases-layout>
@@ -23,13 +23,13 @@
     },
     computed: {
       ...mapState('releases', {
-        index: s => s.index,
-        items: s => s.data || [],
-        posters: s => s.posters || {},
+        _index: s => s.index,
+        _posters: s => s.posters || {},
+        _releases: s => s.data || [],
       }),
 
 
-      selection: {
+      index: {
 
         /**
          * Get release index using it's hash
@@ -38,7 +38,7 @@
          * @return number
          */
         get() {
-          const releaseIndex = this.items.findIndex(release => this.index === release.id);
+          const releaseIndex = this._releases.findIndex(release => this._index === release.id);
           return releaseIndex > -1
             ? releaseIndex
             : 0;
@@ -52,7 +52,7 @@
          * @return void
          */
         set(index) {
-          this.setIndex(this.items[index].id);
+          this._setIndex(this._releases[index].id);
         }
       },
 
@@ -63,13 +63,13 @@
        * @return {*|null}
        */
       release() {
-        return this.items[this.selection] || null;
+        return this._releases[this.index] || null;
       }
     },
 
 
     methods: {
-      ...mapActions('releases', ['setIndex'])
+      ...mapActions('releases', {_setIndex: 'setIndex'})
     }
 
   }

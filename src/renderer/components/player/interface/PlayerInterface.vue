@@ -1,39 +1,35 @@
 <template>
-  <div>
-
-    <!-- Player Interface Toolbar -->
-    <v-slide-y-transition>
-     <!-- <interface-toolbar v-show="visible" @back="$emit('back')" />-->
-    </v-slide-y-transition>
+  <v-slide-y-reverse-transition>
+    <v-layout v-show="visible" column class="interface pa-8">
 
 
-    <!-- Player Interface Controls -->
-    <v-slide-y-reverse-transition>
-      <interface-controls
-        v-show="visible"
-        v-bind="{player, sources, source}"
-        @time="$emit('time', $event)"
-        @source="$emit('source', $event)"
-        @fullscreen="toggleFullscreen">
+      <interface-headline v-bind="{player, release, episode}" class="pb-2"/>
+      <interface-timeline v-bind="{player}"/>
 
-        <!-- Info -->
-        <template v-slot:info v-if="release && episode">
-          <h2>{{release.names.ru}}</h2>
-          <h3>{{episode.title}}</h3>
-        </template>
 
-      </interface-controls>
-    </v-slide-y-reverse-transition>
+      <v-row no-gutters justify="center">
+        <v-col align-self="center">
+          <interface-links v-bind="{release}"/>
+        </v-col>
+        <v-col align-self="center">
+          <interface-play v-bind="{player, release, episode}"/>
+        </v-col>
+        <v-col align-self="center">
+          <interface-controls v-bind="{player, source, sources, container}"/>
+        </v-col>
+      </v-row>
 
-  </div>
+    </v-layout>
+  </v-slide-y-reverse-transition>
 </template>
 
 <script>
 
+  import InterfacePlay from './components/play'
+  import InterfaceLinks from './components/links'
+  import InterfaceHeadline from './components/headline'
+  import InterfaceTimeline from './components/timeline'
   import InterfaceControls from './components/controls'
-  import InterfaceToolbar from './components/toolbar'
-
-  import screenfull from 'screenfull';
 
   const props = {
     player: {
@@ -66,8 +62,11 @@
   export default {
     props,
     components: {
-      InterfaceToolbar,
-      InterfaceControls
+      InterfacePlay,
+      InterfaceLinks,
+      InterfaceHeadline,
+      InterfaceTimeline,
+      InterfaceControls,
     },
     data() {
       return {
@@ -90,38 +89,10 @@
         this.visible = true;
 
         // Clear previous interval
-        if (this.visibilityHandler) {
-          clearTimeout(this.visibilityHandler);
-        }
+        if (this.visibilityHandler) clearTimeout(this.visibilityHandler);
 
         // Create new interval
         this.visibilityHandler = setTimeout(() => this.visible = false, 2500)
-      },
-
-
-      /**
-       * Handle keyboard event
-       *
-       * @param e
-       * @return void
-       */
-      handleKeyboardEvent(e) {
-        if (e.key === 'f') {
-          this.toggleFullscreen();
-        }
-      },
-
-
-      /**
-       * Enter fullscreen mode
-       * Fullscreen div container with player and controls
-       *
-       * @return void
-       */
-      toggleFullscreen() {
-        if (this.container) {
-          screenfull.toggle(this.container);
-        }
       },
 
 
@@ -135,16 +106,26 @@
 
         // Add some event listeners
         window.addEventListener('mousemove', this.showInterface, true);
-        window.addEventListener('keydown', this.handleKeyboardEvent, true);
-
       })
     },
 
 
     destroyed() {
       window.removeEventListener('mousemove', this.showInterface);
-      window.removeEventListener('keydown', this.handleKeyboardEvent);
     }
 
   }
 </script>
+
+<style scoped lang="scss">
+
+  .interface {
+    width: 100%;
+    bottom: 0;
+    z-index: 10;
+    position: absolute;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 50%, rgba(255, 255, 255, 0) 100%);
+    user-select: none;
+  }
+
+</style>

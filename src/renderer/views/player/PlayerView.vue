@@ -1,35 +1,17 @@
 <template>
   <player-layout ref="container">
+    <component v-bind="{sources, source}" :is="component">
 
-    <!-- Player is loading -->
-    <player-loading v-bind="{isReady, release, episode}">
+      <template v-slot:default="{player}">
+        <player-interface
+          v-bind="{player, sources, source}"
+          :release="_release"
+          :episode="_episode"
+          :container="$refs.container.$el">
+        </player-interface>
+      </template>
 
-      <!-- Player is buffering -->
-      <player-buffering v-bind="{isBuffering, isReady}">
-
-        <component
-          v-bind="{sources, source, time}"
-          :is="component"
-          :is-ready.sync="isReady"
-          :is-buffering.sync="isBuffering"
-          @ended="goBack">
-
-          <template v-slot:default="{player}">
-            <player-interface
-              v-if="player"
-              v-bind="{player, sources, source, release, episode}"
-              :container="$refs.container.$el"
-              @time="time = $event"
-              @back="goBack"
-              @source="setSource($event.alias)">
-            </player-interface>
-          </template>
-
-        </component>
-
-
-      </player-buffering>
-    </player-loading>
+    </component>
   </player-layout>
 </template>
 
@@ -37,11 +19,11 @@
 
   import PlayerLayout from '@layouts/player'
   import PlayerInterface from '@components/player/interface'
-  import { PlayerLoading, PlayerBuffering } from '@components/player/loaders'
-  import { PlayerSourcesServer, PlayerSourcesTorrent } from '@components/player/sources'
+  import {PlayerLoading, PlayerBuffering} from '@components/player/loaders'
+  import {PlayerSourcesServer, PlayerSourcesTorrent} from '@components/player/sources'
 
   import __get from 'lodash/get';
-  import { mapState, mapActions } from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
     components: {
@@ -50,19 +32,12 @@
       PlayerBuffering,
       PlayerInterface,
     },
-    data() {
-      return {
-        isReady: false,
-        isBuffering: false,
-        time: 0
-      }
-    },
     computed: {
       ...mapState('player', {
-        release: s => s.release,
-        episode: s => s.episode,
+        _release: s => s.release,
+        _episode: s => s.episode,
       }),
-      ...mapState('app/settings/player', { _source: s => s.source }),
+      ...mapState('app/settings/player', {_quality: s => s.quality}),
 
       /**
        * Get sources list
@@ -70,7 +45,7 @@
        * @return Array
        */
       sources() {
-        return __get(this.episode, 'sources') || [];
+        return __get(this._episode, 'sources') || [];
       },
 
       /**
@@ -79,7 +54,7 @@
        * @return Object|null
        */
       source() {
-        return this.sources.find(source => source.alias === this._source) || this.sources[0];
+        return this.sources.find(source => source.alias === this._quality) || this.sources[0];
       },
 
       /**
@@ -90,6 +65,7 @@
       type() {
         return __get(this.source, 'type') || null;
       },
+
 
       /**
        * Get available components
@@ -115,41 +91,21 @@
     },
 
     methods: {
-      ...mapActions('app/settings/player', ['setSource']),
-      ...mapActions('player', { _clearPlayer: 'clear' }),
-
-      /**
-       * Return to back
-       *
-       * @return void
-       */
-      goBack() {
-        this.$router.back();
-      },
-
+      ...mapActions('player', {_clearPlayer: 'clear'}),
     },
 
-    beforeDestroy() {
+    destroyed() {
       setTimeout(() => this._clearPlayer(), 500);
     },
 
     watch: {
-
-      type: {
-        immediate: true,
-        handler() {
-          this.isBuffering = true;
-        }
-      },
 
       source: {
         deep: true,
         immediate: true,
         handler(source) {
           if (!source) {
-            this.$router.push({
-              name: 'player.source.empty'
-            })
+            this.$router.push({name: 'player.source.empty'})
           }
         }
       }
