@@ -1,16 +1,13 @@
 <template>
   <player-layout ref="container">
-    <component v-bind="{sources, source}" :is="component">
-
+    <component v-bind="{sources, source}" :is="component" :time.sync="time">
       <template v-slot:default="{player}">
         <player-interface
-          v-bind="{player, sources, source}"
-          :release="_release"
+          v-bind="{player, sources, source, container}"
           :episode="_episode"
-          :container="$refs.container.$el">
+          :release="_release">
         </player-interface>
       </template>
-
     </component>
   </player-layout>
 </template>
@@ -19,25 +16,25 @@
 
   import PlayerLayout from '@layouts/player'
   import PlayerInterface from '@components/player/interface'
-  import {PlayerLoading, PlayerBuffering} from '@components/player/loaders'
   import {PlayerSourcesServer, PlayerSourcesTorrent} from '@components/player/sources'
 
   import __get from 'lodash/get';
   import {mapState, mapActions} from 'vuex'
 
   export default {
+    data() {
+      return {
+        time: 0,
+      }
+    },
     components: {
       PlayerLayout,
-      PlayerLoading,
-      PlayerBuffering,
       PlayerInterface,
     },
     computed: {
-      ...mapState('player', {
-        _release: s => s.release,
-        _episode: s => s.episode,
-      }),
+      ...mapState('player', {_release: s => s.release, _episode: s => s.episode}),
       ...mapState('app/settings/player', {_quality: s => s.quality}),
+
 
       /**
        * Get sources list
@@ -47,6 +44,7 @@
       sources() {
         return __get(this._episode, 'sources') || [];
       },
+
 
       /**
        * Get first source with max available quality
@@ -86,16 +84,26 @@
        */
       component() {
         return __get(this.components, this.type) || null;
+      },
+
+
+      /**
+       * Get container element
+       *
+       * @return HTMLDivElement
+       */
+      container() {
+        return this.$refs.container.$el;
       }
 
     },
 
     methods: {
-      ...mapActions('player', {_clearPlayer: 'clear'}),
+      ...mapActions('player', {_clear: 'clear'}),
     },
 
     destroyed() {
-      setTimeout(() => this._clearPlayer(), 500);
+      setTimeout(() => this._clear(), 500);
     },
 
     watch: {

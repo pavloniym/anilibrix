@@ -6,7 +6,7 @@
       <h1>{{title}}</h1>
     </div>
 
-    <div class="d-flex align-self-end font-weight-bold" :style="{fontSize: '.8rem'}">
+    <div v-if="isReady" class="d-flex align-self-end font-weight-bold" :style="{fontSize: '.8rem'}">
       {{time}} / {{duration}}
     </div>
 
@@ -37,6 +37,7 @@
     props,
     data() {
       return {
+        isReady: false,
         currentTime: null,
         totalDuration: 0,
       }
@@ -109,15 +110,14 @@
       this.$nextTick(() => {
 
         // Get duration on initial start
-        this.player.on('progress', e => {
-          this.totalDuration = __get(e, 'detail.plyr.duration');
-        });
+        this.player.on('progress', e => this.totalDuration = __get(e, 'detail.plyr.duration'));
 
         // Update current player position on time update
         // If now seek event is running
-        this.player.on('timeupdate', () => {
-          this.currentTime = this.player.currentTime;
-        });
+        this.player.on('timeupdate', () => this.currentTime = this.player.currentTime);
+
+        // Set loaded metadata ready state
+        this.player.on('loadedmetadata', () => this.isReady = true);
       })
     }
 

@@ -4,7 +4,7 @@
     <!-- Previous episode -->
     <v-tooltip left>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large :disabled="previous === null">
+        <v-btn v-on="on" icon large :disabled="previous === null" @click="_setEpisode(previous)">
           <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
       </template>
@@ -28,7 +28,7 @@
     <!-- Next episode -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large :disabled="next === null">
+        <v-btn v-on="on" icon large :disabled="next === null" @click="_setEpisode(next)">
           <v-icon>mdi-skip-next</v-icon>
         </v-btn>
       </template>
@@ -44,6 +44,7 @@
 <script>
 
   import __get from 'lodash/get'
+  import {mapActions} from 'vuex'
 
   const props = {
     player: {
@@ -68,7 +69,6 @@
         isBuffering: false,
       }
     },
-
 
     computed: {
 
@@ -102,7 +102,10 @@
           .find(episode => episode.id === (__get(this.episode, 'id') || -1) - 1) || null;
       }
 
+    },
 
+    methods: {
+      ...mapActions('player', {_setEpisode: 'setEpisode'})
     },
 
     created() {
@@ -127,6 +130,7 @@
 
   .play__tooltip {
     line-height: 1;
+
     > div {
       line-height: 1;
     }

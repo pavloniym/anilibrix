@@ -13,22 +13,25 @@ export default {
 
   actions: {
 
+
     /**
-     * Set player data
+     * Set release
      *
      * @param commit
-     * @param state
-     * @param episode
      * @param release
-     * @param type
+     * @return {*}
      */
-    watch: ({commit, state}, {episode, release}) => {
-      return new Promise(resolve => {
-        commit('set', {k: 'episode', v: episode});
-        commit('set', {k: 'release', v: release});
-        resolve(state);
-      })
-    },
+    setRelease: ({commit}, release) => commit('set', {k: 'release', v: release}),
+
+
+    /**
+     * Set episode
+     * Reset time
+     *
+     * @param commit
+     * @param episode
+     */
+    setEpisode: ({commit}, episode) => commit('set', {k: 'episode', v: episode}),
 
 
     /**
@@ -37,9 +40,9 @@ export default {
      * @param commit
      */
     clear: ({commit}) => {
-      commit('set', {k: 'episode', v: null});
+      commit('set', {k: 'time', v: 0});
+      commit('set', {k: 'episode', v: -1});
       commit('set', {k: 'release', v: null});
-      commit('set', {k: 'type', v: null});
     }
 
   }

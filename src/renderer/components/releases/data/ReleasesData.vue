@@ -9,7 +9,7 @@
       <div class="body-2">{{data.genres.join(' | ')}}</div>
 
       <!-- Episode -->
-      <v-chip label color="secondary" class="mt-2 subtitle-2 font-weight-black">{{data.episode.title}}</v-chip>
+      <v-chip v-if="episode" v-text="episode.title" label color="secondary" class="mt-2 subtitle-2 font-weight-black"/>
 
       <!-- Description -->
       <div class="my-2 grey--text lighten-1" :style="{maxHeight: '75px'}">
@@ -28,9 +28,8 @@
 
 <script>
 
-  import VClamp from 'vue-clamp'
-  import {mapState} from 'vuex'
   import __get from 'lodash/get'
+  import VClamp from 'vue-clamp'
 
   const props = {
     release: {
@@ -49,21 +48,34 @@
     },
 
     computed: {
-      ...mapState('app/settings/player', ['type']),
 
+
+      /**
+       * Get release data
+       *
+       * @return Object
+       */
       data() {
-       return {
-         names: {
-           ru: __get(this.release, 'names.ru'),
-           original: __get(this.release, 'names.original')
-         },
-         description: __get(this.release, 'description'),
-         genres: __get(this.release, 'genres') || [],
-         episode: {
-           title:  __get(this.release, 'episode.title'),
-         }
-       }
+        return {
+          names: {
+            ru: __get(this.release, 'names.ru'),
+            original: __get(this.release, 'names.original')
+          },
+          description: __get(this.release, 'description'),
+          genres: __get(this.release, 'genres') || [],
+        }
+      },
+
+
+      /**
+       * Get episode
+       *
+       * @return Object|null
+       */
+      episode() {
+        return __get(this.release, ['episodes', 0]) || null;
       }
+
     },
 
     methods: {
@@ -88,10 +100,8 @@
       watchEpisode() {
         this.loading = true;
         this.$store
-          .dispatchPromise('player/watch', {
-            release: this.release,
-            episode: this.release.episode
-          })
+          .dispatchPromise('player/setRelease', this.release)
+          .then(() => this.$store.dispatchPromise('player/setEpisode', this.episode))
           .then(() => this.$router.push({name: 'player'}))
           .finally(() => this.loading = false);
       },

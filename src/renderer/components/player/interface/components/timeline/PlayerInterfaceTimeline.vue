@@ -3,7 +3,7 @@
     hide-details
     class="timeline"
     :min="0"
-    :max="duration"
+    :max="isReady ? duration : 100"
     :value="currentTime"
     @start="isSeeking = true"
     @end="isSeeking = false"
@@ -26,6 +26,7 @@
     props,
     data() {
       return {
+        isReady: false,
         duration: 0,
         isSeeking: false,
         currentTime: null,
@@ -48,6 +49,10 @@
             this.currentTime = time;
           }
         });
+
+        // Set loaded metadata ready state
+        this.player.on('loadedmetadata', () => this.isReady = true);
+
       })
     },
 

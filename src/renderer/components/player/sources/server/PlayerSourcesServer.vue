@@ -12,22 +12,13 @@
 
 <script>
 
-  import Player from 'plyr';
   import Hls from 'hls.js';
-
-  import 'plyr/dist/plyr.css';
+  import Player from 'plyr';
 
   import __get from 'lodash/get';
+  import 'plyr/dist/plyr.css';
 
   const props = {
-    isReady: {
-      type: Boolean,
-      default: false
-    },
-    isBuffering: {
-      type: Boolean,
-      default: false
-    },
     source: {
       type: Object,
       default: null
@@ -53,7 +44,7 @@
           },
           fullscreen: {enabled: false},
           clickToPlay: true,
-        }
+        },
       }
     },
 
@@ -67,6 +58,7 @@
       getPayload(source) {
         return __get(source, 'payload');
       },
+
 
       /**
        * Load hls source
@@ -92,9 +84,8 @@
             this.hls.loadSource(payload);
 
             // If play should play -> play source automatically
-            if (shouldPlay) {
-              this.player.play();
-            }
+            if (shouldPlay) this.player.play();
+
           });
         }
       },
@@ -102,34 +93,31 @@
     },
 
     mounted() {
-      this.$nextTick(() => {
 
-        this.player = new Player(this.$refs.player, this.options);
+      // Create player
+      this.player = new Player(this.$refs.player, this.options);
 
-        // Set ready flag on player ready event
-        this.player.on('loadedmetadata', () => this.$emit('update:isReady', true));
-        this.player.on('waiting', () => this.$emit('update:isBuffering', true));
-        this.player.on('canplay', () => this.$emit('update:isBuffering', false));
-        this.player.on('ended', () => this.$emit('ended'));
+      // Update current player position on time update
+      this.player.on('timeupdate', () => {
+          const time = this.player.currentTime;
+          if (time > 0) {
+            this.$emit('update:time', time);
+          }
+        }
+      );
 
-        // Get payload
-        // Load payload to player
-        this.processPayload(this.getPayload(this.source), {startPosition: this.time || 0}, true);
-      })
+      // Get payload
+      // Load payload to player
+      this.processPayload(this.getPayload(this.source), {startPosition: this.time || 0}, true);
     },
 
-    beforeDestroy() {
+    destroyed() {
       setTimeout(() => {
 
         // Destroy player instance
-        if (this.player) {
-          this.player.destroy();
-        }
-
         // Destroy active payload
-        if (this.hls) {
-          this.hls.destroy();
-        }
+        if (this.player) this.player.destroy();
+        if (this.hls) this.hls.destroy();
 
       }, 500);
     },
@@ -141,11 +129,8 @@
         deep: true,
         handler(source) {
           this.$nextTick(() => {
-
             if (source !== null) {
 
-              // Set buffering
-              this.$emit('update:isBuffering', true);
 
               // Get payload from source
               const payload = this.getPayload(this.source);

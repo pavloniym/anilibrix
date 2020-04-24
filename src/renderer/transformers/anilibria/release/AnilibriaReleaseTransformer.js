@@ -54,29 +54,23 @@ export default class extends Transformer {
    * @returns {{}}
    */
   static async fetch(release) {
-
-    // Get episodes
-    // Parse server playlists + parse torrents
-    const episodes = await this.getReleaseEpisodes(release);
-
     return {
       id: this.get(release, 'id'),
-      datetime: this.getReleaseDatetime(release),
+      year: this.get(release, 'year'),
+      type: this.get(release, 'type'),
       names: {
         ru: stripHtml(this.get(release, 'names.0')),
         original: stripHtml(this.get(release, 'names.1'))
       },
-      description: stripHtml(this.get(release, 'description')),
+      voices: this.get(release, 'voices') || [],
+      genres: this.get(release, 'genres') || [],
       poster: {
         path: this.get(release, 'poster'),
         image: null,
       },
-      genres: this.get(release, 'genres', []),
-      year: this.get(release, 'year'),
-      type: this.get(release, 'type'),
-      voices: this.get(release, 'voices'),
-      episodes: episodes,
-      episode: episodes[0] || null,
+      datetime: this.getReleaseDatetime(release),
+      episodes: await this.getReleaseEpisodes(release),
+      description: stripHtml(this.get(release, 'description')),
     }
   }
 

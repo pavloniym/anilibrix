@@ -1,26 +1,29 @@
 <template>
-  <v-slide-y-reverse-transition>
-    <v-layout v-show="visible" column class="interface pa-8">
+  <div>
+    <v-slide-y-reverse-transition>
+      <v-layout v-show="visible" column class="interface pa-8">
 
 
-      <interface-headline v-bind="{player, release, episode}" class="pb-2"/>
-      <interface-timeline v-bind="{player}"/>
+        <interface-headline v-bind="{player, release, episode}" class="pb-2"/>
+        <interface-timeline v-bind="{player}"/>
 
 
-      <v-row no-gutters justify="center">
-        <v-col align-self="center">
-          <interface-links v-bind="{release}"/>
-        </v-col>
-        <v-col align-self="center">
-          <interface-play v-bind="{player, release, episode}"/>
-        </v-col>
-        <v-col align-self="center">
-          <interface-controls v-bind="{player, source, sources, container}"/>
-        </v-col>
-      </v-row>
+        <v-row no-gutters justify="center">
+          <v-col align-self="center">
+            <interface-links v-bind="{release}"/>
+          </v-col>
+          <v-col align-self="center">
+            <interface-play v-bind="{player, release, episode}"/>
+          </v-col>
+          <v-col align-self="center">
+            <interface-controls v-bind="{player, source, sources, container}"/>
+          </v-col>
+        </v-row>
 
-    </v-layout>
-  </v-slide-y-reverse-transition>
+      </v-layout>
+    </v-slide-y-reverse-transition>
+    <interface-buffering v-bind="{player}"/>
+  </div>
 </template>
 
 <script>
@@ -30,6 +33,8 @@
   import InterfaceHeadline from './components/headline'
   import InterfaceTimeline from './components/timeline'
   import InterfaceControls from './components/controls'
+  import InterfaceBuffering from './components/buffering'
+
 
   const props = {
     player: {
@@ -67,6 +72,7 @@
       InterfaceHeadline,
       InterfaceTimeline,
       InterfaceControls,
+      InterfaceBuffering,
     },
     data() {
       return {
