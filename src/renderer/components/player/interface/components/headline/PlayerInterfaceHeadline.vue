@@ -6,8 +6,13 @@
       <h1>{{title}}</h1>
     </div>
 
-    <div v-if="isReady" class="d-flex align-self-end font-weight-bold" :style="{fontSize: '.8rem'}">
+    <div
+      v-if="isReady && currentTime > 0 && totalDuration > 0"
+      class="d-flex align-self-end font-weight-bold"
+      :style="{fontSize: '.8rem'}">
+
       {{time}} / {{duration}}
+
     </div>
 
   </v-layout>
