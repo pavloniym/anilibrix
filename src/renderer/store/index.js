@@ -6,7 +6,6 @@ import {getInitialState} from '@utils/store'
 import createPromiseAction from '@plugins/vuex-promise-action'
 
 import app from './app'
-import player from './player'
 import search from './search'
 import release from './release'
 import releases from './releases'
@@ -17,7 +16,6 @@ Vue.use(Vuex);
 const modules = {
   app,
   search,
-  player,
   release,
   releases,
   notifications
@@ -36,6 +34,13 @@ const store = new Vuex.Store({
   ],
   strict: debug,
   mutations: {
+
+    /**
+     * Reset store
+     * Replace it with initial values
+     *
+     * @return void
+     */
     RESET_STORE() {
       this.replaceState(getInitialState(modules));
     }

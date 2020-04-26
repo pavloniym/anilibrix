@@ -18,10 +18,16 @@
       @change="$emit('input', $event)">
 
       <!-- Slider Item -->
-      <v-slide-item v-for="(release, k) in releases" :key="k" v-slot:default="{ active, toggle }">
+      <v-slide-item v-slot:default="{ active, toggle }" v-for="(release, k) in releases" :key="k">
 
         <!-- Default Card -->
-        <v-card height="250" width="175" class="black" @click="toggle" :class="{primary: active}">
+        <v-card
+          width="175"
+          class="black"
+          height="250"
+          :class="{primary: active}"
+          @click="toggle"
+          @dblclick="watchEpisode(release)">
 
           <!-- Release Poster Image -->
           <v-img
@@ -55,6 +61,8 @@
 </template>
 
 <script>
+
+  import __get from 'lodash/get'
 
   const props = {
     value: {
@@ -111,6 +119,16 @@
 
         if (code === 37) this.showPrev(); // Left arrow
         if (code === 39) this.showNext(); // Right arrow
+      },
+
+
+      /**
+       * Watch episode
+       *
+       * @param release
+       */
+      watchEpisode(release) {
+        this.$emit('watch', {release, episode: __get(release, ['episodes', 0]) || null});
       }
 
     },

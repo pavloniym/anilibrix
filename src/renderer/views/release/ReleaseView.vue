@@ -1,26 +1,22 @@
 <template>
+  <release-layout :loading="_loading">
 
-  <!-- Loading -->
-  <v-overlay v-if="_loading" :value="true">
-    <v-layout align-center>
-      <v-progress-circular indeterminate size="78"/>
+      <!-- Loader -->
+      <template v-if="_loading">
+        <v-skeleton-loader
+          v-for="(loader, k) in loaders"
+          class="px-4 mt-4"
+          :key="k"
+          :type="loader">
+        </v-skeleton-loader>
+      </template>
 
-      <div class="ml-8 caption">
-        <div v-if="releaseTitle" class="title">{{releaseTitle}}</div>
-        <div class="caption">Загрузка данных по релизу ...</div>
-        <div class="mt-4">
-          <v-btn @click="toReleases">Назад</v-btn>
-        </div>
-      </div>
+      <!-- Release -->
+      <template v-else>
+        <release-card :release="_release"/>
+        <release-playlist :episodes="_episodes" class="mt-6" @watch="watchEpisode"/>
+      </template>
 
-    </v-layout>
-  </v-overlay>
-
-
-  <!-- Release -->
-  <release-layout v-else-if="_loading === false && _release" :poster="_poster">
-    <release-card/>
-    <release-playlist class="my-6"/>
   </release-layout>
 </template>
 
@@ -28,15 +24,13 @@
 
   import ReleaseLayout from '@layouts/release'
   import {ReleaseCard, ReleasePlaylist} from '@components/release'
+
+  import __get from 'lodash/get'
   import {mapState, mapActions} from 'vuex'
 
   const props = {
     releaseId: {
       type: [String, Number],
-      default: null
-    },
-    releaseTitle: {
-      type: String,
       default: null
     }
   };
@@ -50,16 +44,29 @@
       ReleasePlaylist,
     },
 
+    data() {
+      return {
+        loaders: [
+          'heading',
+          'sentences',
+          'button',
+          'text@12',
+          'heading',
+          'list-item-two-line@10'
+        ],
+      }
+    },
+
     computed: {
       ...mapState('release', {
-        _poster: s => s.poster,
         _loading: s => s.loading,
-        _release: s => s.data
+        _release: s => s.data,
+        _episodes: s => __get(s, 'data.episodes') || [],
       })
     },
 
     methods: {
-      ...mapActions('release', ['getRelease']),
+      ...mapActions('release', {_getRelease: 'getRelease'}),
 
 
       /**
@@ -69,9 +76,26 @@
        */
       toReleases() {
         this.$router.push({
-          name: 'releases'
+          name: 'heading'
         });
-      }
+      },
+
+
+      /**
+       * Watch episode
+       *
+       * @param episode
+       */
+      watchEpisode(episode) {
+        this.$router.push({
+          name: 'player',
+          params: {
+            key: `${this._release.id}:${episode.id}`,
+            release: this._release,
+            episode: episode
+          }
+        });
+      },
 
     },
 
@@ -82,7 +106,7 @@
 
           // Update if release data changed
           if (this._release === null || this._release.id !== parseInt(releaseId)) {
-            this.getRelease(releaseId);
+            this._getRelease(releaseId);
           }
         }
       }

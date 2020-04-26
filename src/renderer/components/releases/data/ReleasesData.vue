@@ -98,12 +98,7 @@
        * @return void
        */
       watchEpisode() {
-        this.loading = true;
-        this.$store
-          .dispatchPromise('player/setRelease', this.release)
-          .then(() => this.$store.dispatchPromise('player/setEpisode', this.episode))
-          .then(() => this.$router.push({name: 'player'}))
-          .finally(() => this.loading = false);
+        this.$emit('watch', {release: this.release, episode: this.episode});
       },
 
 

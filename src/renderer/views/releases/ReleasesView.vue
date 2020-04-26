@@ -1,8 +1,8 @@
 <template>
   <releases-layout>
     <v-layout column justify-center fill-height class="mx-4">
-      <releases-slider v-model="index" :releases="_releases" :posters="_posters"/>
-      <releases-data v-if="release" v-bind="{release}" class="mt-4"/>
+      <releases-slider v-model="index" :releases="_releases" :posters="_posters" @watch="watchEpisode"/>
+      <releases-data v-if="release" v-bind="{release}" class="mt-4" @watch="watchEpisode"/>
     </v-layout>
   </releases-layout>
 </template>
@@ -69,7 +69,29 @@
 
 
     methods: {
-      ...mapActions('releases', {_setIndex: 'setIndex'})
+      ...mapActions('releases', {_setIndex: 'setIndex'}),
+
+
+      /**
+       * Watch episode
+       *
+       * @param release
+       * @param episode
+       */
+      watchEpisode({release, episode}) {
+        if (release && episode) {
+          this.$router.push({
+            name: 'player',
+            params: {
+              key: `${release.id}:${episode.id}`,
+              release,
+              episode,
+            }
+          });
+        }
+      },
+
+
     }
 
   }

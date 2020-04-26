@@ -1,5 +1,5 @@
 <template>
-  <v-card flat color="transparent">
+  <div flat color="transparent" v-if="release">
 
     <v-card-title
       v-text="release.names.ru"
@@ -16,18 +16,19 @@
       <div class="pt-4 white--text">{{release.description}}</div>
     </v-card-text>
 
-  </v-card>
+  </div>
 </template>
 
 <script>
 
-  import {mapState} from "vuex";
+  const props = {
+    release: {
+      type: Object,
+      default: null
+    }
+  };
 
   export default {
-    computed: {
-      ...mapState('release', {
-        release: s => s.data,
-      })
-    }
+    props,
   }
 </script>

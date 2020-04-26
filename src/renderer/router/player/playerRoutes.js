@@ -1,8 +1,9 @@
 export default [
   {
     name: 'player',
-    path: '/player',
+    path: '/player/:key',
     component: () => import('@views/player'),
+    props: true,
   },
   {
     name: 'player.source.empty',

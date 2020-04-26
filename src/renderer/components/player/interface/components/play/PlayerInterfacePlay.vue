@@ -4,7 +4,7 @@
     <!-- Previous episode -->
     <v-tooltip left>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large :disabled="previous === null" @click="_setEpisode(previous)">
+        <v-btn v-on="on" icon large :disabled="previous === null" @click="watchEpisode(previous)">
           <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
       </template>
@@ -28,7 +28,7 @@
     <!-- Next episode -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large :disabled="next === null" @click="_setEpisode(next)">
+        <v-btn v-on="on" icon large :disabled="next === null" @click="watchEpisode(next)">
           <v-icon>mdi-skip-next</v-icon>
         </v-btn>
       </template>
@@ -44,7 +44,6 @@
 <script>
 
   import __get from 'lodash/get'
-  import {mapActions} from 'vuex'
 
   const props = {
     player: {
@@ -105,7 +104,24 @@
     },
 
     methods: {
-      ...mapActions('player', {_setEpisode: 'setEpisode'})
+
+
+      /**
+       * Watch episode
+       *
+       * @param episode
+       */
+      watchEpisode(episode) {
+        this.$router.push({
+          name: 'player',
+          params: {
+            key: `${this.release.id}:${episode.id}`,
+            release: this.release,
+            episode: episode
+          }
+        })
+      }
+
     },
 
     created() {

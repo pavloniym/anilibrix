@@ -1,23 +1,15 @@
 import AnilibriaProxy from '@proxies/anilibria'
-import MyAnimeListProxy from '@proxies/my-anime-list'
-
 import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
-import {MyAnimeListAnimeTransformer, MyAnimeListEpisodeTransformer} from '@transformers/my-anime-list'
 
-import {mutationsHelper} from "@utils/store";
 import axios from "axios";
+import {mutationsHelper} from "@utils/store";
 
 export default {
   namespaced: true,
   state: {
-    loading: false,
-    request: null,
     data: null,
-    poster: null,
-    mal: {
-      anime: null,
-      episodes: [],
-    },
+    request: null,
+    loading: false,
   },
 
   mutations: {
@@ -45,35 +37,15 @@ export default {
           state.request.cancel();
         }
 
+        commit('set', {k: 'data', v: null});
         commit('set', {k: 'loading', v: true});
         commit('set', {k: 'request', v: axios.CancelToken.source()});
 
         new AnilibriaProxy()
-
-          // Get release data from anilibria
           .getRelease(releaseId, {cancelToken: state.request.token})
           .then(release => AnilibriaReleaseTransformer.fetchItem(release))
           .then(release => commit('set', {k: 'data', v: release}))
-
-          // Try to get poster from anilibria server
-          .then(() => dispatch('getReleasePoster', state.data.poster))
-          .then(poster => commit('set', {k: 'poster', v: poster}))
-          .then(() => {
-
-            // Resolve release request
-            // Disable loading state
-            commit('set', {k: 'loading', v: false});
-            resolve(state.data);
-
-            try {
-              // Get my anime list release data
-              // Make it in background
-              dispatch('getMyAnimeListData')
-
-            } catch (e) {
-              console.log('my anime list api error', e);
-            }
-          })
+          .then(() => dispatch('getReleasePoster'))
 
           // Catch errors
           .catch(error => {
@@ -90,15 +62,17 @@ export default {
     /**
      * Get release poster
      *
-     * @param context
-     * @param posterPath
-     * @return {Promise<unknown>}
+     * @param commit
+     * @param state
+     * @return Promise
      */
-    getReleasePoster: (context, posterPath) => {
+    getReleasePoster: ({commit, state}) => {
       return new Promise((resolve, reject) => {
         new AnilibriaProxy()
-          .getPosterImage(posterPath)
-          .then(image => resolve(`data:image/jpeg;base64,${image}`))
+          .getPosterImage(state.data.poster.path)
+          .then(image => `data:image/jpeg;base64,${image}`)
+          .then(image => commit('set', {k: 'data.poster.image', v: image}))
+          .then(() => resolve())
           .catch(error => reject(error))
       })
     },
@@ -111,7 +85,7 @@ export default {
      * @param state
      * @return {Promise<unknown>}
      */
-    getMyAnimeListData: ({commit, state}) => {
+    /*getMyAnimeListData: ({commit, state}) => {
       return new Promise((resolve, reject) => {
 
         commit('set', {k: 'mal.anime', v: null});
@@ -127,20 +101,7 @@ export default {
           .then(() => resolve())
           .catch(error => reject(error))
       })
-    },
-
-
-    /**
-     * Clear release data
-     *
-     * @param commit
-     */
-    clearRelease: ({commit}) => {
-      commit('set', {k: 'data', v: null});
-      commit('set', {k: 'mal.anime', v: null});
-      commit('set', {k: 'mal.episodes', v: []});
-      commit('set', {k: 'poster', v: null});
-    }
+    }*/
 
   }
 }

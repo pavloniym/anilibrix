@@ -1,44 +1,43 @@
 <template>
-  <v-card color="transparent" :style="{opacity: .75}">
+  <div>
 
     <!-- Search -->
-    <v-text-field
-      v-model="search"
-      solo
-      clearable
-      hide-details
-      class="mb-2"
-      prepend-inner-icon="mdi-magnify">
-    </v-text-field>
-
+    <playlist-toolbar class="mb-2" :search.sync="search" />
 
     <!-- Playlist Items -->
-    <v-list v-if="items.length > 0" dense dark>
-      <template v-for="(item, k) in items">
+    <v-list v-if="playlistSearched.length > 0" dense dark>
+      <template v-for="(episode, k) in playlistSearched">
         <v-divider v-if="k > 0" :key="`d:${k}`"/>
-        <v-list-item :key="k" @click="watchEpisode(item)">
+        <v-list-item :key="k" @click="$emit('watch', episode)">
           <v-list-item-content>
-            <v-list-item-title v-text="item.title"/>
-            <v-list-item-subtitle v-if="item.mal" v-text="item.mal.title"/>
+            <v-list-item-title v-text="episode.title"/>
           </v-list-item-content>
         </v-list-item>
       </template>
     </v-list>
 
-  </v-card>
+  </div>
 </template>
 
 <script>
 
-  import PlaylistSearch from './components/search'
-
+  import PlaylistToolbar from './components/toolbar'
   import Fuse from "fuse.js";
-  import __get from 'lodash/get'
-  import {mapState} from "vuex";
+
+  import {mapState} from 'vuex'
+  import __orderBy from 'lodash/orderBy'
+
+  const props = {
+    episodes: {
+      type: Array,
+      default: null,
+    }
+  };
 
   export default {
+    props,
     components: {
-      PlaylistSearch
+      PlaylistToolbar
     },
     data() {
       return {
@@ -52,11 +51,7 @@
       }
     },
     computed: {
-      ...mapState('release', {
-        _release: s => s.data,
-        _mal: s => s.mal,
-      }),
-
+      ...mapState('app/settings/player', {_sort: s => s.episodes.order}),
 
       /**
        * Get playlist
@@ -64,14 +59,7 @@
        * @return Array
        */
       playlist() {
-        const malEpisodes = __get(this._mal, 'episodes') || [];
-        return __get(this._release, 'episodes', [])
-          .map(episode => {
-            return {
-              ...episode,
-              mal: (malEpisodes || []).find(e => e.id === episode.id)
-            }
-          });
+        return __orderBy(this.episodes || [], ['id'], [this._sort]);
       },
 
 
@@ -90,28 +78,11 @@
        *
        * @return {any}
        */
-      items() {
+      playlistSearched() {
         return this.search
           ? this.playlistSearchable.search(this.search)
           : this.playlist;
       }
-
-    },
-
-
-    methods: {
-
-
-      /**
-       * Watch episode
-       *
-       * @param episode
-       */
-      watchEpisode(episode) {
-        this.$store
-          .dispatchPromise('player/watch', {release: this._release, episode})
-          .then(() => this.$router.push({name: 'player'}));
-      },
 
     }
   }

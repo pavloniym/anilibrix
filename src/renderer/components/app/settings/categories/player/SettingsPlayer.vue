@@ -41,7 +41,6 @@
 <script>
 
   import TorrentsDialog from "./dialogs/torrents";
-
   import {mapState} from 'vuex'
 
   export default {
@@ -53,10 +52,7 @@
     },
 
     computed: {
-      ...mapState('app/settings/player', {
-        _server: s => s.server,
-        _torrents: s => s.torrents
-      }),
+      ...mapState('app/settings/player', {_torrents: s => s.torrents}),
 
       /**
        * Get settings items
@@ -65,11 +61,6 @@
        */
       settings() {
         return [
-          {
-            title: 'Тип воспроизведения',
-            value: false,
-            action: () => "",
-          },
           {
             title: 'Воспроизводить торренты',
             value: this._torrents.process ? 'Да' : 'Нет',

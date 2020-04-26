@@ -2,11 +2,7 @@
   <player-layout ref="container">
     <component v-bind="{sources, source}" :is="component" :time.sync="time">
       <template v-slot:default="{player}">
-        <player-interface
-          v-bind="{player, sources, source, container}"
-          :episode="_episode"
-          :release="_release">
-        </player-interface>
+        <player-interface v-bind="{player, sources, source, container, release, episode}" />
       </template>
     </component>
   </player-layout>
@@ -19,9 +15,22 @@
   import {PlayerSourcesServer, PlayerSourcesTorrent} from '@components/player/sources'
 
   import __get from 'lodash/get';
-  import {mapState, mapActions} from 'vuex'
+  import {mapState} from 'vuex'
+
+  const props = {
+    release: {
+      type: Object,
+      default: null
+    },
+    episode: {
+      type: Object,
+      default: null
+    }
+  };
+
 
   export default {
+    props,
     data() {
       return {
         time: 0,
@@ -32,7 +41,6 @@
       PlayerInterface,
     },
     computed: {
-      ...mapState('player', {_release: s => s.release, _episode: s => s.episode}),
       ...mapState('app/settings/player', {_quality: s => s.quality}),
 
 
@@ -42,7 +50,7 @@
        * @return Array
        */
       sources() {
-        return __get(this._episode, 'sources') || [];
+        return __get(this.episode, 'sources') || [];
       },
 
 
@@ -98,13 +106,6 @@
 
     },
 
-    methods: {
-      ...mapActions('player', {_clear: 'clear'}),
-    },
-
-    destroyed() {
-      setTimeout(() => this._clear(), 500);
-    },
 
     watch: {
 
