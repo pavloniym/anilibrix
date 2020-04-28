@@ -1,9 +1,19 @@
-import { app, ipcMain as ipc, Tray, nativeImage, Menu } from 'electron' // eslint-disable-line
-import { MainWindow, TorrentWindow } from './windows'
-import path from 'path'
 import store from '@store'; // eslint-disable-line
+import {SentryElectron} from './../utils/sentry'
 
-let tray = null;
+// Enable Sentry.io electron handler
+SentryElectron({store});
+
+
+import AppTray from './../utils/tray'
+import AppFolders from './../utils/folders'
+import {app, ipcMain as ipc} from 'electron'
+import {MainWindow, TorrentWindow} from './windows'
+
+
+const AppTray = new AppTray();
+const AppFolders = new AppFolders();
+
 
 /**
  * Set `__static` path to static files in production
@@ -36,78 +46,19 @@ const createWindows = () => {
 
 };
 
-/**
- * Create tray icon
- *
- * @return void
- */
-const createTrayIcon = () => {
 
-  // Get icon path
-  const iconPath = path.join(__dirname, '../../build/icons/tray/icon.png');
-
-  // Create tray with icon
-  tray = new Tray(nativeImage.createFromPath(iconPath));
-
-  // Create context menu
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Свернуть',
-      type: 'normal',
-      role: 'minimize',
-    },
-    {
-      label: 'Отключить уведомления',
-      type: 'normal',
-      enabled: false
-    },
-    {
-      label: 'Закрыть',
-      type: 'normal',
-      role: 'quit'
-    },
-  ]);
-
-  tray.setToolTip('AniLibrix.');
-  tray.setIgnoreDoubleClickEvents(true);
-  tray.setContextMenu(contextMenu);
-
-  tray.on('click', () => {
-
-    // Restore window if it is minimized
-    if (MainWindow.get().isMinimized()) {
-      MainWindow.get().restore();
-    }
-
-    // Focus on window
-    MainWindow.get().focus();
-
-  });
-
-};
-
-/**
- * Set data folder
- *
- */
-const setDataFolder = () => {
-  app.setPath('userData', `${path.dirname(app.getPath('exe'))}/Data/`);
-};
 
 app.on('ready', () => {
+
+  // Create windows
   createWindows();
-  setDataFolder();
-  createTrayIcon();
+
+  // Create tray icon
+  // Set data folder
+  AppTray.createTrayIcon({MainWindow});
+  AppFolders.setDataFolder();
+
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-});
-
-app.on('activate', () => {
-  if (MainWindow.get() === null) {
-    createWindows()
-  }
-});
+app.on('window-all-closed', () => process.platform !== 'darwin' ? app.quit() : null);
+app.on('activate', () => MainWindow.get() === null ? createWindows() : null);

@@ -10,7 +10,7 @@
 
         <v-row no-gutters justify="center">
           <v-col align-self="center">
-            <interface-links v-bind="{release}"/>
+            <interface-links v-bind="{release}" :playlist.sync="playlist"/>
           </v-col>
           <v-col align-self="center">
             <interface-play v-bind="{player, release, episode}"/>
@@ -23,6 +23,7 @@
       </v-layout>
     </v-slide-y-reverse-transition>
     <interface-buffering v-bind="{player}"/>
+    <interface-playlist v-bind="{release, episode}" :playlist.sync="playlist"/>
   </div>
 </template>
 
@@ -33,6 +34,7 @@
   import InterfaceHeadline from './components/headline'
   import InterfaceTimeline from './components/timeline'
   import InterfaceControls from './components/controls'
+  import InterfacePlaylist from './components/playlist'
   import InterfaceBuffering from './components/buffering'
 
 
@@ -72,11 +74,13 @@
       InterfaceHeadline,
       InterfaceTimeline,
       InterfaceControls,
+      InterfacePlaylist,
       InterfaceBuffering,
     },
     data() {
       return {
         visible: true,
+        playlist: false,
         visibilityHandler: null,
       }
     },

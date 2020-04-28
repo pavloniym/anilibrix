@@ -8,3 +8,4 @@ thumbs.db
 .idea
 .vscode
 dist
+.env

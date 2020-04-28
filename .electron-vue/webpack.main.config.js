@@ -3,11 +3,12 @@
 process.env.BABEL_ENV = 'main';
 
 const path = require('path');
-const { dependencies } = require('../package.json');
 const webpack = require('webpack');
-
-const webpackAppConfig = require('./../webpack.config');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
+const DotenvPlugin = require('dotenv-webpack');
+
+const {dependencies} = require('../package.json');
+const webpackAppConfig = require('./../webpack.config');
 
 let mainConfig = {
   entry: {
@@ -18,17 +19,6 @@ let mainConfig = {
   ],
   module: {
     rules: [
-    /*  {
-        test: /\.(js)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },*/
       {
         test: /\.js$/,
         use: 'babel-loader',
@@ -50,7 +40,8 @@ let mainConfig = {
     path: path.join(__dirname, '../dist/electron')
   },
   plugins: [
-    new webpack.NoEmitOnErrorsPlugin()
+    new DotenvPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
   ],
   resolve: {
     extensions: ['.js', '.json', '.node'],
@@ -67,8 +58,7 @@ let mainConfig = {
 if (process.env.NODE_ENV !== 'production') {
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
-      '__static': `"${path.join(__dirname, '../static')
-        .replace(/\\/g, '\\\\')}"`
+      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
     })
   );
 }

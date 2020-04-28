@@ -11,7 +11,11 @@ const path = require('path');
 const torrentClient = new webTorrent();
 
 // Send & receive messages from the main window
-import { ipcRenderer as ipc } from 'electron'
+import {ipcRenderer as ipc} from 'electron'
+import {SentryElectron} from './../utils/sentry'
+
+// Enable Sentry.io electron handler
+SentryElectron();
 
 
 // Create local store for torrents
@@ -63,7 +67,7 @@ const startTorrent = ({torrentId}) => {
 
     if (torrent) {
 
-      torrentClient.add(torrent,async instance => {
+      torrentClient.add(torrent, async instance => {
 
         // Save torrent data and instance to store
         store.torrent.data = torrent;

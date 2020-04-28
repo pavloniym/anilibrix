@@ -28,8 +28,15 @@
     <!-- Playlist -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large @click="">
+        <v-btn
+          v-on="on"
+          icon
+          large
+          :class="playlist ? 'primary black--text' : null"
+          @click="$emit('update:playlist', !playlist)">
+
           <v-icon size="24">mdi-playlist-play</v-icon>
+
         </v-btn>
       </template>
       <span>Плейлист</span>
@@ -44,12 +51,15 @@
     release: {
       type: Object,
       default: null
+    },
+    playlist: {
+      type: Boolean,
+      default: false
     }
   };
 
   export default {
     props,
-
     methods: {
 
 
@@ -80,6 +90,5 @@
       }
 
     }
-
   }
 </script>
