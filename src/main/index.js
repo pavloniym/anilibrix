@@ -1,18 +1,18 @@
+import path from 'path'
 import store from '@store'; // eslint-disable-line
-import {SentryElectron} from './../utils/sentry'
+import AppSentry from './utils/sentry'
 
 // Enable Sentry.io electron handler
-SentryElectron({store});
+AppSentry({store});
 
-
-import AppTray from './../utils/tray'
-import AppFolders from './../utils/folders'
+import AppTray from './utils/tray'
+import AppFolders from './utils/folders'
 import {app, ipcMain as ipc} from 'electron'
-import {MainWindow, TorrentWindow} from './windows'
+import {AppWindowMain, AppWindowTorrent} from './utils/windows'
 
 
-const AppTray = new AppTray();
-const AppFolders = new AppFolders();
+const appTray = new AppTray();
+const appFolders = new AppFolders();
 
 
 /**
@@ -23,42 +23,37 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\') // eslint-disable-line
 }
 
-const mainWindowURL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:9080'
-  : `file://${__dirname}/index.html`;
-
-const torrentWindowUrl = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080/webtorrent.html`
-  : `file://${__dirname}/webtorrent.html`;
-
-/**
- * Create windows
- */
-const createWindows = () => {
-
-  MainWindow.create().loadURL(mainWindowURL);
-  TorrentWindow.create().loadURL(torrentWindowUrl);
-
-  // Set events between windows
-  ipc.on('torrent:start', (e, payload) => TorrentWindow.send('torrent:start', payload));
-  ipc.on('torrent:destroy', () => TorrentWindow.send('torrent:destroy'));
-  ipc.on('torrent:server', (e, payload) => MainWindow.send('torrent:server', payload));
-
-};
-
-
 
 app.on('ready', () => {
 
+  // Set data folder
+  appFolders.setDataFolder();
+
+
   // Create windows
-  createWindows();
+  AppWindowMain.createWindow({title: 'Aniibrix'}).loadUrl();
+  AppWindowTorrent.createWindow({title: 'Aniibrix Torrent'}).loadUrl();
+
 
   // Create tray icon
   // Set data folder
-  AppTray.createTrayIcon({MainWindow});
-  AppFolders.setDataFolder();
+  appTray
+    .createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')})
+    .setTooltip('AniLibrix')
+    .setClickEvent(() => {
+
+      // Restore window if it is minimized
+      if (AppWindowMain.getWindow().isMinimized()) AppWindowMain.getWindow().restore();
+
+      // Focus on window
+      AppWindowMain.getWindow().focus();
+
+    });
+
+
+  // Set window communications
+  ipc.on('torrent:start', (e, payload) => AppWindowTorrent.sendToWindow('torrent:start', payload));
+  ipc.on('torrent:destroy', () => AppWindowTorrent.sendToWindow('torrent:destroy'));
+  ipc.on('torrent:server', (e, payload) => AppWindowMain.sendToWindow('torrent:server', payload));
 
 });
-
-app.on('window-all-closed', () => process.platform !== 'darwin' ? app.quit() : null);
-app.on('activate', () => MainWindow.get() === null ? createWindows() : null);

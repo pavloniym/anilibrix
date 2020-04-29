@@ -2,8 +2,7 @@
 // process from the main window.
 
 const webTorrent = require('webtorrent');
-const parseTorrent = require('parse-torrent');
-const path = require('path');
+const parseTorrentData = require('parse-torrent');
 
 // Create WebTorrentClient
 // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
@@ -11,11 +10,12 @@ const path = require('path');
 const torrentClient = new webTorrent();
 
 // Send & receive messages from the main window
+import AppStore from '@store'
+import AppSentry from './../main/utils/sentry'
 import {ipcRenderer as ipc} from 'electron'
-import {SentryElectron} from './../utils/sentry'
 
 // Enable Sentry.io electron handler
-SentryElectron();
+AppSentry({store: AppStore});
 
 
 // Create local store for torrents
@@ -35,7 +35,7 @@ const store = {
  * @param blob
  * @param id
  */
-const getTorrent = ({blob, torrentId}) => {
+const parseTorrent = ({blob, torrentId}) => {
 
   let data = null;
 
@@ -43,11 +43,12 @@ const getTorrent = ({blob, torrentId}) => {
 
     // If blob is provided -> try to create buffer with torrent file
     // Try to parse torrent
-    data = parseTorrent(new Buffer(blob));
+    data = parseTorrentData(new Buffer(blob));
 
     // Save torrent data to store
     store.torrents[torrentId] = data;
 
+    console.log(1);
   }
 
   // Send result to main process
@@ -140,7 +141,7 @@ const _startServer = (instance) => {
 
 
 (() => {
-  ipc.on('torrent:get', (e, payload) => getTorrent(payload));
+  ipc.on('torrent:parse', (e, payload) => parseTorrent(payload));
   ipc.on('torrent:start', (e, payload) => startTorrent(payload));
   ipc.on('torrent:destroy', () => destroyTorrent());
 })();

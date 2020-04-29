@@ -5,8 +5,8 @@ import store from '@store'
 import stripHtml from 'string-strip-html';
 import __camelCase from 'lodash/camelCase'
 
-import {TorrentWindow} from '@/main/windows'
 import {ipcMain as ipc} from 'electron'
+import {AppWindowTorrent} from '@main/utils/windows'
 
 export default class extends Transformer {
 
@@ -186,18 +186,12 @@ export default class extends Transformer {
                 // Send to torrent for parsing data
                 new AnilibriaProxy()
                   .getTorrentFile(torrentUrl)
-                  .then(blob => TorrentWindow.send('torrent:get', {
-                    torrentId,
-                    blob
-                  }));
+                  .then(blob => AppWindowTorrent.sendToWindow('torrent:parse', {torrentId, blob}));
 
                 // Listen event with torrent data to main process
                 // Resolve when event is caught
                 ipc.on(`torrent:data:${torrentId}`, (e, {data}) => {
-                  torrents.push({
-                    torrent,
-                    data
-                  });
+                  torrents.push({torrent, data});
                   resolve();
                 });
               })
