@@ -23,6 +23,7 @@
       </v-layout>
     </v-slide-y-reverse-transition>
     <interface-buffering v-bind="{player}"/>
+    <interface-next v-bind="{player, release, episode}" />
     <interface-playlist v-bind="{release, episode, container}" :playlist.sync="playlist"/>
   </div>
 </template>
@@ -30,6 +31,7 @@
 <script>
 
   import InterfacePlay from './components/play'
+  import InterfaceNext from './components/next'
   import InterfaceLinks from './components/links'
   import InterfaceHeadline from './components/headline'
   import InterfaceTimeline from './components/timeline'
@@ -70,6 +72,7 @@
     props,
     components: {
       InterfacePlay,
+      InterfaceNext,
       InterfaceLinks,
       InterfaceHeadline,
       InterfaceTimeline,

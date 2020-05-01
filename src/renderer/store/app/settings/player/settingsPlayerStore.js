@@ -9,7 +9,8 @@ export default {
     },
     torrents: {
       process: false,
-    }
+    },
+    autoplayNext: true
   },
 
   mutations: {
@@ -47,6 +48,16 @@ export default {
      * @return {*}
      */
     setTorrentsProcess: ({commit}, state) => commit('set', {k: 'torrents.process', v: state}),
+
+
+    /**
+     * Set autoplay next episode
+     *
+     * @param commit
+     * @param state
+     * @return {*}
+     */
+    setAutoplayNext: ({commit}, state) => commit('set', {k: 'autoplayNext', v: state}),
 
   }
 }

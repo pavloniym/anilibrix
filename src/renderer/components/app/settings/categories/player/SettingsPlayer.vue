@@ -41,7 +41,7 @@
 <script>
 
   import TorrentsDialog from "./dialogs/torrents";
-  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
 
@@ -52,7 +52,10 @@
     },
 
     computed: {
-      ...mapState('app/settings/player', {_torrents: s => s.torrents}),
+      ...mapState('app/settings/player', {
+        _torrents: s => s.torrents,
+        _autoplayNext: s => s.autoplayNext,
+      }),
 
       /**
        * Get settings items
@@ -65,6 +68,11 @@
             title: 'Воспроизводить торренты',
             value: this._torrents.process ? 'Да' : 'Нет',
             action: () => this.$refs.torrents[0].showDialog(),
+          },
+          {
+            title: 'Автовоспроизведение следующего эпизода',
+            value: this._autoplayNext ? 'Да' : 'Нет',
+            action: () => this._setAutoplayNext(!this._autoplayNext),
           }
         ]
       },
@@ -80,6 +88,14 @@
           {component: TorrentsDialog, ref: 'torrents'},
         ]
       }
+    },
+
+
+    methods: {
+        ...mapActions('app/settings/player', {
+          _setAutoplayNext: 'setAutoplayNext'
+        })
+
     },
 
     mounted() {

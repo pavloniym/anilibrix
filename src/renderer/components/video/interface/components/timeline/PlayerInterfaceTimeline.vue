@@ -53,6 +53,8 @@
         // Set loaded metadata ready state
         this.player.on('loadedmetadata', () => this.isReady = true);
 
+        // Start playing on seeking event
+        this.player.on('seeking', () => this.player.play());
       })
     },
 
