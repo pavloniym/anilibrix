@@ -20,12 +20,9 @@ AppSentry({store: AppStore, source: 'torrent'});
 
 // Create local store for torrents
 const store = {
+  servers: {},
   torrents: {},
-  torrent: {
-    data: null,
-    instance: null,
-    server: null
-  },
+  collection: {},
 };
 
 
@@ -46,7 +43,7 @@ const parseTorrent = ({blob, torrentId}) => {
     data = parseTorrentData(new Buffer(blob));
 
     // Save torrent data to store
-    store.torrents[torrentId] = data;
+    store.collection[torrentId] = data;
   }
 
   // Send result to main process
@@ -60,28 +57,33 @@ const parseTorrent = ({blob, torrentId}) => {
  * @param torrentSource
  */
 const startTorrent = ({torrentId}) => {
-  if (torrentClient && torrentId !== null) {
+  if (torrentClient && store.collection[torrentId]) {
 
-    const torrent = store.torrents[torrentId];
+    try {
 
-    if (torrent) {
+      torrentClient.add(store.collection[torrentId], async torrent => {
 
-      torrentClient.add(torrent, async instance => {
-
-        // Save torrent data and instance to store
-        store.torrent.data = torrent;
-        store.torrent.instance = instance;
+        // Save torrent instance to store
+        store.torrents[torrentId] = torrent;
 
         // Start http server for this torrent's instance
-        const result = await _startServer(instance);
+        const result = await _startServer({torrentId, torrent});
 
         // Send event with server
         ipc.send(`torrent:server`, {...result, torrentId});
 
       });
+
+    } catch (error) {
+
+      // Reject torrent on error
+      _rejectTorrent({torrentId, error});
     }
-  }
+
+
+  } else _rejectTorrent({torrentId})
 };
+
 
 /**
  * Destroy torrent
@@ -90,22 +92,19 @@ const startTorrent = ({torrentId}) => {
  *
  * @return void
  */
-const destroyTorrent = () => {
+const destroyTorrent = ({torrentId}) => {
 
   // Destroy torrent
-  if (store.torrent.instance) {
-    store.torrent.instance.destroy();
-    store.torrent.instance = null;
+  if (store.torrents[torrentId]) {
+    store.torrents[torrentId].destroy(() => ipc.send('torrent:clear', {torrentId}));
+    store.torrents[torrentId] = null;
   }
 
   // Stop server
-  if (store.torrent.server) {
-    store.torrent.server.destroy();
-    store.torrent.server = null;
+  if (store.servers[torrentId]) {
+    store.servers[torrentId].close();
+    store.servers[torrentId] = null;
   }
-
-  // Clear torrent data
-  store.torrent.data = null;
 
 };
 
@@ -115,31 +114,41 @@ const destroyTorrent = () => {
  *
  * @param instance
  */
-const _startServer = (instance) => {
-  return new Promise(resolve => {
+const _startServer = ({torrentId, torrent}) => {
+  return new Promise((resolve, reject) => {
 
-    // Create new server
-    const server = instance.createServer();
+    try {
 
-    // Save server instance to store
-    store.torrent.server = server;
+      // Create new server
+      const server = torrent.createServer();
 
-    // Start server
-    server.listen(0, () => {
+      // Save server instance to store
+      store.servers[torrentId] = server;
 
-      // Create server url
-      const url = `http://localhost:${server.address().port}`;
+      // Start server
+      server.listen(0, () => {
 
-      // Resolve url
-      resolve({url, server});
-    })
+        // Create server url
+        const url = `http://localhost:${server.address().port}`;
 
+        // Resolve url
+        resolve({url, server, torrentId});
+      })
+
+    } catch (error) {
+      reject(error);
+    }
   });
+};
+
+
+const _rejectTorrent = ({torrentId, error = null} = {}) => {
+  console.log('rejectTorrent', {torrentId, error});
 };
 
 
 (() => {
   ipc.on('torrent:parse', (e, payload) => parseTorrent(payload));
   ipc.on('torrent:start', (e, payload) => startTorrent(payload));
-  ipc.on('torrent:destroy', () => destroyTorrent());
+  ipc.on('torrent:destroy', (e, payload) => destroyTorrent(payload));
 })();

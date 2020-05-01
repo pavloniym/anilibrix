@@ -51,8 +51,9 @@ app.on('ready', () => {
 
 
   // Set window communications
+  ipc.on('torrent:clear', (e, payload) => AppWindowMain.sendToWindow('torrent:clear', payload));
   ipc.on('torrent:start', (e, payload) => AppWindowTorrent.sendToWindow('torrent:start', payload));
-  ipc.on('torrent:destroy', () => AppWindowTorrent.sendToWindow('torrent:destroy'));
   ipc.on('torrent:server', (e, payload) => AppWindowMain.sendToWindow('torrent:server', payload));
+  ipc.on('torrent:destroy', (e, payload) => AppWindowTorrent.sendToWindow('torrent:destroy', payload));
 
 });

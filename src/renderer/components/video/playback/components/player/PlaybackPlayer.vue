@@ -98,15 +98,17 @@
     },
 
 
-    destroyed() {
-      setTimeout(() => {
+    async destroyed() {
 
-        // Destroy player instance
-        // Destroy active payload
-        if (this.player) this.player.destroy();
-        if(this.destroyPayload) this.destroyPayload();
+      // Destroy payload
+      if(this.destroyPayload) {
+        await this.destroyPayload({source: this.source});
+      }
 
-      }, 500);
+      // Destroy player instance
+      if (this.player) {
+        this.player.destroy();
+      }
     },
 
 
@@ -117,7 +119,12 @@
         immediate: true,
         handler(source) {
           this.$nextTick(() => {
-            if (source !== null) this.handlePayload({source});
+            if (source !== null) {
+
+              // Handle payload
+              this.handlePayload({source});
+
+            }
           });
         }
       }

@@ -20,8 +20,8 @@ Vue.config.productionTip = false;
 
 // Initialize sentry
 // Initialize google-analytics
-// sentry({store, source: 'app'});
-// analytics({router});
+sentry({store, source: 'app'});
+//analytics({store, router});
 
 /* eslint-disable no-new */
 new Vue({

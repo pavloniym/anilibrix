@@ -1,5 +1,8 @@
 <template>
-  <playback-player v-bind="options" @update:time="$emit('update:time', $event)">
+  <playback-player
+    v-bind="options"
+    @error="$emit('error', $event)"
+    @update:time="$emit('update:time', $event)">
 
     <template v-slot="context">
       <slot v-bind="context"/>
@@ -61,10 +64,10 @@
        * @return Promise
        */
       getPayload(source) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
 
           const payload = __get(source, 'payload');
-          const torrentId = __get(payload, 'torrent.id') || null;
+          const torrentId = this._getSourceTorrentId(source);
 
           if (torrentId) {
 
@@ -81,8 +84,12 @@
 
           } else {
 
-            reject('Source payload is not defined');
-
+            // Emit error
+            this.$emit('error', {
+              source,
+              error: 'Не удалось определить источник воспроизведения',
+              referer: 'getPayload',
+            });
           }
         });
       },
@@ -108,15 +115,22 @@
             ]
           };
 
-
-          console.log(time);
-
           // Set current time
-          player.currentTime = time;
+          // player.currentTime = time;
 
 
           // If play should play -> play source automatically
           if (playing === true) player.play();
+
+        } else {
+
+          // Emit error
+          this.$emit('error', {
+            payload,
+            error: 'Не удалось подключиться к источнику воспроизведения',
+            referer: 'processPayload',
+          });
+
         }
       },
 
@@ -125,12 +139,44 @@
        * Destroy payload
        *
        * @param source
-       * @return void
+       * @return Promise
        */
-      destroyPayload(source) {
-        ipc.send('torrent:destroy');
+      destroyPayload({source}) {
+        return new Promise(resolve => {
+
+          ipc.send('torrent:destroy', {torrentId: this._getSourceTorrentId(source)});
+          ipc.on('torrent:clear', (e, {torrentId} = {}) => {
+            if (torrentId === this._getSourceTorrentId(source)) {
+              resolve();
+            }
+          })
+        });
+      },
+
+
+      /**
+       * Get source's torrent id
+       *
+       * @param source
+       * @return {*|null}
+       * @private
+       */
+      _getSourceTorrentId(source) {
+        return __get(source, 'payload.torrent.id') || null;
       }
 
+    },
+
+
+    created() {
+
+      // Set torrent error handler
+      ipc.on('torrent:error', (e, {torrentId} = {}) => {
+          if (torrentId === this._getSourceTorrentId(this.source)) {
+            this.$emit('error', {torrentId, error: 'Произошла ошибка при инициализации торрента'})
+          }
+        }
+      )
     }
 
   }

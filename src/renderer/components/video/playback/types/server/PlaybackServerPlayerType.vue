@@ -1,5 +1,8 @@
 <template>
-  <playback-player v-bind="options" @update:time="$emit('update:time', $event)">
+  <playback-player
+    v-bind="options"
+    @error="$emit('error', $event)"
+    @update:time="$emit('update:time', $event)">
 
     <template v-slot="context">
       <slot v-bind="context"/>

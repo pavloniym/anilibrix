@@ -200,7 +200,7 @@ export default class extends Transformer {
 
         Promise.all(requests)
           .then(() => resolve(torrents))
-          .catch(error => reject(error))
+          .catch(error => reject({...error, release}))
       })
 
     }

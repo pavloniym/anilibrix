@@ -1,15 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import {createPersistedState, createSharedMutations} from 'vuex-electron'
 import {getInitialState} from '@utils/store'
 import createPromiseAction from '@plugins/vuex-promise-action'
+import {createPersistedState, createSharedMutations} from 'vuex-electron'
 
 import app from './app'
 import search from './search'
 import release from './release'
 import releases from './releases'
 import notifications from './notifications'
+
+import __get from 'lodash/get'
+import __merge from 'lodash/merge'
 
 Vue.use(Vuex);
 
@@ -38,11 +41,16 @@ const store = new Vuex.Store({
     /**
      * Reset store
      * Replace it with initial values
+     * Preserve account details
      *
      * @return void
      */
-    RESET_STORE() {
-      this.replaceState(getInitialState(modules));
+    RESET_STORE(s) {
+
+      const account = s.app.account;
+      const state = getInitialState(modules);
+
+      this.replaceState(__merge(state, {app: {account}}));
     }
 
   },

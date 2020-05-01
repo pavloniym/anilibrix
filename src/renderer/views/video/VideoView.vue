@@ -1,6 +1,6 @@
 <template>
   <player-layout ref="container">
-    <component v-bind="{sources, source}" :is="component" :time.sync="time">
+    <component v-bind="{sources, source}" :is="component" :time.sync="time" @error="toBlank">
       <template v-slot:default="{player}">
         <player-interface v-bind="{player, sources, source, container, release, episode}"/>
       </template>
@@ -106,6 +106,18 @@
 
     },
 
+    methods: {
+
+      /**
+       * Go to blank page
+       *
+       * @param payload
+       */
+      toBlank(payload) {
+        this.$router.push({name: 'blank', params: payload})
+      }
+
+    },
 
     watch: {
 
@@ -116,7 +128,7 @@
 
           // Go to blank screen if no source is provided
           if (!source) {
-            this.$router.push({name: 'blank'})
+            this.toBlank({error: 'Нет данных для воспроизведения', referer: 'source'})
           }
         }
       }
