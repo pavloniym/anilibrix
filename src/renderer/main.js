@@ -7,21 +7,21 @@ import store from '@store'
 // Import vendor plugins
 import sentry from '@plugins/sentry'
 import vuetify from '@plugins/vuetify'
+import analytics from '@plugins/vue-analytics'
 
 // Import plugins
 import '@plugins/plyr'
 import '@plugins/vue-toasted'
-
 
 // Import entry component
 import App from './App'
 
 Vue.config.productionTip = false;
 
-
 // Initialize sentry
-sentry({store});
-
+// Initialize google-analytics
+// sentry({store, source: 'app'});
+// analytics({router});
 
 /* eslint-disable no-new */
 new Vue({

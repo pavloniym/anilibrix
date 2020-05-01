@@ -1,5 +1,5 @@
+import {v4 as uuid} from 'uuid'
 import {mutationsHelper} from '@utils/store'
-
 
 export default {
   namespaced: true,
@@ -20,9 +20,9 @@ export default {
      * @param state
      * @param uuid
      */
-    setAccountUUID: ({commit, state}, uuid) => {
+    setAccountUuid: ({commit, state}) => {
       if (state.uuid === null) {
-        commit('set', {k: 'uuid', v: uuid})
+        commit('set', {k: 'uuid', v: uuid()})
       }
     }
 

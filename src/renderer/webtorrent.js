@@ -15,7 +15,7 @@ import AppSentry from './../main/utils/sentry'
 import {ipcRenderer as ipc} from 'electron'
 
 // Enable Sentry.io electron handler
-AppSentry({store: AppStore});
+AppSentry({store: AppStore, source: 'torrent'});
 
 
 // Create local store for torrents
@@ -47,8 +47,6 @@ const parseTorrent = ({blob, torrentId}) => {
 
     // Save torrent data to store
     store.torrents[torrentId] = data;
-
-    console.log(1);
   }
 
   // Send result to main process

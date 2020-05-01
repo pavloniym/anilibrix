@@ -2,13 +2,15 @@
 import * as Sentry from "@sentry/electron";
 import app from "@/../package";
 
+
 /**
  * Enable sentry
  *
  * @param store
+ * @param process
  * @return void
  */
-export default ({store} = {}) => {
+export default ({store, source} = {}) => {
   if (process.env.SENTRY_DSN) {
 
     Sentry.init({
@@ -18,7 +20,8 @@ export default ({store} = {}) => {
     });
 
     Sentry.configureScope((scope) => {
-      scope.setTag('process', 'main');
+      scope.setTag('source', source);
+      scope.setUser({id: store.state.app.account.uuid})
     });
 
   }

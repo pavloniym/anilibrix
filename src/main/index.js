@@ -3,13 +3,12 @@ import store from '@store'; // eslint-disable-line
 import AppSentry from './utils/sentry'
 
 // Enable Sentry.io electron handler
-AppSentry({store});
+AppSentry({store, source: 'main'});
 
 import AppTray from './utils/tray'
 import AppFolders from './utils/folders'
 import {app, ipcMain as ipc} from 'electron'
 import {AppWindowMain, AppWindowTorrent} from './utils/windows'
-
 
 const appTray = new AppTray();
 const appFolders = new AppFolders();
@@ -27,7 +26,7 @@ if (process.env.NODE_ENV !== 'development') {
 app.on('ready', () => {
 
   // Set data folder
-  appFolders.setDataFolder();
+  //appFolders.setDataFolder();
 
 
   // Create windows

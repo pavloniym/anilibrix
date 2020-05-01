@@ -23,7 +23,7 @@
       </v-layout>
     </v-slide-y-reverse-transition>
     <interface-buffering v-bind="{player}"/>
-    <interface-playlist v-bind="{release, episode}" :playlist.sync="playlist"/>
+    <interface-playlist v-bind="{release, episode, container}" :playlist.sync="playlist"/>
   </div>
 </template>
 

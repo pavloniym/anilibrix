@@ -6,7 +6,7 @@
 
     <div class="text-center" :style="{zIndex: 1}">
       <div class="my-5 caption">При загрузке серии произошла ошибка</div>
-      <v-btn text @click="goBack">Назад</v-btn>
+      <v-btn text @click="toReleases">Назад</v-btn>
     </div>
 
   </v-layout>
@@ -22,7 +22,7 @@
        *
        * @return void
        */
-      goBack() {
+      toReleases() {
         this.$router.replace({
           name: 'releases'
         })

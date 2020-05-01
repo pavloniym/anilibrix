@@ -1,20 +1,19 @@
 <template>
-  <v-navigation-drawer
-    fixed
-    width="350"
-    :value="playlist"
-    :style="{zIndex: 100}"
-    @input="$emit('update:playlist', $event)">
+    <v-navigation-drawer
+      absolute
+      temporary
+      width="350"
+      :value="playlist"
+      :style="{zIndex: 100}"
+      @input="$emit('update:playlist', $event)">
 
+      <release-playlist
+        v-bind="{episodes}"
+        class="pa-4"
+        @watch="watchEpisode">
+      </release-playlist>
 
-    <release-playlist
-      v-bind="{episodes}"
-      class="pa-4"
-      @watch="watchEpisode">
-    </release-playlist>
-
-
-  </v-navigation-drawer>
+    </v-navigation-drawer>
 </template>
 
 <script>
@@ -34,6 +33,10 @@
     playlist: {
       type: Boolean,
       default: false
+    },
+    container: {
+      type: HTMLDivElement,
+      default: null
     }
   };
 
@@ -65,7 +68,7 @@
        */
       watchEpisode(episode) {
         this.$router.push({
-          name: 'player',
+          name: 'video',
           params: {
             key: `${this.release.id}:${episode.id}`,
             release: this.release,

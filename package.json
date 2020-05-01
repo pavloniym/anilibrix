@@ -1,6 +1,6 @@
 {
   "name": "anilibrix",
-  "version": "1.1.51",
+  "version": "1.1.53",
   "author": "AniLibria",
   "description": "AniLibrix - AniLibria desktop app",
   "license": null,
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "node .electron-vue/build.js",
-    "dist": "electron-builder -mwl",
+    "dist": "electron-builder -m",
     "dev": "node .electron-vue/dev-runner.js",
     "release": "yarn build && yarn dist",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
@@ -85,6 +85,7 @@
     "string-strip-html": "^4.3.16",
     "uuid": "^7.0.3",
     "vue": "^2.5.16",
+    "vue-analytics": "^5.22.1",
     "vue-clamp": "^0.2.2",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",

@@ -26,7 +26,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 let whiteListedModules = ['vue'];
 
 let rendererConfig = {
-  devtool: '#cheap-module-eval-source-map',
+  //devtool: '#cheap-module-eval-source-map',
+  devtool: 'hidden-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js'),
     webtorrent: path.join(__dirname, '../src/renderer/webtorrent.js')
@@ -37,17 +38,6 @@ let rendererConfig = {
   ],
   module: {
     rules: [
-      /*{
-        test: /\.(js|vue)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },*/
       {
         test: /\.s(c|a)ss$/,
         use: [

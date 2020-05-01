@@ -2,7 +2,7 @@
   <player-layout ref="container">
     <component v-bind="{sources, source}" :is="component" :time.sync="time">
       <template v-slot:default="{player}">
-        <player-interface v-bind="{player, sources, source, container, release, episode}" />
+        <player-interface v-bind="{player, sources, source, container, release, episode}"/>
       </template>
     </component>
   </player-layout>
@@ -11,8 +11,8 @@
 <script>
 
   import PlayerLayout from '@layouts/player'
-  import PlayerInterface from '@components/player/interface'
-  import {PlayerSourcesServer, PlayerSourcesTorrent} from '@components/player/sources'
+  import PlayerInterface from '@components/video/interface'
+  import {ServerPlayer, TorrentPlayer} from '@components/video/playback/types'
 
   import __get from 'lodash/get';
   import {mapState} from 'vuex'
@@ -80,8 +80,8 @@
        */
       components() {
         return {
-          server: PlayerSourcesServer,
-          torrent: PlayerSourcesTorrent
+          server: ServerPlayer,
+          torrent: TorrentPlayer
         }
       },
 
@@ -113,8 +113,10 @@
         deep: true,
         immediate: true,
         handler(source) {
+
+          // Go to blank screen if no source is provided
           if (!source) {
-            this.$router.push({name: 'player.source.empty'})
+            this.$router.push({name: 'blank'})
           }
         }
       }

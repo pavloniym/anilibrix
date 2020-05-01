@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import releases from './releases'
+import blank from './blank'
+import video from './video'
 import release from './release'
-import player from './player'
+import releases from './releases'
 
 Vue.use(Router);
 
 export default new Router({
   routes: [].concat(
-    releases,
+    blank,
+    video,
     release,
-    player
+    releases,
   )
 })

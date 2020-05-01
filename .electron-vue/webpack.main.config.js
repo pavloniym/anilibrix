@@ -11,6 +11,7 @@ const {dependencies} = require('../package.json');
 const webpackAppConfig = require('./../webpack.config');
 
 let mainConfig = {
+  devtool: 'hidden-source-map',
   entry: {
     main: path.join(__dirname, '../src/main/index.js')
   },

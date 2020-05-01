@@ -113,7 +113,7 @@
        */
       watchEpisode(episode) {
         this.$router.push({
-          name: 'player',
+          name: 'video',
           params: {
             key: `${this.release.id}:${episode.id}`,
             release: this.release,

@@ -44,6 +44,7 @@ const store = new Vuex.Store({
     RESET_STORE() {
       this.replaceState(getInitialState(modules));
     }
+
   },
   actions: {
 
@@ -60,5 +61,11 @@ const store = new Vuex.Store({
 
   }
 });
+
+
+// Set account uuid
+// Check if not set
+store.dispatch('app/account/setAccountUuid');
+
 
 export default store
