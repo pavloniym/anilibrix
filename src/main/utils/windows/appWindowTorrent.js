@@ -14,7 +14,7 @@ class WindowTorrent extends Window {
       skipTaskbar: true,
       useContentSize: true,
       webPreferences: {
-        devTools: true,
+        devTools: false,
         nodeIntegration: true,
       }
     }

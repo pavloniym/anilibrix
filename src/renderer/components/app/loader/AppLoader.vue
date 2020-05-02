@@ -4,8 +4,9 @@
       <loader-logo />
     </div>
     <div class="app__description ml-8">
-      <div class="title">AniLibrix</div>
-      <div class="caption dots">Загрузка свежих релизов</div>
+      <div class="title pb-2">AniLibrix</div>
+      <div class="caption dots pb-1">Загрузка свежих релизов</div>
+      <div v-if="_torrents" class="caption dots">Загрузка и парсинг торрентов</div>
     </div>
   </v-layout>
 </template>
@@ -13,8 +14,12 @@
 <script>
 
   import LoaderLogo from './components/logo'
+  import {mapState} from 'vuex'
   export default {
     components: {LoaderLogo},
+    computed: {
+      ...mapState('app/settings/player', {_torrents: s => s.torrents.process}),
+    },
   }
 </script>
 
@@ -28,6 +33,10 @@
     }
 
     &__description {
+
+      > div {
+        line-height: 1;
+      }
 
       .dots:after {
         content: ' .';
