@@ -50,10 +50,21 @@ app.on('ready', () => {
     });
 
 
-  // Set window communications
-  ipc.on('torrent:clear', (e, payload) => AppWindowMain.sendToWindow('torrent:clear', payload));
-  ipc.on('torrent:start', (e, payload) => AppWindowTorrent.sendToWindow('torrent:start', payload));
-  ipc.on('torrent:server', (e, payload) => AppWindowMain.sendToWindow('torrent:server', payload));
-  ipc.on('torrent:destroy', (e, payload) => AppWindowTorrent.sendToWindow('torrent:destroy', payload));
+  // Set windows communications
+  const communications = [
+    {channel: 'torrent:clear', window: () => AppWindowMain, payload: (payload) => payload},
+    {channel: 'torrent:error', window: () => AppWindowMain, payload: (payload) => payload},
+    {channel: 'torrent:start', window: () => AppWindowTorrent, payload: (payload) => payload},
+    {channel: 'torrent:server', window: () => AppWindowMain, payload: (payload) => payload},
+    {channel: 'torrent:destroy', window: () => AppWindowTorrent, payload: (payload) => payload},
+    {channel: 'torrent:download', window: () => AppWindowMain, payload: (payload) => payload},
+  ];
+
+  // Init windows communications
+  communications.forEach(communication => {
+    ipc.on(communication.channel, (e, payload) =>
+      communication.window().sendToWindow(communication.channel, communication.payload(payload))
+    )
+  });
 
 });

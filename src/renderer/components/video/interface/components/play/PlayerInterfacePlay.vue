@@ -65,7 +65,7 @@
     data() {
       return {
         isPlaying: false,
-        isBuffering: false,
+        isBuffering: true,
       }
     },
 
@@ -136,7 +136,9 @@
 
       // Handler buffering events
       this.player.on('waiting', () => this.isBuffering = true);
-      this.player.on('canplay', () => this.isBuffering = false);
+      this.player.on('playing', () => this.isBuffering = false);
+      this.player.on('emptied', () => this.isBuffering = true);
+      this.player.on('stalled', () => this.isBuffering = true);
 
     },
   }

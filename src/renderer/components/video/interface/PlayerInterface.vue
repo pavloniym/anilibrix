@@ -10,7 +10,11 @@
 
         <v-row no-gutters justify="center">
           <v-col align-self="center">
-            <interface-links v-bind="{release}" :playlist.sync="playlist"/>
+            <interface-links
+              v-bind="{release, source}"
+              :torrent.sync="sidebars.torrent"
+              :playlist.sync="sidebars.playlist">
+            </interface-links>
           </v-col>
           <v-col align-self="center">
             <interface-play v-bind="{player, release, episode}"/>
@@ -22,9 +26,12 @@
 
       </v-layout>
     </v-slide-y-reverse-transition>
-    <interface-buffering v-bind="{player}"/>
-    <interface-next v-bind="{player, release, episode}" />
-    <interface-playlist v-bind="{release, episode, container}" :playlist.sync="playlist"/>
+
+    <interface-next v-bind="{player, release, episode}"/>
+    <interface-torrent v-model="sidebars.torrent" v-bind="{source}" :key="`torrent:${source.label}`"/>
+    <interface-playlist v-model="sidebars.playlist" v-bind="{release, episode, container}"/>
+    <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
+
   </div>
 </template>
 
@@ -33,6 +40,7 @@
   import InterfacePlay from './components/play'
   import InterfaceNext from './components/next'
   import InterfaceLinks from './components/links'
+  import InterfaceTorrent from './components/torrent'
   import InterfaceHeadline from './components/headline'
   import InterfaceTimeline from './components/timeline'
   import InterfaceControls from './components/controls'
@@ -74,6 +82,7 @@
       InterfacePlay,
       InterfaceNext,
       InterfaceLinks,
+      InterfaceTorrent,
       InterfaceHeadline,
       InterfaceTimeline,
       InterfaceControls,
@@ -83,8 +92,11 @@
     data() {
       return {
         visible: true,
-        playlist: false,
-        visibilityHandler: null,
+        sidebars: {
+          torrent: false,
+          playlist: false,
+        },
+        visibilityHandler: null
       }
     },
 

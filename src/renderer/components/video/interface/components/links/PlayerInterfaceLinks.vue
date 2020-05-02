@@ -4,7 +4,7 @@
     <!-- Releases -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large @click="toReleases">
+        <v-btn v-on="on" icon large class="mr-1" @click="toReleases">
           <v-icon size="24">mdi-view-column</v-icon>
         </v-btn>
       </template>
@@ -15,7 +15,7 @@
     <!-- Release -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large class="mx-2" @click="toRelease">
+        <v-btn v-on="on" icon large class="mr-1" @click="toRelease">
           <v-avatar size="24">
             <img :src="release.poster.image">
           </v-avatar>
@@ -28,19 +28,24 @@
     <!-- Playlist -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn
-          v-on="on"
-          icon
-          large
-          :class="playlist ? 'primary black--text' : null"
-          @click="$emit('update:playlist', !playlist)">
-
+        <v-btn v-on="on" icon large class="mr-1" @click="$emit('update:playlist', !playlist)">
           <v-icon size="24">mdi-playlist-play</v-icon>
-
         </v-btn>
       </template>
       <span>Плейлист</span>
     </v-tooltip>
+
+
+    <!-- Torrent -->
+    <v-tooltip v-if="source.type === 'torrent'" right>
+      <template v-slot:activator="{on}">
+        <v-btn v-on="on" icon large @click="$emit('update:torrent', !torrent)">
+          <v-icon size="20">mdi-file-table-box-multiple</v-icon>
+        </v-btn>
+      </template>
+      <span>Данные по торренту</span>
+    </v-tooltip>
+
 
   </v-layout>
 </template>
@@ -52,10 +57,19 @@
       type: Object,
       default: null
     },
+    source: {
+      type: Object,
+      default: null
+    },
     playlist: {
       type: Boolean,
       default: false
-    }
+    },
+    torrent: {
+      type: Boolean,
+      default: false
+    },
+
   };
 
   export default {

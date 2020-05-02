@@ -79,10 +79,13 @@
        *
        * @return void
        */
-      processPayload({player, payload, playing = false} = {}) {
+      processPayload({player, payload} = {}) {
 
         // If payload provided - create new hls instance
         if (payload) {
+
+          // Pause player
+          player.pause();
 
           // Create hls and attach media element
           this.hls = new Hls({startPosition: this.time || 0});
@@ -95,7 +98,7 @@
             this.hls.loadSource(payload);
 
             // If play should play -> play source automatically
-            if (playing === true) player.play();
+            player.play();
 
           });
         }

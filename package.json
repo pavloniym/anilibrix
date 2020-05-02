@@ -80,6 +80,8 @@
     "pac-resolver": "^4.0.0",
     "parse-torrent": "^7.0.1",
     "plyr": "^3.5.7-beta.0",
+    "pretty-bytes": "^5.3.0",
+    "rimraf": "^3.0.2",
     "screenfull": "^5.0.2",
     "set-cookie-parser": "^2.4.3",
     "string-strip-html": "^4.3.16",

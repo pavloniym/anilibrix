@@ -1,11 +1,11 @@
 <template>
     <v-navigation-drawer
+      v-bind="{value}"
       absolute
       temporary
       width="350"
-      :value="playlist"
       :style="{zIndex: 100}"
-      @input="$emit('update:playlist', $event)">
+      @input="$emit('input', $event)">
 
       <release-playlist
         v-bind="{episodes}"
@@ -22,6 +22,10 @@
   import __get from 'lodash/get'
 
   const props = {
+    value: {
+      type: Boolean,
+      default: false
+    },
     release: {
       type: Object,
       default: null
@@ -29,10 +33,6 @@
     episode: {
       type: Object,
       default: null
-    },
-    playlist: {
-      type: Boolean,
-      default: false
     },
     container: {
       type: HTMLDivElement,

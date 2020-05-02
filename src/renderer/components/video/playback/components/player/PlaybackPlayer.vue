@@ -2,7 +2,7 @@
   <v-layout column class="fill-height">
 
     <!-- Video container -->
-    <video playsinline ref="player"/>
+    <video ref="player"/>
 
     <!-- Interface slot -->
     <slot v-if="player" v-bind="{player}"/>
@@ -44,7 +44,7 @@
       return {
         player: null,
         options: {
-          autoplay: true,
+          autoplay: false,
           controls: false,
           keyboard: {
             focused: true,
@@ -100,14 +100,16 @@
 
     async destroyed() {
 
+      // Destroy player instance
+      if (this.player) {
+        this.player.pause();
+        this.player.media.src = '';
+        this.player.destroy();
+      }
+
       // Destroy payload
       if(this.destroyPayload) {
         await this.destroyPayload({source: this.source});
-      }
-
-      // Destroy player instance
-      if (this.player) {
-        this.player.destroy();
       }
     },
 

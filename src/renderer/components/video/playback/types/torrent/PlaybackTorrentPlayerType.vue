@@ -101,8 +101,11 @@
        *
        * @return void
        */
-      processPayload({player, payload, playing = false, time} = {}) {
+      processPayload({player, payload, time} = {}) {
         if (payload) {
+
+          // Pause player
+          player.pause();
 
           // Set player source
           player.source = {
@@ -115,12 +118,11 @@
             ]
           };
 
-          // Set current time
-          // player.currentTime = time;
+          // Set event to forward on current time
+          player.once('playing', () => player.forward(time));
 
-
-          // If play should play -> play source automatically
-          if (playing === true) player.play();
+          // Play source automatically
+          player.play();
 
         } else {
 

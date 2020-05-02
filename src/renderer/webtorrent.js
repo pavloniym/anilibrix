@@ -1,6 +1,7 @@
 // To keep the UI snappy, we run WebTorrent in its own hidden window, a separate
 // process from the main window.
 
+const rimraf = require('rimraf');
 const webTorrent = require('webtorrent');
 const parseTorrentData = require('parse-torrent');
 
@@ -9,7 +10,8 @@ const parseTorrentData = require('parse-torrent');
 // client, as explained here: https://webtorrent.io/faq
 const torrentClient = new webTorrent();
 
-// Send & receive messages from the main window
+
+import app from '@/../package'
 import AppStore from '@store'
 import AppSentry from './../main/utils/sentry'
 import {ipcRenderer as ipc} from 'electron'
@@ -61,7 +63,10 @@ const startTorrent = ({torrentId}) => {
 
     try {
 
-      torrentClient.add(store.collection[torrentId], async torrent => {
+      torrentClient.add(store.collection[torrentId], {path: `/tmp/${app.build.appId}`}, async torrent => {
+
+        // Deselect all files initial download
+        torrent.files.forEach(file => file.deselect());
 
         // Save torrent instance to store
         store.torrents[torrentId] = torrent;
@@ -72,16 +77,29 @@ const startTorrent = ({torrentId}) => {
         // Send event with server
         ipc.send(`torrent:server`, {...result, torrentId});
 
+        //Send torrent download data
+        torrent.on('download', () => {
+          ipc.send('torrent:download', {
+            torrentId,
+            speed: torrent.downloadSpeed,
+            files: (torrent.files || []).map(file => {
+              return {
+                name: file.name,
+                progress: file.progress,
+                downloaded: file.downloaded,
+              }
+            })
+          });
+        })
+
       });
 
     } catch (error) {
-
-      // Reject torrent on error
-      _rejectTorrent({torrentId, error});
+      _sendError({torrentId, error: 'Произошла ошибка при инициализации торрент-файла'});
     }
-
-
-  } else _rejectTorrent({torrentId})
+  } else {
+    _sendError({torrentId, error: 'Торрент не найден'})
+  }
 };
 
 
@@ -94,16 +112,25 @@ const startTorrent = ({torrentId}) => {
  */
 const destroyTorrent = ({torrentId}) => {
 
-  // Destroy torrent
-  if (store.torrents[torrentId]) {
-    store.torrents[torrentId].destroy(() => ipc.send('torrent:clear', {torrentId}));
-    store.torrents[torrentId] = null;
-  }
-
   // Stop server
   if (store.servers[torrentId]) {
     store.servers[torrentId].close();
     store.servers[torrentId] = null;
+  }
+
+  // Destroy torrent
+  if (store.torrents[torrentId]) {
+      rimraf(store.torrents[torrentId].path, () => {
+
+        // Destroy torrent
+        // Clear storage
+        store.torrents[torrentId].destroy();
+        store.torrents[torrentId] = null;
+
+        // Remove files from torrent
+        // Send clear event
+        ipc.send('torrent:clear', {torrentId});
+      });
   }
 
 };
@@ -142,8 +169,15 @@ const _startServer = ({torrentId, torrent}) => {
 };
 
 
-const _rejectTorrent = ({torrentId, error = null} = {}) => {
-  console.log('rejectTorrent', {torrentId, error});
+/**
+ * Send torrent error
+ *
+ * @param torrentId
+ * @param error
+ * @private
+ */
+const _sendError = ({torrentId, error = null} = {}) => {
+  ipc.send('torrent:error', {torrentId, error})
 };
 
 
