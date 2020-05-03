@@ -3,10 +3,10 @@
     <template v-if="isMounted">
 
       <!-- Volume -->
-      <volume v-bind="{player}" />
+      <volume v-bind="{player}"/>
 
       <!-- Quality -->
-      <quality v-if="source" v-bind="{source, sources}" :attach="$refs.controls" />
+      <quality v-if="source" v-bind="{source, sources}" :attach="$refs.controls"/>
 
       <!-- PIP -->
       <v-btn icon large class="mx-2" @click="player.pip = true">
@@ -71,9 +71,7 @@
        * @return void
        */
       handleKeyboardEvent(e) {
-        if (e.key === 'f') {
-          this.toggleFullscreen();
-        }
+        if (e.code === 'KeyF') this.toggleFullscreen();
       },
 
 
@@ -84,9 +82,7 @@
        * @return void
        */
       toggleFullscreen() {
-        if (this.container) {
-          screenfull.toggle(this.container);
-        }
+        if (this.container) screenfull.toggle(this.container);
       },
 
 
