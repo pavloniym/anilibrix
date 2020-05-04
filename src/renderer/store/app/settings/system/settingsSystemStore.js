@@ -5,6 +5,9 @@ export default {
   state: {
     errors: [],
     drawer: false,
+    firebase: {
+      sync: true,
+    },
     updates: {
       enabled: true,
       timeout: 10

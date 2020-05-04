@@ -1,5 +1,14 @@
 <template>
   <div ref="settings">
+
+    <div class="pa-4 caption grey--text">
+      <div class="body-1">Настройки приложения</div>
+      <div>
+        В данном разделе вы можете настроить автоматическое обновление релизов,
+        включить синхронизацию данных с облачным хранилищем и другие параметры приложения
+      </div>
+    </div>
+
     <v-card>
       <v-list dense>
         <template v-for="(item, k) in settings">
@@ -44,8 +53,9 @@
 
     computed: {
       ...mapState('app/settings/system', {
-        _updates: s => s.updates.enabled,
-        _timeout: s => s.updates.timeout
+        _updates_enabled: s => s.updates.enabled,
+        _updates_enabled: s => s.updates.timeout,
+        _firebase_sync: s => s.firebase.sync,
       }),
 
 
@@ -58,12 +68,17 @@
         return [
           {
             title: 'Автоматическое обновление релизов',
-            value: this._updates ? 'Да' : 'Нет',
-            action: () => this._setUpdates(!this._updates),
+            value: this._updates_enabled ? 'Да' : 'Нет',
+            action: () => this._setUpdates(!this._updates_enabled),
           },
           {
             title: 'Периодичность обновления релизов',
-            value: this._timeout + ' мин',
+            value: this._updates_enabled + ' мин',
+            action: () => this.$refs['updatesTimeout'][0].showDialog(),
+          },
+          {
+            title: 'Синхронизировать данные с облаком',
+            value: this._firebase_sync ? 'Да' : 'Нет',
             action: () => this.$refs['updatesTimeout'][0].showDialog(),
           },
         ]

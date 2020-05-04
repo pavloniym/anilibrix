@@ -5,7 +5,7 @@
 
 
         <interface-headline v-bind="{player, release, episode}" class="pb-2"/>
-        <interface-timeline v-bind="{player}"/>
+        <interface-timeline v-bind="{player, watchData}"/>
 
 
         <v-row no-gutters justify="center">
@@ -29,7 +29,7 @@
 
     <interface-next v-bind="{player, release, episode}"/>
     <interface-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
-    <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`" />
+    <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
     <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
 
   </div>
@@ -70,6 +70,10 @@
       default: null
     },
     episode: {
+      type: Object,
+      default: null
+    },
+    watchData: {
       type: Object,
       default: null
     }

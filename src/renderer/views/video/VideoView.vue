@@ -8,7 +8,7 @@
       @error="toBlank">
 
       <template v-slot:default="{player}">
-        <player-interface v-bind="{player, sources, source, container, release, episode}"/>
+        <player-interface v-bind="{player, sources, source, container, release, episode, watchData}"/>
       </template>
 
     </component>
@@ -42,6 +42,7 @@
       return {
         time: 0,
         duration: 0,
+        watchData: null
       }
     },
     components: {
@@ -131,7 +132,7 @@
        * @return Number
        */
       part() {
-        return Math.floor(this.percentage / 5);
+        return Math.floor(this.percentage / 10);
       }
 
 
@@ -156,7 +157,7 @@
        * @return
        */
       setWatchData() {
-        if(this.release && this.episode) {
+        if (this.release && this.episode) {
           this._setWatchData({
             time: this.time,
             quality: this.source.alias,
@@ -165,6 +166,21 @@
             percentage: this.percentage
           })
         }
+      }
+    },
+
+
+    created() {
+      if (this.release && this.episode) {
+
+        // Get watch data
+        this.watchData = this.$store.getters['firebase/watch/getData']({
+          releaseId: this.release.id,
+          episodeId: this.episode.id,
+        });
+
+        // Set last watch time
+        this.time = this.watchData ? this.watchData.time : 0;
       }
     },
 

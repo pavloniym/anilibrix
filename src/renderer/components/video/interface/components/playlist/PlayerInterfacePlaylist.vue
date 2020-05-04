@@ -6,11 +6,16 @@
       width="350"
       :style="{zIndex: 100}">
 
-      <release-playlist
-        v-bind="{episodes}"
-        class="pa-4"
-        @watch="watchEpisode">
-      </release-playlist>
+      <v-card>
+        <v-card-title>Плейлист</v-card-title>
+        <v-card-subtitle>Список всех серий релиза</v-card-subtitle>
+        <release-playlist
+          v-bind="{release, episodes}"
+          class="pa-4"
+          :playing="episode"
+          @episode="toEpisode">
+        </release-playlist>
+      </v-card>
 
     </v-navigation-drawer>
 </template>
@@ -72,7 +77,7 @@
        *
        * @param episode
        */
-      watchEpisode(episode) {
+      toEpisode(episode) {
         this.$router.push({
           name: 'video',
           params: {

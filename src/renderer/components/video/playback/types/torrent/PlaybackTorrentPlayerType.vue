@@ -119,9 +119,8 @@
           };
 
           // Set event to forward on current time
-          player.once('playing', () => player.forward(time));
-
           // Play source automatically
+          player.once('playing', () => player.forward(time));
           player.play();
 
         } else {

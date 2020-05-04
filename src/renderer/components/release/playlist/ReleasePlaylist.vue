@@ -11,6 +11,7 @@
         <playlist-item
           v-bind="{release, episode}"
           :key="episode.id"
+          :is-playing="playing && playing.id === episode.id"
           @click.native="$emit('episode', episode)">
         </playlist-item>
       </template>
@@ -36,6 +37,10 @@
     episodes: {
       type: Array,
       default: null,
+    },
+    playing: {
+      type: Object,
+      default: null
     }
   };
 

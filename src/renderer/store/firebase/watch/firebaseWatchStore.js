@@ -18,6 +18,28 @@ export default {
   getters: {
 
     /**
+     * Get user id
+     *
+     * @param state
+     * @param getters
+     * @param rootState
+     * @return {any}
+     */
+    userId: (state, getters, rootState) => rootState.app.account.userId,
+
+
+    /**
+     * Check if should user firebase
+     *
+     * @param state
+     * @param getters
+     * @param rootState
+     * @return {any | boolean}
+     */
+    useFirebase: (state, getters, rootState) => rootState.app.settings.system.firebase.sync,
+
+
+    /**
      * Get data for provided release and episode
      * @param state
      * @return {function({releaseId?: *, episodeId?: *}=): *|null}
@@ -36,16 +58,12 @@ export default {
      * @param rootState
      * @return {Promise<void>}
      */
-    getWatchData: async ({commit, rootState}) => {
-      if (0) {
-
-        const userId = rootState.app.account.userId;
+    getWatchData: async ({commit, getters}) => {
+      if (getters.useFirebase === true) {
         try {
 
           FirebaseWatchTransformer
-            .fetchCollection(
-              await FirebaseWatchProxy.getWatchData({userId})
-            )
+            .fetchCollection(await FirebaseWatchProxy.getWatchData({userId: getters.userId}))
             .forEach(watch => commit('set', {k: ['items', watch.releaseId, watch.episodeId], v: watch}))
 
         } catch (error) {
@@ -55,7 +73,6 @@ export default {
 
           throw error;
         }
-
       }
     },
 
@@ -72,34 +89,35 @@ export default {
      * @param percentage
      * @return {Promise<void>}
      */
-    setWatchData: async ({commit, rootState}, {time = 0, quality = null, releaseId = null, episodeId = -1, percentage = 0} = {}) => {
+    setWatchData: async ({commit, getters}, {time = 0, quality = null, releaseId = null, episodeId = -1, percentage = 0} = {}) => {
 
       // Create episode watch data object
       const data = {time, quality, percentage, datetime: new Date()};
-      const userId = rootState.app.account.userId;
 
       // If isSeen flag is true -> append it to data object
       // This is one-way flag, can't be reset by changing time and percentage
       if (percentage >= 85) data.isSeen = true;
 
       // Set local storage data
-      commit('set', {k: `items.${releaseId}.${episodeId}`, v: data});
+      commit('merge', {k: `items.${releaseId}.${episodeId}`, v: data});
 
-      try {
+      // Sync with use firebase
+      if (getters.useFirebase === true) {
+        try {
 
-        // Send to firestore
-        await FirebaseWatchProxy
-          .setWatchData({data, userId, releaseId, episodeId});
+          // Send to firestore
+          await FirebaseWatchProxy.setWatchData({data, userId: getters.userId, releaseId, episodeId});
 
-      } catch (error) {
+        } catch (error) {
 
-        // TODO: show error toast
-        console.log(error);
+          // TODO: show error toast
+          console.log(error);
 
-        throw error;
+          throw error;
+        }
       }
-    }
 
+    }
 
   }
 }

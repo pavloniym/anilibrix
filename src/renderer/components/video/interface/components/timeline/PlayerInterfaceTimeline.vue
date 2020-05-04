@@ -4,9 +4,8 @@
     class="timeline"
     :min="0"
     :max="isReady ? duration : 100"
-    :value="currentTime"
-    @start="isSeeking = true"
-    @end="isSeeking = false"
+    :value="isReady ? player.currentTime : (watchData ? watchData.percentage : 0)"
+    :disabled="isReady === false"
     @change="player.currentTime = $event">
   </v-slider>
 </template>
@@ -19,43 +18,34 @@
     player: {
       type: Object,
       default: null
+    },
+    watchData: {
+      type: Object,
+      default: null
     }
   };
 
-  export default {
+  export default  {
     props,
     data() {
       return {
         isReady: false,
         duration: 0,
         isSeeking: false,
-        currentTime: null,
       }
     },
 
     mounted() {
-      this.$nextTick(() => {
 
-        // Get duration on initial start
-        this.player.on('progress', e => {
-          this.duration = __get(e, 'detail.plyr.duration');
-        });
+      // Get duration on initial start
+      this.player.on('progress', e => {
+        this.duration = __get(e, 'detail.plyr.duration');
+      });
 
-        // Update current player position on time update
-        // If now seek event is running
-        this.player.on('timeupdate', () => {
-          const time = this.player.currentTime;
-          if (this.isSeeking === false && time && time > 0) {
-            this.currentTime = time;
-          }
-        });
-
-        // Set loaded metadata ready state
-        this.player.on('loadedmetadata', () => this.isReady = true);
-
-        // Start playing on seeking event
-        this.player.on('seeking', () => this.player.play());
-      })
+      // Set loaded metadata ready state
+      // Start playing on seeking event
+      this.player.on('canplay', () => this.isReady = true);
+      this.player.on('seeking', () => this.player.play());
     },
 
     watch: {

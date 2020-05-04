@@ -80,7 +80,7 @@
        *
        * @return void
        */
-      processPayload({player, payload} = {}) {
+      processPayload({player, payload, time = 0} = {}) {
 
         // If payload provided - create new hls instance
         if (payload) {
@@ -98,7 +98,9 @@
             // Load source payload
             this.hls.loadSource(payload);
 
+            // Set event to forward on current time
             // If play should play -> play source automatically
+            player.once('playing', () => player.forward(time));
             player.play();
 
           });
