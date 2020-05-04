@@ -12,8 +12,8 @@
           <v-col align-self="center">
             <interface-links
               v-bind="{release, source}"
-              :torrent.sync="sidebars.torrent"
-              :playlist.sync="sidebars.playlist">
+              :torrent="() => $refs.torrent"
+              :playlist="() => $refs.playlist">
             </interface-links>
           </v-col>
           <v-col align-self="center">
@@ -28,8 +28,8 @@
     </v-slide-y-reverse-transition>
 
     <interface-next v-bind="{player, release, episode}"/>
-    <interface-torrent v-model="sidebars.torrent" v-bind="{source}" :key="`torrent:${source.label}`"/>
-    <interface-playlist v-model="sidebars.playlist" v-bind="{release, episode, container}"/>
+    <interface-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
+    <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`" />
     <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
 
   </div>
@@ -92,10 +92,6 @@
     data() {
       return {
         visible: true,
-        sidebars: {
-          torrent: false,
-          playlist: false,
-        },
         visibilityHandler: null
       }
     },

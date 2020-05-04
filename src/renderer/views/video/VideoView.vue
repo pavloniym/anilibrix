@@ -1,9 +1,16 @@
 <template>
   <player-layout ref="container">
-    <component v-bind="{sources, source}" :is="component" :time.sync="time" @error="toBlank">
+    <component
+      v-bind="{sources, source}"
+      :is="component"
+      :time.sync="time"
+      :duration.sync="duration"
+      @error="toBlank">
+
       <template v-slot:default="{player}">
         <player-interface v-bind="{player, sources, source, container, release, episode}"/>
       </template>
+
     </component>
   </player-layout>
 </template>
@@ -15,7 +22,7 @@
   import {ServerPlayer, TorrentPlayer} from '@components/video/playback/types'
 
   import __get from 'lodash/get';
-  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   const props = {
     release: {
@@ -34,6 +41,7 @@
     data() {
       return {
         time: 0,
+        duration: 0,
       }
     },
     components: {
@@ -102,11 +110,35 @@
        */
       container() {
         return this.$refs.container.$el;
+      },
+
+
+      /**
+       * Get watch percentage
+       *
+       * @return Number
+       */
+      percentage() {
+        return this.time > 0 && this.duration > 0
+          ? (this.time / this.duration) * 100
+          : null
+      },
+
+
+      /**
+       * Watch part
+       *
+       * @return Number
+       */
+      part() {
+        return Math.floor(this.percentage / 5);
       }
+
 
     },
 
     methods: {
+      ...mapActions('firebase/watch', {_setWatchData: 'setWatchData'}),
 
       /**
        * Go to blank page
@@ -115,7 +147,31 @@
        */
       toBlank(payload) {
         this.$router.push({name: 'blank', params: payload})
+      },
+
+
+      /**
+       * Set episode watch data
+       *
+       * @return
+       */
+      setWatchData() {
+        if(this.release && this.episode) {
+          this._setWatchData({
+            time: this.time,
+            quality: this.source.alias,
+            releaseId: this.release.id,
+            episodeId: this.episode.id,
+            percentage: this.percentage
+          })
+        }
       }
+    },
+
+    beforeDestroy() {
+
+      // Set episode watch data before destroy
+      this.setWatchData();
 
     },
 
@@ -130,6 +186,14 @@
           if (!source) {
             this.toBlank({error: 'Нет данных для воспроизведения', referer: 'source'})
           }
+        }
+      },
+
+
+      part: {
+        immediate: true,
+        handler() {
+          this.setWatchData();
         }
       }
 

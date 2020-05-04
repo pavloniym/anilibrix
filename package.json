@@ -68,6 +68,8 @@
     "axios-https-proxy-fix": "^0.17.1",
     "electron-promise-ipc": "^2.0.1",
     "electron-updater": "^4.2.2",
+    "firebase": "^7.14.2",
+    "firebase-admin": "^8.11.0",
     "form-data": "^3.0.0",
     "fuse.js": "^3.4.6",
     "hls.js": "^0.13.1",

@@ -12,8 +12,7 @@
 
 <script>
 
-  import Player from 'plyr';
-  import 'plyr/dist/plyr.css';
+  import __get from "lodash/get";
 
   const props = {
     time: {
@@ -85,7 +84,10 @@
     mounted() {
 
       // Create player
-      this.player = new Player(this.$refs.player, this.options);
+      this.player = new this.$plyr(this.$refs.player, this.options);
+
+      // Get duration on initial start
+      this.player.on('loadedmetadata', e => this.$emit('update:duration', __get(e, 'detail.plyr.duration')));
 
       // Update current player position on time update
       this.player.on('timeupdate', () => {

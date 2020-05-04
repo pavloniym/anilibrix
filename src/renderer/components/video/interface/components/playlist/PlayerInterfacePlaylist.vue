@@ -1,11 +1,10 @@
 <template>
     <v-navigation-drawer
-      v-bind="{value}"
+      v-model="visible"
       absolute
       temporary
       width="350"
-      :style="{zIndex: 100}"
-      @input="$emit('input', $event)">
+      :style="{zIndex: 100}">
 
       <release-playlist
         v-bind="{episodes}"
@@ -22,20 +21,12 @@
   import __get from 'lodash/get'
 
   const props = {
-    value: {
-      type: Boolean,
-      default: false
-    },
     release: {
       type: Object,
       default: null
     },
     episode: {
       type: Object,
-      default: null
-    },
-    container: {
-      type: HTMLDivElement,
       default: null
     }
   };
@@ -44,6 +35,12 @@
     props,
     components: {
       ReleasePlaylist
+    },
+
+    data() {
+      return {
+        visible: false
+      }
     },
 
     computed: {
@@ -60,6 +57,15 @@
     },
 
     methods: {
+
+      /**
+       * Show playlist
+       *
+       * @return void
+       */
+      show() {
+        this.visible = true
+      },
 
       /**
        * Watch episode

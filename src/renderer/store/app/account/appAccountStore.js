@@ -4,7 +4,7 @@ import {mutationsHelper} from '@utils/store'
 export default {
   namespaced: true,
   state: {
-    uuid: null,
+    userId: null,
   },
   mutations: {
     ...mutationsHelper
@@ -20,9 +20,9 @@ export default {
      * @param state
      * @param uuid
      */
-    setAccountUuid: ({commit, state}) => {
-      if (state.uuid === null) {
-        commit('set', {k: 'uuid', v: uuid()})
+    setUserId: ({commit, state}) => {
+      if (state.userId === null) {
+        commit('set', {k: 'userId', v: uuid()})
       }
     }
 

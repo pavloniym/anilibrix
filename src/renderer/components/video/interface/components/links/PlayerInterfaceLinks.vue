@@ -28,7 +28,7 @@
     <!-- Playlist -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large class="mr-1" @click="$emit('update:playlist', !playlist)">
+        <v-btn v-on="on" icon large class="mr-1" @click="playlist().show()">
           <v-icon size="24">mdi-playlist-play</v-icon>
         </v-btn>
       </template>
@@ -39,7 +39,7 @@
     <!-- Torrent -->
     <v-tooltip v-if="source.type === 'torrent'" right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large @click="$emit('update:torrent', !torrent)">
+        <v-btn v-on="on" icon large @click="torrent().show()">
           <v-icon size="20">mdi-file-table-box-multiple</v-icon>
         </v-btn>
       </template>
@@ -62,12 +62,12 @@
       default: null
     },
     playlist: {
-      type: Boolean,
-      default: false
+      type: Function,
+      default: null
     },
     torrent: {
-      type: Boolean,
-      default: false
+      type: Function,
+      default: null
     },
 
   };

@@ -2,17 +2,17 @@
   <div>
 
     <!-- Search -->
-    <playlist-toolbar class="mb-2" :search.sync="search" />
+    <playlist-toolbar class="mb-2" :search.sync="search"/>
 
     <!-- Playlist Items -->
     <v-list v-if="playlistSearched.length > 0" dense dark>
       <template v-for="(episode, k) in playlistSearched">
         <v-divider v-if="k > 0" :key="`d:${k}`"/>
-        <v-list-item :key="k" @click="$emit('watch', episode)">
-          <v-list-item-content>
-            <v-list-item-title v-text="episode.title"/>
-          </v-list-item-content>
-        </v-list-item>
+        <playlist-item
+          v-bind="{release, episode}"
+          :key="episode.id"
+          @click.native="$emit('episode', episode)">
+        </playlist-item>
       </template>
     </v-list>
 
@@ -21,13 +21,18 @@
 
 <script>
 
+  import PlaylistItem from './components/item'
   import PlaylistToolbar from './components/toolbar'
-  import Fuse from "fuse.js";
 
-  import {mapState} from 'vuex'
+  import Fuse from "fuse.js";
   import __orderBy from 'lodash/orderBy'
+  import {mapState} from 'vuex'
 
   const props = {
+    release: {
+      type: Object,
+      default: null
+    },
     episodes: {
       type: Array,
       default: null,
@@ -37,6 +42,7 @@
   export default {
     props,
     components: {
+      PlaylistItem,
       PlaylistToolbar
     },
     data() {

@@ -8,10 +8,10 @@ import {createPersistedState, createSharedMutations} from 'vuex-electron'
 import app from './app'
 import search from './search'
 import release from './release'
+import firebase from './firebase'
 import releases from './releases'
 import notifications from './notifications'
 
-import __get from 'lodash/get'
 import __merge from 'lodash/merge'
 
 Vue.use(Vuex);
@@ -20,6 +20,7 @@ const modules = {
   app,
   search,
   release,
+  firebase,
   releases,
   notifications
 };
@@ -31,7 +32,10 @@ const store = new Vuex.Store({
     createPromiseAction(),
     createPersistedState({
       invertIgnored: true,
-      ignoredPaths: ['app'],
+      ignoredPaths: [
+        'app',
+        'firebase'
+      ],
     }),
     createSharedMutations()
   ],
@@ -71,9 +75,9 @@ const store = new Vuex.Store({
 });
 
 
-// Set account uuid
-// Check if not set
-store.dispatch('app/account/setAccountUuid');
+// Set user's id on app startup
+// Check if not set, to avoid overwrite
+store.dispatch('app/account/setUserId');
 
 
 export default store

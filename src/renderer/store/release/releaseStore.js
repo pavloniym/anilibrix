@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import AnilibriaProxy from '@proxies/anilibria'
 import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 
@@ -10,6 +11,10 @@ export default {
     data: null,
     request: null,
     loading: false,
+    episodes: {
+      meta: {},
+      watch: {},
+    }
   },
 
   mutations: {
@@ -29,7 +34,7 @@ export default {
      * @param releaseId
      * @return {Promise<unknown>}
      */
-    getRelease: ({commit, dispatch, state}, releaseId) => {
+    getRelease({commit, dispatch, state}, releaseId) {
       return new Promise((resolve, reject) => {
 
         // Cancel previous request if it was stored
@@ -79,29 +84,20 @@ export default {
 
 
     /**
-     * Get jikan anime data
+     * Set episode watch data
      *
      * @param commit
-     * @param state
-     * @return {Promise<unknown>}
+     * @param episodeId
+     * @param quality
+     * @param time
+     * @param percentage
      */
-    /*getMyAnimeListData: ({commit, state}) => {
-      return new Promise((resolve, reject) => {
+    setEpisodeWatchData: ({commit}, {episodeId = -1, quality = null, time = 0, percentage = 0} = {}) => {
+      if (episodeId > -1) {
+        commit('set', {k: `episodes.watch.${episodeId}`, v: {time, quality, percentage}})
+      }
+    }
 
-        commit('set', {k: 'mal.anime', v: null});
-        commit('set', {k: 'mal.episodes', v: []});
-
-        new MyAnimeListProxy()
-          .getAnimeByName(state.data.names.original)
-          .then(anime => MyAnimeListAnimeTransformer.fetchItem(anime))
-          .then(anime => commit('set', {k: 'mal.anime', v: anime}))
-          .then(() => new MyAnimeListProxy().getAnimeEpisodes(state.mal.anime.id))
-          .then(episodes => MyAnimeListEpisodeTransformer.fetchCollection(episodes))
-          .then(episodes => commit('set', {k: 'mal.episodes', v: episodes}))
-          .then(() => resolve())
-          .catch(error => reject(error))
-      })
-    }*/
 
   }
 }

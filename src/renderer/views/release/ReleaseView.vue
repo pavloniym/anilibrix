@@ -14,7 +14,7 @@
       <!-- Release -->
       <template v-else>
         <release-card :release="_release"/>
-        <release-playlist :episodes="_episodes" class="mt-6" @watch="watchEpisode"/>
+        <release-playlist :episodes="_episodes" :release="_release" class="mt-6" @episode="toVideo"/>
       </template>
 
   </release-layout>
@@ -39,8 +39,8 @@
     props,
     name: "Release",
     components: {
-      ReleaseLayout,
       ReleaseCard,
+      ReleaseLayout,
       ReleasePlaylist,
     },
 
@@ -86,7 +86,7 @@
        *
        * @param episode
        */
-      watchEpisode(episode) {
+      toVideo(episode) {
         this.$router.push({
           name: 'video',
           params: {

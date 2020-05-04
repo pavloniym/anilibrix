@@ -2,7 +2,8 @@
   <playback-player
     v-bind="options"
     @error="$emit('error', $event)"
-    @update:time="$emit('update:time', $event)">
+    @update:time="$emit('update:time', $event)"
+    @update:duration="$emit('update:duration', $event)">
 
     <template v-slot="context">
       <slot v-bind="context"/>

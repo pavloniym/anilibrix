@@ -2,7 +2,7 @@
   <v-app>
 
     <!-- System Bar -->
-    <app-system-bar />
+    <app-system-bar/>
 
     <v-fade-transition mode="out-in" appear>
       <!-- Loader -->
@@ -79,7 +79,7 @@
           this.update.handler = null;
         }
 
-        if(this._updates === true) {
+        if (this._updates === true) {
           this.update.handler = setInterval(() => this._getLatestReleases(), this._timeout);
         }
       }
@@ -90,9 +90,18 @@
 
       // Initial loading
       this.loading = true;
-      this.$store
-        .dispatchPromise('releases/getLatestReleases')
-        .finally(() => this.loading = false);
+
+      Promise
+        .allSettled([
+          this.$store.dispatchPromise('releases/getLatestReleases'),
+          this.$store.dispatchPromise('firebase/watch/getWatchData'),
+        ])
+        .then(() => this.loading = false);
+    },
+
+
+    beforeDestroy() {
+      alert();
     },
 
     watch: {

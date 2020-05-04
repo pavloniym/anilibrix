@@ -1,12 +1,11 @@
 <template>
   <v-navigation-drawer
     v-if="source.type === 'torrent'"
-    v-bind="{value}"
+    v-model="visible"
     absolute
     temporary
     width="350"
-    :style="{zIndex: 100}"
-    @input="$emit('input', $event)">
+    :style="{zIndex: 100}">
 
 
     <v-card>
@@ -43,10 +42,6 @@
   import {ipcRenderer as ipc} from 'electron'
 
   const props = {
-    value: {
-      type: Boolean,
-      default: false
-    },
     source: {
       type: Object,
       default: null
@@ -58,6 +53,7 @@
     data() {
       return {
         speed: 0,
+        visible: false,
         progress: 0,
       }
     },
@@ -125,11 +121,24 @@
             title: 'Прогресс',
             value: `${(this.progress * 100).toFixed(2)}%`,
           }
-        ].filter(item => item.value)
+        ].filter(item => item.value !== null)
       }
 
     },
 
+    methods: {
+
+      /**
+       * Show torrent data
+       *
+       * @return void
+       */
+      show() {
+        this.visible = true
+      },
+
+
+    },
 
     created() {
 
