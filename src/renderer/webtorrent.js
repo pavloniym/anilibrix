@@ -10,7 +10,6 @@ const parseTorrentData = require('parse-torrent');
 // client, as explained here: https://webtorrent.io/faq
 const torrentClient = new webTorrent();
 
-
 import app from '@/../package'
 import AppStore from '@store'
 import AppSentry from './../main/utils/sentry'
@@ -22,9 +21,10 @@ AppSentry({store: AppStore, source: 'torrent'});
 
 // Create local store for torrents
 const store = {
-  servers: {},
-  torrents: {},
-  collection: {},
+  servers: {}, // servers instances for torrents
+  torrents: {}, // torrents instances
+  handlers: {}, // update handlers
+  collection: {}, // parsed torrents collection
 };
 
 
@@ -70,6 +70,12 @@ const parseTorrent = ({blob, torrentId}) => {
 const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
   if (torrentClient && store.collection[torrentId]) {
 
+    // Destroy torrent if it already added
+    if (store.torrents[torrentId]) {
+      store.torrents[torrentId].destroy();
+    }
+
+    // Add torrent
     torrentClient.add(store.collection[torrentId], {path}, async torrent => {
       try {
 
@@ -94,7 +100,8 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
         ipc.send(`torrent:server`, {...result, torrentId});
 
         //Send torrent download data
-        torrent.on('download', () => {
+        if (store.handlers[torrentId]) clearInterval(store.handlers[torrentId]);
+        store.handlers[torrentId] = setInterval(() => {
           ipc.send('torrent:download', {
             torrentId,
             speed: torrent.downloadSpeed,
@@ -106,7 +113,7 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
               }
             })
           });
-        });
+        }, 2000);
 
 
       } catch (error) {
@@ -123,14 +130,20 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
  * Destroy server
  * Clear torrent data
  *
- * @return void
+ * @return Promise
  */
 const destroyTorrent = ({torrentId}) => {
+
 
   // Stop server
   if (store.servers[torrentId]) {
     store.servers[torrentId].close();
     store.servers[torrentId] = null;
+  }
+
+  // Destroy handler
+  if (store.handlers[torrentId]) {
+    clearInterval(store.handlers[torrentId]);
   }
 
   // Destroy torrent
