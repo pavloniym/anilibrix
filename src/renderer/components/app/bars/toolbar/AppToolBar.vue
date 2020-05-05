@@ -4,6 +4,9 @@
     <v-spacer/>
     <slot name="right"/>
 
+    <!-- Releases Catalog -->
+    <!--<app-toolbar-catalog v-if="!noCatalog" />-->
+
     <!-- Release Search -->
     <app-toolbar-search v-if="!noSearch"/>
 
@@ -20,6 +23,7 @@
 
   import AppToolbarUpdate from './components/update';
   import AppToolbarSearch from './components/search';
+  import AppToolbarCatalog from './components/catalog'
   import AppToolbarSettings from './components/settings'
 
   const props = {
@@ -32,6 +36,10 @@
       default: false
     },
     noSettings: {
+      type: Boolean,
+      default: false
+    },
+    noCatalog: {
       type: Boolean,
       default: false
     },
@@ -51,6 +59,7 @@
     components: {
       AppToolbarUpdate,
       AppToolbarSearch,
+      AppToolbarCatalog,
       AppToolbarSettings
     },
 

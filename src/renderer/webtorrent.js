@@ -14,7 +14,7 @@ const torrentClient = new webTorrent();
 import app from '@/../package'
 import AppStore from '@store'
 import AppSentry from './../main/utils/sentry'
-import {ipcRenderer as ipc} from 'electron'
+import {ipcRenderer as ipc, remote} from 'electron'
 
 // Enable Sentry.io electron handler
 AppSentry({store: AppStore, source: 'torrent'});
@@ -26,6 +26,15 @@ const store = {
   torrents: {},
   collection: {},
 };
+
+
+/**
+ * Get torrent path in temp folder
+ *
+ * @type {string}
+ */
+// const path = '/tmp/' + app.build.appId;
+const path = remote.app.getPath('temp') + app.build.appId;
 
 
 /**
@@ -58,15 +67,22 @@ const parseTorrent = ({blob, torrentId}) => {
  *
  * @param torrentSource
  */
-const startTorrent = ({torrentId}) => {
+const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
   if (torrentClient && store.collection[torrentId]) {
 
-    try {
+    torrentClient.add(store.collection[torrentId], {path}, async torrent => {
+      try {
 
-      torrentClient.add(store.collection[torrentId], {path: `/tmp/${app.build.appId}`}, async torrent => {
+        // Get file with provided file index
+        const file = torrent.files[fileIndex];
 
         // Deselect all files initial download
         torrent.files.forEach(file => file.deselect());
+        torrent.deselect(0, torrent.pieces.length - 1, false);
+
+        // Select file with provided index
+        if (file) torrent.select(file._startPiece, file._endPiece, false);
+        if (!file) throw 'Файл с таким порядковым номером не обнаружен';
 
         // Save torrent instance to store
         store.torrents[torrentId] = torrent;
@@ -90,16 +106,15 @@ const startTorrent = ({torrentId}) => {
               }
             })
           });
-        })
+        });
 
-      });
 
-    } catch (error) {
-      _sendError({torrentId, error: 'Произошла ошибка при инициализации торрент-файла'});
-    }
-  } else {
-    _sendError({torrentId, error: 'Торрент не найден'})
-  }
+      } catch (error) {
+        _sendError({torrentId, message: 'Произошла ошибка при инициализации торрент-файла', error});
+      }
+    });
+
+  } else _sendError({torrentId, message: 'Торрент не найден'})
 };
 
 
@@ -120,17 +135,17 @@ const destroyTorrent = ({torrentId}) => {
 
   // Destroy torrent
   if (store.torrents[torrentId]) {
-      rimraf(store.torrents[torrentId].path, () => {
+    rimraf(store.torrents[torrentId].path, () => {
 
-        // Destroy torrent
-        // Clear storage
-        store.torrents[torrentId].destroy();
-        store.torrents[torrentId] = null;
+      // Destroy torrent
+      // Clear storage
+      store.torrents[torrentId].destroy();
+      store.torrents[torrentId] = null;
 
-        // Remove files from torrent
-        // Send clear event
-        ipc.send('torrent:clear', {torrentId});
-      });
+      // Remove files from torrent
+      // Send clear event
+      ipc.send('torrent:clear', {torrentId});
+    });
   }
 
 };
@@ -173,11 +188,12 @@ const _startServer = ({torrentId, torrent}) => {
  * Send torrent error
  *
  * @param torrentId
+ * @param message
  * @param error
  * @private
  */
-const _sendError = ({torrentId, error = null} = {}) => {
-  ipc.send('torrent:error', {torrentId, error})
+const _sendError = ({torrentId, message = null, error = null} = {}) => {
+  ipc.send('torrent:error', {torrentId, error, message})
 };
 
 

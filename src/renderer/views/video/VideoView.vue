@@ -200,7 +200,7 @@
 
           // Go to blank screen if no source is provided
           if (!source) {
-            this.toBlank({error: 'Нет данных для воспроизведения', referer: 'source'})
+            this.toBlank({message: 'Нет данных для воспроизведения', referer: 'source'})
           }
         }
       },

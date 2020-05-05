@@ -196,7 +196,6 @@ export default class extends Transformer {
             this._createSource(
               type, label, alias,
               {
-                index: k,
                 torrent: {
                   id: this.get(torrent, 'torrent.id'),
                   name: this.get(torrent, 'data.name'),
@@ -208,7 +207,8 @@ export default class extends Transformer {
                 file: {
                   name: this.get(file, 'name'),
                   path: this.get(file, 'path'),
-                  length: this.get(file, 'length')
+                  index: k,
+                  length: this.get(file, 'length'),
                 },
               }
             )

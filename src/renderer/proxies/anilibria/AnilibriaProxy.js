@@ -122,4 +122,26 @@ export default class extends Proxy {
     })
   }
 
+
+  /**
+   * Get catalog data
+   *
+   * @param genre
+   * @param year
+   * @param sort
+   * @param page
+   * @return {Promise<unknown>}
+   */
+  getCatalogData({genre = null, year = null, sort = 1, page = 1} = {}) {
+    return new Promise((resolve, reject) => {
+
+      const data = this.getFormDataObject({query: 'catalog', search: {genre, year}, xpage: 'catalog', sort, page, perPage: 12});
+      const headers = data.getHeaders();
+
+      return this.submit('POST', this.getHost() + this.endpoint, {data, headers})
+        .then(response => resolve(this.parseResponse(response)))
+        .catch(error => reject(error))
+    })
+  }
+
 }

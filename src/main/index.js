@@ -6,13 +6,10 @@ import AppSentry from './utils/sentry'
 AppSentry({store, source: 'main'});
 
 import AppTray from './utils/tray'
-import AppFolders from './utils/folders'
 import {app, ipcMain as ipc} from 'electron'
 import {AppWindowMain, AppWindowTorrent} from './utils/windows'
 
 const appTray = new AppTray();
-const appFolders = new AppFolders();
-
 
 /**
  * Set `__static` path to static files in production

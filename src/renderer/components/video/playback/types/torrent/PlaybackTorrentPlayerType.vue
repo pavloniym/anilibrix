@@ -68,17 +68,18 @@
 
           const payload = __get(source, 'payload');
           const torrentId = this._getSourceTorrentId(source);
+          const fileIndex = __get(payload, 'file.index', -1);
 
           if (torrentId) {
 
             // Send event to start server with provided torrent id
-            ipc.send('torrent:start', {torrentId});
+            ipc.send('torrent:start', {torrentId, fileIndex});
 
             // Listen event with torrent server data
             // Resolve when event is caught
             ipc.on(`torrent:server`, (e, server) => {
               if (server.torrentId === torrentId) {
-                resolve(`${server.url}/${payload.index}/${encodeURIComponent(payload.file.name)}`);
+                resolve(`${server.url}/${fileIndex}/${encodeURIComponent(payload.file.name)}`);
               }
             });
 
@@ -87,8 +88,8 @@
             // Emit error
             this.$emit('error', {
               source,
-              error: 'Не удалось определить источник воспроизведения',
               referer: 'getPayload',
+              message: 'Не удалось определить источник воспроизведения',
             });
           }
         });
@@ -128,8 +129,8 @@
           // Emit error
           this.$emit('error', {
             payload,
-            error: 'Не удалось подключиться к источнику воспроизведения',
             referer: 'processPayload',
+            message: 'Не удалось подключиться к источнику воспроизведения',
           });
 
         }
@@ -172,9 +173,9 @@
     created() {
 
       // Set torrent error handler
-      ipc.on('torrent:error', (e, {torrentId} = {}) => {
+      ipc.on('torrent:error', (e, {torrentId, message, error} = {}) => {
           if (torrentId === this._getSourceTorrentId(this.source)) {
-            this.$emit('error', {torrentId, error: 'Произошла ошибка при инициализации торрента'})
+            this.$emit('error', {torrentId, message, error})
           }
         }
       )
