@@ -4,7 +4,7 @@
     <!-- Releases -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large class="mr-1" @click="toReleases">
+        <v-btn v-on="on" icon large @click="toReleases">
           <v-icon size="24">mdi-view-column</v-icon>
         </v-btn>
       </template>
@@ -15,7 +15,7 @@
     <!-- Release -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large class="mr-1" @click="toRelease">
+        <v-btn v-on="on" icon large @click="toRelease">
           <v-avatar size="24">
             <img :src="release.poster.image">
           </v-avatar>
@@ -28,7 +28,7 @@
     <!-- Playlist -->
     <v-tooltip right>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large class="mr-1" @click="playlist().show()">
+        <v-btn v-on="on" icon large @click="playlist().show()">
           <v-icon size="24">mdi-playlist-play</v-icon>
         </v-btn>
       </template>

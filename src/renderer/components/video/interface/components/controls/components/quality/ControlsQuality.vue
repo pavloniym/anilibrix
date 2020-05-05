@@ -3,7 +3,7 @@
 
     <!-- Quality -->
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" icon large class="ml-2">
+      <v-btn v-on="on" icon large>
         <v-icon size="24">{{getSourceIcon(source)}}</v-icon>
       </v-btn>
     </template>

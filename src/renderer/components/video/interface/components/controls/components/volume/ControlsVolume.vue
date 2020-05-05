@@ -12,7 +12,6 @@
       min="0"
       max="1"
       step=".1"
-      class="mr-2"
       :value="volume"
       :style="{maxWidth: '70px', width: '70px'}"
       @input="player.volume = $event">

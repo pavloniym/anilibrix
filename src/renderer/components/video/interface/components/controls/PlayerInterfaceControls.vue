@@ -9,10 +9,9 @@
       <quality v-if="source" v-bind="{source, sources}" :attach="$refs.controls"/>
 
       <!-- PIP -->
-      <v-btn icon large class="mx-2" @click="player.pip = true">
+      <v-btn icon large @click="player.pip = true">
         <v-icon size="24">mdi-picture-in-picture-bottom-right</v-icon>
       </v-btn>
-
 
       <!-- Fullscreen -->
       <v-btn icon large @click="toggleFullscreen">
