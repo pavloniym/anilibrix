@@ -1,4 +1,4 @@
-import {mutationsHelper} from '@utils/store'
+import {generalMutations} from '@utils/store/mutations'
 
 export default {
   namespaced: true,
@@ -7,7 +7,7 @@ export default {
   },
 
   mutations: {
-    ...mutationsHelper
+    ...generalMutations
   },
 
 

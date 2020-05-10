@@ -42,9 +42,7 @@
     },
 
     computed: {
-      ...mapState('app/settings/connection', {
-        _host: s => s.host,
-      }),
+      ...mapState('app/settings/connection', {_host: s => s.host}),
     },
 
 

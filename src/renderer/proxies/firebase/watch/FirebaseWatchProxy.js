@@ -48,4 +48,21 @@ export default class {
   }
 
 
+  /**
+   * Remove watch data
+   *
+   * @param userId
+   * @param releaseId
+   * @param episodeId
+   * @return Promise
+   */
+  static async removeWatchData({userId = null, releaseId = null, episodeId = -1} = {}) {
+    if (userId !== null && releaseId !== null && episodeId > -1) {
+      return await firebase
+        .collection('watch')
+        .doc(`${userId}:${releaseId}:${episodeId}`)
+        .delete()
+    }
+  }
+
 }

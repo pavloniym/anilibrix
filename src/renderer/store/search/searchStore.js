@@ -1,8 +1,8 @@
 import AnilibriaProxy from "@proxies/anilibria";
 import AnilibriaReleaseTransformer from "@transformers/anilibria/release";
 
-import {mutationsHelper} from "@utils/store";
 import axios from 'axios'
+import {generalMutations} from "@utils/store/mutations";
 
 export default {
   namespaced: true,
@@ -13,7 +13,7 @@ export default {
   },
 
   mutations: {
-    ...mutationsHelper
+    ...generalMutations
   },
 
   actions: {

@@ -1,26 +1,20 @@
 <script>
 
-  import {mapActions, mapState} from 'vuex'
+  import {mapState} from 'vuex'
 
   export default {
     render: () => null,
     computed: {
-      ...mapState('app/settings/system', {_errors: s => s.errors}),
-    },
-    methods: {
-      ...mapActions('app/settings/system', {_removeError: 'removeError'})
+      ...mapState('app', {_error: s => s.error}),
     },
 
     watch: {
-      _errors: {
+      _error: {
         deep: true,
-        handler(errors) {
-          (errors || [])
-            .map(error => typeof error === 'object' ? `${error.code}: ${error.message}` : error)
-            .forEach((error, k) => {
-              this.$toasted.show(error, {type: 'error'});
-              this._removeError(k);
-            })
+        handler(error) {
+          if(error) {
+            this.$toasted.show(error, {type: 'error'});
+          }
         }
       }
     }

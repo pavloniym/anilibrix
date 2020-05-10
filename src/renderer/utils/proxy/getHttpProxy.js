@@ -1,5 +1,5 @@
-import axios from '@plugins/axios';
 import pac from 'pac-resolver';
+import axios from '@plugins/axios';
 
 /**
  * Parse http proxy
@@ -7,44 +7,58 @@ import pac from 'pac-resolver';
  * @param httpProxyString
  * @return {*}
  */
-const parseHttProxy = (httpProxyString) => {
-  const proxyConnections = [];
-  const regex = /(?:PROXY )(?:(\S+):([0-9]+))/gm;
+const parseHttpProxy = (httpProxyString) => {
 
-  let match;
+  const results = [];
+  const connections = httpProxyString.split(';');
 
-  while ((match = regex.exec(httpProxyString)) !== null) {
-    if (match.index === regex.lastIndex) {
-      regex.lastIndex++;
+  connections.forEach(connection => {
+
+    // Create data object
+    const data = {
+      host: null,
+      port: null,
+      direct: connection.includes('DIRECT')
+    };
+
+    // Parse connection string
+    connection = connection.replace(' ', '').replace('PROXY', '').split(':');
+
+    // Set host and port
+    if (connection && connection.length === 2) {
+      data.host = connection[0];
+      data.port = parseInt(connection[1]);
     }
 
-    const host = match[1];
-    const port = match[2];
+    // Push results
+    results.push(data);
 
-    if (host && host.length > 0 && port > 0) {
-      proxyConnections.push({ host, port });
-    }
-  }
+  });
 
-  if (proxyConnections.length > 0) {
-    return proxyConnections[0];
-  }
 
-  return { host: null, port: null };
+  return results.length > 0
+    ? results[0]
+    : null;
 };
+
 
 /**
  * Get http proxy connection parameters
  *
- * @param pacUrl
- * @param targetUrl
+ * @param source
+ * @param url
  * @return {Promise}
  */
-export default (pacUrl, targetUrl) => new Promise((resolve, reject) => {
-  axios.get(pacUrl, { timeout: 30000 })
-    .then(response => pac(response.data))
-    .then(findHttpProxy => findHttpProxy(targetUrl))
-    .then(httpProxy => parseHttProxy(httpProxy))
-    .then(httpProxyConnection => resolve(httpProxyConnection))
-    .catch(error => reject(error));
-})
+export default async ({source, url}) => {
+  try {
+
+    const response = await axios.get(source, {timeout: 7000});
+    const findProxy = pac(response.data);
+    const proxyString = await findProxy(url);
+
+    return parseHttpProxy(proxyString);
+
+  } catch {
+    throw new Error('Ошибка разборе PAC-скрипта')
+  }
+}

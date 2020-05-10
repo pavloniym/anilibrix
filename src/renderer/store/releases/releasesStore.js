@@ -1,22 +1,18 @@
 import AnilibriaProxy from '@proxies/anilibria'
 import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 
-import {mutationsHelper} from '@utils/store'
+import {generalMutations as mutations} from '@utils/store/mutations'
 
 export default {
   namespaced: true,
   state: {
     data: [],
     index: null,
-    posters: {},
     loading: false,
     datetime: null,
   },
 
-  mutations: {
-    ...mutationsHelper
-  },
-
+  mutations,
   actions: {
 
     /**
@@ -26,8 +22,7 @@ export default {
      * @param index
      * @return {*}
      */
-    setIndex: ({commit}, index) =>
-      commit('set', {k: 'index', v: index}),
+    setIndex: ({commit}, index) => commit('set', {k: 'index', v: index}),
 
 
     /**
@@ -38,105 +33,84 @@ export default {
      * @param dispatch
      * @return {Promise<any>}
      */
-    getLatestReleases: ({state, commit, dispatch}) => {
-      return new Promise((resolve, reject) => {
-        commit('set', {k: 'loading', v: true});
-        return new AnilibriaProxy()
-          .getReleases()
-          .then(async releases => await AnilibriaReleaseTransformer.fetchCollection(releases.items))
-          .then(releases => releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system)))
-          .then(releases => commit('set', {k: 'data', v: releases}))
+    getReleases: async ({commit, dispatch}) => {
+      commit('set', {k: 'loading', v: true});
 
-          // Get posters
-          // Update releases poster
-          .then(() => dispatch('getReleasesPosters'))
-          .then(() => state.data.map(release => {
-            return {
-              ...release,
-              poster: {
-                path: release.poster.path,
-                image: state.posters[release.id]
-              }
+      try {
+
+        // Get releases
+        const data = await new AnilibriaProxy().getReleases();
+        let releases = await AnilibriaReleaseTransformer.fetchCollection(data.items);
+
+        // Get posters
+        const posters = await dispatch('_getPosters', {releases});
+
+        // Sort releases from newest to oldest
+        releases = releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
+
+        // Set release posters
+        posters
+          .map(poster => poster.value || null)
+          .filter(poster => poster)
+          .forEach(poster => {
+            const release = releases.find(release => release.id === poster.releaseId);
+            if (release) {
+              release.poster.image = poster.image;
             }
-          }))
-          .then(releases => commit('set', {k: 'data', v: releases}))
+          });
 
-          // Resolve request
-          .then(() => resolve())
+        // Commit releases
+        // Set update datetime
+        commit('set', {k: 'data', v: releases});
+        commit('set', {k: 'datetime', v: new Date()});
 
-          // Get updates
-          // Send them to notification store
-          .then(() =>
-            state.data
-              .filter(release =>
-                state.datetime
-                  ? new Date(release.datetime.system) > state.datetime
-                  : false
-              )
-              .forEach(release => dispatch('notifications/addRelease', release, {root: true}))
-          )
+        // Get updates
+        // Send them to notification store
+        /*.then(() =>
+          state.data
+            .filter(release =>
+              state.datetime
+                ? new Date(release.datetime.system) > state.datetime
+                : false
+            )
+            .forEach(release => dispatch('notifications/addRelease', release, {root: true}))
+        )*/
 
-          // Create update datetime
-          .then(() => commit('set', {k: 'datetime', v: new Date()}))
+      } catch (error) {
+        dispatch('app/setError', 'Произошла ошибка при загрузке релизов', {root: true});
+        dispatch('app/setError', error, {root: true});
+      }
 
-          .catch(error => {
-            dispatch('app/settings/system/pushError', error, {root: true});
-            reject();
-          })
-          .finally(() => commit('set', {k: 'loading', v: false}))
-      });
+      commit('set', {k: 'loading', v: false});
     },
 
 
     /**
      * Update releases posters
-     * Update only empty posters
-     * Remove old releases' posters
      *
      * @param commit
      * @param state
      * @param dispatch
+     * @param releases
      * @return Promise
      */
-    getReleasesPosters({commit, state, dispatch}) {
-      return new Promise((resolve, reject) => {
+    _getPosters: async ({commit, state, dispatch}, {releases = []} = {}) => {
+      return await Promise.allSettled(
+        releases
+          .filter(release => release.poster.path)
+          .map(async release => {
+              try {
 
-        const requests = [];
-        const posters = state.posters;
-        const items = state.data || [];
+                return await new AnilibriaProxy()
+                  .getPoster({src: release.poster.path})
+                  .then(image => ({image: `data:image/jpeg;base64,${image}`, releaseId: release.id}));
 
-        // Remove old poster for old releases
-        Object.keys(posters)
-          .filter(releaseId => !!items.find(release => release.id === releaseId))
-          .forEach(releaseId => delete posters[releaseId]);
-
-        // Set posters only with existing releases
-        commit('set', {k: 'posters', v: posters});
-
-        // Update posters for new releases
-        items
-          .filter(release => release.poster.path && !state.posters[release.id])
-          .forEach(release => {
-            requests.push(
-              new Promise((resolve, reject) => {
-                new AnilibriaProxy()
-                  .getPosterImage(release.poster.path)
-                  .then(image => `data:image/jpeg;base64,${image}`)
-                  .then(image => commit('set', {k: 'posters', v: {...state.posters, [release.id]: image}}))
-                  .then(() => resolve())
-                  .catch(error => reject(error))
-              })
-            );
-          });
-
-
-        Promise
-          .all(requests)
-          .then(() => resolve())
-          .catch(error => reject(error))
-
-      });
+              } catch (error) {
+                dispatch('app/setError', `Произошла ошибка при загрузке постера к релизу ${release.id}`, {root: true});
+              }
+            }
+          )
+      );
     }
-
   }
 }

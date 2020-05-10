@@ -1,5 +1,5 @@
 import {v4 as uuid} from 'uuid'
-import {mutationsHelper} from '@utils/store'
+import {generalMutations} from '@utils/store/mutations'
 
 export default {
   namespaced: true,
@@ -7,7 +7,7 @@ export default {
     userId: null,
   },
   mutations: {
-    ...mutationsHelper
+    ...generalMutations
   },
 
   actions: {

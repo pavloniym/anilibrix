@@ -11,9 +11,11 @@
   },
   "scripts": {
     "build": "node .electron-vue/build.js",
-    "dist": "electron-builder -w",
-    "dev": "node .electron-vue/dev-runner.js",
-    "release": "yarn build && yarn dist",
+    "serve": "node .electron-vue/dev-runner.js",
+    "release": "yarn build && electron-builder -wml",
+    "release:mac": "yarn build && electron-builder -m",
+    "release:win": "yarn build && electron-builder -w",
+    "release:lin": "yarn build && electron-builder -l",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
   },
   "build": {

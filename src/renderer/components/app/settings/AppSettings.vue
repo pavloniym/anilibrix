@@ -46,7 +46,7 @@
       Credentials
     },
     computed: {
-      ...mapState('app/settings/system', {_drawer: s => s.drawer}),
+      ...mapState('app', {_drawer: s => s.drawer}),
 
       /**
        * Get categories components
@@ -87,7 +87,7 @@
     },
 
     methods: {
-      ...mapActions('app/settings/system', {_setDrawer: 'setDrawer'}),
+      ...mapActions('app', {_setDrawer: 'setDrawer'}),
 
     }
 

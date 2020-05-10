@@ -1,58 +1,79 @@
 <template>
-  <v-layout align-center class="release__slider">
+  <v-layout align-center class="release__slider" v-if="loading || releases.length > 0">
+
 
     <!-- Prev -->
     <div :style="{width: '5%'}" class="d-flex justify-start">
-      <v-btn icon :disabled="value <= 0" @click="$emit('input', value - 1)">
+      <v-btn icon :disabled="loading || value <= 0" @click="$emit('input', value - 1)">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
     </div>
 
+
     <!-- Posters -->
+
     <v-slide-group
-      center-active
       mandatory
+      center-active
       :value="value"
       :style="{width: '90%'}"
       :show-arrows="false"
       @change="$emit('input', $event)">
 
-      <!-- Slider Item -->
-      <v-slide-item v-slot:default="{ active, toggle }" v-for="(release, k) in releases" :key="k">
+      <!-- Loader -->
+      <template v-if="loading">
+        <v-layout class="release__slider__skeleton">
+          <v-skeleton-loader
+            v-for="i in 14"
+            type="image"
+            :key="i"
+            :width="width"
+            :height="height"
+            :min-width="width"
+            :max-height="height">
+          </v-skeleton-loader>
+        </v-layout>
+      </template>
 
-        <!-- Default Card -->
-        <v-card
-          width="175"
-          class="black"
-          height="250"
-          :class="{primary: active}"
-          @click="toggle"
-          @dblclick="watchEpisode(release)">
 
-          <!-- Release Poster Image -->
-          <v-img
-            v-if="posters[release.id]"
-            eager
-            ratio="0.7"
-            class="black"
+      <!-- Slider Items -->
+      <template v-else>
+        <v-slide-item
+          v-slot:default="{ active, toggle }"
+          v-for="release in releases"
+          :key="release.id">
+          <v-card
             width="175"
+            class="black"
             height="250"
-            max-width="175"
-            max-height="250"
-            :src="posters[release.id]"
-            :key="`poster:${release.id}`"
-            :class="{'elevation-16': active}">
-            <div v-if="!active" class="fill-height" :style="{background: 'black', opacity: .75}"></div>
-          </v-img>
+            :class="{primary: active}"
+            @click="toggle"
+            @dblclick="toEpisode(release)">
+            <v-img
+              v-if="release.poster.image"
+              eager
+              ratio="0.7"
+              class="black"
+              width="175"
+              height="250"
+              max-width="175"
+              max-height="250"
+              :src="release.poster.image"
+              :key="`poster:${release.id}`"
+              :class="{'elevation-16': active}">
+              <div v-if="!active" class="fill-height" :style="{background: 'black', opacity: .75}"></div>
+            </v-img>
+          </v-card>
+        </v-slide-item>
+      </template>
 
-        </v-card>
-      </v-slide-item>
+
     </v-slide-group>
 
 
     <!-- Next -->
     <div :style="{width: '5%'}" class="d-flex justify-end">
-      <v-btn icon :disabled="value >= releases.length - 1" @click="$emit('input', value + 1)">
+      <v-btn icon :disabled="loading || value >= releases.length - 1" @click="$emit('input', value + 1)">
         <v-icon>mdi-arrow-right</v-icon>
       </v-btn>
     </div>
@@ -73,14 +94,21 @@
       type: Array,
       default: null
     },
-    posters: {
-      type: Object,
-      default: null
+    loading: {
+      type: Boolean,
+      default: true,
     }
   };
 
   export default {
     props,
+    data() {
+      return {
+        ratio: .7,
+        width: 175,
+        height: 250,
+      }
+    },
     methods: {
 
 
@@ -127,7 +155,7 @@
        *
        * @param release
        */
-      watchEpisode(release) {
+      toEpisode(release) {
         this.$emit('watch', {release, episode: __get(release, ['episodes', 0]) || null});
       }
 
@@ -155,12 +183,22 @@
 
 <style scoped lang="scss">
 
-  .release__slider {
-    max-height: 250px;
+  .release {
+    &__slider {
+      max-height: 250px;
 
-    ::v-deep .v-slide-group {
-      &__prev, &__next {
-        display: none !important;
+      ::v-deep .v-slide-group {
+        &__prev, &__next {
+          display: none !important;
+        }
+      }
+
+      &__skeleton {
+        ::v-deep {
+          .v-skeleton-loader__image {
+            height: 100%
+          }
+        }
       }
     }
   }

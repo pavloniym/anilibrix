@@ -7,7 +7,7 @@
         <v-card-text>
 
           <!-- Proxy type -->
-          <v-radio-group hide-details class="mt-0" :value="getProxyType" @change="_setProxyType">
+          <v-radio-group hide-details class="mt-0" :value="_type" @change="_setProxy">
             <v-radio v-for="(proxy, k) in proxies" v-bind="proxy" :key="k"/>
           </v-radio-group>
 
@@ -16,30 +16,30 @@
           </div>
 
           <!-- PAC Source -->
-          <template v-if="getProxyType === 'pac'">
+          <template v-if="_type === 'pac'">
             <v-text-field
               hide-details
               label="Источник PAC скрипта"
               :value="_pac.source"
-              @input="_setPacSource">
+              @input="_setProxyPacSource">
             </v-text-field>
           </template>
 
 
           <!-- Custom Proxy -->
-          <template v-if="getProxyType === 'custom'">
+          <template v-if="_type === 'custom'">
             <v-text-field
               hide-details
               label="Хост прокси-сервера"
-              :value="_custom.connection.host"
-              @input="host => _setCustomProxyConnection({host, port: _custom.connection.port})">
+              :value="_custom.host"
+              @input="host => _setProxyCustomConnection({..._custom, host})">
             </v-text-field>
             <v-text-field
               hide-details
               class="mt-2"
               label="Порт прокси-сервера"
-              :value="_custom.connection.port"
-              @input="port => _setCustomProxyConnection({host: _custom.connection.host, port})">
+              :value="_custom.port"
+              @input="port => _setProxyCustomConnection({..._custom, port})">
             </v-text-field>
           </template>
 
@@ -80,29 +80,18 @@
     computed: {
       ...mapState('app/settings/connection', {
         _pac: s => s.proxy.pac,
+        _type: s => s.proxy.type || 'direct',
         _custom: s => s.proxy.custom,
       }),
-
-      /**
-       * Get proxy connection type
-       *
-       * @return {string}
-       */
-      getProxyType() {
-        if (this._pac.active) return 'pac';
-        if (this._custom.active) return 'custom';
-
-        return 'direct';
-      },
 
     },
 
 
     methods: {
       ...mapActions('app/settings/connection', {
-        _setProxyType: 'setProxyType',
-        _setPacSource: 'setPacSource',
-        _setCustomProxyConnection: 'setCustomProxyConnection'
+        _setProxy: 'setProxy',
+        _setProxyPacSource: 'setProxyPacSource',
+        _setProxyCustomConnection: 'setProxyCustomConnection'
       }),
 
 

@@ -1,5 +1,5 @@
 <template>
-  <v-list-item @click="">
+  <v-list-item two-line @click="$emit('click')">
 
     <v-list-item-content>
       <v-list-item-title v-text="episode.title"/>
@@ -9,13 +9,18 @@
     </v-list-item-content>
 
     <v-list-item-action>
+      <v-layout>
 
-      <!-- Episode Progress -->
-      <v-layout align-center justify-center :style="{width: '40px'}">
-        <item-playing v-if="isPlaying"/>
-        <item-watched v-else v-bind="{episode, release}"/>
+        <!-- Episode Progress -->
+        <v-layout align-center justify-center :style="{width: '40px'}">
+          <item-playing v-if="isPlaying"/>
+          <item-watched v-else v-bind="{episode, release}"/>
+        </v-layout>
+
+        <!-- Actions -->
+        <item-actions v-bind="{episode, release}" />
+
       </v-layout>
-
     </v-list-item-action>
 
   </v-list-item>
@@ -26,6 +31,7 @@
   import ItemQuality from './components/quality'
   import ItemWatched from './components/watched'
   import ItemPlaying from './components/playing'
+  import ItemActions from './components/actions'
 
   const props = {
     release: {
@@ -48,6 +54,7 @@
       ItemQuality,
       ItemWatched,
       ItemPlaying,
+      ItemActions,
     }
   }
 </script>

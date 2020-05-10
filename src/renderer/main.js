@@ -22,10 +22,14 @@ Vue.config.productionTip = false;
 sentry({store, source: 'app'});
 
 /* eslint-disable no-new */
-new Vue({
-  components: {App},
+const app = new Vue({
+  store,
   router,
   vuetify,
-  store,
-  template: '<App/>'
-}).$mount('#anilibrix');
+  template: '<App/>',
+  components: {App},
+});
+
+// Mount app to html
+app.$mount('#anilibrix');
+

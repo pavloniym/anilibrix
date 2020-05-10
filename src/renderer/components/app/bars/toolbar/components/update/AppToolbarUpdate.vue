@@ -7,7 +7,7 @@
         v-on="datetime ? on : null"
         icon
         :disabled="_loading"
-        @click="getLatestReleases">
+        @click="getReleases">
         <v-fade-transition mode="out-in">
           <v-progress-circular v-if="_loading" indeterminate size="20"/>
           <v-icon v-else>mdi-refresh</v-icon>
@@ -48,7 +48,7 @@
 
     },
     methods: {
-      ...mapActions('releases', ['getLatestReleases']),
+      ...mapActions('releases', ['getReleases']),
     }
   }
 </script>

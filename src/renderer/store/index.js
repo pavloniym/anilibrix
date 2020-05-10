@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import {getInitialState} from '@utils/store'
+import {getInitialState} from '@utils/store/state'
 import createPromiseAction from '@plugins/vuex-promise-action'
 import {createPersistedState, createSharedMutations} from 'vuex-electron'
 
@@ -32,9 +32,8 @@ const store = new Vuex.Store({
     createPromiseAction(),
     createPersistedState({
       invertIgnored: true,
-      ignoredPaths: [
+      ignoredPaths: [ // not ignore, save
         'app',
-        'firebase'
       ],
     }),
     createSharedMutations()
@@ -58,20 +57,19 @@ const store = new Vuex.Store({
     }
 
   },
+
   actions: {
 
     /**
-     * Reset store
+     * RESET STORE
      *
+     * @param commit
+     * @return {Promise<*>}
+     * @constructor
      */
-    RESET_STORE({commit}) {
-      return new Promise(resolve => {
-        commit('RESET_STORE');
-        resolve();
-      })
-    }
-
+    RESET_STORE: async ({commit}) => await commit('RESET_STORE')
   }
+
 });
 
 

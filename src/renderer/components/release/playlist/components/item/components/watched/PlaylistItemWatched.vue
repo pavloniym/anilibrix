@@ -30,7 +30,12 @@
        */
       watchData() {
         if (this.release && this.episode) {
-          return this.$store.getters['firebase/watch/getData']({
+
+          // Get getters from store
+          const getWatchData = this.$store.getters['firebase/watch/getWatchData'];
+
+          // Get watch data for provided release
+          return getWatchData({
             releaseId: this.release.id,
             episodeId: this.episode.id
           });

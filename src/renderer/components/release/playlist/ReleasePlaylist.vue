@@ -1,8 +1,8 @@
 <template>
   <div>
 
-    <!-- Search -->
-    <playlist-toolbar class="mb-2" :search.sync="search"/>
+    <!-- Toolbar -->
+    <playlist-toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
 
     <!-- Playlist Items -->
     <v-list v-if="playlistSearched.length > 0" dense dark>
@@ -12,7 +12,7 @@
           v-bind="{release, episode}"
           :key="episode.id"
           :is-playing="playing && playing.id === episode.id"
-          @click.native="$emit('episode', episode)">
+          @click="$emit('episode', episode)">
         </playlist-item>
       </template>
     </v-list>

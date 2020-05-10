@@ -1,32 +1,26 @@
-import { mutationsHelper } from '@utils/store'
+import {generalMutations} from '@utils/store/mutations'
 
 export default {
   namespaced: true,
   state: {
     host: 'https://www.anilibria.tv',
     proxy: {
-
+      type: 'pac',
       pac: {
-        active: true,
+        host: null,
+        port: null,
+        direct: false,
         source: 'https://antizapret.prostovpn.org/proxy.pac',
-        connection: {
-          host: null,
-          port: null
-        }
       },
-
       custom: {
-        active: false,
-        connection: {
-          host: null,
-          port: null
-        }
+        host: null,
+        port: null
       }
     }
   },
 
   mutations: {
-    ...mutationsHelper
+    ...generalMutations
   },
 
   actions: {
@@ -38,19 +32,18 @@ export default {
      * @param host
      * @return {*}
      */
-    setHost: ({ commit }, host) =>
-      commit('set', { k: 'host', v: host }),
+    setHost: ({commit}, host) => commit('set', {k: 'host', v: host}),
+
 
     /**
-     * Set proxy type
+     * Set poxy type
      *
      * @param commit
      * @param type
+     * @return {*}
      */
-    setProxyType: ({ commit }, type) => {
-      commit('set', { k: 'proxy.pac.active', v: type === 'pac' });
-      commit('set', { k: 'proxy.custom.active', v: type === 'custom' });
-    },
+    setProxy: ({commit}, type) => commit('set', {k: 'proxy.type', v: type}),
+
 
     /**
      * Set pac source
@@ -59,8 +52,8 @@ export default {
      * @param source
      * @return {*}
      */
-    setPacSource: ({ commit }, source) =>
-      commit('set', { k: 'proxy.pac.source', v: source }),
+    setProxyPacSource: ({commit}, source) => commit('set', {k: 'proxy.pac.source', v: source}),
+
 
     /**
      * Set proxy connection for pac proxy type
@@ -68,11 +61,14 @@ export default {
      * @param commit
      * @param host
      * @param port
+     * @param direct
      */
-    setPacProxyConnection: ({ commit }, { host, port }) => {
-      commit('set', { k: 'proxy.pac.connection.host', v: host });
-      commit('set', { k: 'proxy.pac.connection.port', v: port });
+    setProxyPacConnection: ({commit}, {host = null, port = null, direct = false} = {}) => {
+      commit('set', {k: 'proxy.pac.host', v: host});
+      commit('set', {k: 'proxy.pac.port', v: port});
+      commit('set', {k: 'proxy.pac.direct', v: direct});
     },
+
 
     /**
      * Set proxy connection for custom proxy type
@@ -81,19 +77,21 @@ export default {
      * @param host
      * @param port
      */
-    setCustomProxyConnection: ({ commit }, { host, port }) => {
-      commit('set', { k: 'proxy.custom.connection.host', v: host });
-      commit('set', { k: 'proxy.custom.connection.port', v: port });
+    setProxyCustomConnection: ({commit}, {host = null, port = null} = {}) => {
+      commit('set', {k: 'proxy.custom.host', v: host});
+      commit('set', {k: 'proxy.custom.port', v: port});
     },
+
 
     /**
      * Clear proxy connection for pac usage
      *
      * @param commit
      */
-    clearPacProxyConnection: ({ commit }) => {
-      commit('set', { k: 'proxy.pac.connection.host', v: null });
-      commit('set', { k: 'proxy.pac.connection.port', v: null });
+    clearProxyPacConnection: ({commit}) => {
+      commit('set', {k: 'proxy.pac.host', v: null});
+      commit('set', {k: 'proxy.pac.port', v: null});
+      commit('set', {k: 'proxy.pac.direct', v: false});
     }
 
   }

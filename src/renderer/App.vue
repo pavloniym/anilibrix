@@ -5,10 +5,9 @@
     <app-system-bar/>
 
     <v-fade-transition mode="out-in" appear>
+
       <!-- Loader -->
-      <template v-if="loading">
-        <app-loader/>
-      </template>
+      <app-loader v-if="loading"/>
 
       <!-- Content -->
       <template v-else>
@@ -18,10 +17,8 @@
       </template>
     </v-fade-transition>
 
-    <!-- Errors Toasts -->
+    <!-- System components -->
     <app-errors/>
-
-    <!-- System notifications -->
     <app-notifications/>
 
   </v-app>
@@ -63,7 +60,7 @@
     },
 
     methods: {
-      ...mapActions('releases', {_getLatestReleases: 'getLatestReleases'}),
+      ...mapActions('releases', {_getReleases: 'getReleases'}),
 
 
       /**
@@ -80,7 +77,7 @@
         }
 
         if (this._updates === true) {
-          this.update.handler = setInterval(() => this._getLatestReleases(), this._timeout);
+          this.update.handler = setInterval(() => this._getReleases(), this._timeout);
         }
       }
 
@@ -90,19 +87,19 @@
 
       // Initial loading
       this.loading = true;
+      setTimeout(() => this.loading = false, 500);
 
-      Promise
-        .allSettled([
-          this.$store.dispatchPromise('releases/getLatestReleases'),
-          this.$store.dispatchPromise('firebase/watch/getWatchData'),
-        ])
-        .then(() => this.loading = false);
+
+      // Get latest releases
+      this._getReleases();
+
+
+      // Get watch data
+      /*this.$store
+        .dispatchPromise('firebase/watch/getWatchData')
+        .catch(() => this.$toasted.error('Произошла ошибка при синхронизации данных с облаком'));*/
     },
 
-
-    beforeDestroy() {
-      alert();
-    },
 
     watch: {
 

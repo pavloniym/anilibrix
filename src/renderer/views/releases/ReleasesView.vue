@@ -1,8 +1,10 @@
 <template>
   <releases-layout>
     <v-layout column justify-center fill-height class="mx-4">
-      <releases-slider v-model="index" :releases="_releases" :posters="_posters" @watch="watchEpisode"/>
-      <releases-data v-if="release" v-bind="{release}" class="mt-4" @watch="watchEpisode"/>
+
+      <releases-slider v-model="index" v-bind="{loading}" :releases="_releases" @watch="toEpisode"/>
+      <releases-data v-bind="{release, loading}" class="mt-4" @watch="toEpisode"/>
+
     </v-layout>
   </releases-layout>
 </template>
@@ -21,10 +23,17 @@
       ReleasesLayout,
       ReleasesSlider,
     },
+
+    data() {
+      return {
+        loading: true,
+      }
+    },
+
     computed: {
       ...mapState('releases', {
         _index: s => s.index,
-        _posters: s => s.posters || {},
+        _loading: s => s.loading,
         _releases: s => s.data || [],
       }),
 
@@ -52,7 +61,7 @@
          * @return void
          */
         set(index) {
-          this._setIndex(this._releases[index].id);
+          this._setIndex(this._releases[index] ? this._releases[index].id : null);
         }
       },
 
@@ -78,7 +87,7 @@
        * @param release
        * @param episode
        */
-      watchEpisode({release, episode}) {
+      toEpisode({release, episode}) {
         if (release && episode) {
           this.$router.push({
             name: 'video',
@@ -91,6 +100,18 @@
         }
       },
 
+    },
+
+    watch: {
+
+      _loading: {
+        immediate: true,
+        handler(_loading) {
+          if (_loading === false && this.loading === true) {
+            this.loading = false;
+          }
+        }
+      }
 
     }
 

@@ -1,10 +1,8 @@
-import {mutationsHelper} from '@utils/store'
+import {generalMutations} from '@utils/store/mutations'
 
 export default {
   namespaced: true,
   state: {
-    errors: [],
-    drawer: false,
     firebase: {
       sync: true,
     },
@@ -16,43 +14,10 @@ export default {
 
 
   mutations: {
-    ...mutationsHelper
+    ...generalMutations
   },
 
   actions: {
-
-    /**
-     * Set drawer state
-     *
-     * @param commit
-     * @param dispatch
-     * @param state
-     * @return {*}
-     */
-    setDrawer: ({commit, dispatch}, state) => commit('set', {k: 'drawer', v: state}),
-
-
-    /**
-     * Push error
-     *
-     * @param commit
-     * @param error
-     * @return {*}
-     */
-    pushError: ({commit}, error) => commit('push', {k: 'errors', v: error}),
-
-    /**
-     * Remove error with provided index from errors array
-     *
-     * @param commit
-     * @param state
-     * @param index
-     */
-    removeError: ({commit, state}, index) => {
-      const items = [...state.errors];
-      items.splice(index, 1);
-      commit('set', {k: 'errors', v: items})
-    },
 
     /**
      * Set updates state

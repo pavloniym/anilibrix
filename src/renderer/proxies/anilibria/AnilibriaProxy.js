@@ -2,37 +2,13 @@ import Proxy from '@proxy'
 import store from "@store";
 import __get from "lodash/get";
 
-export default class extends Proxy {
+export default class Anilibria extends Proxy {
+
+  /**
+   * @param parameters
+   */
   constructor(parameters = {}) {
     super('/public/api/index.php', parameters)
-  }
-
-  /**
-   * Get anilibria host
-   *
-   * @return {*}
-   */
-  getHost() {
-    return __get(store, 'state.app.settings.connection.host', null);
-  }
-
-
-  /**
-   * Parse base response model
-   *
-   * @param response
-   * @return {*}
-   */
-  parseResponse(response) {
-    const status = __get(response, 'status', false);
-    const data = __get(response, 'data', null);
-    const error = __get(response, 'error.message', 'Request error');
-
-    if (status === true) {
-      return data;
-    } else {
-      throw new Error(error);
-    }
   }
 
 
@@ -41,16 +17,16 @@ export default class extends Proxy {
    *
    * @return {Promise}
    */
-  getReleases() {
-    return new Promise((resolve, reject) => {
+  async getReleases() {
 
-      const data = this.getFormDataObject({query: 'list', perPage: 14});
-      const headers = data.getHeaders();
+    const data = this._getFormDataObject({query: 'list', perPage: 14});
+    const response = await this.submit(
+      'POST',
+      this._getHost() + this.endpoint,
+      {data, headers: data.getHeaders()}
+    );
 
-      return this.submit('POST', this.getHost() + this.endpoint, {data, headers})
-        .then(response => resolve(this.parseResponse(response)))
-        .catch(error => reject(error))
-    });
+    return this._parseResponse(response.data);
   }
 
 
@@ -61,31 +37,30 @@ export default class extends Proxy {
    * @param parameters
    * @return {Promise<unknown>}
    */
-  getRelease(releaseId, parameters = {}) {
-    return new Promise((resolve, reject) => {
+  async getRelease(releaseId, parameters = {}) {
 
-      const data = this.getFormDataObject({query: 'release', id: releaseId});
-      const headers = data.getHeaders();
+    const data = this._getFormDataObject({query: 'release', id: releaseId});
+    const response = await this.submit(
+      'POST',
+      this._getHost() + this.endpoint,
+      {...parameters, data, headers: data.getHeaders()}
+    );
 
-      return this.submit('POST', this.getHost() + this.endpoint, {...parameters, data, headers})
-        .then(response => resolve(this.parseResponse(response)))
-        .catch(error => reject(error))
-    });
+    return this._parseResponse(response.data);
   }
 
 
   /**
    * Get poster image
    *
-   * @param posterSrc
-   * @return {Promise<any>}
+   * @param src
+   * @return {string}
    */
-  getPosterImage(posterSrc) {
-    return new Promise((resolve, reject) => {
-      return this.submit('GET', this.getHost() + posterSrc, {responseType: 'arraybuffer'})
-        .then(response => resolve(Buffer.from(response, 'binary').toString('base64')))
-        .catch(error => reject(error))
-    })
+  async getPoster({src}) {
+    if (src) {
+      const response = await this.submit('GET', this._getHost() + src, {responseType: 'arraybuffer'});
+      return Buffer.from(response.data, 'binary').toString('base64');
+    }
   }
 
 
@@ -102,6 +77,7 @@ export default class extends Proxy {
         .catch(error => reject(error))
     })
   }
+
 
   /**
    * Search releases by name
@@ -124,24 +100,111 @@ export default class extends Proxy {
 
 
   /**
-   * Get catalog data
+   * Get anilibria host
    *
-   * @param genre
-   * @param year
-   * @param sort
-   * @param page
-   * @return {Promise<unknown>}
+   * @return {*}
    */
-  getCatalogData({genre = null, year = null, sort = 1, page = 1} = {}) {
-    return new Promise((resolve, reject) => {
+  _getHost() {
+    return __get(store, 'state.app.settings.connection.host', null);
+  }
 
-      const data = this.getFormDataObject({query: 'catalog', search: {genre, year}, xpage: 'catalog', sort, page, perPage: 12});
-      const headers = data.getHeaders();
 
-      return this.submit('POST', this.getHost() + this.endpoint, {data, headers})
-        .then(response => resolve(this.parseResponse(response)))
-        .catch(error => reject(error))
-    })
+  /**
+   * Get pac proxy usage
+   *
+   * @return {boolean}
+   * @private
+   */
+  _getProxyPacUsage() {
+    return __get(store, 'state.app.settings.connection.proxy.type') === 'pac';
+  }
+
+
+  /**
+   * Get custom proxy usage
+   *
+   * @return {boolean}
+   * @private
+   */
+  _getProxyCustomUsage() {
+    return __get(store, 'state.app.settings.connection.proxy.type') === 'custom';
+  }
+
+
+  /**
+   * Get pac proxy configuration
+   *
+   * @return {{port: *, host: *, direct: *, source: *}}
+   * @private
+   */
+  _getProxyPacConfiguration() {
+    const proxy = __get(store, 'state.app.settings.connection.proxy.pac');
+    return {
+      host: __get(proxy, 'host'),
+      port: __get(proxy, 'port'),
+      direct: __get(proxy, 'direct'),
+      source: __get(proxy, 'source')
+    }
+  }
+
+
+  /**
+   * Get custom proxy configuration
+   *
+   * @return {{port: *, host: *}}
+   * @private
+   */
+  _getProxyCustomConfiguration() {
+    const proxy = __get(store, 'state.app.settings.connection.proxy.custom');
+    return {
+      host: __get(proxy, 'host'),
+      port: __get(proxy, 'port'),
+    }
+  }
+
+  /**
+   * Set proxy pac configuration
+   *
+   * @param host
+   * @param port
+   * @param direct
+   * @return {*}
+   * @private
+   */
+  _setProxyPacConfiguration({host = null, port = null, direct = false} = {}) {
+    return store.dispatch('app/settings/connection/setProxyPacConnection', {host, port, direct});
+  }
+
+
+  /**
+   * Clear pac proxy connection
+   *
+   * @return {Promise<any>}
+   * @private
+   */
+  _clearProxyPacConnection() {
+    return store.dispatch('app/settings/connection/clearProxyPacConnection');
+  }
+
+
+  /**
+   * Parse base response model
+   *
+   * @param response
+   * @return {*}
+   */
+  _parseResponse(response) {
+
+    const data = __get(response, 'data', null);
+    const status = __get(response, 'status', false);
+    const message = __get(response, 'error.message', 'Ошибка при запросе');
+
+    if (status === true) {
+      return data;
+
+    } else {
+      throw new Error(message);
+    }
   }
 
 }

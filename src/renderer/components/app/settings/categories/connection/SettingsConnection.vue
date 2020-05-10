@@ -60,23 +60,9 @@
 
     computed: {
       ...mapState('app/settings/connection', {
-        _pac: s => s.proxy.pac,
         _host: s => s.host,
-        _custom: s => s.proxy.custom,
+        _type: s => s.proxy.type || 'direct',
       }),
-
-
-      /**
-       * Get proxy connection type
-       *
-       * @return {string}
-       */
-      getProxyType() {
-        if (this._pac.active) return 'pac';
-        if (this._custom.active) return 'custom';
-
-        return 'direct';
-      },
 
 
       /**
@@ -93,7 +79,7 @@
           },
           {
             title: 'Тип подключения',
-            value: this.proxies[this.getProxyType],
+            value: this.proxies[this._type],
             action: () => this.$refs.proxy[0].showDialog(),
           }
         ]
