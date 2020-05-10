@@ -70,12 +70,10 @@ export default class Anilibria extends Proxy {
    * @param torrentUrl
    * @return {Promise<unknown>}
    */
-  getTorrentFile(torrentUrl) {
-    return new Promise((resolve, reject) => {
-      return this.submit('GET', this.getHost() + torrentUrl, {responseType: 'arraybuffer'})
-        .then(response => resolve(response))
-        .catch(error => reject(error))
-    })
+  async getTorrentFile({url}) {
+    if (url) {
+      return await this.submit('GET', this._getHost() + url, {responseType: 'arraybuffer'});
+    }
   }
 
 
@@ -86,16 +84,16 @@ export default class Anilibria extends Proxy {
    * @param parameters
    * @return {Promise<unknown>}
    */
-  searchReleasesByName(searchQuery, parameters) {
-    return new Promise((resolve, reject) => {
+  async searchReleasesByName(searchQuery, parameters) {
 
-      const data = this.getFormDataObject({query: 'search', search: searchQuery});
-      const headers = data.getHeaders();
+    const data = this._getFormDataObject({query: 'search', search: searchQuery});
+    const response = await this.submit(
+      'POST',
+      this._getHost() + this.endpoint,
+      {...parameters, data, headers: data.getHeaders()}
+    );
 
-      return this.submit('POST', this.getHost() + this.endpoint, {...parameters, data, headers})
-        .then(response => resolve(this.parseResponse(response)))
-        .catch(error => reject(error))
-    })
+    return this._parseResponse(response.data);
   }
 
 

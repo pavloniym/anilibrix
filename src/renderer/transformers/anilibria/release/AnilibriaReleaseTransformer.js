@@ -11,27 +11,10 @@ export default class extends Transformer {
    * @param items The items to be transformed.
    * @returns Promise The transformed items.
    */
-  static fetchCollection(items) {
-    return Promise
-      .allSettled(
-        (items || []).map(item =>
-          new Promise(async (resolve, reject) => {
-            try {
-              resolve(await this.fetch(item))
-            } catch (e) {
-              reject(e)
-            }
-          })
-        )
-      )
-      .then(data => {
-
-        // Show response error
-        (data || []).filter(response => response.status === 'rejected').map(response => console.log(response.reason));
-
-        // Return releases
-        return (data || []).filter(response => response.status === 'fulfilled').map(response => response.value)
-      })
+  static async fetchCollection(items) {
+    return (await Promise.allSettled((items || []).map(async item => await this.fetch(item))))
+      .filter(response => response.status === 'fulfilled')
+      .map(response => response.value);
   }
 
 

@@ -81,7 +81,7 @@
        * @return void
        */
       toggleFullscreen() {
-        if (this.container) screenfull.toggle(this.container);
+        screenfull.toggle(document.getElementById('app'));
       },
 
 

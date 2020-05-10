@@ -188,7 +188,6 @@
 
       // Set episode watch data before destroy
       this.setWatchData();
-
     },
 
     watch: {

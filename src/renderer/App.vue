@@ -5,16 +5,8 @@
     <app-system-bar/>
 
     <v-fade-transition mode="out-in" appear>
-
-      <!-- Loader -->
       <app-loader v-if="loading"/>
-
-      <!-- Content -->
-      <template v-else>
-        <v-fade-transition mode="out-in" appear>
-          <router-view :key="$route.fullPath"/>
-        </v-fade-transition>
-      </template>
+      <router-view v-else/>
     </v-fade-transition>
 
     <!-- System components -->

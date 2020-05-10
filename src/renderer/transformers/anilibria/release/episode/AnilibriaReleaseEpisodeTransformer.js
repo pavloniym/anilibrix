@@ -25,7 +25,6 @@ export default class extends Transformer {
       // Parse torrents
       this._parseTorrents(await this._getTorrents(release) || [], episodes);
 
-
       // Filter all sources without payload
       // Reverse to descending order
       return Object
@@ -33,8 +32,8 @@ export default class extends Transformer {
         .map(episode => ({...episode, sources: episode.sources.filter(source => source.payload !== null)}))
         .reverse();
 
-    } catch (e) {
-      throw e;
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -47,11 +46,7 @@ export default class extends Transformer {
    */
   static _createEpisode(number, episodes) {
     if (episodes.hasOwnProperty(number) === false) {
-      episodes[number] = {
-        id: null,
-        title: null,
-        sources: [],
-      }
+      episodes[number] = {id: null, title: null, sources: []}
     }
   };
 
@@ -65,67 +60,52 @@ export default class extends Transformer {
    * @return {{payload: *, alias: *, label: *, type: *}}
    */
   static _createSource(type, label, alias, payload) {
-    return {
-      type,
-      label,
-      alias,
-      payload
-    }
+    return {type, label, alias, payload}
   };
 
   /**
    * Get torrents data
    *
    * @param release
-   * @return {Promise<unknown>}
+   * @return Array
    * @private
    */
-  static _getTorrents(release) {
+  static async _getTorrents(release) {
+
+    // Check if torrents should be processed
     if (this.get(store, 'state.app.settings.player.torrents.process') === true) {
 
-      return new Promise((resolve, reject) => {
+      const requests = [];
 
-        const requests = [];
-        const torrents = [];
+      (this.get(release, 'torrents') || [])
+        .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false)
+        .forEach(torrent => {
+          requests.push(
+            new Promise(async resolve => {
+              try {
 
-        (this.get(release, 'torrents') || [])
-          .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false)
-          .forEach(torrent => {
-            requests.push(
-              new Promise((resolve, reject) => {
-                try {
+                // Get blob torrent file from server
+                const response = await new AnilibriaProxy().getTorrentFile({url: torrent.url});
 
-                  const torrentUrl = torrent.url;
-                  const torrentId = torrent.id;
+                // Send to torrent for parsing data
+                AppWindowTorrent.sendToWindow('torrent:parse', {torrentId: torrent.id, blob: response.data});
 
-                  // Get blob torrent file from server
-                  // Send to torrent for parsing data
-                  new AnilibriaProxy()
-                    .getTorrentFile(torrentUrl)
-                    .then(blob => AppWindowTorrent.sendToWindow('torrent:parse', {torrentId, blob}));
+                // Listen event with torrent data to main process
+                // Resolve when event is caught
+                ipc.on(`torrent:data:${torrent.id}`, (e, {data}) => resolve({torrent, data}));
 
-                  // Listen event with torrent data to main process
-                  // Resolve when event is caught
-                  ipc.on(`torrent:data:${torrentId}`, (e, {data}) => {
-                    torrents.push({torrent, data});
-                    resolve();
-                  });
+              } catch (e) {
+                resolve([])
+              }
+            })
+          )
+        });
 
-                } catch (e) {
 
-                  // Resolve even if catch error
-                  resolve()
-
-                }
-              })
-            )
-          });
-
-        Promise.all(requests)
-          .then(() => resolve(torrents))
-          .catch(error => reject({...error, release}))
-      })
-
+      return (await Promise.allSettled(requests))
+        .filter(response => response.status === 'fulfilled')
+        .map(response => response.value)
+        .filter(torrent => torrent);
     }
   }
 

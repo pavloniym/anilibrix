@@ -1,3 +1,0 @@
-import MyAnimeListEpisodeTransformer from './MyAnimeListEpisodeTransformer'
-
-export default MyAnimeListEpisodeTransformer
