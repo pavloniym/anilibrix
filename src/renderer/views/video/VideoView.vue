@@ -188,6 +188,13 @@
        */
       setWatchData({release = null, episode = null, time = 0, percentage = 0} = {}) {
         if (release && episode) {
+
+          // Set correct time (fix last episode seconds)
+          // Set correct percentage
+          time = time >= this.duration ? this.duration - 5 : time;
+          percentage = percentage > 100 ? 100 : percentage;
+
+          // Set watch data in local store
           this._setWatchData({time, percentage, releaseId: release.id, episodeId: episode.id})
         }
       }

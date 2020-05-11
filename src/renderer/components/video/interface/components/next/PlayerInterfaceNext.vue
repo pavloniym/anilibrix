@@ -90,15 +90,6 @@
     methods: {
 
       /**
-       * Get next episode
-       *
-       * @return Object|null
-       */
-      getNextEpisode() {
-        return this.next;
-      },
-
-      /**
        * Start autoplay
        *
        * @return void
