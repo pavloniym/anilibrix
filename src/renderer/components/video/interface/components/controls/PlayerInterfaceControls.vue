@@ -42,10 +42,6 @@
     source: {
       type: Object,
       default: null
-    },
-    container: {
-      type: HTMLDivElement,
-      default: null
     }
   };
 
@@ -81,20 +77,26 @@
        * @return void
        */
       toggleFullscreen() {
-        screenfull.toggle(document.getElementById('app'));
+        screenfull.toggle(document.getElementById('container'));
       },
 
 
     },
 
     mounted() {
+
+      // Set is mounted state
       this.isMounted = true;
-      window.addEventListener('keydown', this.handleKeyboardEvent, true);
+
+      // Set keyboard events
+      document.addEventListener('keydown', this.handleKeyboardEvent, true);
     },
 
 
-    destroyed() {
-      window.removeEventListener('keydown', this.handleKeyboardEvent);
+    beforeDestroy() {
+
+      // Remove keyboard events
+      document.removeEventListener('keydown', this.handleKeyboardEvent);
     }
 
   }

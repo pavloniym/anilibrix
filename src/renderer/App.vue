@@ -6,7 +6,11 @@
 
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
-      <router-view v-else/>
+      <div v-else id="container">
+        <v-fade-transition mode="out-in" appear>
+          <router-view :key="$route.name"/>
+        </v-fade-transition>
+      </div>
     </v-fade-transition>
 
     <!-- System components -->

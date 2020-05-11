@@ -1,5 +1,5 @@
 <template>
-  <player-layout ref="container">
+  <player-layout>
     <component
       v-bind="{sources, source}"
       :is="component"
@@ -8,7 +8,7 @@
       @error="toBlank">
 
       <template v-slot:default="{player}">
-        <player-interface v-bind="{player, sources, source, container, release, episode, watchData}"/>
+        <player-interface v-bind="{player, sources, source, release, episode, watchData}"/>
       </template>
 
     </component>
@@ -101,16 +101,6 @@
        */
       component() {
         return __get(this.components, this.type) || null;
-      },
-
-
-      /**
-       * Get container element
-       *
-       * @return HTMLDivElement
-       */
-      container() {
-        return this.$refs.container.$el;
       },
 
 

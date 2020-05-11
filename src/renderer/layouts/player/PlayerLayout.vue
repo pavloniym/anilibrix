@@ -1,8 +1,26 @@
 <template>
-  <div class="player__container">
-    <slot/>
-  </div>
+    <div class="player__container">
+      <slot/>
+    </div>
 </template>
+
+<script>
+
+  import screenfull from 'screenfull'
+
+  export default {
+
+    destroyed() {
+
+      // Exit fullscreen if video view is exited
+      if(screenfull.isEnabled) {
+        screenfull.exit();
+      }
+    }
+
+  }
+
+</script>
 
 
 <style scoped lang="scss">
