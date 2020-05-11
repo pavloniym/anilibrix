@@ -117,7 +117,8 @@
           params: {
             key: `${this.release.id}:${episode.id}`,
             release: this.release,
-            episode: episode
+            episode: episode,
+            fromStart: true,
           }
         })
       }

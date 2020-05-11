@@ -17,13 +17,7 @@ export default class {
         .where('userId', '==', userId)
         .get();
 
-      return collection.docs.map(doc => {
-        return {
-          _id: doc.id,
-          ...doc.data()
-        }
-
-      });
+      return collection.docs.map(doc => ({_id: doc.id, ...doc.data()}));
     }
   }
 

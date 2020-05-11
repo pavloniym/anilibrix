@@ -2,7 +2,7 @@
   <v-menu bottom left>
 
     <template v-slot:activator="{ on }">
-      <v-btn icon @click.stop="on.click">
+      <v-btn icon color="grey darken-2" @click.stop="on.click">
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </template>
@@ -59,7 +59,7 @@
 
 
     methods: {
-      ...mapActions('firebase/watch', {
+      ...mapActions('app/watch', {
         _setWatchData: 'setWatchData',
         _removeWatchData: 'removeWatchData'
       }),

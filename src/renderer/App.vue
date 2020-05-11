@@ -6,7 +6,7 @@
 
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
-      <div v-else id="container">
+      <div v-else id="container" class="fill-height">
         <v-fade-transition mode="out-in" appear>
           <router-view :key="$route.name"/>
         </v-fade-transition>
@@ -57,6 +57,7 @@
 
     methods: {
       ...mapActions('releases', {_getReleases: 'getReleases'}),
+      ...mapActions('app/watch', {_getWatchData: 'getWatchData'}),
 
 
       /**
@@ -87,13 +88,9 @@
 
 
       // Get latest releases
-      this._getReleases();
-
-
       // Get watch data
-      /*this.$store
-        .dispatchPromise('firebase/watch/getWatchData')
-        .catch(() => this.$toasted.error('Произошла ошибка при синхронизации данных с облаком'));*/
+      this._getReleases();
+      this._getWatchData();
     },
 
 

@@ -8,7 +8,10 @@
       @error="toBlank">
 
       <template v-slot:default="{player}">
-        <player-interface v-bind="{player, sources, source, release, episode, watchData}"/>
+        <player-interface
+          v-bind="{player, sources, source, release, episode}"
+          :key="`interface:${key}`">
+        </player-interface>
       </template>
 
     </component>
@@ -32,6 +35,10 @@
     episode: {
       type: Object,
       default: null
+    },
+    fromStart: {
+      type: Boolean,
+      default: false
     }
   };
 
@@ -42,7 +49,6 @@
       return {
         time: 0,
         duration: 0,
-        watchData: null
       }
     },
     components: {
@@ -52,6 +58,26 @@
     computed: {
       ...mapState('app/settings/player', {_quality: s => s.quality}),
 
+      /**
+       * Get instance data
+       *
+       * @return Object
+       */
+      instance() {
+        return {
+          release: this.release,
+          episode: this.episode,
+        }
+      },
+
+      /**
+       * Get key string
+       *
+       * @return String
+       */
+      key() {
+        return `${this.release.id}:${this.episode.id}`
+      },
 
       /**
        * Get sources list
@@ -129,7 +155,9 @@
     },
 
     methods: {
-      ...mapActions('firebase/watch', {_setWatchData: 'setWatchData'}),
+      ...mapActions('app/watch', {_setWatchData: 'setWatchData'}),
+      ...mapActions('app/settings/player', {_setQuality: 'setQuality'}),
+
 
       /**
        * Go to blank page
@@ -142,54 +170,88 @@
 
 
       /**
+       * Get watch data from store
+       *
+       * @param release
+       * @param episode
+       * @return Object|null
+       */
+      getWatchData({release, episode}) {
+        return this.$store.getters['app/watch/getWatchData']({releaseId: release.id, episodeId: episode.id});
+      },
+
+
+      /**
        * Set episode watch data
        *
        * @return
        */
-      setWatchData() {
-        if (this.release && this.episode) {
-          this._setWatchData({
-            time: this.time,
-            quality: this.source.alias,
-            releaseId: this.release.id,
-            episodeId: this.episode.id,
-            percentage: this.percentage
-          })
+      setWatchData({release = null, episode = null, time = 0, percentage = 0} = {}) {
+        if (release && episode) {
+          this._setWatchData({time, percentage, releaseId: release.id, episodeId: episode.id})
         }
       }
     },
 
 
-    created() {
-      if (this.release && this.episode) {
-
-        // Get watch data
-        this.watchData = this.$store.getters['firebase/watch/getData']({
-          releaseId: this.release.id,
-          episodeId: this.episode.id,
-        });
-
-        // Set last watch time
-        this.time = this.watchData ? this.watchData.time : 0;
-      }
-    },
-
     beforeDestroy() {
 
       // Set episode watch data before destroy
-      this.setWatchData();
+      this.setWatchData({
+        time: this.time,
+        release: this.release,
+        episode: this.episode,
+        percentage: this.percentage
+      });
     },
 
+
     watch: {
+
+      instance: {
+        deep: true,
+        immediate: true,
+        handler({release, episode}, prev) {
+
+          // Set previous episode watch data after change
+          if (prev) {
+            this.setWatchData({
+              time: this.time,
+              release: prev.release,
+              episode: prev.episode,
+              percentage: this.percentage
+            });
+          }
+
+          if (release && episode) {
+
+            // Get watch data
+            // Set last watch time
+            const watch = this.getWatchData({release, episode});
+            this.time = watch && this.fromStart === false ? watch.time : 0;
+
+          }
+        }
+      },
+
 
       source: {
         deep: true,
         immediate: true,
         handler(source) {
+          if (source) {
 
-          // Go to blank screen if no source is provided
-          if (!source) {
+            // If settings quality not matched with current
+            // Update settings quality and set it as current quality
+            if (source.alias === this._quality) {
+              this._setQuality(source.alias)
+            }
+
+          } else {
+
+            // Go to blank screen if no source provided
             this.toBlank({message: 'Нет данных для воспроизведения', referer: 'source'})
+
           }
         }
       },
@@ -198,9 +260,16 @@
       part: {
         immediate: true,
         handler() {
-          this.setWatchData();
+
+          // Set watch data then playing part is updated
+          this.setWatchData({
+            time: this.time,
+            release: this.release,
+            episode: this.episode,
+            percentage: this.percentage
+          });
         }
-      }
+      },
 
     }
 

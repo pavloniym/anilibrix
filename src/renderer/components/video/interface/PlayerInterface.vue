@@ -5,7 +5,7 @@
 
 
         <interface-headline v-bind="{player, release, episode}" class="pb-2"/>
-        <interface-timeline v-bind="{player, watchData}"/>
+        <interface-timeline v-bind="{player}"/>
 
 
         <v-row no-gutters justify="center">
@@ -20,7 +20,7 @@
             <interface-play v-bind="{player, release, episode}"/>
           </v-col>
           <v-col align-self="center">
-            <interface-controls v-bind="{player, source, sources, container}"/>
+            <interface-controls v-bind="{player, source, sources}"/>
           </v-col>
         </v-row>
 
@@ -61,19 +61,11 @@
       type: Object,
       default: null
     },
-    container: {
-      type: HTMLDivElement,
-      default: null
-    },
     release: {
       type: Object,
       default: null
     },
     episode: {
-      type: Object,
-      default: null
-    },
-    watchData: {
       type: Object,
       default: null
     }
@@ -130,7 +122,7 @@
         this.showInterface();
 
         // Add some event listeners
-        window.addEventListener('mousemove', this.showInterface, true);
+        window.addEventListener('mousemove', this.showInterface);
       })
     },
 

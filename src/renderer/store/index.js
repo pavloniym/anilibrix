@@ -8,7 +8,6 @@ import {createPersistedState, createSharedMutations} from 'vuex-electron'
 import app from './app'
 import search from './search'
 import release from './release'
-import firebase from './firebase'
 import releases from './releases'
 import notifications from './notifications'
 
@@ -20,7 +19,6 @@ const modules = {
   app,
   search,
   release,
-  firebase,
   releases,
   notifications
 };

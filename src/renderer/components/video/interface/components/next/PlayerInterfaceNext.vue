@@ -52,9 +52,10 @@
     props,
     data() {
       return {
-        visible: false,
         value: 0,
         timer: null,
+        visible: false,
+        isEnded: false,
         interval: null,
       }
     },
@@ -89,6 +90,15 @@
     methods: {
 
       /**
+       * Get next episode
+       *
+       * @return Object|null
+       */
+      getNextEpisode() {
+        return this.next;
+      },
+
+      /**
        * Start autoplay
        *
        * @return void
@@ -111,8 +121,9 @@
        */
       cancelAutoplay() {
 
-        this.visible = false;
         this.value = 0;
+        this.visible = false;
+        this.isEnded = false;
 
         if (this.timer) clearTimeout(this.timer);
         if (this.interval) clearInterval(this.interval);
@@ -147,6 +158,7 @@
               key: `${this.release.id}:${this.next.id}`,
               release: this.release,
               episode: this.next,
+              fromStart: true,
             }
           });
         }
@@ -155,19 +167,18 @@
     },
 
 
-    mounted() {
+    created() {
       if (this._autoplayNext === true) {
 
         // Start autoplay component on player ended
         // Or to release page on player ended and no next episode
-        this.player.on('ended', () => {
-          this.next ? this.startAutoplay() : this.toRelease();
-        });
-
+        this.player.on('ended', () => this.isEnded = true);
 
         // Cancel autoplay
         this.player.on('seeking', () => {
-          if (this.visible) this.cancelAutoplay();
+          if (this.visible) {
+            this.cancelAutoplay();
+          }
         })
       }
     },
@@ -178,6 +189,16 @@
       if (this.timer) clearTimeout(this.timer);
       if (this.interval) clearInterval(this.interval);
 
+    },
+
+    watch: {
+      isEnded: {
+        handler(isEnded) {
+          if (isEnded === true) {
+            this.next ? this.startAutoplay() : this.toRelease();
+          }
+        }
+      }
     }
 
   }

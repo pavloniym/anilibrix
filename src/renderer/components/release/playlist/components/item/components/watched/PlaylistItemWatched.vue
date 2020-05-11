@@ -32,7 +32,7 @@
         if (this.release && this.episode) {
 
           // Get getters from store
-          const getWatchData = this.$store.getters['firebase/watch/getWatchData'];
+          const getWatchData = this.$store.getters['app/watch/getWatchData'];
 
           // Get watch data for provided release
           return getWatchData({

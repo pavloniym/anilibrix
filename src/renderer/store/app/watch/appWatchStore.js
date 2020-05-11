@@ -99,10 +99,11 @@ export default {
      * Get watch data from storage
      *
      * @param commit
-     * @param rootState
-     * @return {Promise<void>}
+     * @param getters
+     * @param dispatch
+     * @return void
      */
-    getWatchData: async ({commit, getters}) => {
+    getWatchData: async ({commit, getters, dispatch}) => {
       if (getters.useFirebase === true) {
         try {
 
@@ -111,9 +112,8 @@ export default {
             .forEach(watch => commit('merge', {k: `${watch.releaseId}.${watch.episodeId}`, v: watch}))
 
         } catch (error) {
-
-          // TODO: show error toast
-          throw error;
+          dispatch('app/setError', 'Произошла ошибка при загрузке данных о просмотренных релизах из облачного хранилища', {root: true});
+          dispatch('app/setError', error, {root: true});
         }
       }
     },
@@ -132,7 +132,7 @@ export default {
      * @param isSeen
      * @return {Promise<void>}
      */
-    setWatchData: async ({commit, getters}, {time = 0, quality = null, releaseId = null, episodeId = -1, percentage = 0} = {}) => {
+    setWatchData: async ({commit, getters, dispatch}, {time = 0, quality = null, releaseId = null, episodeId = -1, percentage = 0} = {}) => {
       if (releaseId && episodeId > -1) {
 
         // Create episode watch data object
@@ -153,9 +153,8 @@ export default {
             await FirebaseWatchProxy.setWatchData({data, userId: getters.userId, releaseId, episodeId});
 
           } catch (error) {
-
-            // TODO: show error toast
-            throw error;
+            dispatch('app/setError', 'Произошла ошибка при сохранении данных в облачном хранилище', {root: true});
+            dispatch('app/setError', error, {root: true});
           }
         }
 
@@ -174,33 +173,19 @@ export default {
      */
     setWatchPackageData: async ({dispatch, getters}, {releaseId = null, episodes = []} = {}) => {
       if (releaseId && episodes && episodes.length > 0) {
+        await Promise.allSettled(
+          episodes.map(episode => {
 
-        try {
+            const episodeId = episode.id;
+            const watchData = getters.getWatchData({releaseId, episodeId});
 
-          await Promise.allSettled(
-            episodes.map(episode => {
+            // Check if episode is not marked as seen
+            if (!watchData || watchData.isSeen !== true) {
+              dispatch('setWatchData', {releaseId, episodeId, percentage: 100})
+            }
 
-              const episodeId = episode.id;
-              const watchData = getters.getWatchData({releaseId, episodeId});
-
-              // Check if episode is not marked as seen
-              if (!watchData || watchData.isSeen !== true) {
-                dispatch('setWatchData', {
-                  releaseId,
-                  episodeId,
-                  percentage: 100,
-                })
-              }
-
-            })
-          );
-
-        } catch (error) {
-
-          // TODO: show error toast
-          throw error;
-
-        }
+          })
+        );
       }
     },
 
@@ -210,11 +195,12 @@ export default {
      *
      * @param commit
      * @param getters
+     * @param dispatch
      * @param releaseId
      * @param episodeId
      * @return {Promise<void>}
      */
-    removeWatchData: async ({commit, getters}, {releaseId = null, episodeId = -1} = {}) => {
+    removeWatchData: async ({commit, getters, dispatch}, {releaseId = null, episodeId = -1} = {}) => {
       if (releaseId && episodeId > -1) {
 
         // Remove from local storage
@@ -228,9 +214,8 @@ export default {
             await FirebaseWatchProxy.removeWatchData({userId: getters.userId, releaseId, episodeId});
 
           } catch (error) {
-
-            // TODO: show error toast
-            throw error;
+            dispatch('app/setError', 'Произошла ошибка во время удаления данных из облачного хранилища', {root: true});
+            dispatch('app/setError', error, {root: true});
           }
         }
       }
@@ -248,20 +233,11 @@ export default {
      */
     removeWatchPackageData: async ({dispatch, getters}, {releaseId = null, episodes = []} = {}) => {
       if (releaseId && episodes && episodes.length > 0) {
-
-        try {
-
-          await Promise.allSettled(
-            episodes.map(episode => {
-              dispatch('removeWatchData', {releaseId, episodeId: episode.id})
-            })
-          );
-
-        } catch (error) {
-
-          // TODO: show error toast
-          throw error;
-        }
+        await Promise.allSettled(
+          episodes.map(episode => {
+            dispatch('removeWatchData', {releaseId, episodeId: episode.id})
+          })
+        );
       }
     },
 

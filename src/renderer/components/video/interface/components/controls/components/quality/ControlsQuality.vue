@@ -15,8 +15,11 @@
         :input-value="s.alias === source.alias"
         :key="k"
         @click="_setQuality(s.alias)">
+
+        <!-- Icon -->
         <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
 
+        <!-- Label -->
         <v-list-item-content>
           <v-list-item-subtitle v-text="s.label"/>
         </v-list-item-content>
@@ -81,7 +84,7 @@
        * @param source
        * @return {string|null}
        */
-      getSourceCaption(source) {
+      /*getSourceCaption(source) {
 
         const type = __get(source, 'type');
         if (type === 'torrent') {
@@ -91,16 +94,16 @@
           // const seeders = __get(source, 'payload.torrent.seeders') || 0;
           // const leechers = __get(source, 'payload.torrent.leechers') || 0;
 
-          /*return [`С: ${seeders}`, `Л: ${leechers}`, ]
+          /!*return [`С: ${seeders}`, `Л: ${leechers}`, ]
             .filter(item => item)
-            .join(' • ')*/
+            .join(' • ')*!/
 
           return length ? prettyBytes(length) : null;
         }
 
         return null;
 
-      }
+      }*/
 
     },
   }

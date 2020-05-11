@@ -4,7 +4,7 @@
     class="timeline"
     :min="0"
     :max="isReady ? duration : 100"
-    :value="isReady ? player.currentTime : (watchData ? watchData.percentage : 0)"
+    :value="isReady ? time : 0"
     :disabled="isReady === false"
     @change="player.currentTime = $event">
   </v-slider>
@@ -12,14 +12,8 @@
 
 <script>
 
-  import __get from "lodash/get";
-
   const props = {
     player: {
-      type: Object,
-      default: null
-    },
-    watchData: {
       type: Object,
       default: null
     }
@@ -30,31 +24,28 @@
     data() {
       return {
         isReady: false,
+        time: 0,
         duration: 0,
-        isSeeking: false,
       }
     },
 
-    mounted() {
+    created() {
+
+      // Get time
+      this.player.on('timeupdate', () => {
+        this.time = this.player.currentTime;
+      });
 
       // Get duration on initial start
-      this.player.on('progress', e => {
-        this.duration = __get(e, 'detail.plyr.duration');
+      this.player.on('progress', () => {
+        this.duration = this.player.duration;
       });
+
 
       // Set loaded metadata ready state
       // Start playing on seeking event
-      this.player.on('canplay', () => this.isReady = true);
+      this.player.on('playing', () => this.isReady = true);
       this.player.on('seeking', () => this.player.play());
-    },
-
-    watch: {
-      currentTime: {
-        immediate: true,
-        handler(time) {
-          this.$emit('time', time);
-        }
-      }
     }
   }
 </script>

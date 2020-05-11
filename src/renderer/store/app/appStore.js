@@ -1,3 +1,4 @@
+import watch from './watch'
 import account from './account'
 import settings from './settings'
 
@@ -6,6 +7,7 @@ import {generalMutations} from "@utils/store/mutations";
 export default {
   namespaced: true,
   modules: {
+    watch,
     account,
     settings
   },
