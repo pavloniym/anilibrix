@@ -121,7 +121,7 @@
             fromStart: true,
           }
         })
-      }
+      },
 
     },
 
@@ -141,7 +141,8 @@
       this.player.on('emptied', () => this.isBuffering = true);
       this.player.on('stalled', () => this.isBuffering = true);
 
-    },
+    }
+
   }
 </script>
 

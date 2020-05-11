@@ -30,6 +30,7 @@
     <interface-next v-bind="{player, release, episode}"/>
     <interface-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
     <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
+    <interface-playback v-bind="{player}" />
     <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
 
   </div>
@@ -45,6 +46,7 @@
   import InterfaceTimeline from './components/timeline'
   import InterfaceControls from './components/controls'
   import InterfacePlaylist from './components/playlist'
+  import InterfacePlayback from './components/playback'
   import InterfaceBuffering from './components/buffering'
 
 
@@ -83,6 +85,7 @@
       InterfaceTimeline,
       InterfaceControls,
       InterfacePlaylist,
+      InterfacePlayback,
       InterfaceBuffering,
     },
     data() {
