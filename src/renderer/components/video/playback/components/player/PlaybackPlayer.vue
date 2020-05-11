@@ -46,8 +46,8 @@
           autoplay: false,
           controls: false,
           keyboard: {
-            focused: true,
-            global: true
+            global: false,
+            focused: false,
           },
           resetOnEnd: false,
           fullscreen: {enabled: false},
