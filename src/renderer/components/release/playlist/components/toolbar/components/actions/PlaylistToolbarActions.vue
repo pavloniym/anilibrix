@@ -55,7 +55,7 @@
 
 
     methods: {
-      ...mapActions('firebase/watch', {
+      ...mapActions('app/watch', {
         _setWatchPackageData: 'setWatchPackageData',
         _removeWatchPackageData: 'removeWatchPackageData'
       }),

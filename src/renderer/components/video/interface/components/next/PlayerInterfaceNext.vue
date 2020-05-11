@@ -195,7 +195,7 @@
       isEnded: {
         handler(isEnded) {
           if (isEnded === true) {
-            this.next ? this.startAutoplay() : this.toRelease();
+            this.next ? this.startAutoplay() : null;
           }
         }
       }

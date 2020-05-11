@@ -49,6 +49,7 @@
             focused: true,
             global: true
           },
+          resetOnEnd: false,
           fullscreen: {enabled: false},
           clickToPlay: true,
         },
