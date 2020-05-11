@@ -89,7 +89,7 @@
       this.isMounted = true;
 
       // Set keyboard events
-      document.addEventListener('keydown', this.handleKeyboardEvent, true);
+      document.addEventListener('keydown', this.handleKeyboardEvent);
     },
 
 
