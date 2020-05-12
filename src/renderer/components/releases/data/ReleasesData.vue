@@ -1,19 +1,19 @@
 <template>
-  <v-layout class="release__data" v-if="loading || release">
+  <v-layout v-if="loading || release" class="release__data" :key="release ? release.id : null">
     <div :style="{width: '5%'}"></div>
     <div :style="{width: '90%'}">
 
       <!-- Loading -->
       <template v-if="loading">
         <div class="release__skeleton">
-          <v-skeleton-loader type="heading" class="mt-4"/>
-          <v-skeleton-loader type="text" class="mt-4" width="130"/>
-          <v-skeleton-loader type="text" class="mt-1" width="220"/>
-          <v-skeleton-loader type="button" class="mt-2" width="75"/>
-          <v-skeleton-loader type="paragraph" class="mt-4"/>
+          <v-skeleton-loader boilerplate type="heading" class="mt-4" />
+          <v-skeleton-loader boilerplate type="text" class="mt-4" width="130"/>
+          <v-skeleton-loader boilerplate type="text" class="mt-1" width="220"/>
+          <v-skeleton-loader boilerplate type="button" class="mt-2" width="75"/>
+          <v-skeleton-loader boilerplate type="paragraph" class="mt-4"/>
           <v-layout class="mt-2">
-            <v-skeleton-loader type="button" width="120" class="mr-1"/>
-            <v-skeleton-loader type="button" width="85"/>
+            <v-skeleton-loader boilerplate type="button" width="120" class="mr-1"/>
+            <v-skeleton-loader boilerplate type="button" width="85"/>
           </v-layout>
         </div>
       </template>

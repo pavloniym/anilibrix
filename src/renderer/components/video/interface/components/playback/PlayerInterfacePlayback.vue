@@ -61,7 +61,7 @@
        */
       handleKeyboardEvent(e) {
         if (e.which === 32) {
-          
+
           if (this.player.playing) this.showButton({icon: 'mdi-pause'});
           if (this.player.paused) this.showButton({icon: 'mdi-play'});
 

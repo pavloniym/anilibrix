@@ -25,6 +25,7 @@
         <v-layout class="release__slider__skeleton">
           <v-skeleton-loader
             v-for="i in 14"
+            boilerplate
             type="image"
             :key="i"
             :width="width"
