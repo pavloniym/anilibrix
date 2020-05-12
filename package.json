@@ -96,6 +96,7 @@
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vue-toasted": "^1.1.27",
+    "vue-yandex-metrika": "^1.8.3",
     "vuetify": "^2.2.8",
     "vuex": "^3.0.1",
     "vuex-electron": "MaverickMartyn/vuex-electron",

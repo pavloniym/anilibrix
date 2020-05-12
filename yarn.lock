@@ -11806,6 +11806,11 @@ vue-toasted@^1.1.27:
   resolved "https://registry.yarnpkg.com/vue-toasted/-/vue-toasted-1.1.27.tgz#ce0a74b875f90c2e4a9e163cce6d5fc37d78a07c"
   integrity sha512-GVbwInwnqkVxQ4GU/XYeQt1e0dAXL8sF5Hr1H/coCBbYUan5xP0G2mEz/HRDf1lt73rFQAN/bJcLTOKkqiM6tg==
 
+vue-yandex-metrika@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/vue-yandex-metrika/-/vue-yandex-metrika-1.8.3.tgz#f27d71f385ae3f20544a4d295865a2e446293c60"
+  integrity sha512-WD/2CPM5NWXg7JdmgfiOq8J5QbidrCDoDAaE0JfE32wceY56ewzERVGnOGS/Tfx+HvarGc+oJsBbZxl/e2BWTA==
+
 vue@^2.5.16:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
