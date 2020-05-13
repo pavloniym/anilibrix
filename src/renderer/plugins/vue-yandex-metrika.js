@@ -48,7 +48,7 @@ export default {
     Vue.use(VueYandexMetrika, {
       id,
       router,
-      env: 'production', //process.env.NODE_ENV,
+      env: process.env.NODE_ENV,
       options: {
         params: getParams({store}),
         webvisor: true,

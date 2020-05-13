@@ -30,7 +30,8 @@ let rendererConfig = {
   devtool: 'hidden-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js'),
-    webtorrent: path.join(__dirname, '../src/renderer/webtorrent.js')
+    webtorrent: path.join(__dirname, '../src/renderer/webtorrent.js'),
+    chromecast: path.join(__dirname, '../src/renderer/chromecast.js'),
   },
   externals: [
     ...Object.keys(dependencies || {})
@@ -128,6 +129,7 @@ let rendererConfig = {
     new VueLoaderPlugin(),
     new VuetifyLoaderPlugin(),
     new MiniCssExtractPlugin({filename: 'styles.css'}),
+
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['renderer'],
@@ -153,6 +155,7 @@ let rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
+
     new HtmlWebpackPlugin({ // this is extra one
       filename: 'webtorrent.html', // used by BrowserWindow.loadUrl
       chunks: ['webtorrent'], // should be the same with entry point name
@@ -178,6 +181,34 @@ let rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false,
     }),
+
+
+    new HtmlWebpackPlugin({ // this is extra one
+      filename: 'chromecast.html', // used by BrowserWindow.loadUrl
+      chunks: ['chromecast'], // should be the same with entry point name
+      template: path.resolve(__dirname, '../src/chromecast.ejs'),
+      templateParameters(compilation, assets, options) {
+        return {
+          compilation: compilation,
+          webpack: compilation.getStats().toJson(),
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            files: assets,
+            options: options
+          },
+          process,
+        };
+      },
+      minify: {
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+      },
+      nodeModules: process.env.NODE_ENV !== 'production'
+        ? path.resolve(__dirname, '../node_modules')
+        : false,
+    }),
+
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ],

@@ -18,6 +18,9 @@
         <v-icon size="24">mdi-fullscreen</v-icon>
       </v-btn>
 
+      <v-btn icon large @click="chromecast().show()">
+        <v-icon size="20">mdi-cast</v-icon>
+      </v-btn>
 
     </template>
   </v-layout>
@@ -41,6 +44,10 @@
     },
     source: {
       type: Object,
+      default: null
+    },
+    chromecast: {
+      type: Function,
       default: null
     }
   };

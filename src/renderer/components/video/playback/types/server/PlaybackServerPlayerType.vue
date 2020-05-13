@@ -3,6 +3,7 @@
     v-bind="options"
     @error="$emit('error', $event)"
     @update:time="$emit('update:time', $event)"
+    @update:payload="$emit('update:payload', $event)"
     @update:duration="$emit('update:duration', $event)">
 
     <template v-slot="context">

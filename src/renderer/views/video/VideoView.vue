@@ -5,11 +5,12 @@
       :is="component"
       :time.sync="time"
       :duration.sync="duration"
-      @error="toBlank">
+      @error="toBlank"
+      @update:payload="payload = $event">
 
       <template v-slot:default="{player}">
         <player-interface
-          v-bind="{player, sources, source, release, episode}"
+          v-bind="{player, sources, source, release, episode, payload}"
           :key="`interface:${key}`">
         </player-interface>
       </template>
@@ -48,6 +49,7 @@
     data() {
       return {
         time: 0,
+        payload: null,
         duration: 0,
       }
     },

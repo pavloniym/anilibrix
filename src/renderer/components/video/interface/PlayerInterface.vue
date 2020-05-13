@@ -9,6 +9,8 @@
 
 
         <v-row no-gutters justify="center">
+
+          <!-- Links -->
           <v-col align-self="center">
             <interface-links
               v-bind="{release, source}"
@@ -16,11 +18,18 @@
               :playlist="() => $refs.playlist">
             </interface-links>
           </v-col>
+
+          <!-- Play -->
           <v-col align-self="center">
             <interface-play v-bind="{player, release, episode}"/>
           </v-col>
+
+          <!-- Controls -->
           <v-col align-self="center">
-            <interface-controls v-bind="{player, source, sources}"/>
+            <interface-controls
+              v-bind="{player, source, sources}"
+              :chromecast="() => $refs.chromecast">
+            </interface-controls>
           </v-col>
         </v-row>
 
@@ -30,8 +39,9 @@
     <interface-next v-bind="{player, release, episode}"/>
     <interface-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
     <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
-    <interface-playback v-bind="{player}" />
+    <interface-playback v-bind="{player}"/>
     <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
+    <interface-chromecast v-bind="{player, payload}" ref="chromecast"/>
 
   </div>
 </template>
@@ -48,6 +58,7 @@
   import InterfacePlaylist from './components/playlist'
   import InterfacePlayback from './components/playback'
   import InterfaceBuffering from './components/buffering'
+  import InterfaceChromecast from './components/chromecast'
 
 
   const props = {
@@ -70,6 +81,10 @@
     episode: {
       type: Object,
       default: null
+    },
+    payload: {
+      type: [String, Object],
+      default: null,
     }
   };
 
@@ -87,6 +102,7 @@
       InterfacePlaylist,
       InterfacePlayback,
       InterfaceBuffering,
+      InterfaceChromecast,
     },
     data() {
       return {

@@ -8,19 +8,24 @@ sentry({store, source: 'main'});
 
 import AppTray from './utils/tray'
 import {app, ipcMain as ipc} from 'electron'
-import {AppWindowMain, AppWindowTorrent} from './utils/windows'
+import {AppWindowMain, AppWindowTorrent, AppWindowChromecast} from './utils/windows'
 
 // Create tray icon
 const appTray = new AppTray();
 
 // Set windows communications
 const communications = [
-  {channel: 'torrent:clear', window: () => AppWindowMain, payload: (payload) => payload},
-  {channel: 'torrent:error', window: () => AppWindowMain, payload: (payload) => payload},
-  {channel: 'torrent:start', window: () => AppWindowTorrent, payload: (payload) => payload},
-  {channel: 'torrent:server', window: () => AppWindowMain, payload: (payload) => payload},
-  {channel: 'torrent:destroy', window: () => AppWindowTorrent, payload: (payload) => payload},
-  {channel: 'torrent:download', window: () => AppWindowMain, payload: (payload) => payload},
+  {channel: 'torrent:clear', window: () => AppWindowMain},
+  {channel: 'torrent:error', window: () => AppWindowMain},
+  {channel: 'torrent:start', window: () => AppWindowTorrent},
+  {channel: 'torrent:server', window: () => AppWindowMain},
+  {channel: 'torrent:destroy', window: () => AppWindowTorrent},
+  {channel: 'torrent:download', window: () => AppWindowMain},
+
+
+  {channel: 'chromecast:devices:items', window: () => AppWindowMain}, // send found devices from chromecast server to main app window
+  {channel: 'chromecast:devices:request', window: () => AppWindowChromecast}, // make request for devices items to chromecast server,
+  {channel: 'chromecast:play', window: () => AppWindowChromecast}, // play on chromecast device
 ];
 
 
@@ -38,6 +43,7 @@ app.on('ready', () => {
   // Create windows
   AppWindowMain.createWindow({title: 'Aniibrix'}).loadUrl();
   AppWindowTorrent.createWindow({title: 'Aniibrix Torrent'}).loadUrl();
+  AppWindowChromecast.createWindow({title: 'AniLibrix Chromecast Server'}).loadUrl();
 
 
   // Create tray icon
@@ -59,7 +65,7 @@ app.on('ready', () => {
   // Init windows communications
   communications.forEach(communication => {
     ipc.on(communication.channel, (e, payload) =>
-      communication.window().sendToWindow(communication.channel, communication.payload(payload))
+      communication.window().sendToWindow(communication.channel, payload)
     )
   });
 

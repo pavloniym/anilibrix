@@ -68,6 +68,7 @@
     "@sentry/integrations": "^5.15.5",
     "axios": "^0.19.2",
     "axios-https-proxy-fix": "^0.17.1",
+    "chromecast-api": "^0.3.3",
     "electron-promise-ipc": "^2.0.1",
     "electron-updater": "^4.2.2",
     "firebase": "^7.14.2",

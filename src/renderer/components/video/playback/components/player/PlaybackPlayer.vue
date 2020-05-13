@@ -70,10 +70,18 @@
        */
       async handlePayload({source}) {
         if (this.processPayload) {
+
+          // Get payload
+          const payload = await this.getPayload(source);
+
+          // Emit payload to parent
+         this.$emit('update:payload', payload);
+
+          // Process payload
           this.processPayload({
+            payload,
             time: this.time,
             player: this.player,
-            payload: await this.getPayload(source),
             playing: this.player.playing,
           });
         }
