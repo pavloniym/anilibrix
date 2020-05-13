@@ -1,15 +1,28 @@
 import path from 'path'
+
 import store from '@store'; // eslint-disable-line
-import AppSentry from './utils/sentry'
+import sentry from './utils/sentry'
 
 // Enable Sentry.io electron handler
-AppSentry({store, source: 'main'});
+sentry({store, source: 'main'});
 
 import AppTray from './utils/tray'
 import {app, ipcMain as ipc} from 'electron'
 import {AppWindowMain, AppWindowTorrent} from './utils/windows'
 
+// Create tray icon
 const appTray = new AppTray();
+
+// Set windows communications
+const communications = [
+  {channel: 'torrent:clear', window: () => AppWindowMain, payload: (payload) => payload},
+  {channel: 'torrent:error', window: () => AppWindowMain, payload: (payload) => payload},
+  {channel: 'torrent:start', window: () => AppWindowTorrent, payload: (payload) => payload},
+  {channel: 'torrent:server', window: () => AppWindowMain, payload: (payload) => payload},
+  {channel: 'torrent:destroy', window: () => AppWindowTorrent, payload: (payload) => payload},
+  {channel: 'torrent:download', window: () => AppWindowMain, payload: (payload) => payload},
+];
+
 
 /**
  * Set `__static` path to static files in production
@@ -21,10 +34,6 @@ if (process.env.NODE_ENV !== 'development') {
 
 
 app.on('ready', () => {
-
-  // Set data folder
-  //appFolders.setDataFolder();
-
 
   // Create windows
   AppWindowMain.createWindow({title: 'Aniibrix'}).loadUrl();
@@ -46,16 +55,6 @@ app.on('ready', () => {
 
     });
 
-
-  // Set windows communications
-  const communications = [
-    {channel: 'torrent:clear', window: () => AppWindowMain, payload: (payload) => payload},
-    {channel: 'torrent:error', window: () => AppWindowMain, payload: (payload) => payload},
-    {channel: 'torrent:start', window: () => AppWindowTorrent, payload: (payload) => payload},
-    {channel: 'torrent:server', window: () => AppWindowMain, payload: (payload) => payload},
-    {channel: 'torrent:destroy', window: () => AppWindowTorrent, payload: (payload) => payload},
-    {channel: 'torrent:download', window: () => AppWindowMain, payload: (payload) => payload},
-  ];
 
   // Init windows communications
   communications.forEach(communication => {
