@@ -1,0 +1,14 @@
+@import "plugins/vuetify/style";
+
+html, body {
+  overflow-y: hidden !important;
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #505050;
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+    background-color: #bfbfbf;
+  }
+}

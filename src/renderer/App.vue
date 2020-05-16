@@ -10,9 +10,7 @@
       </div>
     </v-fade-transition>
 
-    <!-- System components -->
     <app-errors/>
-    <app-notifications/>
 
   </v-app>
 </template>
@@ -21,8 +19,6 @@
 
   import AppLoader from '@components/app/loader'
   import AppErrors from '@components/app/errors'
-  import AppSystemBar from "@components/app/bars/system";
-  import AppNotifications from '@components/app/notifications/system'
 
   import {mapState, mapActions} from 'vuex'
 
@@ -31,8 +27,6 @@
     components: {
       AppErrors,
       AppLoader,
-      AppSystemBar,
-      AppNotifications
     },
     data() {
       return {
@@ -110,22 +104,3 @@
 
   }
 </script>
-
-
-<style lang="scss">
-
-  html, body {
-    overflow-y: hidden !important;
-
-    ::-webkit-scrollbar-thumb {
-      background-color: #505050;
-    }
-
-    ::-webkit-scrollbar {
-      width: 9px;
-      background-color: #bfbfbf;
-    }
-
-  }
-
-</style>

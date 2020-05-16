@@ -112,7 +112,7 @@ export default {
      * @param parameters
      * @return {Promise<{names: {ru: string, original: *}, id: *}[]>}
      */
-    searchReleases: async ({dispatch, state, commit}, {searchQuery, parameters}) => {
+    searchReleases: async ({dispatch, state, commit}, searchQuery) => {
       try {
 
         // Cancel previous request if it was stored
@@ -143,6 +143,9 @@ export default {
         dispatch('app/setError', 'Произошла ошибка при поиске релизов', {root: true});
         dispatch('app/setError', error, {root: true});
       }
+
+      // Return empty
+      return [];
     },
 
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="release" :class="{loading}">
+  <div class="release">
 
     <!-- Toolbar -->
     <app-tool-bar no-update>
@@ -27,15 +27,7 @@
   import {AppToolBar} from '@components/app/bars'
   import AppSettings from '@components/app/settings'
 
-  const props = {
-    loading: {
-      type: Boolean,
-      default: true,
-    }
-  };
-
   export default {
-    props,
     components: {
       AppToolBar,
       AppSettings,
@@ -60,16 +52,12 @@
 <style lang="scss" scoped>
 
   .release {
-    top: 32px;
+    top: 0;
     width: 100%;
     bottom: 0;
     position: absolute;
     padding-bottom: 32px;
     overflow-y: scroll;
-
-    &.loading {
-      overflow-y: hidden;
-    }
   }
 
 

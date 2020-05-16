@@ -1,5 +1,17 @@
 <template>
-  <div>
+
+  <!-- Loading -->
+  <div v-if="loading">
+    <v-layout>
+      <v-skeleton-loader boilerplate type="button" height="48" width="100%" class="mr-1"/>
+      <v-skeleton-loader boilerplate type="button" height="48" width="72" class="mr-1"/>
+      <v-skeleton-loader boilerplate type="button" height="48" width="72"/>
+    </v-layout>
+    <v-skeleton-loader boilerplate type="list-item-two-line@15" class="mt-2"/>
+  </div>
+
+
+  <div v-else-if="loading === false && release">
 
     <!-- Toolbar -->
     <playlist-toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
@@ -30,6 +42,10 @@
   import {mapState} from 'vuex'
 
   const props = {
+    loading: {
+      type: Boolean,
+      default: true,
+    },
     release: {
       type: Object,
       default: null

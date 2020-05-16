@@ -157,20 +157,9 @@
 <style lang="scss" scoped>
 
   .release {
-
     &__data {
       max-height: 300px;
       user-select: none;
-    }
-
-    &__skeleton {
-      ::v-deep {
-
-        .v-skeleton-loader__button {
-          width: 100%;
-        }
-
-      }
     }
   }
 

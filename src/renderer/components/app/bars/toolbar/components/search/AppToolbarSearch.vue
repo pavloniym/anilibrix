@@ -11,7 +11,7 @@
       <span>Поиск релизов</span>
     </v-tooltip>
 
-    <v-expand-x-transition appear mode="out-in">
+    <v-expand-x-transition>
       <v-autocomplete
         v-if="visible"
         v-bind="{items, loading}"
@@ -22,17 +22,17 @@
         hide-no-data
         return-object
         ref="search"
-        class="mx-2"
         item-value="id"
         item-text="names.ru"
-        :style="{width: '300px', maxWidth: '300px'}"
+        placeholder="Поиск релиза ..."
+        :style="{width: '400px', maxWidth: '400px'}"
         :append-icon="null"
         :allow-overflow="false"
         :search-input.sync="search"
         @input="toRelease">
 
         <template v-slot:item="{item}">
-          <v-list-item-content :style="{width: '250px', maxWidth: '250px'}">
+          <v-list-item-content :style="{width: '350px', maxWidth: '350px'}">
             <v-list-item-title v-text="item.names.ru"/>
             <v-list-item-subtitle v-text="item.names.original"/>
           </v-list-item-content>
@@ -46,16 +46,11 @@
 
 <script>
 
-
-  import axios from 'axios'
-  import AnilibriaProxy from '@proxies/anilibria'
-
   export default {
     data() {
       return {
         items: [],
         search: null,
-        request: null,
         loading: false,
         visible: false,
       }
@@ -73,21 +68,9 @@
       async getReleases(searchQuery) {
 
         // Set loading state
-        this.loading = true;
-
-        // Cancel previous request if it was stored
-        if (this.request !== null) this.request.cancel();
-
-        // Abort previous request if exists
-        this.request = axios.CancelToken.source();
-
         // Get releases from server
-        this.items = await this.$store.dispatchPromise('releases/searchReleases', {
-          searchQuery,
-          parameters: {
-           // cancelToken: this.request.token
-          }
-        });
+        this.loading = true;
+        this.items = await this.$store.dispatchPromise('releases/searchReleases', searchQuery);
 
         // Reset loading
         this.loading = false;
@@ -112,7 +95,12 @@
             params: {
               releaseId: release.id,
             }
-          })
+          });
+
+
+          // Reset items
+          this.visible = false;
+          this.items = [];
         }
       }
 

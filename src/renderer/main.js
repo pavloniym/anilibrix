@@ -14,6 +14,10 @@ import '@plugins/plyr'
 import '@plugins/firebase'
 import '@plugins/vue-toasted'
 
+// Import styles
+import '@assets/scss/style.scss'
+
+
 // Import entry component
 import App from './App'
 

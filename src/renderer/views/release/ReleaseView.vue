@@ -1,21 +1,20 @@
 <template>
-  <release-layout :loading="_loading">
+  <release-layout>
 
-      <!-- Loader -->
-      <template v-if="_loading">
-        <v-skeleton-loader
-          v-for="(loader, k) in loaders"
-          class="px-4 mt-4"
-          :key="k"
-          :type="loader">
-        </v-skeleton-loader>
-      </template>
+    <!-- Card -->
+    <release-card
+      v-bind="{loading}"
+      :release="_release">
+    </release-card>
 
-      <!-- Release -->
-      <template v-else>
-        <release-card :release="_release"/>
-        <release-playlist :episodes="_episodes" :release="_release" class="mt-6" @episode="toVideo"/>
-      </template>
+    <!-- Playlist -->
+    <release-playlist
+      v-bind="{loading}"
+      class="mt-6"
+      :episodes="_episodes"
+      :release="_release"
+      @episode="toVideo">
+    </release-playlist>
 
   </release-layout>
 </template>
@@ -46,20 +45,20 @@
 
     data() {
       return {
-        loaders: [
-          'heading',
-          'sentences',
-          'button',
-          'text@12',
-          'heading',
-          'list-item-two-line@10'
-        ],
+        loading: false,
+        /* loaders: [
+           'heading',
+           'sentences',
+           'button',
+           'text@12',
+           'heading',
+           'list-item-two-line@10'
+         ],*/
       }
     },
 
     computed: {
       ...mapState('release', {
-        _loading: s => s.loading,
         _release: s => s.data,
         _episodes: s => __get(s, 'data.episodes') || [],
       })
@@ -102,11 +101,13 @@
     watch: {
       releaseId: {
         immediate: true,
-        handler(releaseId) {
+        async handler(releaseId) {
 
           // Update if release data changed
           if (this._release === null || this._release.id !== parseInt(releaseId)) {
-            this._getRelease(releaseId);
+            this.loading = true;
+            await this.$store.dispatchPromise('release/getRelease', releaseId);
+            this.loading = false;
           }
         }
       }
