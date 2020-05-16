@@ -43,7 +43,10 @@ let mainConfig = {
     path: path.join(__dirname, '../dist/electron')
   },
   plugins: [
-    new DotenvPlugin(),
+    new DotenvPlugin({
+      systemvars: true,
+      allowEmptyValues: true,
+    }),
     new webpack.NoEmitOnErrorsPlugin(),
   ],
   resolve: {

@@ -125,7 +125,10 @@ let rendererConfig = {
     __filename: process.env.NODE_ENV !== 'production'
   },
   plugins: [
-    new DotenvPlugin(),
+    new DotenvPlugin({
+      systemvars: true,
+      allowEmptyValues: true,
+    }),
     new VueLoaderPlugin(),
     new VuetifyLoaderPlugin(),
     new MiniCssExtractPlugin({filename: 'styles.css'}),
