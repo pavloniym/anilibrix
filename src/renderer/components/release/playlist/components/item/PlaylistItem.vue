@@ -1,5 +1,5 @@
 <template>
-  <v-list-item two-line @click="$emit('click')">
+  <v-list-item two-line ref="container" @click="$emit('click')" >
 
     <v-list-item-content>
       <v-list-item-title v-text="episode.title"/>
@@ -18,7 +18,7 @@
         </v-layout>
 
         <!-- Actions -->
-        <item-actions v-bind="{episode, release}" />
+        <item-actions v-bind="{episode, release, container}" />
 
       </v-layout>
     </v-list-item-action>
@@ -55,6 +55,15 @@
       ItemWatched,
       ItemPlaying,
       ItemActions,
+    },
+    data() {
+      return {
+        container: null
+      }
+    },
+
+    mounted() {
+      this.container = this.$refs.container.$el;
     }
   }
 </script>

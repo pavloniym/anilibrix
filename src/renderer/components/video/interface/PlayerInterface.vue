@@ -132,6 +132,17 @@
       },
 
 
+      /**
+       * Handle keyboard event
+       *
+       * @param e
+       * @return void
+       */
+      handleKeyboardEvent(e) {
+        if (e.which === 39 || e.which === 37) this.showInterface();
+      },
+
+
     },
 
     mounted() {
@@ -141,13 +152,15 @@
         this.showInterface();
 
         // Add some event listeners
-        window.addEventListener('mousemove', this.showInterface);
+        document.addEventListener('mousemove', this.showInterface);
+        document.addEventListener('keydown', this.handleKeyboardEvent);
       })
     },
 
 
     destroyed() {
-      window.removeEventListener('mousemove', this.showInterface);
+      document.removeEventListener('mousemove', this.showInterface);
+      document.removeEventListener('keydown', this.handleKeyboardEvent);
     }
 
   }

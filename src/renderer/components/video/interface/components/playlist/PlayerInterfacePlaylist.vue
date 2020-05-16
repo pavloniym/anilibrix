@@ -3,7 +3,7 @@
       v-model="visible"
       absolute
       temporary
-      width="350"
+      width="400"
       :style="{zIndex: 100}">
 
       <v-card>
@@ -22,8 +22,8 @@
 
 <script>
 
-  import ReleasePlaylist from '@components/release/playlist'
   import __get from 'lodash/get'
+  import ReleasePlaylist from '@components/release/playlist'
 
   const props = {
     release: {
@@ -44,7 +44,7 @@
 
     data() {
       return {
-        visible: false
+        visible: false,
       }
     },
 
@@ -69,7 +69,7 @@
        * @return void
        */
       show() {
-        this.visible = true
+        this.visible = true;
       },
 
       /**

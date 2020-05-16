@@ -2,13 +2,14 @@
 
 html, body {
   overflow-y: hidden !important;
+}
 
-  ::-webkit-scrollbar-thumb {
-    background-color: #505050;
-  }
 
-  ::-webkit-scrollbar {
-    width: 9px;
-    background-color: #bfbfbf;
-  }
+::-webkit-scrollbar-thumb {
+  background-color: #505050;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  background-color: rgb(106, 106, 106);
 }

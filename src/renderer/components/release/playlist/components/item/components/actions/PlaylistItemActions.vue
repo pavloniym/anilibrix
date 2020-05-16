@@ -1,5 +1,5 @@
 <template>
-  <v-menu bottom left>
+  <v-menu left bottom :attach="container">
 
     <template v-slot:activator="{ on }">
       <v-btn icon color="grey darken-2" @click.stop="on.click">
@@ -7,12 +7,21 @@
       </v-btn>
     </template>
 
-    <v-list dense>
-      <v-list-item v-for="(item, i) in actions" :key="i" :disabled="loading" @click="item.action">
-        <v-list-item-content>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+    <v-list dense class="grey darken-4">
+      <template v-for="(item, k) in actions">
+        <v-divider v-if="k > 0" :key="`d:${k}`"/>
+        <v-list-item :key="k" :disabled="loading" @click="item.action">
+
+          <!-- Icon -->
+          <v-icon class="mr-2" color="grey">{{item.icon}}</v-icon>
+
+          <!-- Item -->
+          <v-list-item-content>
+            <v-list-item-title>{{item.title}}</v-list-item-title>
+          </v-list-item-content>
+
+        </v-list-item>
+      </template>
     </v-list>
 
   </v-menu>
@@ -30,6 +39,10 @@
     episode: {
       type: Object,
       default: null
+    },
+    container: {
+      type: HTMLDivElement,
+      default: null,
     }
   };
 
@@ -45,10 +58,12 @@
       actions() {
         return [
           {
+            icon: 'mdi-check',
             title: 'Пометить серию как просмотренную',
             action: this.setWatchData,
           },
           {
+            icon: 'mdi-close',
             title: 'Снять отметку о просмотре',
             action: this.removeWatchData,
           }
@@ -87,9 +102,6 @@
         await this._removeWatchData({releaseId: this.release.id, episodeId: this.episode.id});
         this.loading = false;
       },
-
-
-
     }
 
   }

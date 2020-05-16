@@ -11,7 +11,8 @@
   </div>
 
 
-  <div v-else-if="loading === false && release">
+  <!-- Playlist -->
+  <div v-else-if="loading === false && release" id="playlist">
 
     <!-- Toolbar -->
     <playlist-toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
@@ -44,7 +45,7 @@
   const props = {
     loading: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     release: {
       type: Object,

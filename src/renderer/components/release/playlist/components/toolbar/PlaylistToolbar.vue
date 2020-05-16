@@ -6,7 +6,7 @@
 
     <!-- Sort -->
     <toolbar-sort class="mx-1"/>
-    <toolbar-actions v-bind="{release}"/>
+    <toolbar-actions v-bind="{release, container}"/>
 
   </v-layout>
 </template>
@@ -24,6 +24,10 @@
     },
     release: {
       type: Object,
+      default: null
+    },
+    container: {
+      type: HTMLDivElement,
       default: null
     }
   };

@@ -10,16 +10,18 @@
 
       <!-- PIP -->
       <v-btn icon large @click="player.pip = true">
-        <v-icon size="24">mdi-picture-in-picture-bottom-right</v-icon>
+        <v-icon size="22">mdi-picture-in-picture-bottom-right</v-icon>
       </v-btn>
+
+      <!-- Chromecast -->
+      <v-btn icon large @click="chromecast().show()">
+        <v-icon size="22">mdi-cast</v-icon>
+      </v-btn>
+
 
       <!-- Fullscreen -->
       <v-btn icon large @click="toggleFullscreen">
-        <v-icon size="24">mdi-fullscreen</v-icon>
-      </v-btn>
-
-      <v-btn icon large @click="chromecast().show()">
-        <v-icon size="20">mdi-cast</v-icon>
+        <v-icon size="28">mdi-fullscreen</v-icon>
       </v-btn>
 
     </template>
