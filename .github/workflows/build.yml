@@ -17,13 +17,19 @@ jobs:
     env:
       ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
       ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_DATABSE_URL: ${{ secrets.FIREBASE_DATABSE_URL }}
+      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+      FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+      FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+      YANDEX_TRACKING_ID: ${{ secrets.YANDEX_TRACKING_ID }}
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
-
-      - name: Check package version
-        uses: technote-space/package-version-check-action@v1
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -62,27 +68,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.github_token }}
-          #release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        env:
-
-          # Build env variables
-          # Sentry.io path
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-
-          # Firebase storage configuration
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_DATABSE_URL: ${{ secrets.FIREBASE_DATABSE_URL }}
-          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-
-          # Yandex metrika tracking id
-          YANDEX_TRACKING_ID: ${{ secrets.YANDEX_TRACKING_ID }}
-
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
