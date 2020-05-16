@@ -1,8 +1,9 @@
 name: Build
 
 on:
-  release:
-    types: [prereleased]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   release:
