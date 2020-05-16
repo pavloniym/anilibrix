@@ -17,13 +17,17 @@ export default class Anilibria extends Proxy {
    *
    * @return {Promise}
    */
-  async getReleases() {
+  async getReleases(parameters) {
 
     const data = this._getFormDataObject({query: 'list', perPage: 14});
     const response = await this.submit(
       'POST',
       this._getHost() + this.endpoint,
-      {data, headers: data.getHeaders()}
+      {
+        data,
+        headers: data.getHeaders(),
+        ...parameters
+      }
     );
 
     return this._parseResponse(response.data);
@@ -70,7 +74,7 @@ export default class Anilibria extends Proxy {
    * @param torrentUrl
    * @return {Promise<unknown>}
    */
-  async getTorrentFile({url}) {
+  async getTorrent({url}) {
     if (url) {
       return await this.submit('GET', this._getHost() + url, {responseType: 'arraybuffer'});
     }
@@ -84,13 +88,17 @@ export default class Anilibria extends Proxy {
    * @param parameters
    * @return {Promise<unknown>}
    */
-  async searchReleasesByName(searchQuery, parameters) {
+  async searchReleases(searchQuery, parameters) {
 
     const data = this._getFormDataObject({query: 'search', search: searchQuery});
     const response = await this.submit(
       'POST',
       this._getHost() + this.endpoint,
-      {...parameters, data, headers: data.getHeaders()}
+      {
+        data,
+        headers: data.getHeaders(),
+        ...parameters,
+      }
     );
 
     return this._parseResponse(response.data);
@@ -205,4 +213,4 @@ export default class Anilibria extends Proxy {
     }
   }
 
-}
+};

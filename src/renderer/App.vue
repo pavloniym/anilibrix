@@ -1,9 +1,6 @@
 <template>
   <v-app>
 
-    <!-- System Bar -->
-    <app-system-bar/>
-
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
       <div v-else id="container" class="fill-height">

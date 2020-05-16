@@ -5,7 +5,7 @@
     <v-tooltip left>
       <template v-slot:activator="{on}">
         <v-btn v-on="on" icon @click="visible = !visible">
-          <v-icon>mdi-magnify</v-icon>
+          <v-icon>mdi-{{visible ? 'arrow-right' : 'magnify'}}</v-icon>
         </v-btn>
       </template>
       <span>Поиск релизов</span>
@@ -14,24 +14,25 @@
     <v-expand-x-transition appear mode="out-in">
       <v-autocomplete
         v-if="visible"
-        v-model="release"
+        v-bind="{items, loading}"
         solo
         autofocus
         no-filter
         hide-details
         hide-no-data
         return-object
+        ref="search"
+        class="mx-2"
         item-value="id"
         item-text="names.ru"
-        :items="_items"
-        :style="{width: '40vw', maxWidth: '40vw'}"
-        :loading="_loading"
+        :style="{width: '300px', maxWidth: '300px'}"
+        :append-icon="null"
         :allow-overflow="false"
         :search-input.sync="search"
-        @change="openRelease($event)">
+        @input="toRelease">
 
         <template v-slot:item="{item}">
-          <v-list-item-content :style="{width: '35vw', maxWidth: '35vw'}">
+          <v-list-item-content :style="{width: '250px', maxWidth: '250px'}">
             <v-list-item-title v-text="item.names.ru"/>
             <v-list-item-subtitle v-text="item.names.original"/>
           </v-list-item-content>
@@ -45,25 +46,53 @@
 
 <script>
 
-  import {mapActions, mapState} from 'vuex'
+
+  import axios from 'axios'
+  import AnilibriaProxy from '@proxies/anilibria'
 
   export default {
     data() {
       return {
-        visible: false,
+        items: [],
         search: null,
-        release: null,
+        request: null,
+        loading: false,
+        visible: false,
       }
-    },
-    computed: {
-      ...mapState('search', {
-        _loading: s => s.loading,
-        _items: s => s.data,
-      }),
     },
 
     methods: {
-      ...mapActions('search', ['getReleasesByName']),
+
+
+      /**
+       * Get releases
+       *
+       * @param searchQuery
+       * @return void
+       */
+      async getReleases(searchQuery) {
+
+        // Set loading state
+        this.loading = true;
+
+        // Cancel previous request if it was stored
+        if (this.request !== null) this.request.cancel();
+
+        // Abort previous request if exists
+        this.request = axios.CancelToken.source();
+
+        // Get releases from server
+        this.items = await this.$store.dispatchPromise('releases/searchReleases', {
+          searchQuery,
+          parameters: {
+           // cancelToken: this.request.token
+          }
+        });
+
+        // Reset loading
+        this.loading = false;
+      },
+
 
       /**
        * Open release view
@@ -71,14 +100,20 @@
        * @param release
        * @return void
        */
-      openRelease(release) {
-        this.$router.push({
-          name: 'release',
-          params: {
-            releaseId: release.id,
-            releaseTitle: release.names.ru,
-          }
-        })
+      toRelease(release) {
+        if (release) {
+
+          // Reset input
+          this.$refs.search.setValue(undefined);
+
+          // Go to release page
+          this.$router.push({
+            name: 'release',
+            params: {
+              releaseId: release.id,
+            }
+          })
+        }
       }
 
     },
@@ -87,10 +122,9 @@
 
       search: {
         handler(search) {
-          if (search && search.length >= 3) {
-            this.getReleasesByName(search);
-          }
+          if (search && search.length >= 3) this.getReleases(search);
         }
+
       }
     }
   }

@@ -85,7 +85,7 @@ export default class extends Transformer {
               try {
 
                 // Get blob torrent file from server
-                const response = await new AnilibriaProxy().getTorrentFile({url: torrent.url});
+                const response = await new AnilibriaProxy().getTorrent({url: torrent.url});
 
                 // Send to torrent for parsing data
                 AppWindowTorrent.sendToWindow('torrent:parse', {torrentId: torrent.id, blob: response.data});

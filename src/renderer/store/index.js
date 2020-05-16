@@ -6,7 +6,6 @@ import createPromiseAction from '@plugins/vuex-promise-action'
 import {createPersistedState, createSharedMutations} from 'vuex-electron'
 
 import app from './app'
-import search from './search'
 import release from './release'
 import releases from './releases'
 import notifications from './notifications'
@@ -17,7 +16,6 @@ Vue.use(Vuex);
 
 const modules = {
   app,
-  search,
   release,
   releases,
   notifications

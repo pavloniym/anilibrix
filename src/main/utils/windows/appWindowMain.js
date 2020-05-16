@@ -21,7 +21,7 @@ class WindowMain extends Window {
       minWidth,
       minHeight,
       show: true,
-      frame: false,
+      frame: true,
       darkTheme: true,
       useContentSize: true,
       webPreferences: {

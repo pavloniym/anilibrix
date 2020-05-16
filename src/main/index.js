@@ -1,6 +1,8 @@
 import path from 'path'
 
 import store from '@store'; // eslint-disable-line
+
+
 import sentry from './utils/sentry'
 
 // Enable Sentry.io electron handler
@@ -15,6 +17,8 @@ const appTray = new AppTray();
 
 // Set windows communications
 const communications = [
+
+  // Torrent Channels
   {channel: 'torrent:clear', window: () => AppWindowMain},
   {channel: 'torrent:error', window: () => AppWindowMain},
   {channel: 'torrent:start', window: () => AppWindowTorrent},
@@ -22,10 +26,11 @@ const communications = [
   {channel: 'torrent:destroy', window: () => AppWindowTorrent},
   {channel: 'torrent:download', window: () => AppWindowMain},
 
-
+  // Chromecast channels
   {channel: 'chromecast:devices:items', window: () => AppWindowMain}, // send found devices from chromecast server to main app window
   {channel: 'chromecast:devices:request', window: () => AppWindowChromecast}, // make request for devices items to chromecast server,
   {channel: 'chromecast:play', window: () => AppWindowChromecast}, // play on chromecast device
+
 ];
 
 

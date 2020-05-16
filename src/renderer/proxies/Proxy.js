@@ -49,7 +49,7 @@ export default class Proxy {
     try {
       return await axios.request({url, method, ...parameters, timeout: 15000})
     } catch (error) {
-      throw new Error(error.message);
+      throw error;
     }
   }
 
@@ -211,7 +211,7 @@ export default class Proxy {
       try {
         return getHttpsAgent({host, port});
       } catch (error) {
-        throw new Error(`Ошибка при создании httpsAgent: ${error.message}`);
+        throw new Error('Ошибка при создании httpsAgent: ' + error);
       }
 
     } else if (source) {
@@ -233,7 +233,7 @@ export default class Proxy {
           : null;
 
       } catch (error) {
-        throw new Error(`Ошибка при создании httpsAgent из PAC скрипта: ${error.message}`);
+        throw new Error('Ошибка при создании httpsAgent из PAC скрипта: ' + error);
       }
 
     } else {

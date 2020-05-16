@@ -1,7 +1,9 @@
 import AnilibriaProxy from '@proxies/anilibria'
 import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 
-import {generalMutations as mutations} from '@utils/store/mutations'
+import axios from 'axios'
+import __get from 'lodash/get'
+import {generalMutations} from '@utils/store/mutations'
 
 export default {
   namespaced: true,
@@ -10,9 +12,16 @@ export default {
     index: null,
     loading: false,
     datetime: null,
+    requests: {
+      getReleases: null,
+      searchReleases: null,
+    }
   },
 
-  mutations,
+  mutations: {
+    ...generalMutations
+  },
+
   actions: {
 
     /**
@@ -33,13 +42,21 @@ export default {
      * @param dispatch
      * @return {Promise<any>}
      */
-    getReleases: async ({commit, dispatch}) => {
+    getReleases: async ({commit, dispatch, state}) => {
       commit('set', {k: 'loading', v: true});
 
       try {
 
-        // Get releases
-        const data = await new AnilibriaProxy().getReleases();
+        // Cancel previous request if it was stored
+        if (state.requests.getReleases !== null) state.requests.getReleases.cancel();
+
+        // Create new request token if exists
+        commit('set', {k: 'requests.getReleases', v: axios.CancelToken.source()});
+
+        // Get releases from server
+        const data = await new AnilibriaProxy().getReleases({cancelToken: state.requests.getReleases.token});
+
+        // Transform releases
         let releases = await AnilibriaReleaseTransformer.fetchCollection(data.items);
 
         // Get posters
@@ -82,6 +99,50 @@ export default {
       }
 
       commit('set', {k: 'loading', v: false});
+    },
+
+
+    /**
+     * Search releases
+     *
+     * @param dispatch
+     * @param state
+     * @param commit
+     * @param searchQuery
+     * @param parameters
+     * @return {Promise<{names: {ru: string, original: *}, id: *}[]>}
+     */
+    searchReleases: async ({dispatch, state, commit}, {searchQuery, parameters}) => {
+      try {
+
+        // Cancel previous request if it was stored
+        if (state.requests.searchReleases !== null) state.requests.searchReleases.cancel();
+
+        // Create new request token if exists
+        commit('set', {k: 'requests.searchReleases', v: axios.CancelToken.source()});
+
+        // Get releases
+        const releases = await new AnilibriaProxy()
+          .searchReleases(searchQuery, {cancelToken: state.requests.getReleases.token});
+
+        // Transform releases
+        return (releases || [])
+          .map(release => {
+            return {
+              id: __get(release, 'id'),
+              names: {
+                ru: __get(release, ['names', 0]),
+                original: __get(release, ['names', 1])
+              }
+            }
+          })
+          .filter(release => release.id);
+
+
+      } catch (error) {
+        dispatch('app/setError', 'Произошла ошибка при поиске релизов', {root: true});
+        dispatch('app/setError', error, {root: true});
+      }
     },
 
 
