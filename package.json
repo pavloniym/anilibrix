@@ -30,7 +30,8 @@
       "build/icons/**/*"
     ],
     "publish": {
-      "provider": "github"
+      "provider": "github",
+      "releaseType": "prerelease"
     },
     "dmg": {
       "contents": [
