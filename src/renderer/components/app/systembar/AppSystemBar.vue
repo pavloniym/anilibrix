@@ -1,5 +1,5 @@
 <template>
-  <v-system-bar v-bind="{color}" window class="system-bar px-6" @dblclick.native="maximizeApp">
+  <v-system-bar v-bind="{color}" window class="system-bar" @dblclick.native="maximizeApp">
 
     <v-spacer v-if="isWindows"/>
 

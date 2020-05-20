@@ -10,14 +10,13 @@
 
 <script>
 
+  import AppToolBar from '@components/app/toolbar'
   import AppSettings from '@components/app/settings'
-  import {AppSystemBar, AppToolBar} from '@components/app/bars'
 
   export default {
     components: {
       AppToolBar,
       AppSettings,
-      AppSystemBar,
     }
   }
 </script>

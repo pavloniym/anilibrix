@@ -24,7 +24,7 @@
 
 <script>
 
-  import {AppToolBar} from '@components/app/bars'
+  import AppToolBar from '@components/app/toolbar'
   import AppSettings from '@components/app/settings'
 
   export default {
@@ -52,7 +52,7 @@
 <style lang="scss" scoped>
 
   .release {
-    top: 0;
+    top: 30px;
     width: 100%;
     bottom: 0;
     position: absolute;

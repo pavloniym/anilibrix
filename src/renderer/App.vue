@@ -1,6 +1,9 @@
 <template>
   <v-app>
 
+    <!-- System bar -->
+    <app-system-bar />
+
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
       <div v-else id="container" class="fill-height">
@@ -10,6 +13,7 @@
       </div>
     </v-fade-transition>
 
+    <!-- Errors -->
     <app-errors/>
 
   </v-app>
@@ -19,6 +23,7 @@
 
   import AppLoader from '@components/app/loader'
   import AppErrors from '@components/app/errors'
+  import AppSystemBar from '@components/app/systembar'
 
   import {mapState, mapActions} from 'vuex'
 
@@ -27,6 +32,7 @@
     components: {
       AppErrors,
       AppLoader,
+      AppSystemBar,
     },
     data() {
       return {
