@@ -1,16 +1,12 @@
 import path from 'path'
-
 import store from '@store'; // eslint-disable-line
-
-
 import sentry from './utils/sentry'
-
-// Enable Sentry.io electron handler
-sentry({store, source: 'main'});
-
 import AppTray from './utils/tray'
 import {app, ipcMain as ipc} from 'electron'
 import {AppWindowMain, AppWindowTorrent, AppWindowChromecast} from './utils/windows'
+
+// Enable Sentry.io electron handler
+sentry({store, source: 'main'});
 
 // Create tray icon
 const appTray = new AppTray();
@@ -27,9 +23,9 @@ const communications = [
   {channel: 'torrent:download', window: () => AppWindowMain},
 
   // Chromecast channels
+  {channel: 'chromecast:play', window: () => AppWindowChromecast}, // play on chromecast device
   {channel: 'chromecast:devices:items', window: () => AppWindowMain}, // send found devices from chromecast server to main app window
   {channel: 'chromecast:devices:request', window: () => AppWindowChromecast}, // make request for devices items to chromecast server,
-  {channel: 'chromecast:play', window: () => AppWindowChromecast}, // play on chromecast device
 
 ];
 

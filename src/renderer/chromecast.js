@@ -1,7 +1,13 @@
+// CHROMECAST
 // Get chromecast api
-import {ipcRenderer as ipc} from "electron";
 
+import sentry from './../main/utils/sentry'
+import AppStore from "@store/index";
+import {ipcRenderer as ipc} from "electron";
 const ChromecastAPI = require('chromecast-api');
+
+// Enable Sentry.io electron handler
+sentry({store: AppStore, source: 'chromecast'});
 
 // Create chromecast client
 const client = new ChromecastAPI();
