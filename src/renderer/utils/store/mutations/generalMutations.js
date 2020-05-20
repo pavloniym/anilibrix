@@ -21,6 +21,18 @@ export default {
    * @param v
    * @return {*}
    */
-  push: (s, {k, v}) => s[k].push(v)
+  push: (s, {k, v}) => s[k].push(v),
+
+
+  /**
+   * Unshift value to array in store with provided key
+   *
+   * @param s
+   * @param k
+   * @param v
+   * @return {*}
+   */
+  unshift: (s, {k, v}) => s[k].unshift(v),
+
 
 }

@@ -80,7 +80,7 @@
             title: 'Синхронизировать данные с облаком',
             value: this._firebase_sync ? 'Да' : 'Нет',
             action: () => this.$refs['updatesTimeout'][0].showDialog(),
-          },
+          }
         ]
       },
 

@@ -30,8 +30,8 @@ export default class extends Transformer {
       year: this.get(release, 'year'),
       type: this.get(release, 'type'),
       names: {
-        ru: stripHtml(this.get(release, 'names.0')),
-        original: stripHtml(this.get(release, 'names.1'))
+        ru: this._stripHtml(this.get(release, 'names.0')),
+        original: this._stripHtml(this.get(release, 'names.1'))
       },
       voices: this.get(release, 'voices') || [],
       genres: this.get(release, 'genres') || [],
@@ -41,7 +41,7 @@ export default class extends Transformer {
       },
       datetime: this._getReleaseDatetime(release),
       episodes: await AnilibriaReleaseEpisodeTransformer.fetch(release),
-      description: stripHtml(this.get(release, 'description')),
+      description: this._stripHtml(this.get(release, 'description')),
     }
   }
 
@@ -62,5 +62,17 @@ export default class extends Transformer {
       system,
       human
     }
+  }
+
+
+  /**
+   * Strip html tags
+   *
+   * @param value
+   * @return {*}
+   * @private
+   */
+  static _stripHtml(value) {
+    return value ? stripHtml(value) : null;
   }
 }

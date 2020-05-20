@@ -11,11 +11,10 @@
 
 
     <!-- Posters -->
-
     <v-slide-group
+      v-bind="{value}"
       mandatory
       center-active
-      :value="value"
       :style="{width: '90%'}"
       :show-arrows="false"
       @change="$emit('input', $event)">
@@ -39,35 +38,33 @@
 
       <!-- Slider Items -->
       <template v-else>
-        <v-slide-item
-          v-slot:default="{ active, toggle }"
-          v-for="release in releases"
-          :key="release.id">
-          <v-card
-            width="175"
-            class="black"
-            height="250"
-            :class="{primary: active}"
-            @click="toggle"
-            @dblclick="toEpisode(release)">
-            <v-img
-              v-if="release.poster.image"
-              eager
-              ratio="0.7"
-              class="black"
+        <template v-for="(release, k) in releases">
+          <v-slide-item v-slot:default="{ active, toggle }" :key="k">
+            <v-card
               width="175"
+              class="black"
               height="250"
-              max-width="175"
-              max-height="250"
-              :src="release.poster.image"
-              :key="`poster:${release.id}`"
-              :class="{'elevation-16': active}">
-              <div v-if="!active" class="fill-height" :style="{background: 'black', opacity: .75}"></div>
-            </v-img>
-          </v-card>
-        </v-slide-item>
+              :class="{primary: active}"
+              @click="toggle"
+              @dblclick="toEpisode(release)">
+              <v-img
+                v-if="release && release.poster && release.poster.image"
+                eager
+                ratio="0.7"
+                class="black"
+                width="175"
+                height="250"
+                max-width="175"
+                max-height="250"
+                :src="release.poster.image"
+                :key="`poster:${release.id}`"
+                :class="{'elevation-16': active}">
+                <div v-if="!active" class="fill-height" :style="{background: 'black', opacity: .75}"></div>
+              </v-img>
+            </v-card>
+          </v-slide-item>
+        </template>
       </template>
-
 
     </v-slide-group>
 
