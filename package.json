@@ -1,6 +1,6 @@
 {
   "name": "anilibrix",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "author": "AniLibria",
   "description": "AniLibrix - AniLibria desktop app",
   "license": null,
@@ -71,6 +71,7 @@
     "axios-https-proxy-fix": "^0.17.1",
     "chromecast-api": "^0.3.3",
     "electron-promise-ipc": "^2.0.1",
+    "electron-store": "^5.1.1",
     "electron-updater": "^4.2.2",
     "firebase": "^7.14.2",
     "firebase-admin": "^8.11.0",
@@ -101,7 +102,8 @@
     "vue-yandex-metrika": "^1.8.3",
     "vuetify": "^2.2.8",
     "vuex": "^3.0.1",
-    "vuex-electron": "MaverickMartyn/vuex-electron",
+    "vuex-electron": "^1.0.3",
+    "vuex-persistedstate": "^3.0.1",
     "webtorrent": "^0.107.17"
   },
   "devDependencies": {

@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Storage from 'electron-store'
 
 import {getInitialState} from '@utils/store/state'
 import createPromiseAction from '@plugins/vuex-promise-action'
-import {createPersistedState, createSharedMutations} from 'vuex-electron'
+import {createSharedMutations} from 'vuex-electron'
+import createPersistedState from "vuex-persistedstate";
+
 
 import app from './app'
 import release from './release'
@@ -21,16 +24,23 @@ const modules = {
   notifications
 };
 
+// Create new persistent storage
+const storage = new Storage();
+
 const debug = process.env.NODE_ENV !== 'production';
 const store = new Vuex.Store({
   modules,
   plugins: [
     createPromiseAction(),
     createPersistedState({
-      invertIgnored: true,
-      ignoredPaths: [ // not ignore, save
-        'app',
-      ],
+      key: 'anilibrix',
+      paths: ['app'],
+      storage: {
+        name: 'storage',
+        getItem: (key) => storage.get(key),
+        setItem: (key, value) => storage.set(key, value),
+        removeItem: (key) => storage.delete(key),
+      }
     }),
     createSharedMutations()
   ],
