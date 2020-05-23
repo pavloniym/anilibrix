@@ -7,13 +7,13 @@ import createPromiseAction from '@plugins/vuex-promise-action'
 import {createSharedMutations} from 'vuex-electron'
 import createPersistedState from "vuex-persistedstate";
 
-
 import app from './app'
 import release from './release'
 import releases from './releases'
 import notifications from './notifications'
 
 import __merge from 'lodash/merge'
+import __throttle from 'lodash/throttle'
 
 Vue.use(Vuex);
 
@@ -24,8 +24,8 @@ const modules = {
   notifications
 };
 
-// Create new persistent storage
-const storage = new Storage();
+// Create storage instance
+const storage = new Storage({name: 'anilibrix'});
 
 const debug = process.env.NODE_ENV !== 'production';
 const store = new Vuex.Store({
@@ -36,11 +36,10 @@ const store = new Vuex.Store({
       key: 'anilibrix',
       paths: ['app'],
       storage: {
-        name: 'storage',
         getItem: (key) => storage.get(key),
-        setItem: (key, value) => storage.set(key, value),
-        removeItem: (key) => storage.delete(key),
-      }
+        setItem: (key, value) => __throttle(() => storage.set(key, value), 1000),
+        removeItem: (key) => __throttle(() => storage.delete(key), 1000),
+      },
     }),
     createSharedMutations()
   ],

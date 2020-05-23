@@ -14,9 +14,9 @@
       </v-btn>
 
       <!-- Chromecast -->
-      <v-btn icon large @click="chromecast().show()">
+      <!--<v-btn icon large @click="chromecast().show()">
         <v-icon size="22">mdi-cast</v-icon>
-      </v-btn>
+      </v-btn>-->
 
       <!-- Fullscreen -->
       <v-btn icon large @click="toggleFullscreen">

@@ -1,6 +1,6 @@
 {
   "name": "anilibrix",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "AniLibria",
   "description": "AniLibrix - AniLibria desktop app",
   "license": null,
@@ -84,6 +84,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "node-cron": "^2.0.3",
+    "node-localstorage": "^2.1.6",
     "object-hash": "^2.0.3",
     "pac-resolver": "^4.0.0",
     "parse-torrent": "^7.0.1",

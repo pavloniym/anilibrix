@@ -40,6 +40,7 @@
 
   import ExitDialog from './dialogs/exit'
   import CacheDialog from './dialogs/cache'
+  import {ipcRenderer as ipc} from 'electron'
 
   export default {
     data() {
@@ -57,6 +58,10 @@
        */
       settings() {
         return [
+          {
+            title: 'Отладка приложения',
+            action: () => ipc.send('devtools'),
+          },
           {
             title: 'Сбросить кеш приложения',
             action: () => this.$refs.cache[0].showDialog(),

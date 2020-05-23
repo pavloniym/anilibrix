@@ -4,6 +4,7 @@
 import sentry from './../main/utils/sentry'
 import AppStore from "@store/index";
 import {ipcRenderer as ipc} from "electron";
+
 const ChromecastAPI = require('chromecast-api');
 
 // Enable Sentry.io electron handler
@@ -22,10 +23,20 @@ const store = {
 client.on('device', device => store.devices.push(device));
 
 
-// Get found chromecast devices
+/**
+ * Get found chromecast devices
+ *
+ */
 const getDevices = () => ipc.send('chromecast:devices:items', store.devices);
 
 
+/**
+ * Play on device
+ *
+ * @param device
+ * @param src
+ * @param options
+ */
 const playOnDevice = ({device, src, options = null} = {}) => {
 
   // Search for device from local store

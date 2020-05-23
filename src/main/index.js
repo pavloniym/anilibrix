@@ -38,7 +38,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\') // eslint-disable-line
 }
 
-
+app.on('window-all-closed', () => app.quit())
 app.on('ready', () => {
 
   // Create windows
@@ -72,8 +72,10 @@ app.on('ready', () => {
 
 
   // Open devtools
-  ipc.on('devtools:main', () => AppWindowMain.getWindow().webContents.openDevTools());
-  ipc.on('devtools:torrent', () => AppWindowTorrent.getWindow().webContents.openDevTools());
-  ipc.on('devtools:chromecast', () => AppWindowChromecast.getWindow().webContents.openDevTools());
+  ipc.on('devtools', () => {
+    AppWindowMain.getWindow().webContents.openDevTools();
+    AppWindowTorrent.getWindow().webContents.openDevTools();
+    AppWindowChromecast.getWindow().webContents.openDevTools();
+  });
 
 });

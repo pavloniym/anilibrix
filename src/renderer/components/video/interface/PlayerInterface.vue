@@ -152,15 +152,15 @@
         this.showInterface();
 
         // Add some event listeners
-        window.addEventListener('mousemove', this.showInterface);
-        window.addEventListener('keydown', this.handleKeyboardEvent);
+        document.getElementById('container').addEventListener('mousemove', this.showInterface);
+        document.getElementById('container').addEventListener('keydown', this.handleKeyboardEvent);
       })
     },
 
 
     destroyed() {
-      window.removeEventListener('mousemove', this.showInterface);
-      window.removeEventListener('keydown', this.handleKeyboardEvent);
+      document.getElementById('container').removeEventListener('mousemove', this.showInterface);
+      document.getElementById('container').removeEventListener('keydown', this.handleKeyboardEvent);
     }
 
   }
@@ -171,7 +171,7 @@
   .interface {
     width: 100%;
     bottom: 0;
-    z-index: 10;
+    z-index: 1000;
     position: absolute;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 50%, rgba(255, 255, 255, 0) 100%);
     user-select: none;
