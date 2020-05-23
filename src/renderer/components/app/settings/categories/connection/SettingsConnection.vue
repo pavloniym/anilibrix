@@ -12,11 +12,12 @@
     <v-card>
       <v-list dense>
         <template v-for="(item, k) in settings">
+          <v-divider v-if="k > 0" :key="`d:${k}`" />
           <v-list-item :key="k" @click="item.action">
             <v-list-item-content>
               <v-list-item-title v-text="item.title"/>
             </v-list-item-content>
-            <v-list-item-action>
+            <v-list-item-action class="text-right">
               <v-list-item-subtitle v-text="item.value"/>
             </v-list-item-action>
           </v-list-item>

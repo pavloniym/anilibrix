@@ -1,52 +1,54 @@
 <template>
-  <v-layout align-center justify-start>
+  <v-layout align-center justify-start ref="links">
+    <template v-if="isMounted">
 
-    <!-- Releases -->
-    <v-tooltip right>
-      <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large @click="toReleases">
-          <v-icon size="24">mdi-view-column</v-icon>
-        </v-btn>
-      </template>
-      <span>К списку релизов</span>
-    </v-tooltip>
-
-
-    <!-- Release -->
-    <v-tooltip right>
-      <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large @click="toRelease">
-          <v-avatar size="24">
-            <img :src="release.poster.image">
-          </v-avatar>
-        </v-btn>
-      </template>
-      <span>{{release.names.ru}}</span>
-    </v-tooltip>
+      <!-- Releases -->
+      <v-tooltip right :attach="$refs.links">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large @click="toReleases">
+            <v-icon size="24">mdi-view-column</v-icon>
+          </v-btn>
+        </template>
+        <span>К списку релизов</span>
+      </v-tooltip>
 
 
-    <!-- Playlist -->
-    <v-tooltip right>
-      <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large @click="playlist().show()">
-          <v-icon size="24">mdi-playlist-play</v-icon>
-        </v-btn>
-      </template>
-      <span>Плейлист</span>
-    </v-tooltip>
+      <!-- Release -->
+      <v-tooltip right :attach="$refs.links">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large @click="toRelease">
+            <v-avatar size="24">
+              <img :src="release.poster.image">
+            </v-avatar>
+          </v-btn>
+        </template>
+        <span>{{release.names.ru}}</span>
+      </v-tooltip>
 
 
-    <!-- Torrent -->
-    <v-tooltip v-if="source.type === 'torrent'" right>
-      <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large @click="torrent().show()">
-          <v-icon size="20">mdi-file-table-box-multiple</v-icon>
-        </v-btn>
-      </template>
-      <span>Данные по торренту</span>
-    </v-tooltip>
+      <!-- Playlist -->
+      <v-tooltip right :attach="$refs.links">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large @click="playlist().show()">
+            <v-icon size="24">mdi-playlist-play</v-icon>
+          </v-btn>
+        </template>
+        <span>Плейлист</span>
+      </v-tooltip>
 
 
+      <!-- Torrent -->
+      <v-tooltip v-if="source.type === 'torrent'" right :attach="$refs.links">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large @click="torrent().show()">
+            <v-icon size="20">mdi-file-table-box-multiple</v-icon>
+          </v-btn>
+        </template>
+        <span>Данные по торренту</span>
+      </v-tooltip>
+
+
+    </template>
   </v-layout>
 </template>
 
@@ -74,6 +76,11 @@
 
   export default {
     props,
+    data() {
+      return {
+        isMounted: false
+      }
+    },
     methods: {
 
 
@@ -102,6 +109,12 @@
           }
         })
       }
+    },
+
+    mounted() {
+
+      // Set mounted state
+      this.isMounted = true;
 
     }
   }

@@ -38,5 +38,16 @@ export default {
      */
     setUpdatesTimeout: ({commit}, timeout) => commit('set', {k: 'updates.timeout', v: timeout}),
 
+
+
+    /**
+     * Set firebase sync
+     *
+     * @param commit
+     * @param state
+     * @return {*}
+     */
+    setFirebaseSync: ({commit}, state) => commit('set', {k: 'firebase.sync', v: state}),
+
   }
 }

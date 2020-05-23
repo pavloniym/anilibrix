@@ -12,6 +12,7 @@
     <v-card>
       <v-list dense>
         <template v-for="(item, k) in settings">
+          <v-divider v-if="k > 0" :key="`d:${k}`"/>
           <v-list-item :key="k" @click="item.action">
             <v-list-item-content>
               <v-list-item-title v-text="item.title"/>
@@ -53,9 +54,9 @@
 
     computed: {
       ...mapState('app/settings/system', {
-        _updates_enabled: s => s.updates.enabled,
-        _updates_enabled: s => s.updates.timeout,
         _firebase_sync: s => s.firebase.sync,
+        _updates_enabled: s => s.updates.enabled,
+        _updates_timeout: s => s.updates.timeout,
       }),
 
 
@@ -73,13 +74,13 @@
           },
           {
             title: 'Периодичность обновления релизов',
-            value: this._updates_enabled + ' мин',
+            value: this._updates_timeout + ' мин',
             action: () => this.$refs['updatesTimeout'][0].showDialog(),
           },
           {
             title: 'Синхронизировать данные с облаком',
             value: this._firebase_sync ? 'Да' : 'Нет',
-            action: () => this.$refs['updatesTimeout'][0].showDialog(),
+            action: () => this._setFirebaseSync(!this._firebase_sync),
           }
         ]
       },
@@ -99,7 +100,10 @@
     },
 
     methods: {
-      ...mapActions('app/settings/system', {_setUpdates: 'setUpdates'})
+      ...mapActions('app/settings/system', {
+        _setUpdates: 'setUpdates',
+        _setFirebaseSync: 'setFirebaseSync',
+      })
     },
 
     mounted() {

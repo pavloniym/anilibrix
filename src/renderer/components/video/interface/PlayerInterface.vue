@@ -152,15 +152,15 @@
         this.showInterface();
 
         // Add some event listeners
-        document.addEventListener('mousemove', this.showInterface);
-        document.addEventListener('keydown', this.handleKeyboardEvent);
+        window.addEventListener('mousemove', this.showInterface);
+        window.addEventListener('keydown', this.handleKeyboardEvent);
       })
     },
 
 
     destroyed() {
-      document.removeEventListener('mousemove', this.showInterface);
-      document.removeEventListener('keydown', this.handleKeyboardEvent);
+      window.removeEventListener('mousemove', this.showInterface);
+      window.removeEventListener('keydown', this.handleKeyboardEvent);
     }
 
   }

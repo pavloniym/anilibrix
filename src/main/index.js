@@ -70,4 +70,10 @@ app.on('ready', () => {
     )
   });
 
+
+  // Open devtools
+  ipc.on('devtools:main', () => AppWindowMain.getWindow().webContents.openDevTools());
+  ipc.on('devtools:torrent', () => AppWindowTorrent.getWindow().webContents.openDevTools());
+  ipc.on('devtools:chromecast', () => AppWindowChromecast.getWindow().webContents.openDevTools());
+
 });

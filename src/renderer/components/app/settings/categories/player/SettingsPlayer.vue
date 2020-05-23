@@ -4,19 +4,20 @@
     <div class="pa-4 caption grey--text">
       <div class="body-1">Настройки воспроизведения релизов</div>
       <div>
-        В данном разделе вы можете настроить тип воспроизведения релизов с серверов,
-        а также возможность смотреть эпизоды, используя торренты
+        В данном разделе вы можете настроить возможность смотреть релизы, используя торренты,
+        а также другие настройки воспроизведения
       </div>
     </div>
 
     <v-card ref="card">
       <v-list dense>
         <template v-for="(item, k) in settings">
+          <v-divider v-if="k > 0" :key="`d:${k}`"/>
           <v-list-item :key="k" @click="item.action">
             <v-list-item-content>
               <v-list-item-title v-text="item.title"/>
             </v-list-item-content>
-            <v-list-item-action>
+            <v-list-item-action class="text-right">
               <v-list-item-subtitle v-text="item.value"/>
             </v-list-item-action>
           </v-list-item>
@@ -92,9 +93,9 @@
 
 
     methods: {
-        ...mapActions('app/settings/player', {
-          _setAutoplayNext: 'setAutoplayNext'
-        })
+      ...mapActions('app/settings/player', {
+        _setAutoplayNext: 'setAutoplayNext'
+      })
 
     },
 

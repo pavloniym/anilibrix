@@ -1,43 +1,45 @@
 <template>
-  <v-layout align-center justify-center>
+  <v-layout align-center justify-center ref="play">
+    <template v-if="isMounted">
 
-    <!-- Previous episode -->
-    <v-tooltip left>
-      <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large :disabled="previous === null" @click="watchEpisode(previous)">
-          <v-icon>mdi-skip-previous</v-icon>
-        </v-btn>
-      </template>
-      <div v-if="previous" class="play__tooltip py-2">
-        <div class="caption pb-1">{{release.names.ru}}</div>
-        <div class="font-weight-bold">{{previous.title}}</div>
-      </div>
-    </v-tooltip>
+      <!-- Previous episode -->
+      <v-tooltip left :attach="$refs.play">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large :disabled="previous === null" @click="watchEpisode(previous)">
+            <v-icon>mdi-skip-previous</v-icon>
+          </v-btn>
+        </template>
+        <div v-if="previous" class="play__tooltip py-2">
+          <div class="caption pb-1">{{release.names.ru}}</div>
+          <div class="font-weight-bold">{{previous.title}}</div>
+        </div>
+      </v-tooltip>
 
-    <v-btn
-      icon
-      class="mx-2"
-      width="90"
-      height="90"
-      :disabled="isBuffering"
-      @click="player.togglePlay()">
-      <v-icon size="40">mdi-{{isPlaying ? 'pause': 'play'}}</v-icon>
-    </v-btn>
+      <v-btn
+        icon
+        class="mx-2"
+        width="90"
+        height="90"
+        :disabled="isBuffering"
+        @click="player.togglePlay()">
+        <v-icon size="40">mdi-{{isPlaying ? 'pause': 'play'}}</v-icon>
+      </v-btn>
 
 
-    <!-- Next episode -->
-    <v-tooltip right>
-      <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon large :disabled="next === null" @click="watchEpisode(next)">
-          <v-icon>mdi-skip-next</v-icon>
-        </v-btn>
-      </template>
-      <div v-if="next" class="play__tooltip py-2">
-        <div class="caption pb-1">{{release.names.ru}}</div>
-        <div class="font-weight-bold">{{next.title}}</div>
-      </div>
-    </v-tooltip>
+      <!-- Next episode -->
+      <v-tooltip right :attach="$refs.play">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large :disabled="next === null" @click="watchEpisode(next)">
+            <v-icon>mdi-skip-next</v-icon>
+          </v-btn>
+        </template>
+        <div v-if="next" class="play__tooltip py-2">
+          <div class="caption pb-1">{{release.names.ru}}</div>
+          <div class="font-weight-bold">{{next.title}}</div>
+        </div>
+      </v-tooltip>
 
+    </template>
   </v-layout>
 </template>
 
@@ -57,13 +59,14 @@
     release: {
       type: Object,
       default: null
-    }
+    },
   };
 
   export default {
     props,
     data() {
       return {
+        isMounted: false,
         isPlaying: false,
         isBuffering: true,
       }
@@ -141,6 +144,12 @@
       this.player.on('emptied', () => this.isBuffering = true);
       this.player.on('stalled', () => this.isBuffering = true);
 
+    },
+
+    mounted() {
+
+      // Set mounted state
+      this.isMounted = true;
     }
 
   }
@@ -150,6 +159,7 @@
 
   .play__tooltip {
     line-height: 1;
+    z-index: 1000000;
 
     > div {
       line-height: 1;
