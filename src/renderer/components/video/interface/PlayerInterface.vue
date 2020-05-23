@@ -171,7 +171,7 @@
   .interface {
     width: 100%;
     bottom: 0;
-    z-index: 1000;
+    z-index: 10;
     position: absolute;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 50%, rgba(255, 255, 255, 0) 100%);
     user-select: none;
