@@ -40,7 +40,6 @@
 
   import ExitDialog from './dialogs/exit'
   import CacheDialog from './dialogs/cache'
-  import {ipcRenderer as ipc} from 'electron'
 
   export default {
     data() {
@@ -58,14 +57,6 @@
        */
       settings() {
         return [
-          {
-            title: 'Консоль торрент-сервера',
-            action: () => ipc.send('devtools:torrent'),
-          },
-          {
-            title: 'Консоль chromecast-сервера',
-            action: () => ipc.send('devtools:chromecast'),
-          },
           {
             title: 'Сбросить кеш приложения',
             action: () => this.$refs.cache[0].showDialog(),
