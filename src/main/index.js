@@ -38,8 +38,9 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\') // eslint-disable-line
 }
 
-app.on('window-all-closed', () => app.quit())
+app.on('window-all-closed', () => app.quit());
 app.on('ready', () => {
+
 
   // Create windows
   AppWindowMain.createWindow({title: 'Aniibrix'}).loadUrl();
@@ -51,17 +52,7 @@ app.on('ready', () => {
   // Set data folder
   appTray
     .createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')})
-    .setTooltip('AniLibrix')
-    .setClickEvent(() => {
-
-      // Restore window if it is minimized
-      if (AppWindowMain.getWindow().isMinimized()) AppWindowMain.getWindow().restore();
-
-      // Focus on window
-      AppWindowMain.getWindow().focus();
-
-    });
-
+    .setTooltip('AniLibrix');
 
   // Init windows communications
   communications.forEach(communication => {
