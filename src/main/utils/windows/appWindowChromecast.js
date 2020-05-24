@@ -1,6 +1,6 @@
 import Window from './appWindow'
 
-class WindowChromecast extends Window {
+class ChromecastWindow extends Window {
 
 
   /**
@@ -35,4 +35,4 @@ class WindowChromecast extends Window {
 }
 
 
-export default new WindowChromecast();
+export default new ChromecastWindow()

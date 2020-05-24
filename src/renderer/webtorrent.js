@@ -12,11 +12,11 @@ const torrentClient = new webTorrent();
 
 import app from '@/../package'
 import sentry from './../main/utils/sentry'
-import AppStore from '@store'
+import {getStore} from '@store'
 import {ipcRenderer as ipc, remote} from 'electron'
 
 // Enable Sentry.io electron handler
-sentry({store: AppStore, source: 'torrent'});
+sentry({store: getStore(), source: 'torrent'});
 
 
 // Create local store for torrents

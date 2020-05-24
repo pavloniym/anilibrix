@@ -1,10 +1,10 @@
-import Transformer from "@transformers/Transformer";
-import AnilibriaProxy from '@proxies/anilibria'
-
 import store from '@store'
 import __camelCase from 'lodash/camelCase'
+
+import Transformer from "@transformers/Transformer";
+import AnilibriaProxy from '@proxies/anilibria'
 import {ipcMain as ipc} from 'electron'
-import {AppWindowTorrent} from '@main/utils/windows'
+import {Torrent} from '@main/utils/windows'
 
 export default class extends Transformer {
 
@@ -88,7 +88,7 @@ export default class extends Transformer {
                 const response = await new AnilibriaProxy().getTorrent({url: torrent.url});
 
                 // Send to torrent for parsing data
-                AppWindowTorrent.sendToWindow('torrent:parse', {torrentId: torrent.id, blob: response.data});
+                Torrent.sendToWindow('torrent:parse', {torrentId: torrent.id, blob: response.data});
 
                 // Listen event with torrent data to main process
                 // Resolve when event is caught

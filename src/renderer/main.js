@@ -11,7 +11,6 @@ import vuetify from '@plugins/vuetify'
 
 // Import plugins
 import '@plugins/plyr'
-import '@plugins/firebase'
 import '@plugins/vue-toasted'
 
 // Import styles

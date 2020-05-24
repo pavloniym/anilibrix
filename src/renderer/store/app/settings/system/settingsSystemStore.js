@@ -3,9 +3,6 @@ import {generalMutations} from '@utils/store/mutations'
 export default {
   namespaced: true,
   state: {
-    firebase: {
-      sync: true,
-    },
     updates: {
       enabled: true,
       timeout: 10
@@ -37,17 +34,6 @@ export default {
      * @return {*}
      */
     setUpdatesTimeout: ({commit}, timeout) => commit('set', {k: 'updates.timeout', v: timeout}),
-
-
-
-    /**
-     * Set firebase sync
-     *
-     * @param commit
-     * @param state
-     * @return {*}
-     */
-    setFirebaseSync: ({commit}, state) => commit('set', {k: 'firebase.sync', v: state}),
 
   }
 }

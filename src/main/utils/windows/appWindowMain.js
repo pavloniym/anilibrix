@@ -1,6 +1,6 @@
 import Window from './appWindow'
 
-class WindowMain extends Window {
+class MainWindow extends Window {
 
 
   /**
@@ -47,4 +47,4 @@ class WindowMain extends Window {
 }
 
 
-export default new WindowMain();
+export default new MainWindow();

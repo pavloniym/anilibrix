@@ -54,7 +54,6 @@
 
     computed: {
       ...mapState('app/settings/system', {
-        _firebase_sync: s => s.firebase.sync,
         _updates_enabled: s => s.updates.enabled,
         _updates_timeout: s => s.updates.timeout,
       }),
@@ -76,11 +75,6 @@
             title: 'Периодичность обновления релизов',
             value: this._updates_timeout + ' мин',
             action: () => this.$refs['updatesTimeout'][0].showDialog(),
-          },
-          {
-            title: 'Синхронизировать данные с облаком',
-            value: this._firebase_sync ? 'Да' : 'Нет',
-            action: () => this._setFirebaseSync(!this._firebase_sync),
           }
         ]
       },
@@ -100,10 +94,7 @@
     },
 
     methods: {
-      ...mapActions('app/settings/system', {
-        _setUpdates: 'setUpdates',
-        _setFirebaseSync: 'setFirebaseSync',
-      })
+      ...mapActions('app/settings/system', {_setUpdates: 'setUpdates'})
     },
 
     mounted() {

@@ -37,8 +37,8 @@ const store = new Vuex.Store({
       paths: ['app'],
       storage: {
         getItem: (key) => storage.get(key),
-        setItem: (key, value) => __throttle(() => storage.set(key, value), 1000),
-        removeItem: (key) => __throttle(() => storage.delete(key), 1000),
+        setItem: (key, value) => storage.set(key, value),
+        removeItem: (key) => storage.delete(key),
       },
     }),
     createSharedMutations()
@@ -55,10 +55,16 @@ const store = new Vuex.Store({
      */
     RESET_STORE(s) {
 
+      // Get app persisted states
       const account = s.app.account;
+      const watch = s.app.watch;
+
+      // Get initial state
       const state = getInitialState(modules);
 
-      this.replaceState(__merge(state, {app: {account}}));
+      // Replace store
+      // Merge initial with persisted
+      this.replaceState(__merge(state, {app: {account, watch}}));
     }
 
   },
@@ -78,9 +84,25 @@ const store = new Vuex.Store({
 });
 
 
-// Set user's id on app startup
-// Check if not set, to avoid overwrite
-store.dispatch('app/account/setUserId');
+/**
+ * Set user's id on app startup
+ *
+ * @return {Promise<any>}
+ */
+const setUserId = () => store.dispatch('app/account/setUserId');
+
+
+/**
+ * Get store
+ *
+ * @return {Store<unknown>}
+ */
+const getStore = () => store;
 
 
 export default store
+
+export {
+  getStore,
+  setUserId,
+}

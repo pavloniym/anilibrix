@@ -1,9 +1,9 @@
-import AppWindowMain from './appWindowMain'
-import AppWindowTorrent from './appWindowTorrent'
-import AppWindowChromecast from './appWindowChromecast'
+import Main from './appWindowMain'
+import Torrent from './appWindowTorrent'
+import Chromecast from './appWindowChromecast'
 
 export {
-  AppWindowMain,
-  AppWindowTorrent,
-  AppWindowChromecast
+  Main,
+  Torrent,
+  Chromecast
 }

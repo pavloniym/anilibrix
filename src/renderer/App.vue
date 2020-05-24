@@ -54,7 +54,6 @@
 
     methods: {
       ...mapActions('releases', {_getReleases: 'getReleases'}),
-      ...mapActions('app/watch', {_getWatchData: 'getWatchData'}),
 
 
       /**
@@ -83,11 +82,8 @@
       this.loading = true;
       setTimeout(() => this.loading = false, 500);
 
-
       // Get latest releases
-      // Get watch data
       this._getReleases();
-      this._getWatchData();
     },
 
 

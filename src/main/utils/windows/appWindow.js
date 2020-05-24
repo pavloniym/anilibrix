@@ -85,4 +85,14 @@ export default class Window {
     return this;
   }
 
+
+  /**
+   * Show devtools
+   *
+   * @return void
+   */
+  showDevTools() {
+    this.getWindow().webContents.openDevTools();
+  }
+
 }

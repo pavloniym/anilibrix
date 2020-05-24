@@ -1,6 +1,6 @@
 import Window from './appWindow'
 
-class WindowTorrent extends Window {
+class TorrentWindow extends Window {
 
 
   /**
@@ -34,5 +34,4 @@ class WindowTorrent extends Window {
 
 }
 
-
-export default new WindowTorrent();
+export default new TorrentWindow();

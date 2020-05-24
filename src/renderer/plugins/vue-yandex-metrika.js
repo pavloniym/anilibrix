@@ -18,7 +18,6 @@ export default {
           playerQuality: __get(store, 'state.app.settings.player.quality'),
           connectionHost: __get(store, 'state.app.settings.connection.host'),
           connectionType: __get(store, 'state.app.settings.connection.proxy.type'),
-          firebaseSyncing: __get(store, 'state.app.settings.system.firebase.sync'),
           autoRefreshUsage: __get(store, 'state.app.settings.system.updates.enabled'),
           autoRefreshTimeout: __get(store, 'state.app.settings.system.updates.timeout'),
           torrentsProcessing: __get(store, 'state.app.settings.player.torrents.process'),
