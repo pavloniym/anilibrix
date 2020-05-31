@@ -9,7 +9,6 @@ const webpack = require('webpack');
 const webpackAppConfig = require('./../webpack.config');
 
 const DotenvPlugin = require('dotenv-webpack');
-const MinifyPlugin = require('babel-minify-webpack-plugin');
 const {VueLoaderPlugin} = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -26,7 +25,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 let whiteListedModules = ['vue'];
 
 let rendererConfig = {
-  //devtool: '#cheap-module-eval-source-map',
+  // devtool: '#cheap-module-eval-source-map',
   devtool: 'hidden-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js'),
@@ -126,6 +125,7 @@ let rendererConfig = {
   },
   plugins: [
     new DotenvPlugin({
+      silent: true,
       systemvars: true,
       allowEmptyValues: true,
     }),

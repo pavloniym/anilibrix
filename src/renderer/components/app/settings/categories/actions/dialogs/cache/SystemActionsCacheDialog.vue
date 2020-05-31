@@ -3,7 +3,7 @@
     <v-dialog v-bind="{attach}" v-model="visible" hide-overlay>
       <v-card>
         <v-card-title>Кэш приложения</v-card-title>
-        <v-card-subtitle class="pt-2 pb-0">Вы действительно хотите сбросить кеш приложения?</v-card-subtitle>
+        <v-card-subtitle class="pt-2 pb-0">Вы действительно хотите сбросить кеш и настройки приложения?</v-card-subtitle>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn v-bind="{loading}" text color="red" @click="resetCache">Сбросить</v-btn>

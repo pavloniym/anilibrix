@@ -1,13 +1,18 @@
 // Main process
 import path from 'path'
+import {meta} from '@package'
 import sentry from './utils/sentry'
 import store, {setUserId} from '@store'
 import {app, ipcMain as ipc} from 'electron'
-
-import Tray from './utils/tray'
-import Menu from './utils/menu'
 import {Main, Torrent, Chromecast} from './utils/windows'
 
+// Import tray and menu
+import Tray from './utils/tray'
+import Menu from './utils/menu'
+
+// Create tray and menu controller
+const trayController = new Tray();
+const menuController = new Menu();
 
 // Communications between windows
 const communications = [
@@ -47,13 +52,13 @@ app.on('ready', async () => {
 
 
   // Create windows
-  Main.createWindow({title: 'Aniibrix'}).loadUrl();
-  Torrent.createWindow({title: 'Aniibrix Torrent'}).loadUrl();
-  Chromecast.createWindow({title: 'AniLibrix Chromecast Server'}).loadUrl();
+  Main.createWindow({title: meta.name}).loadUrl();
+  Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
+  Chromecast.createWindow({title: `${meta.name} Chromecast Server`}).loadUrl();
 
 
   // Create menu
-  new Menu()
+  menuController
     .setWindows({main: Main, torrent: Torrent, chromecast: Chromecast})
     .setWindowsEvents()
     .init();
@@ -61,9 +66,9 @@ app.on('ready', async () => {
 
   // Create tray icon
   // Set data folder
-  new Tray()
+  trayController
     .createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')})
-    .setTooltip('AniLibrix');
+    .setTooltip(meta.name);
 
 
   // Init windows communications
@@ -72,5 +77,9 @@ app.on('ready', async () => {
       communication.window().sendToWindow(communication.channel, payload)
     )
   });
+
+
+  // Show about panel
+  ipc.on('app:about', () => app.showAboutPanel());
 
 });

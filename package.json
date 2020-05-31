@@ -18,6 +18,15 @@
     "release:lin": "yarn build && electron-builder -l",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
   },
+  "meta": {
+    "name": "AniLibrix",
+    "links": {
+      "github":  "https://github.com/anilibria",
+      "donate": "https://www.anilibria.tv/pages/donate.php",
+      "telegram": "tg://resolve?domain=anilibrix",
+      "anilibria": "https://anilibria.tv"
+    }
+  },
   "build": {
     "productName": "AniLibrix",
     "artifactName": "${productName}-${os}-${version}.${ext}",

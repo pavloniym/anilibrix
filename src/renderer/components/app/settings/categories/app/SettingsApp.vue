@@ -1,53 +1,27 @@
 <template>
-  <div ref="settings">
-
-    <div class="pa-4 caption grey--text">
-      <div class="body-1">Системные команды</div>
-    </div>
-
-    <v-card>
-      <v-list dense>
-        <template v-for="(item, k) in settings">
-          <v-divider v-if="k > 0" :key="`d:${k}`"/>
-          <v-list-item :key="k" @click="item.action">
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title" :class="item.classes"/>
-            </v-list-item-content>
-            <v-list-item-action class="text-right">
-              <v-list-item-subtitle v-text="item.value"/>
-            </v-list-item-action>
-          </v-list-item>
-        </template>
-      </v-list>
-    </v-card>
-
-
-    <!-- Dialogs -->
-    <template v-if="isMounted">
-      <component
-        v-for="(dialog,k) in dialogs"
-        :is="dialog.component"
-        :key="k"
-        :ref="dialog.ref"
-        :attach="$refs.settings">
-      </component>
-    </template>
-
-  </div>
+  <v-card>
+    <v-list dense>
+      <template v-for="(item, k) in settings">
+        <v-divider v-if="k > 0" :key="`d:${k}`"/>
+        <v-list-item :key="k" @click="item.action">
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title" :class="item.classes"/>
+          </v-list-item-content>
+          <v-list-item-action class="text-right">
+            <v-list-item-subtitle v-text="item.value"/>
+          </v-list-item-action>
+        </v-list-item>
+      </template>
+    </v-list>
+  </v-card>
 </template>
 
 <script>
 
-  import ExitDialog from './dialogs/exit'
-  import CacheDialog from './dialogs/cache'
+  import {meta} from '@package'
+  import {shell} from 'electron'
 
   export default {
-    data() {
-      return {
-        isMounted: false,
-      }
-    },
-
     computed: {
 
       /**
@@ -58,33 +32,23 @@
       settings() {
         return [
           {
-            title: 'Сбросить кеш приложения',
-            action: () => this.$refs.cache[0].showDialog(),
+            title: 'Анилибрия',
+            value: meta.links.anilibria,
+            action: () => shell.openExternal(meta.links.anilibria),
           },
           {
-            title: 'Закрыть приложение',
-            action: () => this.$refs.exit[0].showDialog(),
-          }
+            title: 'Поддержать проект',
+            value: 'Яндекс.Деньги, QIWI, PayPal',
+            action: () => shell.openExternal(meta.links.donate)
+          },
+          {
+            title: 'Telegram-канал',
+            value: '@anilibrix',
+            action: () => shell.openExternal(meta.links.telegram)
+          },
         ]
       },
-
-
-      /**
-       * Get dialogs
-       *
-       * @return Array
-       */
-      dialogs() {
-        return [
-          {component: ExitDialog, ref: 'exit'},
-          {component: CacheDialog, ref: 'cache'}
-        ]
-      }
-    },
-
-    mounted() {
-      this.isMounted = true;
     }
-
   }
+
 </script>

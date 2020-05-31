@@ -1,9 +1,10 @@
+import {aboutTemplate, devTemplate} from './../menu/appMenu'
 import {Menu, nativeImage, Tray} from "electron";
 
 export default class {
 
   constructor() {
-    this.tray = null;
+    this._tray = null;
   }
 
 
@@ -13,23 +14,7 @@ export default class {
    * @return Array
    */
   getTemplate() {
-    return [
-      {
-        label: 'Свернуть',
-        type: 'normal',
-        role: 'minimize',
-      },
-      {
-        label: 'Отключить уведомления',
-        type: 'normal',
-        enabled: false
-      },
-      {
-        label: 'Закрыть',
-        type: 'normal',
-        role: 'quit'
-      },
-    ]
+    return [...aboutTemplate];
   }
 
 
@@ -42,11 +27,9 @@ export default class {
    */
   createTrayIcon({iconPath}) {
 
-    // Create tray with icon
-    // Create context menu
-    this.tray = new Tray(nativeImage.createFromPath(iconPath));
-    this.tray.setContextMenu(Menu.buildFromTemplate(this.getTemplate()));
-    this.tray.setIgnoreDoubleClickEvents(true);
+    this._tray = new Tray(nativeImage.createFromPath(iconPath));
+    this._tray.setContextMenu(Menu.buildFromTemplate(this.getTemplate()));
+    this._tray.setIgnoreDoubleClickEvents(true);
 
     return this;
   };
@@ -59,16 +42,8 @@ export default class {
    * @return this
    */
   setTooltip(tooltip) {
-    this.tray.setToolTip(tooltip);
+    this._tray.setToolTip(tooltip);
 
     return this;
   }
-
-
-  setClickEvent(callback) {
-    this.tray.on('click', callback);
-
-    return this;
-  }
-
 }

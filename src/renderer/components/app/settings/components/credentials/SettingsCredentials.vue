@@ -1,12 +1,11 @@
 <template>
-  <v-card class="mt-auto py-3" color="transparent" flat>
+  <v-card class="mt-auto py-3 credentials" color="transparent" flat>
     <v-card-text class="caption">
-      <div>Версия {{app.version}}</div>
+      <v-layout class="with-divider">
+        <div>Версия {{app.version}}</div>
+        <a href="#" @click.prevent="showAbout">О приложении</a>
+      </v-layout>
       <div>Весь материал в приложении представлен исключительно для домашнего ознакомительного просмотра.</div>
-      <div class="credentials__links">
-        <span class="credentials__link" @click.prevent="openLink('https://anilibria.tv')">Анилибрия</span>
-        <span class="credentials__link" @click.prevent="openLink('https://github.com/anilibria')">Исходный код</span>
-      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -14,7 +13,7 @@
 <script>
 
   import app from '@/../package'
-  import {shell} from 'electron'
+  import {shell, ipcRenderer as ipc} from 'electron'
 
   export default {
     computed: {
@@ -28,17 +27,45 @@
         return {
           version: app.version
         }
+      },
+
+
+      /**
+       * Anilibria link
+       *
+       * @return {string}
+       */
+      anilibria() {
+        return app.meta.links.anilibria
+      },
+
+      /**
+       * Github link
+       *
+       * @return {string}
+       */
+      github() {
+        return app.meta.links.github
       }
     },
 
     methods: {
 
       /**
+       * Show about panel
+       *
+       * @return void
+       */
+      showAbout() {
+        ipc.send('app:about')
+      },
+
+      /**
        * Open link in OS default browser
        *
        * @param link
        */
-      openLink(link) {
+      toLink(link) {
         shell.openExternal(link);
       }
 
@@ -51,18 +78,17 @@
 <style lang="scss" scoped>
 
   .credentials {
-    &__link {
-      cursor: pointer;
+    a {
+      color: inherit;
+      text-decoration: none;
 
       &:hover {
         text-decoration: underline;
       }
     }
 
-    &__links {
-      display: flex;
-
-      > span {
+    .with-divider {
+      > * {
         &::after {
           content: "-";
           display: inline-block;
@@ -78,8 +104,6 @@
       }
 
     }
-
-
   }
 
 </style>
