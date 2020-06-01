@@ -6,7 +6,7 @@ import __capitalize from 'lodash/capitalize'
 const SET_FILTER_DATA = 'SET_FILTER_DATA';
 const SET_FILTER_LOADING = 'SET_FILTER_LOADING';
 const SET_CATALOG_LOADING = 'SET_CATALOG_LOADING';
-const PUSH_CATALOG_RELEASE = 'PUSH_CATALOG_RELEASE';
+const SET_CATALOG_RELEASES = 'SET_CATALOG_RELEASES';
 const SET_CATALOG_PAGINATION = 'SET_CATALOG_PAGINATION';
 const CLEAR_CATALOG_RELEASES = 'CLEAR_CATALOG_RELEASES';
 
@@ -72,7 +72,7 @@ export default {
      * @return {*}
      * @constructor
      */
-    [PUSH_CATALOG_RELEASE]: (s, release) => s.items.data.push(release),
+    [SET_CATALOG_RELEASES]: (s, release) => s.items.data = [...s.items.data, ...release],
 
 
     /**
@@ -133,7 +133,7 @@ export default {
         );
 
         // Push catalog releases
-        releases.forEach(release => commit(PUSH_CATALOG_RELEASE, release));
+        commit(SET_CATALOG_RELEASES, releases);
 
         // Set updated pagination data
         commit(SET_CATALOG_PAGINATION, pagination);

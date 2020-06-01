@@ -3,7 +3,13 @@ import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 
 import axios from 'axios'
 import __get from 'lodash/get'
-import {generalMutations} from '@utils/store/mutations'
+
+const SET_INDEX = 'SET_INDEX';
+const SET_RELEASES_DATA = 'SET_RELEASES_DATA';
+const SET_RELEASES_LOADING = 'SET_RELEASES_LOADING';
+const SET_RELEASES_DATETIME = 'SET_RELEASES_DATETIME';
+
+const REQUESTS = {search: null, releases: null};
 
 export default {
   namespaced: true,
@@ -11,15 +17,49 @@ export default {
     data: [],
     index: null,
     loading: false,
-    datetime: null,
-    requests: {
-      getReleases: null,
-      searchReleases: null,
-    }
+    datetime: null
   },
 
   mutations: {
-    ...generalMutations
+
+    /**
+     * Set index
+     *
+     * @param s
+     * @param index
+     * @return {*}
+     */
+    [SET_INDEX]: (s, index) => s.index = index,
+
+    /**
+     * Set releases loading
+     *
+     * @param s
+     * @param loading
+     * @return {*}
+     */
+    [SET_RELEASES_LOADING]: (s, loading) => s.loading = loading,
+
+
+    /**
+     * Set releases data
+     *
+     * @param s
+     * @param data
+     * @return {*}
+     */
+    [SET_RELEASES_DATA]: (s, data) => s.data = data,
+
+
+    /**
+     * Set releases datetime
+     *
+     * @param s
+     * @param datetime
+     * @return {*}
+     */
+    [SET_RELEASES_DATETIME]: (s, datetime) => s.datetime = datetime,
+
   },
 
   actions: {
@@ -31,7 +71,7 @@ export default {
      * @param index
      * @return {*}
      */
-    setIndex: ({commit}, index) => commit('set', {k: 'index', v: index}),
+    setIndex: ({commit}, index) => commit(SET_INDEX, index),
 
 
     /**
@@ -46,42 +86,46 @@ export default {
       try {
 
         // Set loading state
-        commit('set', {k: 'loading', v: true});
+        commit(SET_RELEASES_LOADING, true);
 
         // Cancel previous request if it was stored
-        if (state.requests.getReleases !== null) state.requests.getReleases.cancel();
+        if (REQUESTS.releases) REQUESTS.releases.cancel();
 
         // Create new request token if exists
-        commit('set', {k: 'requests.getReleases', v: axios.CancelToken.source()});
+        REQUESTS.releases = axios.CancelToken.source();
 
         // Get releases from server
-        const data = await new AnilibriaProxy().getReleases({cancelToken: state.requests.getReleases.token});
-
         // Transform releases
-        const items = await AnilibriaReleaseTransformer.fetchCollection(data.items);
+        const {items} = await new AnilibriaProxy().getReleases({cancelToken: REQUESTS.releases.token});
+        const releases = await AnilibriaReleaseTransformer.fetchCollection(items);
 
         // Get posters
-        await dispatch('_getPosters', items);
+        await Promise.allSettled(
+          releases.map(async release =>
+            release.poster.image = await new AnilibriaProxy().getPoster({src: release.poster.path})
+          )
+        );
 
         // Sort releases from newest to oldest
-        const releases = items.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
+        const sortedReleases = releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
 
         // Commit releases
         // Set update datetime
-        commit('set', {k: 'data', v: releases});
-        commit('set', {k: 'datetime', v: new Date()});
-
-        // Reset loading state
-        commit('set', {k: 'loading', v: false});
+        commit(SET_RELEASES_DATA, sortedReleases);
+        commit(SET_RELEASES_DATETIME, new Date());
 
       } catch (error) {
+        if (!axios.isCancel(error)) {
 
-        // Reset loading state
-        commit('set', {k: 'loading', v: false});
+          // Show errors
+          dispatch('app/setError', 'Произошла ошибка при загрузке релизов', {root: true});
+          dispatch('app/setError', error, {root: true});
 
-        // Show errors
-        dispatch('app/setError', 'Произошла ошибка при загрузке релизов', {root: true});
-        dispatch('app/setError', error, {root: true});
+        }
+      } finally {
+
+        commit(SET_RELEASES_LOADING, false);
+
       }
     },
 
@@ -100,14 +144,14 @@ export default {
       try {
 
         // Cancel previous request if it was stored
-        if (state.requests.searchReleases !== null) state.requests.searchReleases.cancel();
+        if (REQUESTS.search) REQUESTS.search.cancel();
 
         // Create new request token if exists
-        commit('set', {k: 'requests.searchReleases', v: axios.CancelToken.source()});
+        REQUESTS.search = axios.CancelToken.source();
 
         // Get releases
         const releases = await new AnilibriaProxy()
-          .searchReleases(searchQuery, {cancelToken: state.requests.getReleases.token});
+          .searchReleases(searchQuery, {cancelToken: REQUESTS.search.token});
 
         // Transform releases
         return (releases || [])
@@ -124,31 +168,14 @@ export default {
 
 
       } catch (error) {
+        if (!axios.isCancel(error)) {
 
-        dispatch('app/setError', 'Произошла ошибка при поиске релизов', {root: true});
-        dispatch('app/setError', error, {root: true});
+          dispatch('app/setError', 'Произошла ошибка при поиске релизов', {root: true});
+          dispatch('app/setError', error, {root: true});
 
-        return [];
+          return [];
+        }
       }
-    },
-
-
-    /**
-     * Update releases posters
-     *
-     * @param commit
-     * @param state
-     * @param dispatch
-     * @param releases
-     * @return Promise
-     */
-    _getPosters: async ({commit, state, dispatch}, releases) => {
-      return await Promise.allSettled(
-        releases.map(async release =>
-          release.poster.image = await new AnilibriaProxy().getPoster({src: release.poster.path})
-        )
-      );
     }
-
   }
 }
