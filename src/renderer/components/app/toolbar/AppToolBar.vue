@@ -5,7 +5,7 @@
     <slot name="right"/>
 
     <!-- Releases Catalog -->
-    <!--<app-toolbar-catalog v-if="!noCatalog" />-->
+    <app-toolbar-catalog v-if="!noCatalog" />
 
     <!-- Release Search -->
     <app-toolbar-search v-if="!noSearch"/>

@@ -2,7 +2,7 @@ import Proxy from '@proxy'
 import store from "@store";
 import __get from "lodash/get";
 
-export default class Anilibria extends Proxy {
+export default class AnilibriaProxy extends Proxy {
 
   /**
    * @param parameters
@@ -63,8 +63,10 @@ export default class Anilibria extends Proxy {
   async getPoster({src}) {
     if (src) {
       const response = await this.submit('GET', this._getHost() + src, {responseType: 'arraybuffer'});
-      return Buffer.from(response.data, 'binary').toString('base64');
+      const image = response ? Buffer.from(response.data, 'binary').toString('base64') : null;
+      return image ? `data:image/jpeg;base64,${image}` : null;
     }
+    return null;
   }
 
 
@@ -104,6 +106,58 @@ export default class Anilibria extends Proxy {
     return this._parseResponse(response.data);
   }
 
+
+  /**
+   * Get catalog genres
+   *
+   * @return {Promise<*>}
+   */
+  async getCatalogGenres() {
+    const data = this._getFormDataObject({query: 'genres'});
+    const response = await this.submit('POST', this._getHost() + this.endpoint, {data, headers: data.getHeaders()});
+    return this._parseResponse(response.data);
+  }
+
+
+  /**
+   * Get catalog years
+   *
+   * @return {Promise<*>}
+   */
+  async getCatalogYears() {
+    const data = this._getFormDataObject({query: 'years'});
+    const response = await this.submit('POST', this._getHost() + this.endpoint, {data, headers: data.getHeaders()});
+    return this._parseResponse(response.data);
+  }
+
+
+  /**
+   * Get catalog data
+   *
+   * @param genres
+   * @param years
+   * @param page
+   * @param perPage
+   * @param sort
+   * @param parameters
+   * @return {Promise<*>}
+   */
+  async getCatalogItems({genres = [], years = [], page = 1, perPage = 15, sort = 1}, parameters = {}) {
+
+    const data = this._getFormDataObject({
+      sort, page, perPage,
+      query: 'catalog', xpage: 'catalog', search: {year: (years || []).join(','), genre: (genres || []).join(',')}
+    });
+
+    const response = await this.submit(
+      'POST',
+      this._getHost() + this.endpoint,
+      {data, headers: data.getHeaders(), ...parameters}
+    );
+
+    return this._parseResponse(response.data);
+
+  }
 
   /**
    * Get anilibria host

@@ -36,7 +36,7 @@
 
   export default {
     props,
-    name: "Release",
+    name: "Release.View",
     components: {
       ReleaseCard,
       ReleaseLayout,

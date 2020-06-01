@@ -1,10 +1,10 @@
 <template>
-  <div class="release">
+  <div class="catalog">
 
     <!-- Toolbar -->
-    <app-tool-bar no-update>
+    <app-tool-bar no-update no-catalog>
       <template v-slot:left>
-        <v-btn icon @click="toBack">
+        <v-btn icon @click="toReleases">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
       </template>
@@ -12,7 +12,6 @@
 
     <!-- Settings -->
     <app-settings/>
-
 
     <!-- Content -->
     <v-content class="px-4">
@@ -27,8 +26,6 @@
   import AppToolBar from '@components/app/toolbar'
   import AppSettings from '@components/app/settings'
 
-  import __get from 'lodash/get'
-
   export default {
     components: {
       AppToolBar,
@@ -42,12 +39,10 @@
        *
        * @return void
        */
-      toBack() {
-
-        const fromRoute = __get(this.$route, 'params.from');
-        const releaseRoute = {name: 'releases'};
-
-        this.$router.push(fromRoute ? fromRoute : releaseRoute);
+      toReleases() {
+        this.$router.push({
+          name: 'releases'
+        });
       }
     }
   }
@@ -55,7 +50,7 @@
 
 <style lang="scss" scoped>
 
-  .release {
+  .catalog {
     top: 36px;
     width: 100%;
     bottom: 0;

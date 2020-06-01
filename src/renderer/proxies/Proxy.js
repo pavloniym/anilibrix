@@ -1,6 +1,7 @@
 import __get from 'lodash/get'
 import axios from '@plugins/axios'
 import FormData from 'form-data'
+import {objectToFormData} from 'object-to-formdata'
 import {getHttpProxy, getHttpsAgent} from '@utils/proxy'
 
 export default class Proxy {
@@ -282,7 +283,8 @@ export default class Proxy {
     const formData = new FormData();
 
     // Set data
-    Object.keys(data || {}).forEach(key => formData.append(key, data[key]));
+    Object.keys(data || {})
+      .forEach(key => formData.append(key, typeof (data[key]) === 'object' ? JSON.stringify(data[key]) : data[key]));
 
     // Return form data
     return formData;

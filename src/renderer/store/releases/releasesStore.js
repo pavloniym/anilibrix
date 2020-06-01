@@ -144,24 +144,9 @@ export default {
      */
     _getPosters: async ({commit, state, dispatch}, releases) => {
       return await Promise.allSettled(
-        releases
-          .filter(release => release.poster.path)
-          .map(async release => {
-
-              try {
-
-                return await new AnilibriaProxy()
-                  .getPoster({src: release.poster.path})
-                  .then(image => release.poster.image = `data:image/jpeg;base64,${image}`);
-
-              } catch (error) {
-
-                // Show error
-                dispatch('app/setError', `Произошла ошибка при загрузке постера к релизу ${release.id}`, {root: true});
-              }
-
-            }
-          )
+        releases.map(async release =>
+          release.poster.image = await new AnilibriaProxy().getPoster({src: release.poster.path})
+        )
       );
     }
 

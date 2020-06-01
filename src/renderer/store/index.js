@@ -9,17 +9,18 @@ import createPersistedState from "vuex-persistedstate";
 
 import app from './app'
 import release from './release'
+import catalog from './catalog'
 import releases from './releases'
 import notifications from './notifications'
 
 import __merge from 'lodash/merge'
-import __throttle from 'lodash/throttle'
 
 Vue.use(Vuex);
 
 const modules = {
   app,
   release,
+  catalog,
   releases,
   notifications
 };

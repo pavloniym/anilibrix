@@ -47,34 +47,6 @@ export const aboutTemplate = [
   }
 ];
 
-
-export const devTemplate = [
-  {
-    role: 'forcereload',
-    label: 'Перезагрузить приложение',
-  },
-  {
-    type: 'separator'
-  },
-  {
-    label: 'Инструменты разработчика',
-    submenu: [
-      {
-        label: 'Основное приложение',
-        click: () => this._mainWindow.showDevTools()
-      },
-      {
-        label: 'Торрент-сервер',
-        click: () => this._torrentWindow.showDevTools()
-      },
-      {
-        label: 'Chromecast клиент',
-        click: () => this._chromecastWindow.showDevTools()
-      },
-    ]
-  }
-];
-
 export default class AppMenu {
 
   constructor() {
@@ -143,7 +115,32 @@ export default class AppMenu {
       },
       {
         label: 'Отладка',
-        submenu: devTemplate,
+        submenu: [
+          {
+            role: 'forcereload',
+            label: 'Перезагрузить приложение',
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Инструменты разработчика',
+            submenu: [
+              {
+                label: 'Основное приложение',
+                click: () => this._mainWindow.showDevTools()
+              },
+              {
+                label: 'Торрент-сервер',
+                click: () => this._torrentWindow.showDevTools()
+              },
+              {
+                label: 'Chromecast клиент',
+                click: () => this._chromecastWindow.showDevTools()
+              },
+            ]
+          }
+        ],
       }
     ];
   }

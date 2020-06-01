@@ -46,7 +46,7 @@ export default {
         // Get release data
         const data = await new AnilibriaProxy().getRelease(releaseId, {cancelToken: state.request.token});
         const release = await AnilibriaReleaseTransformer.fetchItem(data);
-        const image = await dispatch('_getPoster', release) || null;
+        const image = await new AnilibriaProxy().getPoster({src: release.poster.path});
 
         // Save release data
         commit('set', {k: 'data', v: release});
@@ -61,28 +61,6 @@ export default {
 
       // Reset loading state
       commit('set', {k: 'loading', v: false});
-    },
-
-
-    /**
-     * Get release poster
-     *
-     * @param dispatch
-     * @param release
-     * @return Promise
-     */
-    _getPoster: async ({dispatch}, release) => {
-      if (release && release.poster.path) {
-        try {
-
-          return await new AnilibriaProxy()
-            .getPoster({src: release.poster.path})
-            .then(image => image ? `data:image/jpeg;base64,${image}` : null);
-
-        } catch (error) {
-          dispatch('app/setError', `Произошла ошибка при загрузке постера к релизу ${release.id}`, {root: true});
-        }
-      }
     }
 
   }

@@ -46,6 +46,7 @@
 
   export default {
     props,
+    name: 'Video.View',
     data() {
       return {
         time: 0,
