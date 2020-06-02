@@ -108,8 +108,8 @@
        */
       shortcuts() {
         return {
-          'close': process.platform === 'darwin' ? '⌘Q' : 'Ctrl + Q',
-          'reload': process.platform === 'darwin' ? '⌘⇧R' : 'Ctrl + ⇧ + R',
+          'close': process.platform === 'darwin' ? '⌘Q' : 'Alt + Q',
+          'reload': process.platform === 'darwin' ? '⌘⇧R' : 'Ctrl + Shift + R',
           'minimize': process.platform === 'darwin' ? '⌘M' : 'Ctrl + M',
           'fullscreen': process.platform === 'darwin' ? '⌃⌘F' : 'Ctrl + F',
         }
