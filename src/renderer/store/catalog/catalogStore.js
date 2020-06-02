@@ -122,7 +122,7 @@ export default {
 
         // Get items from server
         // Transform items
-        const {items, pagination} = await new AnilibriaProxy().getCatalogItems({sort, genres, years, page, perPage});
+        const {items} = await new AnilibriaProxy().getCatalogItems({sort, genres, years, page, perPage});
         const releases = AnilibriaCatalogTransformer.fetchCollection(items);
 
         // Collect all poster images
@@ -136,7 +136,7 @@ export default {
         commit(SET_CATALOG_RELEASES, releases);
 
         // Set updated pagination data
-        commit(SET_CATALOG_PAGINATION, pagination);
+        commit(SET_CATALOG_PAGINATION, {page, lastItems: items ? items.length : 0});
 
       } catch (error) {
 

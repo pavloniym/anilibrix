@@ -1,5 +1,3 @@
-import SystemNotifications from './system'
+import AppNotifications from './AppNotifications'
 
-export {
-  SystemNotifications
-}
+export default AppNotifications

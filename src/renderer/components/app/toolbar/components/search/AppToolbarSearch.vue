@@ -94,6 +94,7 @@
             name: 'release',
             params: {
               releaseId: release.id,
+              releaseName: release.names.original,
             }
           });
 
@@ -110,7 +111,15 @@
 
       search: {
         handler(search) {
-          if (search && search.length >= 3) this.getReleases(search);
+          if (search && search.length >= 3) {
+
+            // Get releases
+            this.getReleases(search);
+
+            // Hit yandex-metrika event
+            this.$metrika.hit(`/search?query=${search}`);
+
+          }
         }
 
       }

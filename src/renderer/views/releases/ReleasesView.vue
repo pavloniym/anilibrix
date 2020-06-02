@@ -18,6 +18,9 @@
 
   export default {
     name: 'Releases.View',
+    meta: {
+      title: 'Последние релизы'
+    },
     components: {
       ReleasesData,
       ReleasesLayout,
@@ -95,6 +98,7 @@
               key: `${release.id}:${episode.id}`,
               release,
               episode,
+              releaseName: release.names.original
             }
           });
         }

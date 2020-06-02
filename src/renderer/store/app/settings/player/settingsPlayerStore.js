@@ -1,4 +1,7 @@
-import {generalMutations} from '@utils/store/mutations'
+const SET_QUALITY = 'SET_QUALITY';
+const SET_EPISODES_SORT = 'SET_EPISODES_SORT';
+const SET_TORRENTS_PROCESS = 'SET_TORRENTS_PROCESS';
+const SET_AUTOPLAY_NEXT = 'SET_AUTOPLAY_NEXT';
 
 export default {
   namespaced: true,
@@ -14,7 +17,47 @@ export default {
   },
 
   mutations: {
-   ...generalMutations
+
+    /**
+     * Set quality
+     *
+     * @param s
+     * @param quality
+     * @return {*}
+     */
+    [SET_QUALITY]: (s, quality) => s.quality = quality,
+
+
+    /**
+     * Set episodes sort
+     *
+     * @param s
+     * @param order
+     * @return {*}
+     */
+    [SET_EPISODES_SORT]: (s, order) => s.episodes.order = order,
+
+
+    /**
+     * Set torrent process state
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_TORRENTS_PROCESS]: (s, state) => s.torrents.process = state,
+
+
+    /**
+     *
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_AUTOPLAY_NEXT]: (s, state) => s.autoplayNext = state,
+
+
   },
 
 
@@ -27,7 +70,7 @@ export default {
      * @param quality
      * @return {*}
      */
-    setQuality: ({commit}, quality) => commit('set', {k: 'quality', v: quality}),
+    setQuality: ({commit}, quality) => commit(SET_QUALITY, quality),
 
 
     /**
@@ -37,7 +80,7 @@ export default {
      * @param sortOrder
      * @return {*}
      */
-    setEpisodesSort: ({commit}, sortOrder) => commit('set', {k: 'episodes.order', v: sortOrder}),
+    setEpisodesSort: ({commit}, sortOrder) => commit(SET_EPISODES_SORT, sortOrder),
 
 
     /**
@@ -47,7 +90,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setTorrentsProcess: ({commit}, state) => commit('set', {k: 'torrents.process', v: state}),
+    setTorrentsProcess: ({commit}, state) => commit(SET_TORRENTS_PROCESS, state),
 
 
     /**
@@ -57,7 +100,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setAutoplayNext: ({commit}, state) => commit('set', {k: 'autoplayNext', v: state}),
+    setAutoplayNext: ({commit}, state) => commit(SET_AUTOPLAY_NEXT, state),
 
   }
 }

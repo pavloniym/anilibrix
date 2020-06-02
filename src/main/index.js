@@ -82,4 +82,10 @@ app.on('ready', async () => {
   // Show about panel
   ipc.on('app:about', () => app.showAboutPanel());
 
+  // Devtools
+  ipc.on('app:devtools:main', () => Main.showDevTools());
+  ipc.on('app:devtools:torrent', () => Torrent.showDevTools());
+  ipc.on('app:devtools:chromecast', () => Chromecast.showDevTools());
+
+
 });

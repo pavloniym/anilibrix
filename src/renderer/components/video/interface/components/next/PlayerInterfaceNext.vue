@@ -130,7 +130,8 @@
         this.$router.push({
           name: 'release',
           params: {
-            releaseId: this.release.id
+            releaseId: this.release.id,
+            releaseName: this.release.names.original
           }
         })
       },
@@ -150,6 +151,7 @@
               release: this.release,
               episode: this.next,
               fromStart: true,
+              releaseName: this.release.names.original
             }
           });
         }

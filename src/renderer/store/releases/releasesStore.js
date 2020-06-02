@@ -110,8 +110,18 @@ export default {
         const sortedReleases = releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
 
         // Commit releases
-        // Set update datetime
         commit(SET_RELEASES_DATA, sortedReleases);
+
+
+        // If datetime is set -> it not initial request
+        // Try to find new releases and show notifications
+        if (state.datetime) {
+          sortedReleases
+            .filter(release => release.datetime.system > state.datetime)
+            .forEach(release => dispatch('notifications/setRelease', release, {root: true}))
+        }
+
+        // Set updated datetime
         commit(SET_RELEASES_DATETIME, new Date());
 
       } catch (error) {

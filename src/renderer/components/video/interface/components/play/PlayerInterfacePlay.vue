@@ -122,6 +122,7 @@
             release: this.release,
             episode: episode,
             fromStart: true,
+            releaseName: this.release.names.original
           }
         })
       },

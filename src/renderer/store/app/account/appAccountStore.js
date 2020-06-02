@@ -1,5 +1,6 @@
 import {v4 as uuid} from 'uuid'
-import {generalMutations} from '@utils/store/mutations'
+
+const SET_USER_ID = 'SET_USER_ID';
 
 export default {
   namespaced: true,
@@ -7,7 +8,16 @@ export default {
     userId: null,
   },
   mutations: {
-    ...generalMutations
+
+    /**
+     * Set user id
+     *
+     * @param s
+     * @param uuid
+     * @return {*}
+     */
+    [SET_USER_ID]: (s, uuid) => s.userId = uuid,
+
   },
 
   actions: {
@@ -22,7 +32,7 @@ export default {
      */
     setUserId: ({commit, state}) => {
       if (state.userId === null) {
-        commit('set', {k: 'userId', v: uuid()})
+        commit(SET_USER_ID, uuid());
       }
     }
 

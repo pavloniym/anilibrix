@@ -6,6 +6,9 @@
         <a href="#" @click.prevent="showAbout">О приложении</a>
       </v-layout>
       <div>Весь материал в приложении представлен исключительно для домашнего ознакомительного просмотра.</div>
+      <div>
+        <a href="#" @click.prevent="toggleDevtools">Инструменты отладки</a>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -13,6 +16,7 @@
 <script>
 
   import app from '@/../package'
+  import {mapActions} from 'vuex'
   import {shell, ipcRenderer as ipc} from 'electron'
 
   export default {
@@ -50,6 +54,7 @@
     },
 
     methods: {
+      ...mapActions('app/settings', {_toggleDevtools: 'toggleDevtools'}),
 
       /**
        * Show about panel
@@ -67,6 +72,16 @@
        */
       toLink(link) {
         shell.openExternal(link);
+      },
+
+
+      /**
+       * Toggle devtools
+       *
+       * @return void
+       */
+      toggleDevtools() {
+        this._toggleDevtools();
       }
 
 

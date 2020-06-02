@@ -106,6 +106,7 @@
           name: 'release',
           params: {
             releaseId: this.release.id,
+            releaseName: this.release.names.original
           }
         })
       }

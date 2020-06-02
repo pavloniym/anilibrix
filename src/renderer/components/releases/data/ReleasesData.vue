@@ -134,7 +134,8 @@
         this.$router.push({
           name: 'release',
           params: {
-            releaseId: this.release.id
+            releaseId: this.release.id,
+            releaseName: this.release.names.original,
           }
         })
       }

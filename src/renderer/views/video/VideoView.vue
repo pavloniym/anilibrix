@@ -47,6 +47,13 @@
   export default {
     props,
     name: 'Video.View',
+    meta() {
+      return {
+        title: this.release
+          ? `Эпизод [${this.release.id} / ${this.episode.id}]: ${this.release.names.original}`
+          : null
+      }
+    },
     data() {
       return {
         time: 0,

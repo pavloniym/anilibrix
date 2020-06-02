@@ -11928,6 +11928,13 @@ vue-loader@^15.2.4:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-meta@^2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/vue-meta/-/vue-meta-2.3.4.tgz#fe28af0721e9bc4003422bd4b401c0b628512d12"
+  integrity sha512-Mz/5ykeWlhyTDVSTFLBM5tmVU/C+fX6rmVAkLSxbYegJUhUZh3N4D0b7nC0/knG1esK2l6r8iW/N0KeU+38bEQ==
+  dependencies:
+    deepmerge "^4.2.2"
+
 vue-router@^3.0.1:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.1.5.tgz#ff29b8a1e1306c526b52d4dc0532109f16c41231"

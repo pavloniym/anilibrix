@@ -33,7 +33,7 @@
     </template>
 
     <!-- Load More -->
-    <v-btn v-if="page >= 1 && totalPages > page" block text @click="loadReleases">
+    <v-btn v-if="page >= 1 && lastItems > 0" block text @click="loadReleases">
       <span>Загрузить еще</span>
     </v-btn>
 
@@ -53,6 +53,9 @@
 
   export default {
     name: "Catalog.View",
+    meta: {
+      title: 'Каталог'
+    },
     components: {
       CatalogItem,
       CatalogLayout,
@@ -80,12 +83,13 @@
 
 
       /**
-       * Get total pages number
+       * Get last items number from previous request
+       * If 0 -> no items from server
        *
        * @return {number}
        */
-      totalPages() {
-        return __get(this._pagination, 'allPages', 0)
+      lastItems() {
+        return __get(this._pagination, 'lastItems', 0)
       },
 
     },
@@ -146,6 +150,7 @@
           params: {
             from: this.$route,
             releaseId: release.id,
+            releaseName: release.names.original
           }
         })
       }

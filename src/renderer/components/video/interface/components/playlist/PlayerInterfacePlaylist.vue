@@ -83,7 +83,8 @@
           params: {
             key: `${this.release.id}:${episode.id}`,
             release: this.release,
-            episode: episode
+            episode: episode,
+            releaseName: this.release.names.original
           }
         });
       },

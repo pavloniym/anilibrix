@@ -9,7 +9,7 @@ export default {
     Vue.use(VueYandexMetrika, {
       id,
       router,
-      env: process.env.NODE_ENV,
+      env: 'production', //process.env.NODE_ENV,
       options: {
         params: {
           userId: __get(store, 'state.app.account.userId'),

@@ -42,6 +42,7 @@
   import PlayerSettings from './categories/player'
   import SystemSettings from './categories/system'
   import ActionsSettings from './categories/actions'
+  import DevtoolsSettings from './categories/devtools'
   import AnilibriaSettings from './categories/app'
   import ConnectionSettings from './categories/connection'
 
@@ -53,6 +54,7 @@
     },
     computed: {
       ...mapState('app', {_drawer: s => s.drawer}),
+      ...mapState('app/settings', {_devtools: s => s.devtools}),
 
       /**
        * Get categories components
@@ -61,12 +63,15 @@
        */
       categories() {
         return [
+
           ConnectionSettings,
           PlayerSettings,
           SystemSettings,
           ActionsSettings,
           AnilibriaSettings,
-        ]
+          this._devtools ? DevtoolsSettings : null
+
+        ].filter(category => category)
       },
 
       drawer: {

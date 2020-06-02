@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import __get from 'lodash/get'
 
+const SET_WATCH_DATA = 'SET_WATCH_DATA';
+const REMOVE_WATCH_DATA = 'REMOVE_WATCH_DATA';
+
 export default {
   namespaced: true,
   state: {
@@ -18,7 +21,7 @@ export default {
      * @param v
      * @return {*}
      */
-    set: (s, {k, v}) => Vue.set(s.items, k, v),
+    [SET_WATCH_DATA]: (s, {k, v}) => Vue.set(s.items, k, v),
 
 
     /**
@@ -27,7 +30,7 @@ export default {
      * @param s
      * @param k
      */
-    remove: (s, k) => Vue.delete(s.items, k),
+    [REMOVE_WATCH_DATA]: (s, k) => Vue.delete(s.items, k),
 
 },
 
@@ -71,7 +74,7 @@ export default {
         if (percentage >= 85) data.isSeen = true;
 
         // Set local storage data
-        commit('set', {k: `${releaseId}:${episodeId}`, v: data});
+        commit(SET_WATCH_DATA, {k: `${releaseId}:${episodeId}`, v: data});
 
       }
     },
@@ -116,7 +119,7 @@ export default {
      * @return {Promise<void>}
      */
     removeWatchData: async ({commit, getters, dispatch}, {releaseId = null, episodeId = -1} = {}) => {
-      if (releaseId && episodeId > -1) commit('remove', `${releaseId}:${episodeId}`);
+      if (releaseId && episodeId > -1) commit(REMOVE_WATCH_DATA, `${releaseId}:${episodeId}`);
     },
 
 

@@ -31,6 +31,9 @@
 
   export default {
     props,
+    meta: {
+      title: `Видео не доступно`
+    },
     components: {
       BlankNoise
     },

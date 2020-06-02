@@ -16,6 +16,9 @@
     <!-- Errors -->
     <app-errors/>
 
+    <!-- Notifications -->
+    <app-notifications />
+
   </v-app>
 </template>
 
@@ -24,6 +27,7 @@
   import AppLoader from '@components/app/loader'
   import AppErrors from '@components/app/errors'
   import AppSystemBar from '@components/app/systembar'
+  import AppNotifications from "@components/app/notifications";
 
   import {mapState, mapActions} from 'vuex'
 
@@ -33,6 +37,7 @@
       AppErrors,
       AppLoader,
       AppSystemBar,
+      AppNotifications,
     },
     data() {
       return {

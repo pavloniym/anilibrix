@@ -1,5 +1,5 @@
 <template>
-  <v-menu left bottom :attach="container">
+  <v-menu left bottom ref="menu" :attach="container">
 
     <template v-slot:activator="{ on }">
       <v-btn icon color="grey darken-2" @click.stop="on.click">
@@ -10,7 +10,7 @@
     <v-list dense class="grey darken-4">
       <template v-for="(item, k) in actions">
         <v-divider v-if="k > 0" :key="`d:${k}`"/>
-        <v-list-item :key="k" :disabled="loading" @click="item.action">
+        <v-list-item :key="k" :disabled="loading" @click.stop="item.action">
 
           <!-- Icon -->
           <v-icon class="mr-2" color="grey">{{item.icon}}</v-icon>
@@ -86,9 +86,12 @@
        * @return {Promise<void>}
        */
       async setWatchData() {
-        this.loading = true;
+
+        // Set watch data
         await this._setWatchData({releaseId: this.release.id, episodeId: this.episode.id, percentage: 100});
-        this.loading = false;
+
+        // Deactivate menu
+        this.$refs.menu.callDeactivate()
       },
 
 
@@ -98,9 +101,12 @@
        * @return {Promise<void>}
        */
       async removeWatchData() {
-        this.loading = true;
+
+        // Remove watch data
         await this._removeWatchData({releaseId: this.release.id, episodeId: this.episode.id});
-        this.loading = false;
+
+        // Deactivate menu
+        this.$refs.menu.callDeactivate()
       },
     }
 

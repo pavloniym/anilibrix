@@ -1,4 +1,5 @@
-import {generalMutations} from '@utils/store/mutations'
+const SET_UPDATES = 'SET_UPDATES';
+const SET_UPDATES_TIMEOUT = 'SET_UPDATES_TIMEOUT';
 
 export default {
   namespaced: true,
@@ -11,7 +12,26 @@ export default {
 
 
   mutations: {
-    ...generalMutations
+
+    /**
+     * Set updates state
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_UPDATES]: (s, state) => s.updates.enabled = state,
+
+
+    /**
+     * Set updates timeout
+     *
+     * @param s
+     * @param timeout
+     * @return {*}
+     */
+    [SET_UPDATES_TIMEOUT]: (s, timeout) => s.updates.timeout = timeout,
+
   },
 
   actions: {
@@ -23,7 +43,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setUpdates: ({commit}, state) => commit('set', {k: 'updates.enabled', v: state}),
+    setUpdates: ({commit}, state) => commit(SET_UPDATES, state),
 
 
     /**
@@ -33,7 +53,7 @@ export default {
      * @param timeout
      * @return {*}
      */
-    setUpdatesTimeout: ({commit}, timeout) => commit('set', {k: 'updates.timeout', v: timeout}),
+    setUpdatesTimeout: ({commit}, timeout) => commit(SET_UPDATES_TIMEOUT, timeout),
 
   }
 }

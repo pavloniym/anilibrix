@@ -25,11 +25,15 @@
   import {ReleaseCard, ReleasePlaylist} from '@components/release'
 
   import __get from 'lodash/get'
-  import {mapState, mapActions} from 'vuex'
+  import {mapState} from 'vuex'
 
   const props = {
     releaseId: {
       type: [String, Number],
+      default: null
+    },
+    releaseName: {
+      type: String,
       default: null
     }
   };
@@ -37,6 +41,11 @@
   export default {
     props,
     name: "Release.View",
+    meta() {
+      return {
+        title: `Релиз [${this.releaseId}]: ${this.releaseName}`
+      }
+    },
     components: {
       ReleaseCard,
       ReleaseLayout,
@@ -46,14 +55,6 @@
     data() {
       return {
         loading: false,
-        /* loaders: [
-           'heading',
-           'sentences',
-           'button',
-           'text@12',
-           'heading',
-           'list-item-two-line@10'
-         ],*/
       }
     },
 
@@ -65,20 +66,6 @@
     },
 
     methods: {
-      ...mapActions('release', {_getRelease: 'getRelease'}),
-
-
-      /**
-       * Go back to releases page
-       *
-       * @return void
-       */
-      toReleases() {
-        this.$router.push({
-          name: 'heading'
-        });
-      },
-
 
       /**
        * Watch episode
@@ -91,7 +78,8 @@
           params: {
             key: `${this._release.id}:${episode.id}`,
             release: this._release,
-            episode: episode
+            episode: episode,
+            releaseName: this._release.names.original
           }
         });
       },
@@ -99,15 +87,19 @@
     },
 
     watch: {
+
       releaseId: {
         immediate: true,
         async handler(releaseId) {
 
           // Update if release data changed
           if (this._release === null || this._release.id !== parseInt(releaseId)) {
+
+            // Get release data
             this.loading = true;
             await this.$store.dispatchPromise('release/getRelease', releaseId);
             this.loading = false;
+
           }
         }
       }
