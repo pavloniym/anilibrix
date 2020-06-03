@@ -21,14 +21,30 @@ const store = {
 
 
 // Save found device in storage
-client.on('device', device => store.devices.push(device));
+client.on('device', device => {
+
+  // Show in console
+  console.log('Device', device);
+
+  // Push device in store
+  store.devices.push(device);
+
+});
 
 
 /**
  * Get found chromecast devices
  *
  */
-const getDevices = () => ipc.send('chromecast:devices:items', store.devices);
+const getDevices = () => {
+
+  // Show in console
+  console.log('Devices: ', store.devices);
+
+  // Send event
+  ipc.send('chromecast:devices:items', store.devices);
+
+};
 
 
 /**
@@ -40,12 +56,15 @@ const getDevices = () => ipc.send('chromecast:devices:items', store.devices);
  */
 const playOnDevice = ({device, src, options = null} = {}) => {
 
+  // Show in console
+  console.log('Play On Device', {device, src, options});
+
   // Search for device from local store
   device = store.devices.find(d => d.name === device.name);
 
   // If device is found
   if (device && src) {
-    device.play(src, options, e => console.log(e));
+    device.play(src, options, e => console.log('Player Error: ', e));
   }
 
 };

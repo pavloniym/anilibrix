@@ -42,11 +42,15 @@
             const episode = release.episodes[0];
             const title = episode ? episode.title : null;
             const poster = release.poster.image;
+            const name = release.names.ru;
 
-            if (title) {
+            if (title && name) {
 
               // Create notification
-              const notification = new window.Notification(release.names.ru, {body: title, icon: poster});
+              const notification = new window.Notification(title, {
+                body: name,
+                icon: poster
+              });
 
               // If the user clicks in the Notifications Center, show the app
               notification.onclick = () => this.toVideo({release, episode});

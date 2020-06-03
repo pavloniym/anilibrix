@@ -10,6 +10,7 @@ const parseTorrentData = require('parse-torrent');
 // client, as explained here: https://webtorrent.io/faq
 const torrentClient = new webTorrent();
 
+
 import app from '@/../package'
 import sentry from './../main/utils/sentry'
 import {getStore} from '@store'
@@ -55,6 +56,9 @@ const parseTorrent = ({blob, torrentId}) => {
 
     // Save torrent data to store
     store.collection[torrentId] = data;
+
+    // Show console
+    console.log('parseTorrent', data);
   }
 
   // Send result to main process
@@ -68,6 +72,10 @@ const parseTorrent = ({blob, torrentId}) => {
  * @param torrentSource
  */
 const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
+
+  // Show in console
+  console.log('StartTorrent', {torrentId, fileIndex});
+
   if (torrentClient && store.collection[torrentId]) {
 
     // Destroy torrent if it already added
@@ -102,6 +110,8 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
         //Send torrent download data
         if (store.handlers[torrentId]) clearInterval(store.handlers[torrentId]);
         store.handlers[torrentId] = setInterval(() => {
+
+          // Send message to another window
           ipc.send('torrent:download', {
             torrentId,
             speed: torrent.downloadSpeed,
@@ -113,6 +123,10 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
               }
             })
           });
+
+          // Show in console
+          console.log('TorrentDownload:', {torrentId, file, speed: torrent.downloadSpeed});
+
         }, 2000);
 
 
@@ -134,11 +148,16 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
  */
 const destroyTorrent = ({torrentId}) => {
 
-
   // Stop server
   if (store.servers[torrentId]) {
+
+    // Show in console
+    console.log('Destroy Server', {torrentId, server: store.servers[torrentId]});
+
+    // Stop and destroy server
     store.servers[torrentId].close();
     store.servers[torrentId] = null;
+
   }
 
   // Destroy handler
@@ -148,7 +167,14 @@ const destroyTorrent = ({torrentId}) => {
 
   // Destroy torrent
   if (store.torrents[torrentId]) {
-    rimraf(store.torrents[torrentId].path, () => {
+
+    // Torrent files path
+    const path = store.torrents[torrentId].path;
+
+    rimraf(path, () => {
+
+      // Show in console
+      console.log('Destroy Torrent', {torrentId, path});
 
       // Destroy torrent
       // Clear storage
@@ -186,6 +212,9 @@ const _startServer = ({torrentId, torrent}) => {
         // Create server url
         const url = `http://localhost:${server.address().port}`;
 
+        // Show in console
+        console.log('startServer', {torrentId, torrent, url, server});
+
         // Resolve url
         resolve({url, server, torrentId});
       })
@@ -206,6 +235,11 @@ const _startServer = ({torrentId, torrent}) => {
  * @private
  */
 const _sendError = ({torrentId, message = null, error = null} = {}) => {
+
+  // Show in console
+  console.log('Torrent Error', {torrentId, error, message});
+
+  // Send error message
   ipc.send('torrent:error', {torrentId, error, message})
 };
 

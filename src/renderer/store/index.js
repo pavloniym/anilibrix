@@ -14,6 +14,7 @@ import releases from './releases'
 import notifications from './notifications'
 
 import __merge from 'lodash/merge'
+import __throttle from 'lodash/throttle'
 
 Vue.use(Vuex);
 
@@ -25,10 +26,13 @@ const modules = {
   notifications
 };
 
+// Get debug state
 // Create storage instance
+const debug = process.env.NODE_ENV !== 'production';
 const storage = new Storage({name: 'anilibrix'});
 
-const debug = process.env.NODE_ENV !== 'production';
+
+// Create store instance
 const store = new Vuex.Store({
   modules,
   plugins: [
@@ -38,8 +42,8 @@ const store = new Vuex.Store({
       paths: ['app'],
       storage: {
         getItem: (key) => storage.get(key),
-        setItem: (key, value) => storage.set(key, value),
-        removeItem: (key) => storage.delete(key),
+        setItem: __throttle((key, value) => storage.set(key, value), 2500),
+        removeItem: __throttle(key => storage.delete(key), 2500),
       },
     }),
     createSharedMutations()

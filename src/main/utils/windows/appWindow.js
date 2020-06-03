@@ -92,7 +92,7 @@ export default class Window {
    * @return void
    */
   showDevTools() {
-    this.getWindow().webContents.openDevTools();
+    this.getWindow().openDevTools();
   }
 
 }

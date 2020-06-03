@@ -2,7 +2,7 @@
 import path from 'path'
 import {meta} from '@package'
 import sentry from './utils/sentry'
-import store, {setUserId} from '@store'
+import store, {setUserId, getStore} from '@store'
 import {app, ipcMain as ipc} from 'electron'
 import {Main, Torrent, Chromecast} from './utils/windows'
 
@@ -48,7 +48,7 @@ app.on('ready', async () => {
   await setUserId();
 
   // Initialize sentry.io
-  sentry({store, source: 'main'});
+  sentry({store: getStore(), source: 'main'});
 
 
   // Create windows
