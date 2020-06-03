@@ -92,7 +92,7 @@ export default class Window {
    * @return void
    */
   showDevTools() {
-    this.getWindow().openDevTools();
+    this.getWindow().openDevTools({mode:'detach'});
   }
 
 }

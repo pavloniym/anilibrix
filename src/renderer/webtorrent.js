@@ -1,6 +1,7 @@
 // To keep the UI snappy, we run WebTorrent in its own hidden window, a separate
 // process from the main window.
 
+const path = require('path');
 const rimraf = require('rimraf');
 const webTorrent = require('webtorrent');
 const parseTorrentData = require('parse-torrent');
@@ -15,6 +16,8 @@ import app from '@/../package'
 import sentry from './../main/utils/sentry'
 import {getStore} from '@store'
 import {ipcRenderer as ipc, remote} from 'electron'
+
+import {parse, stringify} from 'flatted'
 
 // Enable Sentry.io electron handler
 sentry({store: getStore(), source: 'torrent'});
@@ -34,8 +37,7 @@ const store = {
  *
  * @type {string}
  */
-// const path = '/tmp/' + app.build.appId;
-const path = remote.app.getPath('temp') + app.build.appId;
+const torrentPath = path.join(remote.app.getPath('temp'), app.build.appId);
 
 
 /**
@@ -45,24 +47,29 @@ const path = remote.app.getPath('temp') + app.build.appId;
  * @param id
  */
 const parseTorrent = ({blob, torrentId}) => {
+  try {
 
-  let data = null;
+    let data = null;
 
-  if (blob !== null) {
+    if (blob !== null) {
 
-    // If blob is provided -> try to create buffer with torrent file
-    // Try to parse torrent
-    data = parseTorrentData(new Buffer(blob));
+      // If blob is provided -> try to create buffer with torrent file
+      // Try to parse torrent
+      data = parseTorrentData(new Buffer(blob));
 
-    // Save torrent data to store
-    store.collection[torrentId] = data;
+      // Save torrent data to store
+      store.collection[torrentId] = data;
 
-    // Show console
-    console.log('parseTorrent', data);
+      // Show console
+      console.log('Parse Torrent', {torrent: parse(stringify(data))});
+    }
+
+    // Send result to main process
+    ipc.send(`torrent:data:${torrentId}`, {torrentId, data});
+
+  } catch (error) {
+    _sendError({torrentId, message: 'Произошла ошибка при парсинге торрент-файла', error});
   }
-
-  // Send result to main process
-  ipc.send(`torrent:data:${torrentId}`, {torrentId, data});
 
 };
 
@@ -74,7 +81,7 @@ const parseTorrent = ({blob, torrentId}) => {
 const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
 
   // Show in console
-  console.log('StartTorrent', {torrentId, fileIndex});
+  console.log('Start Torrent', {torrentId, fileIndex});
 
   if (torrentClient && store.collection[torrentId]) {
 
@@ -84,7 +91,7 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
     }
 
     // Add torrent
-    torrentClient.add(store.collection[torrentId], {path}, async torrent => {
+    torrentClient.add(store.collection[torrentId], {path: torrentPath}, async torrent => {
       try {
 
         // Get file with provided file index
@@ -125,7 +132,16 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
           });
 
           // Show in console
-          console.log('TorrentDownload:', {torrentId, file, speed: torrent.downloadSpeed});
+          console.log('Torrent Download:', {
+            torrentId,
+            fileIndex,
+            name: file.name,
+            length: file.length,
+            path: file.path,
+            progress: file.progress,
+            downloaded: file.downloaded,
+            speed: torrent.downloadSpeed
+          });
 
         }, 2000);
 
@@ -135,7 +151,11 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
       }
     });
 
-  } else _sendError({torrentId, message: 'Торрент не найден'})
+  } else {
+
+    _sendError({torrentId, message: 'Торрент не найден'})
+
+  }
 };
 
 
@@ -147,46 +167,54 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
  * @return Promise
  */
 const destroyTorrent = ({torrentId}) => {
+  try {
 
-  // Stop server
-  if (store.servers[torrentId]) {
 
-    // Show in console
-    console.log('Destroy Server', {torrentId, server: store.servers[torrentId]});
-
-    // Stop and destroy server
-    store.servers[torrentId].close();
-    store.servers[torrentId] = null;
-
-  }
-
-  // Destroy handler
-  if (store.handlers[torrentId]) {
-    clearInterval(store.handlers[torrentId]);
-  }
-
-  // Destroy torrent
-  if (store.torrents[torrentId]) {
-
-    // Torrent files path
-    const path = store.torrents[torrentId].path;
-
-    rimraf(path, () => {
+    // Stop server
+    if (store.servers[torrentId]) {
 
       // Show in console
-      console.log('Destroy Torrent', {torrentId, path});
+      console.log('Destroy Server', {torrentId, server: parse(stringify(store.servers[torrentId]))});
 
-      // Destroy torrent
-      // Clear storage
-      store.torrents[torrentId].destroy();
-      store.torrents[torrentId] = null;
+      // Stop and destroy server
+      store.servers[torrentId].close();
+      store.servers[torrentId] = null;
 
-      // Remove files from torrent
-      // Send clear event
-      ipc.send('torrent:clear', {torrentId});
-    });
+    }
+
+    // Destroy handler
+    if (store.handlers[torrentId]) {
+      clearInterval(store.handlers[torrentId]);
+    }
+
+    // Destroy torrent
+    if (store.torrents[torrentId]) {
+
+      // Torrent files path
+      const path = store.torrents[torrentId].path;
+
+      // Remove files from fs
+      rimraf(path, () => {
+
+        // Show in console
+        console.log('Destroy Torrent', {torrentId, path});
+
+        // Destroy torrent
+        // Clear storage
+        store.torrents[torrentId].destroy();
+        store.torrents[torrentId] = null;
+
+        // Remove files from torrent
+        // Send clear event
+        ipc.send('torrent:clear', {torrentId});
+      });
+    }
+
+  } catch (error) {
+
+    _sendError({torrentId, message: 'Произошла ошибка при остановке и уничтожении торрент-файла', error});
+
   }
-
 };
 
 
@@ -213,7 +241,7 @@ const _startServer = ({torrentId, torrent}) => {
         const url = `http://localhost:${server.address().port}`;
 
         // Show in console
-        console.log('startServer', {torrentId, torrent, url, server});
+        console.log('Start Server', {torrentId, server: parse(stringify(server)), url});
 
         // Resolve url
         resolve({url, server, torrentId});
@@ -241,6 +269,7 @@ const _sendError = ({torrentId, message = null, error = null} = {}) => {
 
   // Send error message
   ipc.send('torrent:error', {torrentId, error, message})
+
 };
 
 

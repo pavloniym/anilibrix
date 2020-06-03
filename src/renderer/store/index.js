@@ -32,6 +32,39 @@ const debug = process.env.NODE_ENV !== 'production';
 const storage = new Storage({name: 'anilibrix'});
 
 
+/**
+ * Get item from storage
+ *
+ * @param key
+ * @return {*}
+ */
+const getItem = (key) => storage.get(key);
+
+
+/**
+ * Set storage Item
+ *
+ */
+const setItem = __throttle((key, value) => {
+  try {
+    storage.set(key, value)
+  } catch (error) {
+  }
+}, 2500);
+
+
+/**
+ * Remove item from storage
+ *
+ */
+const removeItem = __throttle(key => {
+  try {
+    storage.delete(key)
+  } catch (error) {
+  }
+}, 2500);
+
+
 // Create store instance
 const store = new Vuex.Store({
   modules,
@@ -40,11 +73,7 @@ const store = new Vuex.Store({
     createPersistedState({
       key: 'anilibrix',
       paths: ['app'],
-      storage: {
-        getItem: (key) => storage.get(key),
-        setItem: __throttle((key, value) => storage.set(key, value), 2500),
-        removeItem: __throttle(key => storage.delete(key), 2500),
-      },
+      storage: {getItem, setItem, removeItem},
     }),
     createSharedMutations()
   ],
@@ -94,7 +123,7 @@ const store = new Vuex.Store({
  *
  * @return {Promise<any>}
  */
-const setUserId = () => store.dispatch('app/account/setUserId');
+const setUserId = async () => await store.dispatch('app/account/setUserId');
 
 
 /**

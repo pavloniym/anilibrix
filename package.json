@@ -1,6 +1,6 @@
 {
   "name": "anilibrix",
-  "version": "1.2.60",
+  "version": "1.2.69",
   "author": "AniLibria",
   "description": "AniLibrix - AniLibria desktop app",
   "license": null,
@@ -12,10 +12,10 @@
   "scripts": {
     "build": "node .electron-vue/build.js",
     "serve": "node .electron-vue/dev-runner.js",
-    "release": "yarn build && electron-builder -wml",
-    "release:mac": "yarn build && electron-builder -m",
-    "release:win": "yarn build && electron-builder -w",
-    "release:lin": "yarn build && electron-builder -l",
+    "release": "yarn build && electron-builder -wml -c.compression=store",
+    "release:mac": "yarn build && electron-builder -m -c.compression=store",
+    "release:win": "yarn build && electron-builder -w -c.compression=store",
+    "release:lin": "yarn build && electron-builder -l -c.compression=store",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
   },
   "meta": {
@@ -84,6 +84,7 @@
     "electron-updater": "^4.2.2",
     "firebase": "^7.14.2",
     "firebase-admin": "^8.11.0",
+    "flatted": "^3.0.2",
     "form-data": "^3.0.0",
     "fuse.js": "^3.4.6",
     "hls.js": "^0.13.1",

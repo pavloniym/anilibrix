@@ -1,5 +1,7 @@
 <script>
 
+  import {meta} from '@package'
+  import {remote} from 'electron'
   import {mapState} from 'vuex'
 
   export default {
@@ -45,6 +47,9 @@
             const name = release.names.ru;
 
             if (title && name) {
+
+              // Set notification name
+              remote.app.setAppUserModelId(meta.name);
 
               // Create notification
               const notification = new window.Notification(title, {

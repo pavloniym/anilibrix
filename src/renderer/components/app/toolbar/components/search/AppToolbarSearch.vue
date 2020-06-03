@@ -119,6 +119,10 @@
             // Hit yandex-metrika event
             this.$metrika.hit(`/search?query=${search}`);
 
+          } else {
+
+            // Reset items
+            this.items = [];
           }
         }
 
