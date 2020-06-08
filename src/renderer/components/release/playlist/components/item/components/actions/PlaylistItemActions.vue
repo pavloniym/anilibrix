@@ -1,5 +1,5 @@
 <template>
-  <v-menu left bottom ref="menu" :attach="container">
+  <v-menu v-model="visible" left bottom ref="menu" close-on-click :attach="container">
 
     <template v-slot:activator="{ on }">
       <v-btn icon color="grey darken-2" @click.stop="on.click">
@@ -51,6 +51,7 @@
     data() {
       return {
         loading: false,
+        visible: false,
       }
     },
     computed: {
@@ -91,7 +92,7 @@
         await this._setWatchData({releaseId: this.release.id, episodeId: this.episode.id, percentage: 100});
 
         // Deactivate menu
-        this.$refs.menu.callDeactivate()
+        this.visible = false;
       },
 
 
@@ -106,7 +107,7 @@
         await this._removeWatchData({releaseId: this.release.id, episodeId: this.episode.id});
 
         // Deactivate menu
-        this.$refs.menu.callDeactivate()
+        this.visible = false;
       },
     }
 
