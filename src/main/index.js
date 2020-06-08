@@ -82,10 +82,20 @@ app.on('ready', async () => {
   // Show about panel
   ipc.on('app:about', () => app.showAboutPanel());
 
+  // Notification
+  ipc.on('app:notification', (e, payload) => Main.sendToWindow('app:notification', payload));
+
   // Devtools
   ipc.on('app:devtools:main', () => Main.showDevTools());
   ipc.on('app:devtools:torrent', () => Torrent.showDevTools());
   ipc.on('app:devtools:chromecast', () => Chromecast.showDevTools());
 
+  // Set dock number
+  // If dock is available
+  ipc.on('app:dock:number', (e, number) => {
+    if(app.dock) {
+      app.dock.setBadge(number && number > 0 ? number.toString() : '')
+    }
+  });
 
 });

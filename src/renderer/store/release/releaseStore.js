@@ -2,6 +2,7 @@ import AnilibriaProxy from '@proxies/anilibria'
 import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 
 import axios from "axios";
+import {Main} from '@main/utils/windows'
 
 let REQUEST = null;
 
@@ -88,8 +89,8 @@ export default {
       } catch (error) {
         if (!axios.isCancel(error)) {
 
-          dispatch('app/setError', 'Произошла ошибка при загрузке релиза', {root: true});
-          dispatch('app/setError', error, {root: true});
+          Main.sendToWindow('app:error', 'Произошла ошибка при загрузке релиза');
+          Main.sendToWindow('app:error', error);
 
         }
       } finally {

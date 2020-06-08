@@ -54,7 +54,7 @@
     },
     computed: {
       ...mapState('app', {_drawer: s => s.drawer}),
-      ...mapState('app/settings', {_devtools: s => s.devtools}),
+      ...mapState('app/settings/system', {_devtools: s => s.devtools}),
 
       /**
        * Get categories components
@@ -64,9 +64,9 @@
       categories() {
         return [
 
-          ConnectionSettings,
           PlayerSettings,
           SystemSettings,
+          ConnectionSettings,
           ActionsSettings,
           AnilibriaSettings,
           this._devtools ? DevtoolsSettings : null

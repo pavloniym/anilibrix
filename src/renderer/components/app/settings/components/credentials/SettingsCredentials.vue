@@ -54,7 +54,7 @@
     },
 
     methods: {
-      ...mapActions('app/settings', {_toggleDevtools: 'toggleDevtools'}),
+      ...mapActions('app/settings/system', {_toggleDevtools: 'toggleDevtools'}),
 
       /**
        * Show about panel

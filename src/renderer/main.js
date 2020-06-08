@@ -11,6 +11,7 @@ import vuetify from '@plugins/vuetify'
 
 // Import plugins
 import '@plugins/plyr'
+import '@plugins/moment'
 import '@plugins/vue-meta'
 import '@plugins/vue-toasted'
 

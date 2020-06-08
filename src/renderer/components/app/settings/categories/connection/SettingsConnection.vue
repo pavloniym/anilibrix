@@ -9,101 +9,132 @@
       </div>
     </div>
 
+    <!-- Host -->
     <v-card>
-      <v-list dense>
-        <template v-for="(item, k) in settings">
-          <v-divider v-if="k > 0" :key="`d:${k}`" />
-          <v-list-item :key="k" @click="item.action">
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"/>
-            </v-list-item-content>
-            <v-list-item-action class="text-right">
-              <v-list-item-subtitle v-text="item.value"/>
-            </v-list-item-action>
-          </v-list-item>
-        </template>
-      </v-list>
+      <v-card-subtitle class="pb-0 font-weight-bold">Настройка точки доступа</v-card-subtitle>
+      <v-card-subtitle class="py-0 pb-2">Укажите адрес точки доступа к порталу Anilibria</v-card-subtitle>
+      <v-card-text>
+        <v-text-field
+          outlined
+          hide-details
+          class="my-4"
+          label="Адрес точки доступа"
+          :value="_host"
+          @input="_setHost($event)">
+        </v-text-field>
+        <div class="caption">
+          Иногда, для более корректного подключения, необходимо вписать полный адрес точки доступа,
+          включая <b>http</b> и <b>www</b>
+        </div>
+      </v-card-text>
     </v-card>
+    <v-divider/>
 
 
-    <!-- Dialogs -->
-    <template v-if="isMounted">
-      <component
-        v-for="(dialog,k) in dialogs"
-        :is="dialog.component"
-        :key="k"
-        :ref="dialog.ref"
-        :attach="$refs.settings">
-      </component>
+    <!-- Proxy -->
+    <v-card>
+      <v-card-subtitle class="pb-0 font-weight-bold">Настройка подключения</v-card-subtitle>
+      <v-card-subtitle class="py-0">Укажите способ подключения к API портала<</v-card-subtitle>
+      <v-card-text>
+        <v-radio-group hide-details class="my-4" :value="_type" @change="_setProxy">
+          <v-radio v-for="(proxy, k) in proxies" v-bind="proxy" :key="k"/>
+        </v-radio-group>
+        <div class="caption">Использование прокси-сервера может помочь, если <b>Anilibria</b> не доступна в Вашем
+          регионе
+        </div>
+      </v-card-text>
+    </v-card>
+    <v-divider/>
+
+
+    <!-- Pac Proxy Settings -->
+    <template v-if="_type === 'pac'">
+      <v-card>
+        <v-card-subtitle class="pb-0 font-weight-bold">Параметры PAC прокси</v-card-subtitle>
+        <v-card-subtitle class="py-0 pb-2">
+          Укажите ссылку на валидный PAC скрипт, который будет использоваться приложением
+        </v-card-subtitle>
+        <v-card-text>
+          <v-text-field
+            outlined
+            hide-details
+            class="my-4"
+            label="Ссылка на PAC скрипт"
+            :value="_pac.source"
+            @input="_setProxyPacSource">
+          </v-text-field>
+        </v-card-text>
+      </v-card>
+      <v-divider/>
     </template>
+
+
+    <!-- Custom Proxy Settings -->
+    <template v-if="_type === 'custom'">
+      <v-card>
+        <v-card-subtitle class="pb-0 font-weight-bold">Параметры собственного прокси</v-card-subtitle>
+        <v-card-subtitle class="py-0 pb-2">
+          Укажите хост и порт собственного прокси. Прокси должен уметь работать через https соединение
+        </v-card-subtitle>
+        <v-card-text>
+          <v-text-field
+            outlined
+            hide-details
+            label="Хост прокси-сервера"
+            class="mt-4 mb-2"
+            :value="_custom.host"
+            @input="host => _setProxyCustomConnection({..._custom, host})">
+          </v-text-field>
+          <v-text-field
+            outlined
+            hide-details
+            class="mb-4"
+            label="Порт прокси-сервера"
+            :value="_custom.port"
+            @input="port => _setProxyCustomConnection({..._custom, port})">
+          </v-text-field>
+        </v-card-text>
+      </v-card>
+      <v-divider/>
+    </template>
+
 
   </div>
 </template>
 
 <script>
 
-  import HostDialog from './dialogs/host'
-  import ProxyDialog from './dialogs/proxy'
-
-  import {mapState} from 'vuex'
+  import {mapActions, mapState} from 'vuex'
 
   export default {
     data() {
       return {
-        proxies: {
-          pac: 'PAC прокси',
-          direct: 'Без прокси',
-          custom: 'Собственный прокси сервер',
-        },
-        isMounted: false,
+        proxies: [
+          {value: 'direct', label: 'Отключить прокси'},
+          {value: 'pac', label: 'PAC прокси', source: null},
+          {value: 'custom', label: 'Использовать собственный прокси'},
+        ],
       }
     },
 
     computed: {
       ...mapState('app/settings/connection', {
+        _pac: s => s.proxy.pac,
         _host: s => s.host,
         _type: s => s.proxy.type || 'direct',
+        _custom: s => s.proxy.custom,
       }),
-
-
-      /**
-       * Get settings items
-       *
-       * @return array
-       */
-      settings() {
-        return [
-          {
-            title: 'Точка доступа',
-            value: this._host,
-            action: () => this.$refs.host[0].showDialog(),
-          },
-          {
-            title: 'Тип подключения',
-            value: this.proxies[this._type],
-            action: () => this.$refs.proxy[0].showDialog(),
-          }
-        ]
-      },
-
-
-      /**
-       * Get dialogs
-       *
-       * @return Array
-       */
-      dialogs() {
-        return [
-          {component: HostDialog, ref: 'host'},
-          {component: ProxyDialog, ref: 'proxy'},
-        ]
-      }
-
     },
 
-    mounted() {
-      this.isMounted = true;
-    }
+    methods: {
+      ...mapActions('app/settings/connection', {
+        _setHost: 'setHost',
+        _setProxy: 'setProxy',
+        _setProxyPacSource: 'setProxyPacSource',
+        _setProxyCustomConnection: 'setProxyCustomConnection'
+      }),
+    },
+
 
   }
 </script>

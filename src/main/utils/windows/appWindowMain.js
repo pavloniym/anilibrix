@@ -25,8 +25,8 @@ class MainWindow extends Window {
       darkTheme: true,
       useContentSize: true,
       webPreferences: {
-        nodeIntegration: true,
         plugins: true,
+        nodeIntegration: true,
       },
       backgroundColor: '#121212'
     }

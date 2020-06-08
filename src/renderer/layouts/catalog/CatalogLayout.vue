@@ -2,7 +2,7 @@
   <div class="catalog">
 
     <!-- Toolbar -->
-    <app-tool-bar no-update no-catalog>
+    <app-tool-bar hide-update hide-catalog>
       <template v-slot:left>
         <v-btn icon @click="toReleases">
           <v-icon>mdi-arrow-left</v-icon>

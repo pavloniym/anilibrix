@@ -2,9 +2,6 @@ import watch from './watch'
 import account from './account'
 import settings from './settings'
 
-import {generalMutations} from "@utils/store/mutations";
-
-const SET_ERROR = 'SET_ERROR';
 const SET_DRAWER = 'SET_DRAWER';
 
 export default {
@@ -16,20 +13,10 @@ export default {
   },
 
   state: {
-    error: null,
     drawer: false,
   },
 
   mutations: {
-
-    /**
-     * Set error
-     *
-     * @param s
-     * @param error
-     * @return {*}
-     */
-    [SET_ERROR]: (s, error) => s.error = error,
 
     /**
      * Set
@@ -42,20 +29,6 @@ export default {
   },
 
   actions: {
-
-
-    /**
-     * Set error
-     *
-     * @param commit
-     * @param error
-     * @param message
-     * @return {*}
-     */
-    setError: ({commit}, error = null) => {
-      commit(SET_ERROR, error);
-      commit(SET_ERROR, null);
-    },
 
 
     /**

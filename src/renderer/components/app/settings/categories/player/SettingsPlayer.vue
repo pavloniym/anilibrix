@@ -9,98 +9,70 @@
       </div>
     </div>
 
-    <v-card ref="card">
-      <v-list dense>
-        <template v-for="(item, k) in settings">
-          <v-divider v-if="k > 0" :key="`d:${k}`"/>
-          <v-list-item :key="k" @click="item.action">
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"/>
-            </v-list-item-content>
-            <v-list-item-action class="text-right">
-              <v-list-item-subtitle v-text="item.value"/>
-            </v-list-item-action>
-          </v-list-item>
-        </template>
-      </v-list>
-    </v-card>
+    <!-- Torrents -->
+    <v-card>
+      <v-card-subtitle class="pb-0 font-weight-bold">Торренты</v-card-subtitle>
+      <v-card-subtitle class="py-0 pb-2">
+        <div class="caption pb-1">
+          Вы можете подключить торренты, которые автоматически буду связаны с эпизодами релизов
+          и доступны для просмотра.
+        </div>
+        <div class="caption">
+          Торренты не требуют стороннего плеера или клиента и доступны онлайн,
+          в меню выбора качества воспроизведения релиза.
+        </div>
+      </v-card-subtitle>
 
-    <!-- Dialogs -->
-    <template v-if="isMounted">
-      <component
-        v-for="(dialog,k) in dialogs"
-        :is="dialog.component"
-        :key="k"
-        :ref="dialog.ref"
-        :attach="$refs.settings">
-      </component>
-    </template>
+      <v-list-item dense @click="_setTorrentsProcess(!_torrents.process)">
+        <v-list-item-title>Воспроизоводить торренты</v-list-item-title>
+        <v-list-item-action class="mr-2">
+          <v-switch :input-value="_torrents.process" @change="_setTorrentsProcess" />
+        </v-list-item-action>
+      </v-list-item>
+
+      <v-card-text class="pt-2">
+        <div class="caption">
+          Использование торрентов требует бОльшего времени подключения и парсинга,
+          что может негативно сказаться на скорости загрузки данных по релизам,
+          особенно — при использовании прокси-сервера
+        </div>
+      </v-card-text>
+    </v-card>
+    <v-divider/>
+
+
+    <!-- Autoplay -->
+    <v-card>
+      <v-list-item dense @click="_setAutoplayNext(!_autoplayNext)">
+        <v-list-item-title>Автовоспроизведение следующего эпизода</v-list-item-title>
+        <v-list-item-action class="mr-2">
+          <v-switch :input-value="_autoplayNext" @change="_setAutoplayNext" />
+        </v-list-item-action>
+      </v-list-item>
+    </v-card>
 
   </div>
 </template>
 
 <script>
 
-  import TorrentsDialog from "./dialogs/torrents";
   import {mapState, mapActions} from 'vuex'
 
   export default {
-
-    data() {
-      return {
-        isMounted: false,
-      }
-    },
-
     computed: {
       ...mapState('app/settings/player', {
         _torrents: s => s.torrents,
         _autoplayNext: s => s.autoplayNext,
-      }),
-
-      /**
-       * Get settings items
-       *
-       * @return array
-       */
-      settings() {
-        return [
-          {
-            title: 'Воспроизводить торренты',
-            value: this._torrents.process ? 'Да' : 'Нет',
-            action: () => this.$refs.torrents[0].showDialog(),
-          },
-          {
-            title: 'Автовоспроизведение следующего эпизода',
-            value: this._autoplayNext ? 'Да' : 'Нет',
-            action: () => this._setAutoplayNext(!this._autoplayNext),
-          }
-        ]
-      },
-
-
-      /**
-       * Get dialogs
-       *
-       * @return Array
-       */
-      dialogs() {
-        return [
-          {component: TorrentsDialog, ref: 'torrents'},
-        ]
-      }
+      })
     },
 
 
     methods: {
       ...mapActions('app/settings/player', {
-        _setAutoplayNext: 'setAutoplayNext'
+        _setAutoplayNext: 'setAutoplayNext',
+        _setTorrentsProcess: 'setTorrentsProcess'
       })
-
-    },
-
-    mounted() {
-      this.isMounted = true;
     }
+
   }
 </script>

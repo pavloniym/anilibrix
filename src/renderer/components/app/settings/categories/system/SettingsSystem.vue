@@ -4,101 +4,82 @@
     <div class="pa-4 caption grey--text">
       <div class="body-1">Настройки приложения</div>
       <div>
-        В данном разделе вы можете настроить автоматическое обновление релизов и другие параметры приложения
+        В данном разделе вы можете настроить автоматическое обновление релизов, системные уведомления
+        и другие параметры приложения
       </div>
     </div>
 
+
+    <!-- System Notifications -->
     <v-card>
-      <v-list dense>
-        <template v-for="(item, k) in settings">
-          <v-divider v-if="k > 0" :key="`d:${k}`"/>
-          <v-list-item :key="k" @click="item.action">
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"/>
-            </v-list-item-content>
-            <v-list-item-action class="text-right">
-              <v-list-item-subtitle v-text="item.value"/>
-            </v-list-item-action>
-          </v-list-item>
-        </template>
-      </v-list>
+      <v-list-item dense @click="_setSystemNotifications(!_notifications_system)">
+        <v-list-item-title>Показывать системные уведомления</v-list-item-title>
+        <v-list-item-action class="mr-2">
+          <v-switch :input-value="_notifications_system" @change="_setSystemNotifications" />
+        </v-list-item-action>
+      </v-list-item>
+    </v-card>
+    <v-divider />
+
+
+    <!-- Auto update -->
+    <v-card>
+      <v-list-item dense @click="_setUpdates(!_updates_enabled)">
+        <v-list-item-title>Автоматическое обновление релизов</v-list-item-title>
+        <v-list-item-action class="mr-2">
+          <v-switch :input-value="_updates_enabled" @change="_setUpdates" />
+        </v-list-item-action>
+      </v-list-item>
+    </v-card>
+    <v-divider />
+
+    <!-- Update Timeouts -->
+    <v-card>
+      <v-card-subtitle class="pb-0 font-weight-bold">Период обновлений</v-card-subtitle>
+      <v-card-subtitle class="py-0 pb-2">
+        Вы можете указать с какой периодичностью приложение будет обновлять релизы в фоновом режиме
+      </v-card-subtitle>
+      <v-card-text>
+        <v-text-field
+        outlined
+        hide-details
+        class="my-4"
+        type="number"
+        label="Периодичность обновления релизов"
+        suffix="мин"
+        :value="_updates_timeout"
+        @input="_setUpdatesTimeout($event ? parseInt($event) : 1)">
+        </v-text-field>
+      </v-card-text>
     </v-card>
 
-
-    <!-- Dialogs -->
-    <template v-if="isMounted">
-      <component
-        v-for="(dialog,k) in dialogs"
-        :is="dialog.component"
-        :key="k"
-        :ref="dialog.ref"
-        :attach="$refs.settings">
-      </component>
-    </template>
 
   </div>
 </template>
 
 <script>
 
-  import UpdatesTimeoutDialog from './dialogs/updates/timeout'
   import {mapState, mapActions} from 'vuex'
 
   export default {
-    data() {
-      return {
-        isMounted: false,
-      }
-    },
 
     computed: {
       ...mapState('app/settings/system', {
         _updates_enabled: s => s.updates.enabled,
         _updates_timeout: s => s.updates.timeout,
-      }),
-
-
-      /**
-       * Get settings items
-       *
-       * @return array
-       */
-      settings() {
-        return [
-          {
-            title: 'Автоматическое обновление релизов',
-            value: this._updates_enabled ? 'Да' : 'Нет',
-            action: () => this._setUpdates(!this._updates_enabled),
-          },
-          {
-            title: 'Периодичность обновления релизов',
-            value: this._updates_timeout + ' мин',
-            action: () => this.$refs['updatesTimeout'][0].showDialog(),
-          }
-        ]
-      },
-
-
-      /**
-       * Get dialogs
-       *
-       * @return Array
-       */
-      dialogs() {
-        return [
-          {component: UpdatesTimeoutDialog, ref: 'updatesTimeout'},
-        ]
-      }
-
+        _notifications_system: s => s.notifications.system,
+      })
     },
 
     methods: {
-      ...mapActions('app/settings/system', {_setUpdates: 'setUpdates'})
+      ...mapActions('app/settings/system', {
+        _setUpdates: 'setUpdates',
+        _setUpdatesTimeout: 'setUpdatesTimeout',
+        _setSystemNotifications: 'setSystemNotifications',
+      }),
+
     },
 
-    mounted() {
-      this.isMounted = true;
-    }
 
   }
 </script>

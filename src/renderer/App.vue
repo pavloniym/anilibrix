@@ -2,7 +2,7 @@
   <v-app>
 
     <!-- System bar -->
-    <app-system-bar />
+    <app-system-bar/>
 
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
@@ -17,7 +17,7 @@
     <app-errors/>
 
     <!-- Notifications -->
-    <app-notifications />
+    <app-notifications/>
 
   </v-app>
 </template>
@@ -52,7 +52,7 @@
     computed: {
       ...mapState('app/settings/system', {
         _updates: s => s.updates.enabled,
-        _timeout: s => (s.updates.timeout || 1) * 60 * 1000
+        _timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
       })
 
     },

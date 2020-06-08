@@ -1,22 +1,13 @@
 <script>
 
-  import {mapState} from 'vuex'
+  import {ipcRenderer as ipc} from 'electron'
 
   export default {
     render: () => null,
-    computed: {
-      ...mapState('app', {_error: s => s.error}),
-    },
-
-    watch: {
-      _error: {
-        deep: true,
-        handler(error) {
-          if(error) {
-            this.$toasted.show(error, {type: 'error'});
-          }
-        }
-      }
+    created() {
+      ipc.on('app:error', (e, error) =>
+        this.$toasted.show(error, {type: 'error'})
+      )
     }
 
   }

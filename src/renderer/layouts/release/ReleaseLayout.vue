@@ -2,7 +2,7 @@
   <div class="release">
 
     <!-- Toolbar -->
-    <app-tool-bar no-update>
+    <app-tool-bar hide-update>
       <template v-slot:left>
         <v-btn icon @click="toBack">
           <v-icon>mdi-arrow-left</v-icon>

@@ -1,4 +1,10 @@
-import {generalMutations} from '@utils/store/mutations'
+const SET_HOST = 'SET_HOST';
+const SET_PROXY_TYPE = 'SET_PROXY_TYPE';
+const SET_PROXY_PAC_SOURCE = 'SET_PROXY_PAC_SOURCE';
+const SET_PROXY_PAC_CONNECTION = 'SET_PROXY_PAC_CONNECTION';
+const CLEAR_PROXY_PAC_CONNECTION = 'CLEAR_PROXY_PAC_CONNECTION';
+const SET_PROXY_CUSTOM_CONNECTION = 'SET_PROXY_CUSTOM_CONNECTION';
+
 
 export default {
   namespaced: true,
@@ -20,7 +26,76 @@ export default {
   },
 
   mutations: {
-    ...generalMutations
+
+    /**
+     * Set host
+     *
+     * @param s
+     * @param host
+     * @return {*}
+     */
+    [SET_HOST]: (s, host) => s.host = host,
+
+
+    /**
+     * Set proxy type
+     *
+     * @param s
+     * @param type
+     * @return {*}
+     */
+    [SET_PROXY_TYPE]: (s, type) => s.proxy.type = type,
+
+
+    /**
+     * Set proxy pac
+     *
+     * @param s
+     * @param source
+     * @return {*}
+     */
+    [SET_PROXY_PAC_SOURCE]: (s, source) => s.proxy.pac.source = source,
+
+
+    /**
+     * Set proxy pac connection payload
+     *
+     * @param s
+     * @param host
+     * @param port
+     * @param direct
+     */
+    [SET_PROXY_PAC_CONNECTION]: (s, {host, port, direct}) => {
+      s.proxy.pac.host = host;
+      s.proxy.pac.port = port;
+      s.proxy.pac.direct = direct;
+    },
+
+
+    /**
+     * Clear proxy pac connection
+     *
+     * @param s
+     */
+    [CLEAR_PROXY_PAC_CONNECTION]: (s) => {
+      s.proxy.pac.host = null;
+      s.proxy.pac.port = null;
+      s.proxy.pac.direct = false;
+    },
+
+    /**
+     * Set proxy custom connection payload
+     *
+     * @param s
+     * @param host
+     * @param port
+     * @param direct
+     */
+    [SET_PROXY_CUSTOM_CONNECTION]: (s, {host, port}) => {
+      s.proxy.custom.host = host;
+      s.proxy.custom.port = port;
+    }
+
   },
 
   actions: {
@@ -32,7 +107,7 @@ export default {
      * @param host
      * @return {*}
      */
-    setHost: ({commit}, host) => commit('set', {k: 'host', v: host}),
+    setHost: ({commit}, host) => commit(SET_HOST, host),
 
 
     /**
@@ -42,7 +117,7 @@ export default {
      * @param type
      * @return {*}
      */
-    setProxy: ({commit}, type) => commit('set', {k: 'proxy.type', v: type}),
+    setProxy: ({commit}, type) => commit(SET_PROXY_TYPE, type),
 
 
     /**
@@ -52,7 +127,7 @@ export default {
      * @param source
      * @return {*}
      */
-    setProxyPacSource: ({commit}, source) => commit('set', {k: 'proxy.pac.source', v: source}),
+    setProxyPacSource: ({commit}, source) => commit(SET_PROXY_PAC_SOURCE, source),
 
 
     /**
@@ -63,11 +138,8 @@ export default {
      * @param port
      * @param direct
      */
-    setProxyPacConnection: ({commit}, {host = null, port = null, direct = false} = {}) => {
-      commit('set', {k: 'proxy.pac.host', v: host});
-      commit('set', {k: 'proxy.pac.port', v: port});
-      commit('set', {k: 'proxy.pac.direct', v: direct});
-    },
+    setProxyPacConnection: ({commit}, {host = null, port = null, direct = false} = {}) =>
+      commit(SET_PROXY_PAC_CONNECTION, {host, port, direct}),
 
 
     /**
@@ -77,10 +149,8 @@ export default {
      * @param host
      * @param port
      */
-    setProxyCustomConnection: ({commit}, {host = null, port = null} = {}) => {
-      commit('set', {k: 'proxy.custom.host', v: host});
-      commit('set', {k: 'proxy.custom.port', v: port});
-    },
+    setProxyCustomConnection: ({commit}, {host = null, port = null} = {}) =>
+      commit(SET_PROXY_CUSTOM_CONNECTION, {host, port}),
 
 
     /**
@@ -88,11 +158,7 @@ export default {
      *
      * @param commit
      */
-    clearProxyPacConnection: ({commit}) => {
-      commit('set', {k: 'proxy.pac.host', v: null});
-      commit('set', {k: 'proxy.pac.port', v: null});
-      commit('set', {k: 'proxy.pac.direct', v: false});
-    }
+    clearProxyPacConnection: ({commit}) => commit(CLEAR_PROXY_PAC_CONNECTION)
 
   }
 }

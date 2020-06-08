@@ -1,13 +1,13 @@
 <script>
 
   import {meta} from '@package'
-  import {remote} from 'electron'
   import {mapState} from 'vuex'
+  import {remote, ipcRenderer as ipc} from 'electron'
 
   export default {
     render: () => null,
     computed: {
-      ...mapState('notifications', {_item: 'item'}),
+      ...mapState('app/settings/system', {_notifications: s => s.notifications.system}),
     },
 
     methods: {
@@ -29,42 +29,40 @@
           }
         });
       },
-
     },
 
-    watch: {
 
-      _item: {
-        deep: true,
-        immediate: true,
-        handler(release) {
-          if (release) {
+    created() {
+      ipc.on('app:notification', (e, release) => {
 
-            // Show notification
-            const episode = release.episodes[0];
-            const title = episode ? episode.title : null;
-            const poster = release.poster.image;
-            const name = release.names.ru;
+        // Check if release is set
+        // Check if system notifications is enabled
+        if (release && this._notifications === true) {
 
-            if (title && name) {
+          // Show notification
+          const episode = release.episodes[0];
+          const title = episode ? episode.title : null;
+          const poster = release.poster.image;
+          const name = release.names.ru;
 
-              // Set notification name
-              remote.app.setAppUserModelId(meta.name);
+          if (title && name) {
 
-              // Create notification
-              const notification = new window.Notification(title, {
-                body: name,
-                icon: poster
-              });
+            // Set notification name
+            remote.app.setAppUserModelId(meta.name);
 
-              // If the user clicks in the Notifications Center, show the app
-              notification.onclick = () => this.toVideo({release, episode});
+            // Create notification
+            const notification = new window.Notification(title, {
+              body: name,
+              icon: poster
+            });
 
-            }
+            // If the user clicks in the Notifications Center, show the app
+            notification.onclick = () => this.toVideo({release, episode});
+
           }
         }
-      }
-
+      })
     }
+
   }
 </script>

@@ -27,8 +27,8 @@
 
 <script>
 
-  import {mapActions, mapState} from 'vuex'
   import {ipcRenderer as ipc} from 'electron'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
     computed: {
@@ -55,12 +55,15 @@
           },
           {
             title: 'Показать уведомление',
+            action: () => ipc.send('app:notification', this._releases[0])
+          },
+          {
+            title: 'Добавить уведомление в стор',
             action: () => this._setRelease(this._releases[0])
           }
         ]
       },
     },
-
 
     methods: {
       ...mapActions('notifications', {_setRelease: 'setRelease'}),

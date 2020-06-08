@@ -3,12 +3,13 @@ import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
 
 import axios from 'axios'
 import __get from 'lodash/get'
+import {Main} from '@main/utils/windows'
 
 const SET_INDEX = 'SET_INDEX';
 const SET_RELEASES_DATA = 'SET_RELEASES_DATA';
 const SET_RELEASES_LOADING = 'SET_RELEASES_LOADING';
-const SET_RELEASES_DATETIME = 'SET_RELEASES_DATETIME';
 
+const SET_RELEASES_DATETIME = 'SET_RELEASES_DATETIME';
 const REQUESTS = {search: null, releases: null};
 
 export default {
@@ -113,12 +114,30 @@ export default {
         commit(SET_RELEASES_DATA, sortedReleases);
 
 
-        // If datetime is set -> it not initial request
         // Try to find new releases and show notifications
-        if (state.datetime) {
-          sortedReleases
-            .filter(release => release.datetime.system > state.datetime)
-            .forEach(release => dispatch('notifications/setRelease', release, {root: true}))
+        // If previous releases exists (ignore initial request)
+        if (state.data && state.data.length > 0) {
+          sortedReleases.forEach(release => {
+
+            // Get release id and episodes number
+            const releaseId = release.id;
+            const releaseEpisodes = release.episodes.length;
+
+            // Get previous release
+            // Check by id and same episodes number
+            const previousRelease = state.data.find(item => item.id === releaseId && item.episodes.length === releaseEpisodes) || null;
+
+            // If no release found
+            // Send to notifications store
+            if (previousRelease === null) {
+
+              // Send notification event to main window
+              Main.sendToWindow('app:notification', release);
+
+              // Send release to notifications store
+              dispatch('notifications/setRelease', release, {root: true})
+            }
+          });
         }
 
         // Set updated datetime
@@ -127,9 +146,8 @@ export default {
       } catch (error) {
         if (!axios.isCancel(error)) {
 
-          // Show errors
-          dispatch('app/setError', 'Произошла ошибка при загрузке релизов', {root: true});
-          dispatch('app/setError', error, {root: true});
+          Main.sendToWindow('app:error', 'Произошла ошибка при загрузке релизов');
+          Main.sendToWindow('app:error', error);
 
         }
       } finally {
@@ -180,8 +198,8 @@ export default {
       } catch (error) {
         if (!axios.isCancel(error)) {
 
-          dispatch('app/setError', 'Произошла ошибка при поиске релизов', {root: true});
-          dispatch('app/setError', error, {root: true});
+          Main.sendToWindow('app:error', 'Произошла ошибка при поиске релизов');
+          Main.sendToWindow('app:error', error);
 
           return [];
         }

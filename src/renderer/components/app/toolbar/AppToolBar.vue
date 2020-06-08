@@ -1,45 +1,47 @@
 <template>
   <v-app-bar v-bind="{color, flat}" class="px-4 toolbar shrink">
+
     <slot name="left"/>
+
     <v-spacer/>
+
     <slot name="right"/>
 
-    <!-- Releases Catalog -->
-    <app-toolbar-catalog v-if="!noCatalog" />
-
-    <!-- Release Search -->
-    <app-toolbar-search v-if="!noSearch"/>
-
-    <!-- Releases Update -->
-    <app-toolbar-update v-if="!noUpdate"/>
-
-    <!-- Settings -->
-   <app-toolbar-settings v-if="!noSettings" />
+    <catalog v-if="!hideCatalog"/>
+    <search v-if="!hideSearch"/>
+    <update v-if="!hideUpdate"/>
+    <notifications v-if="!hideNotifications"/>
+    <settings v-if="!hideSettings"/>
 
   </v-app-bar>
 </template>
 
 <script>
 
-  import AppToolbarUpdate from './components/update';
-  import AppToolbarSearch from './components/search';
-  import AppToolbarCatalog from './components/catalog'
-  import AppToolbarSettings from './components/settings'
+  import Update from './components/update';
+  import Search from './components/search';
+  import Catalog from './components/catalog'
+  import Settings from './components/settings'
+  import Notifications from './components/notifications'
 
   const props = {
-    noSearch: {
+    hideSearch: {
       type: Boolean,
       default: false
     },
-    noUpdate: {
+    hideUpdate: {
       type: Boolean,
       default: false
     },
-    noSettings: {
+    hideSettings: {
       type: Boolean,
       default: false
     },
-    noCatalog: {
+    hideCatalog: {
+      type: Boolean,
+      default: false
+    },
+    hideNotifications: {
       type: Boolean,
       default: false
     },
@@ -55,12 +57,12 @@
 
   export default {
     props,
-    name: 'AppToolbar',
     components: {
-      AppToolbarUpdate,
-      AppToolbarSearch,
-      AppToolbarCatalog,
-      AppToolbarSettings
+      Update,
+      Search,
+      Catalog,
+      Settings,
+      Notifications
     },
 
   }

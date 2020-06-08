@@ -1,6 +1,7 @@
 import AnilibriaProxy from "@proxies/anilibria";
 import AnilibriaCatalogTransformer from "@transformers/anilibria/catalog";
 
+import {Main} from '@main/utils/windows'
 import __capitalize from 'lodash/capitalize'
 
 const SET_FILTER_DATA = 'SET_FILTER_DATA';
@@ -102,7 +103,6 @@ export default {
      * Get catalog items
      *
      * @param commit
-     * @param dispatch
      * @param reset
      * @param genres
      * @param years
@@ -111,7 +111,7 @@ export default {
      * @param sort
      * @return {Promise<void>}
      */
-    getCatalogItems: async ({commit, dispatch}, {reset, genres, years, page, perPage, sort = 1}) => {
+    getCatalogItems: async ({commit}, {reset, genres, years, page, perPage, sort = 1}) => {
       try {
 
         // Clear catalog releases
@@ -140,8 +140,8 @@ export default {
 
       } catch (error) {
 
-        dispatch('app/setError', 'Произошла ошибка при загрузке релизов', {root: true});
-        dispatch('app/setError', error, {root: true});
+        Main.sendToWindow('app:error', 'Произошла ошибка при загрузке релизов');
+        Main.sendToWindow('app:error', error);
 
       } finally {
 
@@ -155,11 +155,9 @@ export default {
      * Get genres filter
      *
      * @param commit
-     * @param dispatch
-     * @param state
      * @return {Promise<void>}
      */
-    getCatalogGenresFilter: async ({commit, dispatch}) => {
+    getCatalogGenresFilter: async ({commit}) => {
 
       const filter = 'genres';
 
@@ -174,8 +172,8 @@ export default {
 
       } catch (error) {
 
-        dispatch('app/setError', 'Произошла ошибка при загрузке фильтров по жанрам', {root: true});
-        dispatch('app/setError', error, {root: true});
+        Main.sendToWindow('app:error', 'Произошла ошибка при загрузке фильтров по жанрам');
+        Main.sendToWindow('app:error', error);
 
       } finally {
 
@@ -189,11 +187,9 @@ export default {
      * Get years filter
      *
      * @param commit
-     * @param dispatch
-     * @param state
      * @return {Promise<void>}
      */
-    getCatalogYearsFilter: async ({commit, dispatch}) => {
+    getCatalogYearsFilter: async ({commit}) => {
 
       const filter = 'years';
 
@@ -204,8 +200,8 @@ export default {
 
       } catch (error) {
 
-        dispatch('app/setError', 'Произошла ошибка при загрузке фильтров по годам', {root: true});
-        dispatch('app/setError', error, {root: true});
+        Main.sendToWindow('app:error', 'Произошла ошибка при загрузке фильтров по годам');
+        Main.sendToWindow('app:error', error);
 
       } finally {
 
