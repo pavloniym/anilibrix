@@ -1,5 +1,5 @@
 <template>
-  <v-menu v-if="_notifications" left nudge-bottom="55" min-width="400" max-width="400" max-height="300">
+  <v-menu left nudge-bottom="55" min-width="400" max-width="400" max-height="300">
 
     <template v-slot:activator="{ on }">
       <v-badge overlap bordered dot offset-x="15" offset-y="20" :content="unseen" :value="unseen > 0">
@@ -54,11 +54,10 @@
   export default {
     computed: {
       ...mapState('notifications', {_items: s => s.items}),
-      ...mapState('app/settings/system', {_notifications: s => s.notifications.app}),
 
 
       /**
-       * Unseen
+       * Get unseen notifications
        *
        * @return {number}
        */
