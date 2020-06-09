@@ -9,6 +9,8 @@
     class="settings">
 
 
+    <div :style="{height: '38px', background: '#191919'}"></div>
+
     <!-- Header -->
     <v-toolbar flat class="shrink" color="#363636">
       <v-app-bar-nav-icon @click="drawer = false">
