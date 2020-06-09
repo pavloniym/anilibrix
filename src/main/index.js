@@ -50,12 +50,13 @@ app.on('ready', async () => {
   // Initialize sentry.io
   sentry({store: getStore(), source: 'main'});
 
-
   // Create windows
   Main.createWindow({title: meta.name}).loadUrl();
   Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
   Chromecast.createWindow({title: `${meta.name} Chromecast Server`}).loadUrl();
 
+  // Main window close event
+  Main.getWindow().on('close', () => app.quit());
 
   // Create menu
   menuController
