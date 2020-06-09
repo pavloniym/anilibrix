@@ -110,10 +110,6 @@ export default {
         // Sort releases from newest to oldest
         const sortedReleases = releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
 
-        // Commit releases
-        commit(SET_RELEASES_DATA, sortedReleases);
-
-
         // Try to find new releases and show notifications
         // If previous releases exists (ignore initial request)
         if (state.data && state.data.length > 0) {
@@ -141,6 +137,8 @@ export default {
         }
 
         // Set updated datetime
+        // Commit releases
+        commit(SET_RELEASES_DATA, sortedReleases);
         commit(SET_RELEASES_DATETIME, new Date());
 
       } catch (error) {

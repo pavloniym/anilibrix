@@ -1,15 +1,17 @@
 <template>
   <v-layout
     align-center
-    class="black system-bar white--text mx-2"
-    :style="{height: '36px'}"
+    class="black system-bar white--text px-2"
+    :style="{height: '40px'}"
     @dblclick="maximizeApp">
 
-    <v-spacer v-if="isWindows"/>
-    <template v-for="(control, k) in controls">
-      <v-btn icon small class="system-bar__button" :key="k" @click="control.action">
-        <v-icon small color="grey">{{control.icon}}</v-icon>
-      </v-btn>
+    <template v-if="isMac === false">
+      <v-spacer v-if="isWindows"/>
+      <template v-for="(control, k) in controls">
+        <v-btn icon small class="system-bar__button" :key="k" @click="control.action">
+          <v-icon small color="grey">{{control.icon}}</v-icon>
+        </v-btn>
+      </template>
     </template>
 
   </v-layout>
@@ -29,6 +31,16 @@
        */
       isWindows() {
         return !!(process.platform === "win32" || process.platform === "win64");
+      },
+
+
+      /**
+       * Check if is mac platform
+       *
+       * @return {boolean}
+       */
+      isMac() {
+        return process.platform === "darwin";
       },
 
 

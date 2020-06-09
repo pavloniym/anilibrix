@@ -9,6 +9,7 @@
       </v-badge>
     </template>
 
+    <!-- Notifications -->
     <v-card v-if="_items && _items.length > 0">
       <v-layout align-center class="px-4 py-2">
         <h5 class="grey--text">Последние уведомления за неделю</h5>
@@ -27,18 +28,25 @@
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title v-text="item.release.names.ru"/>
-              <v-list-item-subtitle v-text="item.episode.title"/>
-              <v-list-item-subtitle v-text="getDatetime(item)"/>
+              <v-list-item-subtitle>Вышла новая {{item.episode.id}} серия</v-list-item-subtitle>
+              <v-list-item-subtitle v-text="getDatetime(item)" class="grey--text text--darken-2"/>
             </v-list-item-content>
           </v-list-item>
         </template>
       </v-list>
     </v-card>
 
+    <!-- Empty -->
     <v-card v-else>
-      <v-card-text>
-        Пока что здесь нет ни одного уведомления
-      </v-card-text>
+      <v-layout align-center class="pa-4 caption grey--text">
+        <div class="mr-4">
+          <v-icon color="grey">mdi-bell</v-icon>
+        </div>
+        <div>
+          <div>Пока что здесь нет ни одного уведомления</div>
+          <div>Возможно скоро выйдет что-то интересное ...</div>
+        </div>
+      </v-layout>
     </v-card>
 
   </v-menu>

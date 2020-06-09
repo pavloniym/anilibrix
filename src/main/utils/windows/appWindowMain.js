@@ -23,6 +23,7 @@ class MainWindow extends Window {
       show: true,
       frame: false,
       darkTheme: true,
+      titleBarStyle: 'hiddenInset',
       useContentSize: true,
       webPreferences: {
         plugins: true,

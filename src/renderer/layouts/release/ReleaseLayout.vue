@@ -56,7 +56,7 @@
 <style lang="scss" scoped>
 
   .release {
-    top: 36px;
+    top: 40px;
     width: 100%;
     bottom: 0;
     position: absolute;
