@@ -1,6 +1,6 @@
 {
   "name": "anilibrix",
-  "version": "1.2.73",
+  "version": "1.2.74",
   "author": "AniLibria",
   "description": "AniLibrix - AniLibria desktop app",
   "license": null,
@@ -29,7 +29,7 @@
   },
   "build": {
     "productName": "AniLibrix",
-    "artifactName": "${productName}-${os}-${version}.${ext}",
+    "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
     "appId": "com.anilibria.anilibrix",
     "directories": {
       "output": "release"
@@ -64,11 +64,23 @@
     "win": {
       "icon": "build/icons/app/anilibria.ico",
       "target": [
-        "portable"
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
       ]
     },
     "linux": {
       "icon": "build/icons/app"
+    },
+    "nsis": {
+      "oneClick": false,
+      "language": "0419",
+      "artifactName": "${productName}-${os}-${version}-setup.${ext}",
+      "allowToChangeInstallationDirectory": true
     }
   },
   "dependencies": {
