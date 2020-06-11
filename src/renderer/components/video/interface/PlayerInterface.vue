@@ -152,7 +152,7 @@
        * @return {Promise}
        */
       toggleFullscreen() {
-        return screenfull.toggle(document.getElementById('container'));
+        return screenfull.toggle(document.getElementById('player-container'));
       },
 
 
