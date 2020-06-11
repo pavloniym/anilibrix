@@ -28,7 +28,7 @@
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title v-text="item.release.names.ru"/>
-              <v-list-item-subtitle>Вышла новая {{item.episode.id}} серия</v-list-item-subtitle>
+              <v-list-item-subtitle>Вышла {{item.episode.id}} серия</v-list-item-subtitle>
               <v-list-item-subtitle v-text="getDatetime(item)" class="grey--text text--darken-2"/>
             </v-list-item-content>
           </v-list-item>
