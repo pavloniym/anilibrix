@@ -3,10 +3,8 @@
     <v-slide-y-reverse-transition>
       <v-layout v-show="visible" column class="interface pa-8">
 
-
         <interface-headline v-bind="{player, release, episode}" class="pb-2"/>
         <interface-timeline v-bind="{player}"/>
-
 
         <v-row no-gutters justify="center">
 
@@ -28,7 +26,8 @@
           <v-col align-self="center">
             <interface-controls
               v-bind="{player, source, sources}"
-              :chromecast="() => $refs.chromecast">
+              :chromecast="() => $refs.chromecast"
+              @toggle:fullscreen="toggleFullscreen">
             </interface-controls>
           </v-col>
         </v-row>
@@ -39,7 +38,7 @@
     <interface-next v-bind="{player, release, episode}"/>
     <interface-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
     <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
-    <interface-playback v-bind="{player}"/>
+    <interface-playback v-bind="{player}" @toggle:play="togglePlay"/>
     <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
     <interface-chromecast v-bind="{player, payload}" ref="chromecast"/>
 
@@ -60,6 +59,7 @@
   import InterfaceBuffering from './components/buffering'
   import InterfaceChromecast from './components/chromecast'
 
+  import screenfull from "screenfull";
 
   const props = {
     player: {
@@ -138,29 +138,62 @@
        * @param e
        * @return void
        */
-      handleKeyboardEvent(e) {
+      async handleKeyboardEvent(e) {
         if (e.which === 39 || e.which === 37) this.showInterface();
+        if (e.which === 32) this.togglePlay();
+        if (e.code === 'KeyF') await this.toggleFullscreen();
       },
 
+
+      /**
+       * Enter fullscreen mode
+       * Fullscreen div container with player and controls
+       *
+       * @return {Promise}
+       */
+      toggleFullscreen() {
+        return screenfull.toggle(document.getElementById('container'));
+      },
+
+
+      /**
+       * Toggle player play state
+       *
+       * @return {void}
+       */
+      togglePlay() {
+        this.player.togglePlay();
+      }
 
     },
 
     mounted() {
-      this.$nextTick(async () => {
 
-        // Hide / Show controls
-        this.showInterface();
+      // Hide / Show controls
+      this.showInterface();
 
-        // Add some event listeners
-        document.getElementById('container').addEventListener('mousemove', this.showInterface);
-        document.getElementById('container').addEventListener('keydown', this.handleKeyboardEvent);
-      })
+      // Add keyboard event listener
+      window.addEventListener('keydown', this.handleKeyboardEvent, true);
+      window.addEventListener('mousemove', this.showInterface, {passive: true});
+
+      // Add some event listeners
+      // Set player click event
+      // Toggle player state
+      this.player.media.addEventListener('click', this.togglePlay);
+      this.player.media.addEventListener('dblclick', this.toggleFullscreen);
+
     },
 
 
-    destroyed() {
-      document.getElementById('container').removeEventListener('mousemove', this.showInterface);
-      document.getElementById('container').removeEventListener('keydown', this.handleKeyboardEvent);
+    beforeDestroy() {
+
+      // Remove player listeners
+      this.player.media.removeEventListener('click', this.togglePlay);
+      this.player.media.removeEventListener('dblclick', this.toggleFullscreen);
+
+      // Remove keyboard listener
+      window.removeEventListener('mousemove', this.showInterface);
+      window.removeEventListener('keydown', this.handleKeyboardEvent);
     }
 
   }

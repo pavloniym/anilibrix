@@ -51,7 +51,7 @@
           },
           resetOnEnd: false,
           fullscreen: {enabled: false},
-          clickToPlay: true,
+          clickToPlay: false,
         },
       }
     },

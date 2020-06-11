@@ -1,15 +1,8 @@
 <template>
   <v-fade-transition appear>
-    <v-layout
-      v-if="isBuffering"
-      class="player__buffering"
-      fill-height
-      align-center
-      justify-center>
-
-      <v-progress-circular color="white" indeterminate size="64"/>
-
-    </v-layout>
+    <div v-if="isBuffering" class="player__buffering">
+        <v-progress-circular color="white" indeterminate size="64"/>
+    </div>
   </v-fade-transition>
 </template>
 
@@ -47,10 +40,11 @@
 
   .player {
     &__buffering {
-      top: 0;
-      width: 100%;
-      z-index: 1;
       position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -32px;
+      margin-top: -32px;
     }
   }
 

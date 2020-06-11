@@ -74,15 +74,10 @@
     created() {
 
       // Get time
-      this.player.on('timeupdate', () => {
-        this.time = this.player.currentTime;
-      });
+      this.player.on('timeupdate', () => this.time = this.player.currentTime);
 
       // Get duration on initial start
-      this.player.on('progress', () => {
-        this.duration = this.player.duration;
-      });
-
+      this.player.on('progress', () => this.duration = this.player.duration);
 
       // Set loaded metadata ready state
       // Start playing on seeking event
@@ -90,14 +85,14 @@
       this.player.on('seeking', () => this.player.play());
 
       // Set keyboard events
-      document.addEventListener('keydown', this.handleKeyboardEvent);
+      window.addEventListener('keydown', this.handleKeyboardEvent);
 
     },
 
     beforeDestroy() {
 
       // Remove keyboard events
-      document.removeEventListener('keydown', this.handleKeyboardEvent);
+      window.removeEventListener('keydown', this.handleKeyboardEvent);
     }
 
   }

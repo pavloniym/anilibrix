@@ -29,7 +29,8 @@ class MainWindow extends Window {
         plugins: true,
         nodeIntegration: true,
       },
-      backgroundColor: '#121212'
+      backgroundColor: '#121212',
+      disableHtmlFullscreenWindowResize: true,
     }
   }
 

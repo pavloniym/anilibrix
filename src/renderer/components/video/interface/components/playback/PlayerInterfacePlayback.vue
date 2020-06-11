@@ -1,9 +1,7 @@
 <template>
-  <v-layout align-center justify-center class="playback">
     <div v-show="visible" ref="button" class="playback__button">
       <v-icon size="35">{{icon}}</v-icon>
     </div>
-  </v-layout>
 </template>
 
 <script>
@@ -22,6 +20,7 @@
         icon: null,
         handler: null,
         visible: false,
+        initialized: false,
       }
     },
 
@@ -38,50 +37,34 @@
         this.icon = icon || null;
         this.visible = true;
 
-        this.$refs.button.style.animation = 'none';
-        this.$refs.button.offsetHeight; /* trigger reflow */
-        this.$refs.button.style.animation = null;
+        if(this.$refs.button) {
+          this.$refs.button.style.animation = 'none';
+          this.$refs.button.offsetHeight; /* trigger reflow */
+          this.$refs.button.style.animation = null;
+        }
 
+        // Clear timeout
+        // Hide button
         this.$nextTick(() => {
-
-          // Clear timeout
           if (this.handler) clearTimeout(this.handler);
-
-          // Hide button
           this.handler = setTimeout(() => this.visible = false, 600);
         })
       },
-
-
-      /**
-       * Handle keyboard event
-       *
-       * @param e
-       * @return void
-       */
-      handleKeyboardEvent(e) {
-        if (e.which === 32) {
-
-          if (this.player.playing) this.showButton({icon: 'mdi-pause'});
-          if (this.player.paused) this.showButton({icon: 'mdi-play'});
-
-          this.player.togglePlay();
-        }
-      },
-
     },
 
     created() {
 
-      // Set keyboard events
-      document.addEventListener('keydown', this.handleKeyboardEvent);
-    },
+      // Catch player events to show button
+      // Prevent from show play button on start -> use initialized state
+      this.player.on('play', () => this.initialized ? this.showButton({icon: 'mdi-play'}) : null);
 
 
-    beforeDestroy() {
-
-      // Remove keyboard events
-      document.removeEventListener('keydown', this.handleKeyboardEvent);
+      // Catch player pause event
+      // After first pause -> set initialized state
+      this.player.on('pause', () => {
+        this.initialized = true;
+        this.showButton({icon: 'mdi-pause'})
+      });
     }
 
   }
@@ -89,13 +72,12 @@
 <style scoped lang="scss">
 
   .playback {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
     &__button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -35px;
+      margin-top: -35px;
       display: flex;
       align-items: center;
       justify-content: center;
