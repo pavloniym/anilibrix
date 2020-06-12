@@ -45,6 +45,7 @@
       left: 50%;
       margin-left: -32px;
       margin-top: -32px;
+      pointer-events: none;
     }
   }
 

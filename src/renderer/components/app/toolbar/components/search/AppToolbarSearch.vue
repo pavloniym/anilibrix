@@ -22,7 +22,6 @@
         hide-no-data
         return-object
         ref="search"
-        class="mx-2"
         item-value="id"
         item-text="names.ru"
         placeholder="Поиск релиза ..."

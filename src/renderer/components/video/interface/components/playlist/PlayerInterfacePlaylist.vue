@@ -6,7 +6,10 @@
       width="400"
       :style="{zIndex: 100}">
 
-      <v-card>
+      <!-- System Bar Offset-->
+      <div :style="{height: '38px', background: '#191919', position: 'fixed', top: 0, width: '100%', zIndex: 1}"></div>
+
+      <v-card class="pt-10">
         <v-card-title>Плейлист</v-card-title>
         <v-card-subtitle>Список всех серий релиза</v-card-subtitle>
         <release-playlist

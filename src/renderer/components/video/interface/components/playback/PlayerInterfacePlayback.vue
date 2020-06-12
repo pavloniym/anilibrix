@@ -10,6 +10,10 @@
     player: {
       type: Object,
       default: null
+    },
+    payload: {
+      type: [String, Object],
+      default: null
     }
   };
 
@@ -65,6 +69,15 @@
         this.initialized = true;
         this.showButton({icon: 'mdi-pause'})
       });
+    },
+
+    watch: {
+      payload: {
+        deep: true,
+        handler() {
+          this.initialized = false;
+        }
+      }
     }
 
   }
@@ -86,6 +99,7 @@
       background: rgba(255, 255, 255, 0.3);
       border-radius: 50%;
       animation: playing .65s;
+      pointer-events: none;
 
       @keyframes playing {
         from {

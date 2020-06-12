@@ -7,8 +7,10 @@
     width="350"
     :style="{zIndex: 100}">
 
+    <!-- System Bar Offset-->
+    <div :style="{height: '38px', background: '#191919', position: 'fixed', top: 0, width: '100%', zIndex: 1}"></div>
 
-    <v-card>
+    <v-card class="pt-10">
       <v-card-title>Торрент</v-card-title>
       <v-card-subtitle>Данные по воспроизводимому торренту и соединению</v-card-subtitle>
       <v-list dense>

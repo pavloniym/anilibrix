@@ -38,7 +38,7 @@
     <interface-next v-bind="{player, release, episode}"/>
     <interface-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
     <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
-    <interface-playback v-bind="{player}" @toggle:play="togglePlay"/>
+    <interface-playback v-bind="{player, payload}"/>
     <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
     <interface-chromecast v-bind="{player, payload}" ref="chromecast"/>
 
@@ -106,8 +106,9 @@
     },
     data() {
       return {
+        video: null,
         visible: true,
-        visibilityHandler: null
+        visibilityHandler: null,
       }
     },
 
@@ -172,15 +173,20 @@
       // Hide / Show controls
       this.showInterface();
 
-      // Add keyboard event listener
-      window.addEventListener('keydown', this.handleKeyboardEvent, true);
-      window.addEventListener('mousemove', this.showInterface, {passive: true});
+      // Get video element
+      //this.video = document.getElementsByTagName('video')[0];
+      this.video = document.getElementsByClassName('plyr')[0];
+
 
       // Add some event listeners
       // Set player click event
       // Toggle player state
-      this.player.media.addEventListener('click', this.togglePlay);
-      this.player.media.addEventListener('dblclick', this.toggleFullscreen);
+      this.video.addEventListener('click', this.togglePlay);
+      this.video.addEventListener('dblclick', this.toggleFullscreen);
+
+      // Add keyboard event listener
+      window.addEventListener('keydown', this.handleKeyboardEvent);
+      window.addEventListener('mousemove', this.showInterface);
 
     },
 
@@ -188,8 +194,8 @@
     beforeDestroy() {
 
       // Remove player listeners
-      this.player.media.removeEventListener('click', this.togglePlay);
-      this.player.media.removeEventListener('dblclick', this.toggleFullscreen);
+      this.video.removeEventListener('click', this.togglePlay);
+      this.video.removeEventListener('dblclick', this.toggleFullscreen);
 
       // Remove keyboard listener
       window.removeEventListener('mousemove', this.showInterface);

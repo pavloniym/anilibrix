@@ -111,12 +111,7 @@
           // Set player source
           player.source = {
             type: 'video',
-            sources: [
-              {
-                src: payload,
-                type: 'video/mp4',
-              },
-            ]
+            sources: [{src: payload, type: 'video/mp4'}]
           };
 
           // Set event to forward on current time
