@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-slide-y-reverse-transition>
-      <v-layout v-show="visible" column class="interface pa-8">
+      <v-layout v-show="visible" column class="interface pa-8 pt-0">
 
         <interface-headline v-bind="{player, release, episode}" class="pb-2"/>
         <interface-timeline v-bind="{player}"/>
@@ -174,7 +174,6 @@
       this.showInterface();
 
       // Get video element
-      //this.video = document.getElementsByTagName('video')[0];
       this.video = document.getElementsByClassName('plyr')[0];
 
 
