@@ -82,6 +82,7 @@
 <script>
 
   import __get from 'lodash/get'
+  import {mapState} from 'vuex'
 
   const props = {
     value: {
@@ -107,6 +108,14 @@
         height: 250,
       }
     },
+
+    computed: {
+      ...mapState('app', {
+        _drawer: s => s.drawer,
+        _is_searching: s => s.is_searching,
+      }),
+    },
+
     methods: {
 
 
@@ -145,6 +154,14 @@
 
         if (code === 37) this.showPrev(); // Left arrow
         if (code === 39) this.showNext(); // Right arrow
+
+        // Space or Enter event
+        // Check that settings is closed and search string is not active
+        if (code === 32 || code === 13) {
+          if(this._drawer === false && this._is_searching === false) {
+            this.toEpisode(this.releases[this.value]);
+          }
+        }
       },
 
 
@@ -154,16 +171,17 @@
        * @param release
        */
       toEpisode(release) {
-        this.$emit('watch', {release, episode: __get(release, ['episodes', 0]) || null});
+        this.$emit('watch', {
+          release,
+          episode: __get(release, ['episodes', 0]) || null
+        });
       }
 
     },
 
     mounted() {
 
-      // Set scroll listener
       // Listen keyboard events
-      // document.addEventListener('wheel', this.scrollSlider, true);
       document.addEventListener('keydown', this.switchSlider, true);
 
 
@@ -172,7 +190,6 @@
     destroyed() {
 
       // Remove scroll and keyboard listeners
-      // document.removeEventListener('wheel', this.scrollSlider);
       document.removeEventListener('keydown', this.switchSlider);
     }
 

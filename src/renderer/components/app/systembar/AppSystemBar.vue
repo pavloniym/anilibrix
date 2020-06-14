@@ -2,7 +2,7 @@
   <v-layout
     align-center
     class="black system-bar white--text px-2"
-    :style="{height: '40px'}"
+    :class="{'fullscreen': isMac && _is_fullscreen}"
     @dblclick="maximizeApp">
 
     <template v-if="isMac === false">
@@ -20,9 +20,11 @@
 <script>
 
   import {remote} from 'electron'
+  import {mapState} from 'vuex'
 
   export default {
     computed: {
+      ...mapState('app', {_is_fullscreen: s => s.is_fullscreen}),
 
       /**
        * Check if is windows platform
@@ -107,6 +109,7 @@
 
       }
     }
+
   }
 </script>
 
@@ -114,10 +117,15 @@
 
   .system-bar {
     z-index: 5;
+    height: 40px;
     -webkit-app-region: drag;
 
     &__button {
       -webkit-app-region: no-drag;
+    }
+
+    &.fullscreen {
+      display: none
     }
   }
 

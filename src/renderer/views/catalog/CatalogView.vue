@@ -33,9 +33,7 @@
     </template>
 
     <!-- Load More -->
-    <v-btn v-if="page >= 1 && lastItems > 0" block text @click="loadReleases">
-      <span>Загрузить еще</span>
-    </v-btn>
+    <v-btn v-if="lastItems > 0" block text @click="loadReleases">Загрузить еще</v-btn>
 
   </catalog-layout>
 </template>
@@ -64,7 +62,6 @@
     },
     data() {
       return {
-        page: 0,
         perPage: 15,
         filters: {
           sort: 1,
@@ -76,6 +73,7 @@
 
     computed: {
       ...mapState('catalog', {
+        _page: s => s.items.page,
         _items: s => s.items.data,
         _loading: s => s.items.loading,
         _pagination: s => s.items.pagination,
@@ -95,47 +93,32 @@
     },
 
     methods: {
-      ...mapActions('catalog', {_getCatalogItems: 'getCatalogItems'}),
+      ...mapActions('catalog', {
+        _getCatalogItems: 'getCatalogItems',
+        _setPaginationPage: 'setPaginationPage',
+        _clearCatalogReleases: 'clearCatalogReleases',
+      }),
+
 
       /**
-       * Show initial releases
-       * Reset page
-       * Reset store and get catalog items
+       * Show releases
+       * Reset releases
        *
-       * @return void
        */
-      showReleases() {
-        this.page = 1;
-        this.getCatalogItems({reset: true});
+      async showReleases() {
+        await this._clearCatalogReleases();
+        await this._setPaginationPage(1);
+        await this._getCatalogItems();
       },
 
-
       /**
-       * Load more releases
+       * Load more releases from next page
        *
        * @return void
        */
-      loadReleases() {
-        this.page = this.page + 1;
-        this.getCatalogItems();
-      },
-
-
-      /**
-       * Get catalog items request
-       *
-       * @param reset
-       * @return void
-       */
-      getCatalogItems({reset = false} = {}) {
-        this._getCatalogItems({
-          reset,
-          page: this.page,
-          sort: this.filters.sort,
-          years: this.filters.years,
-          genres: this.filters.genres,
-          perPage: this.perPage
-        });
+      async loadReleases() {
+        await this._setPaginationPage(this._page + 1);
+        await this._getCatalogItems();
       },
 
 
@@ -160,7 +143,8 @@
     created() {
 
       // Show releases on initial load
-      this.showReleases();
+      if (this._page === 1) this.showReleases();
+
     }
   }
 </script>

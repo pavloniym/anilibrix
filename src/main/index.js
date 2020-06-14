@@ -99,4 +99,12 @@ app.on('ready', async () => {
     }
   });
 
+
+  // Set fullscreen events to main window
+  Main.getWindow().on('enter-full-screen', () => store.dispatch('app/setFullscreen', true));
+  Main.getWindow().on('leave-full-screen', () => store.dispatch('app/setFullscreen', false));
+
+  // Set initial fullscreen mode
+  store.dispatch('app/setFullscreen', Main.getWindow().isFullScreen());
+
 });

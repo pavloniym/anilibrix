@@ -15,9 +15,9 @@
 
 
     <!-- Content -->
-    <v-content class="px-4">
+    <div class="px-4">
       <slot/>
-    </v-content>
+    </div>
 
   </div>
 </template>
@@ -44,10 +44,10 @@
        */
       toBack() {
 
-        const fromRoute = __get(this.$route, 'params.from');
+        const fromRoute = __get(this.$route, 'params.from') || null;
         const releaseRoute = {name: 'releases'};
 
-        this.$router.push(fromRoute ? fromRoute : releaseRoute);
+        this.$router.push(fromRoute || releaseRoute);
       }
     }
   }

@@ -4,8 +4,8 @@
     <!-- Search -->
     <v-tooltip left>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon @click="visible = !visible">
-          <v-icon>mdi-{{visible ? 'arrow-right' : 'magnify'}}</v-icon>
+        <v-btn v-on="on" icon @click="_setSearching(!_is_searching)">
+          <v-icon>mdi-{{_is_searching ? 'arrow-right' : 'magnify'}}</v-icon>
         </v-btn>
       </template>
       <span>Поиск релизов</span>
@@ -13,7 +13,7 @@
 
     <v-expand-x-transition>
       <v-autocomplete
-        v-if="visible"
+        v-if="_is_searching"
         v-bind="{items, loading}"
         solo
         autofocus
@@ -46,17 +46,23 @@
 
 <script>
 
+  import {mapState, mapActions} from 'vuex';
+
   export default {
     data() {
       return {
         items: [],
         search: null,
         loading: false,
-        visible: false,
       }
     },
 
+    computed: {
+      ...mapState('app', {_is_searching: 'is_searching'}),
+    },
+
     methods: {
+      ...mapActions('app', {_setSearching: 'setSearching'}),
 
 
       /**
@@ -98,9 +104,8 @@
             }
           });
 
-
           // Reset items
-          this.visible = false;
+          this._setSearching(false);
           this.items = [];
         }
       }

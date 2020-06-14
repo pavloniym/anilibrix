@@ -51,11 +51,8 @@
 <style lang="scss" scoped>
 
   .catalog {
-    top: 40px;
-    width: 100%;
-    bottom: 0;
-    position: absolute;
-    padding-bottom: 32px;
+    height: 100vh;
+    padding-bottom: 80px;
     overflow-y: scroll;
   }
 

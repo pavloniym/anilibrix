@@ -7,6 +7,7 @@ import __capitalize from 'lodash/capitalize'
 const SET_FILTER_DATA = 'SET_FILTER_DATA';
 const SET_FILTER_LOADING = 'SET_FILTER_LOADING';
 const SET_CATALOG_LOADING = 'SET_CATALOG_LOADING';
+const SET_PAGINATION_PAGE = 'SET_PAGINATION_PAGE';
 const SET_CATALOG_RELEASES = 'SET_CATALOG_RELEASES';
 const SET_CATALOG_PAGINATION = 'SET_CATALOG_PAGINATION';
 const CLEAR_CATALOG_RELEASES = 'CLEAR_CATALOG_RELEASES';
@@ -16,18 +17,23 @@ export default {
   state: {
     items: {
       data: [],
+      page: 1,
+      perPage: 15,
       loading: true,
       pagination: null,
     },
     filters: {
       genres: {
         items: [],
+        value: [],
         loading: true,
       },
       years: {
         items: [],
+        value: [],
         loading: true,
-      }
+      },
+      sort: 1,
     }
   },
 
@@ -94,9 +100,26 @@ export default {
      */
     [SET_CATALOG_PAGINATION]: (s, pagination) => s.items.pagination = pagination,
 
+    /**
+     * Set pagination page
+     *
+     * @param s
+     * @param page
+     * @return {*}
+     */
+    [SET_PAGINATION_PAGE]: (s, page) => s.items.page = page,
+
   },
 
   actions: {
+
+    /**
+     * Clear catalog releases
+     *
+     * @param commit
+     * @return {*}
+     */
+    clearCatalogReleases: ({commit}) => commit(CLEAR_CATALOG_RELEASES),
 
 
     /**
@@ -104,21 +127,19 @@ export default {
      *
      * @param commit
      * @param reset
-     * @param genres
-     * @param years
-     * @param page
-     * @param perPage
-     * @param sort
      * @return {Promise<void>}
      */
-    getCatalogItems: async ({commit}, {reset, genres, years, page, perPage, sort = 1}) => {
+    getCatalogItems: async ({commit, state}) => {
       try {
-
-        // Clear catalog releases
-        if (reset === true) commit(CLEAR_CATALOG_RELEASES);
 
         // Set loading state
         commit(SET_CATALOG_LOADING, true);
+
+        const sort = state.filters.sort;
+        const page = state.items.page;
+        const years = state.filters.years.value;
+        const genres = state.filters.genres.value;
+        const perPage = state.items.perPage;
 
         // Get items from server
         // Transform items
@@ -209,6 +230,16 @@ export default {
 
       }
     },
+
+
+    /**
+     * Set pagination page
+     *
+     * @param commit
+     * @param page
+     */
+    setPaginationPage: ({commit}, page) => commit(SET_PAGINATION_PAGE, page),
+
   }
 
 }

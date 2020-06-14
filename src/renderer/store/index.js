@@ -72,10 +72,7 @@ const store = new Vuex.Store({
     createPromiseAction(),
     createPersistedState({
       key: 'anilibrix',
-      paths: [
-        'app',
-        'notifications'
-      ],
+      paths: ['app', 'notifications'],
       storage: {getItem, setItem, removeItem},
     }),
     createSharedMutations()
