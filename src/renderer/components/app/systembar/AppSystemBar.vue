@@ -2,11 +2,11 @@
   <v-layout
     align-center
     class="black system-bar white--text px-2"
-    :class="{'fullscreen': isMac && _is_fullscreen}"
+    :class="{'is-mac--fullscreen': _is_mac && _is_fullscreen}"
     @dblclick="maximizeApp">
 
-    <template v-if="isMac === false">
-      <v-spacer v-if="isWindows"/>
+    <template v-if="_is_mac === false">
+      <v-spacer v-if="_is_windows"/>
       <template v-for="(control, k) in controls">
         <v-btn icon small class="system-bar__button" :key="k" @click="control.action">
           <v-icon small color="grey">{{control.icon}}</v-icon>
@@ -24,26 +24,11 @@
 
   export default {
     computed: {
-      ...mapState('app', {_is_fullscreen: s => s.is_fullscreen}),
-
-      /**
-       * Check if is windows platform
-       *
-       * @return Boolean
-       */
-      isWindows() {
-        return !!(process.platform === "win32" || process.platform === "win64");
-      },
-
-
-      /**
-       * Check if is mac platform
-       *
-       * @return {boolean}
-       */
-      isMac() {
-        return process.platform === "darwin";
-      },
+      ...mapState('app', {
+        _is_mac: s => s.is_mac,
+        _is_windows: s => s.is_windows,
+        _is_fullscreen: s => s.is_fullscreen,
+      }),
 
 
       /**
@@ -55,22 +40,21 @@
         return [
           {
             icon: 'mdi-minus',
-            sort: this.isWindows ? 0 : 1,
+            sort: this._is_windows ? 0 : 1,
             action: () => this.minimizeApp(),
           },
           {
             icon: 'mdi-window-maximize',
             action: () => this.maximizeApp(),
-            sort: this.isWindows ? 1 : 2
+            sort: this._is_windows ? 1 : 2
           },
           {
             icon: 'mdi-close',
             action: () => this.closeApp(),
-            sort: this.isWindows ? 2 : 0
+            sort: this._is_windows ? 2 : 0
           },
         ].sort((a, b) => a.sort - b.sort)
       }
-
 
     },
 
@@ -102,11 +86,7 @@
        */
       maximizeApp() {
         const window = remote.getCurrentWindow();
-
-        window.isMaximized()
-          ? window.unmaximize()
-          : window.maximize();
-
+        window.isMaximized() ? window.unmaximize() : window.maximize();
       }
     }
 
@@ -124,8 +104,8 @@
       -webkit-app-region: no-drag;
     }
 
-    &.fullscreen {
-      visibility: hidden;
+    &.is-mac--fullscreen {
+      display: none;
     }
   }
 

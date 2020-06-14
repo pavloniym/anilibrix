@@ -1,5 +1,5 @@
 <template>
-  <div class="catalog">
+  <div class="catalog" :class="{'is-mac--fullscreen': _is_mac && _is_fullscreen}">
 
     <!-- Toolbar -->
     <app-tool-bar hide-update hide-catalog>
@@ -26,10 +26,20 @@
   import AppToolBar from '@components/app/toolbar'
   import AppSettings from '@components/app/settings'
 
+  import {mapState} from "vuex";
+
   export default {
     components: {
       AppToolBar,
       AppSettings,
+    },
+
+    computed: {
+      ...mapState('app', {
+        _is_mac: s => s.is_mac,
+        _is_fullscreen: s => s.is_fullscreen,
+      }),
+
     },
 
     methods: {
@@ -57,6 +67,10 @@
     position: absolute;
     padding-bottom: 12px;
     overflow-y: scroll;
+
+    &.is-mac--fullscreen {
+      top: 0;
+    }
   }
 
 

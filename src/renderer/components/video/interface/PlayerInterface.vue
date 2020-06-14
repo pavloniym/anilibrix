@@ -40,7 +40,7 @@
     <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
     <interface-playback v-bind="{player, payload}"/>
     <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
-    <interface-chromecast v-bind="{player, payload}" ref="chromecast"/>
+    <!--<interface-chromecast v-bind="{player, payload}" ref="chromecast"/>-->
 
   </div>
 </template>
@@ -150,10 +150,10 @@
        * Enter fullscreen mode
        * Fullscreen div container with player and controls
        *
-       * @return {Promise}
+       * @return void
        */
       toggleFullscreen() {
-        return screenfull.toggle(document.getElementById('player-container'));
+        screenfull.toggle(document.getElementById('player-container'));
       },
 
 

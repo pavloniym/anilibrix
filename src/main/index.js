@@ -58,6 +58,11 @@ app.on('ready', async () => {
   // Main window close event
   Main.getWindow().on('close', () => app.quit());
 
+  // Set initial fullscreen mode
+  // Set os
+  store.dispatch('app/setFullscreen', Main.getWindow().isFullScreen());
+  store.dispatch('app/setOS');
+
   // Create menu
   menuController
     .setWindows({main: Main, torrent: Torrent, chromecast: Chromecast})
@@ -103,8 +108,5 @@ app.on('ready', async () => {
   // Set fullscreen events to main window
   Main.getWindow().on('enter-full-screen', () => store.dispatch('app/setFullscreen', true));
   Main.getWindow().on('leave-full-screen', () => store.dispatch('app/setFullscreen', false));
-
-  // Set initial fullscreen mode
-  store.dispatch('app/setFullscreen', Main.getWindow().isFullScreen());
 
 });

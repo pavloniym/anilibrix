@@ -18,7 +18,7 @@
     <!-- Catalog items -->
     <template v-for="item in _items">
       <v-card class="mb-2" :key="item.id">
-        <catalog-item v-bind="item" @click="toRelease(item)"/>
+        <catalog-item v-bind="item" :id="item.id" @click="toRelease(item)"/>
       </v-card>
     </template>
 
@@ -44,7 +44,15 @@
   import __get from 'lodash/get'
   import {mapActions, mapState} from 'vuex'
 
+  const props = {
+    fromReleaseId: {
+      type: [String, Number],
+      default: null
+    }
+  };
+
   export default {
+    props,
     name: "Catalog.View",
     meta: {
       title: 'Каталог'
@@ -132,6 +140,21 @@
       // Show releases on initial load
       if (this._is_initialized === false) this.showReleases();
 
+    },
+
+    mounted() {
+
+      // Get release from
+      if (this.fromReleaseId) {
+        const releaseContainer = document.getElementById(this.fromReleaseId);
+
+        // If div container is found
+        // Scroll into view
+        if (releaseContainer) {
+          releaseContainer.scrollIntoView({block: "center"});
+        }
+
+      }
     }
   }
 </script>

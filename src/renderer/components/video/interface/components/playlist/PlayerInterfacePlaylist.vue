@@ -1,32 +1,36 @@
 <template>
-    <v-navigation-drawer
-      v-model="visible"
-      absolute
-      temporary
-      width="400"
-      :style="{zIndex: 100}">
+  <v-navigation-drawer
+    v-model="visible"
+    absolute
+    temporary
+    width="400"
+    :style="{zIndex: 100}">
 
-      <!-- System Bar Offset-->
-      <div :style="{height: '38px', background: '#191919', position: 'fixed', top: 0, width: '100%', zIndex: 1}"></div>
+    <!-- System Bar Offset-->
+    <app-system-bar-placeholder fixed/>
 
-      <v-card class="pt-10">
-        <v-card-title>Плейлист</v-card-title>
-        <v-card-subtitle>Список всех серий релиза</v-card-subtitle>
-        <release-playlist
-          v-bind="{release, episodes}"
-          class="pa-4"
-          :playing="episode"
-          @episode="toEpisode">
-        </release-playlist>
-      </v-card>
+    <!-- Playlist -->
+    <v-card :class="{'mt-9': !(_is_mac && _is_fullscreen)}">
+      <v-card-title>Плейлист</v-card-title>
+      <v-card-subtitle>Список всех серий релиза</v-card-subtitle>
+      <release-playlist
+        v-bind="{release, episodes}"
+        class="pa-4"
+        :playing="episode"
+        @episode="toEpisode">
+      </release-playlist>
+    </v-card>
 
-    </v-navigation-drawer>
+  </v-navigation-drawer>
 </template>
 
 <script>
 
-  import __get from 'lodash/get'
   import ReleasePlaylist from '@components/release/playlist'
+  import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
+
+  import __get from 'lodash/get'
+  import {mapState} from "vuex";
 
   const props = {
     release: {
@@ -42,7 +46,8 @@
   export default {
     props,
     components: {
-      ReleasePlaylist
+      ReleasePlaylist,
+      AppSystemBarPlaceholder
     },
 
     data() {
@@ -52,6 +57,10 @@
     },
 
     computed: {
+      ...mapState('app', {
+        _is_mac: s => s.is_mac,
+        _is_fullscreen: s => s.is_fullscreen,
+      }),
 
       /**
        * Get episodes

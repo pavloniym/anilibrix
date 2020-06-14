@@ -8,9 +8,10 @@
     :style="{zIndex: 100}">
 
     <!-- System Bar Offset-->
-    <div :style="{height: '38px', background: '#191919', position: 'fixed', top: 0, width: '100%', zIndex: 1}"></div>
+    <app-system-bar-placeholder fixed/>
 
-    <v-card class="pt-10">
+    <!-- Torrent Details -->
+    <v-card :class="{'mt-9': !(_is_mac && _is_fullscreen)}">
       <v-card-title>Торрент</v-card-title>
       <v-card-subtitle>Данные по воспроизводимому торренту и соединению</v-card-subtitle>
       <v-list dense>
@@ -26,20 +27,24 @@
 
         </template>
       </v-list>
+      <v-divider />
     </v-card>
 
+    <!-- Notice -->
     <div class="caption grey--text px-4 mt-4">
       Небольшое количество сидеров и личеров может негативно сказаться на скорости загрузки и
       привести к буфферизации воспроизведения
     </div>
-
 
   </v-navigation-drawer>
 </template>
 
 <script>
 
+  import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
+
   import __get from 'lodash/get'
+  import {mapState} from "vuex";
   import prettyBytes from 'pretty-bytes'
   import {ipcRenderer as ipc} from 'electron'
 
@@ -52,6 +57,9 @@
 
   export default {
     props,
+    components: {
+      AppSystemBarPlaceholder
+    },
     data() {
       return {
         speed: 0,
@@ -61,6 +69,11 @@
     },
 
     computed: {
+      ...mapState('app', {
+        _is_mac: s => s.is_mac,
+        _is_fullscreen: s => s.is_fullscreen,
+      }),
+
 
       /**
        * Get torrent data

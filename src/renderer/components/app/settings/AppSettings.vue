@@ -8,11 +8,11 @@
     width="400"
     class="settings">
 
-    <!-- System Bar Offset-->
-    <div :style="{height: '38px', background: '#191919'}"></div>
+    <!-- System bar offset -->
+    <system-bar-placeholder fixed/>
 
     <!-- Header -->
-    <v-toolbar flat class="shrink" color="#363636">
+    <v-toolbar flat class="shrink" color="#363636" :class="{'mt-9': !(_is_mac && _is_fullscreen)}">
       <v-app-bar-nav-icon @click="drawer = false">
         <v-icon>mdi-arrow-left</v-icon>
       </v-app-bar-nav-icon>
@@ -40,22 +40,29 @@
 <script>
 
   import Credentials from './components/credentials'
-
   import PlayerSettings from './categories/player'
+
   import SystemSettings from './categories/system'
   import ActionsSettings from './categories/actions'
   import DevtoolsSettings from './categories/devtools'
   import AnilibriaSettings from './categories/app'
   import ConnectionSettings from './categories/connection'
 
+  import SystemBarPlaceholder from './../systembar/placeholder'
+
   import {mapState, mapActions} from 'vuex'
 
   export default {
     components: {
-      Credentials
+      Credentials,
+      SystemBarPlaceholder
     },
     computed: {
-      ...mapState('app', {_drawer: s => s.drawer}),
+      ...mapState('app', {
+        _drawer: s => s.drawer,
+        _is_mac: s => s.is_mac,
+        _is_fullscreen: s => s.is_fullscreen,
+      }),
       ...mapState('app/settings/system', {_devtools: s => s.devtools}),
 
       /**

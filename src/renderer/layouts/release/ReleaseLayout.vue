@@ -1,5 +1,5 @@
 <template>
-  <div class="release">
+  <div class="release" :class="{'is-mac--fullscreen': _is_mac && _is_fullscreen}">
 
     <!-- Toolbar -->
     <app-tool-bar hide-update>
@@ -28,11 +28,19 @@
   import AppSettings from '@components/app/settings'
 
   import __get from 'lodash/get'
+  import {mapState} from "vuex";
 
   export default {
     components: {
       AppToolBar,
       AppSettings,
+    },
+
+    computed: {
+      ...mapState('app', {
+        _is_mac: s => s.is_mac,
+        _is_fullscreen: s => s.is_fullscreen,
+      }),
     },
 
     methods: {
@@ -47,7 +55,13 @@
         const fromRoute = __get(this.$route, 'params.from') || null;
         const releaseRoute = {name: 'releases'};
 
-        this.$router.push(fromRoute || releaseRoute);
+        // Get back route
+        // Get release id
+        const route = fromRoute || releaseRoute;
+        const fromReleaseId = __get(this.$route, 'params.releaseId');
+
+        // Push router
+        this.$router.push({...route, params: {...route.params, fromReleaseId}});
       }
     }
   }
@@ -62,6 +76,10 @@
     position: absolute;
     padding-bottom: 32px;
     overflow-y: scroll;
+
+    &.is-mac--fullscreen {
+      top: 0;
+    }
   }
 
 
