@@ -4,7 +4,7 @@
     <!-- Search -->
     <v-tooltip left>
       <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon @click="_setSearching(!_is_searching)">
+        <v-btn v-on="on" icon @click="visible = !visible">
           <v-icon>mdi-{{_is_searching ? 'arrow-right' : 'magnify'}}</v-icon>
         </v-btn>
       </template>
@@ -13,7 +13,7 @@
 
     <v-expand-x-transition>
       <v-autocomplete
-        v-if="_is_searching"
+        v-if="visible"
         v-bind="{items, loading}"
         solo
         autofocus
@@ -29,6 +29,8 @@
         :append-icon="null"
         :allow-overflow="false"
         :search-input.sync="search"
+        @focus="_setSearching(true)"
+        @blur="_setSearching(false)"
         @input="toRelease">
 
         <template v-slot:item="{item}">
@@ -54,6 +56,7 @@
         items: [],
         search: null,
         loading: false,
+        visible: false,
       }
     },
 
@@ -105,8 +108,9 @@
           });
 
           // Reset items
-          this._setSearching(false);
           this.items = [];
+          this.visible = false;
+          this._setSearching(false);
         }
       }
 
