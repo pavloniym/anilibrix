@@ -125,7 +125,7 @@
     }
 
     &.fullscreen {
-      display: none
+      visibility: hidden;
     }
   }
 

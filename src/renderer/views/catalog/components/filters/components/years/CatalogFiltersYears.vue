@@ -9,10 +9,10 @@
     deletable-chips
     class="filter"
     placeholder="Года"
-    :value="years"
+    :value="_value"
     :items="_items"
     :loading="_loading"
-    @input="$emit('update:years', $event)">
+    @input="_setFilterValue({filter: 'years', value: $event})">
 
   </v-autocomplete>
 </template>
@@ -21,24 +21,20 @@
 
   import {mapState, mapActions} from 'vuex'
 
-  const props = {
-    years: {
-      type: Array,
-      default: null
-    }
-  };
-
   export default {
-    props,
     computed: {
       ...mapState('catalog', {
         _items: s => s.filters.years.items,
+        _value: s => s.filters.years.value,
         _loading: s => s.filters.years.loading,
       })
     },
 
     methods: {
-      ...mapActions('catalog', {_getCatalogYearsFilter: 'getCatalogYearsFilter'})
+      ...mapActions('catalog', {
+        _setFilterValue: 'setFilterValue',
+        _getCatalogYearsFilter: 'getCatalogYearsFilter'
+      })
     },
 
     created() {

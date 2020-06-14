@@ -4,16 +4,11 @@
     <!-- Header-->
     <v-card color="transparent">
       <v-card-title>Каталог релизов</v-card-title>
-      <v-card-subtitle>Вы можете выберать жанры и года для более тонкой настройки списка релизов</v-card-subtitle>
+      <v-card-subtitle>Вы можете выбрать жанры и года для более тонкой настройки списка релизов</v-card-subtitle>
     </v-card>
 
     <!-- Filters -->
-    <catalog-filters
-      class="mx-1"
-      :sort.sync="filters.sort"
-      :years.sync="filters.years"
-      :genres.sync="filters.genres">
-    </catalog-filters>
+    <catalog-filters class="mx-1"/>
 
     <!-- Show Action -->
     <v-layout class="my-2 mb-6">
@@ -29,11 +24,11 @@
 
     <!-- Loading -->
     <template v-if="_loading">
-      <catalog-loader v-for="i in 15" class="mb-2" :key="i"/>
+      <catalog-loader v-for="i in _perPage" class="mb-2" :key="i"/>
     </template>
 
     <!-- Load More -->
-    <v-btn v-if="lastItems > 0" block text @click="loadReleases">Загрузить еще</v-btn>
+    <v-btn v-if="_items && _items.length > 0 && hasMoreItems" block text @click="loadReleases">Загрузить еще</v-btn>
 
   </catalog-layout>
 </template>
@@ -60,34 +55,26 @@
       CatalogLoader,
       CatalogFilters
     },
-    data() {
-      return {
-        perPage: 15,
-        filters: {
-          sort: 1,
-          years: [],
-          genres: []
-        }
-      }
-    },
 
     computed: {
       ...mapState('catalog', {
         _page: s => s.items.page,
         _items: s => s.items.data,
         _loading: s => s.items.loading,
+        _perPage: s => s.items.perPage,
         _pagination: s => s.items.pagination,
+        _is_initialized: s => s.is_initialized,
       }),
 
 
       /**
-       * Get last items number from previous request
-       * If 0 -> no items from server
+       * Check if last items from server is equals to pet page items
+       * That means that there are more items on server
        *
        * @return {number}
        */
-      lastItems() {
-        return __get(this._pagination, 'lastItems', 0)
+      hasMoreItems() {
+        return __get(this._pagination, 'lastItems', 0) === this._perPage;
       },
 
     },
@@ -143,7 +130,7 @@
     created() {
 
       // Show releases on initial load
-      if (this._page === 1) this.showReleases();
+      if (this._is_initialized === false) this.showReleases();
 
     }
   }

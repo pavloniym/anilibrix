@@ -9,10 +9,10 @@
     deletable-chips
     class="filter"
     placeholder="Выбрать жанры"
-    :value="genres"
+    :value="_value"
     :items="_items"
     :loading="_loading"
-    @input="$emit('update:genres', $event)">
+    @input="_setFilterValue({filter: 'genres', value: $event})">
 
   </v-autocomplete>
 </template>
@@ -21,24 +21,20 @@
 
   import {mapState, mapActions} from 'vuex'
 
-  const props = {
-    genres: {
-      type: Array,
-      default: null
-    }
-  };
-
   export default {
-    props,
     computed: {
       ...mapState('catalog', {
         _items: s => s.filters.genres.items,
+        _value: s => s.filters.genres.value,
         _loading: s => s.filters.genres.loading,
       })
     },
 
     methods: {
-      ...mapActions('catalog', {_getCatalogGenresFilter: 'getCatalogGenresFilter'})
+      ...mapActions('catalog', {
+        _setFilterValue: 'setFilterValue',
+        _getCatalogGenresFilter: 'getCatalogGenresFilter',
+      })
     },
 
     created() {

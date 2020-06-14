@@ -6,22 +6,16 @@
     item-text="title"
     item-value="value"
     placeholder="Сортировка"
-    :value="sort"
-    @input="$emit('update:sort', $event)">
+    :value="_value"
+    @input="_setFilterValue({filter: 'sort', value: $event})">
   </v-select>
 </template>
 
 <script>
 
-  const props = {
-    sort: {
-      type: Number,
-      default: null
-    }
-  };
+  import {mapState, mapActions} from 'vuex'
 
   export default {
-    props,
     data() {
       return {
         items: [
@@ -29,7 +23,14 @@
           {title: 'По популярности', value: 2},
         ]
       }
-    }
+    },
+    computed: {
+      ...mapState('catalog', {_value: s => s.filters.sort.value})
+    },
+
+    methods: {
+      ...mapActions('catalog', {_setFilterValue: 'setFilterValue'})
+    },
 
   }
 </script>

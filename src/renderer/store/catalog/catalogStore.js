@@ -4,7 +4,9 @@ import AnilibriaCatalogTransformer from "@transformers/anilibria/catalog";
 import {Main} from '@main/utils/windows'
 import __capitalize from 'lodash/capitalize'
 
+const SET_INITIALIZED = 'SET_INITIALIZED';
 const SET_FILTER_DATA = 'SET_FILTER_DATA';
+const SET_FILTER_VALUE = 'SET_FILTER_VALUE';
 const SET_FILTER_LOADING = 'SET_FILTER_LOADING';
 const SET_CATALOG_LOADING = 'SET_CATALOG_LOADING';
 const SET_PAGINATION_PAGE = 'SET_PAGINATION_PAGE';
@@ -18,7 +20,7 @@ export default {
     items: {
       data: [],
       page: 1,
-      perPage: 15,
+      perPage: 12,
       loading: true,
       pagination: null,
     },
@@ -33,8 +35,11 @@ export default {
         value: [],
         loading: true,
       },
-      sort: 1,
-    }
+      sort: {
+        value: 1
+      },
+    },
+    is_initialized: false
   },
 
   mutations: {
@@ -48,6 +53,17 @@ export default {
      * @return {*}
      */
     [SET_FILTER_DATA]: (s, {filter, data}) => s.filters[filter].items = data,
+
+
+    /**
+     * Set filter value
+     *
+     * @param s
+     * @param filter
+     * @param value
+     * @return {*}
+     */
+    [SET_FILTER_VALUE]: (s, {filter, value}) => s.filters[filter].value = value,
 
 
     /**
@@ -109,6 +125,15 @@ export default {
      */
     [SET_PAGINATION_PAGE]: (s, page) => s.items.page = page,
 
+
+    /**
+     * Set initialized
+     *
+     * @param s
+     * @return {boolean}
+     */
+    [SET_INITIALIZED]: s => s.is_initialized = true,
+
   },
 
   actions: {
@@ -132,10 +157,12 @@ export default {
     getCatalogItems: async ({commit, state}) => {
       try {
 
+        // Set initialized state
         // Set loading state
+        commit(SET_INITIALIZED);
         commit(SET_CATALOG_LOADING, true);
 
-        const sort = state.filters.sort;
+        const sort = state.filters.sort.value;
         const page = state.items.page;
         const years = state.filters.years.value;
         const genres = state.filters.genres.value;
@@ -230,6 +257,17 @@ export default {
 
       }
     },
+
+
+    /**
+     * Set filter value
+     *
+     * @param commit
+     * @param filter
+     * @param value
+     * @return {*}
+     */
+    setFilterValue: ({commit}, {filter, value}) => commit(SET_FILTER_VALUE, {filter, value}),
 
 
     /**
