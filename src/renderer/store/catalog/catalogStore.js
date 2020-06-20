@@ -1,5 +1,5 @@
 import AnilibriaProxy from "@proxies/anilibria";
-import AnilibriaCatalogTransformer from "@transformers/anilibria/catalog";
+import AnilibriaReleaseTransformer from "@transformers/anilibria/release";
 
 import {Main} from '@main/utils/windows'
 import __capitalize from 'lodash/capitalize'
@@ -171,7 +171,7 @@ export default {
         // Get items from server
         // Transform items
         const {items} = await new AnilibriaProxy().getCatalogItems({sort, genres, years, page, perPage});
-        const releases = AnilibriaCatalogTransformer.fetchCollection(items);
+        const releases = await AnilibriaReleaseTransformer.fetchCollection(items);
 
         // Collect all poster images
         await Promise.allSettled(

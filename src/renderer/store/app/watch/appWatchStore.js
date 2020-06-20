@@ -45,6 +45,25 @@ export default {
      */
     getWatchData: state => ({releaseId = 0, episodeId = 0} = {}) => __get(state, ['items', `${releaseId}:${episodeId}`]) || null,
 
+
+    /**
+     * Get release total progress
+     *
+     * @param state
+     * @param getters
+     * @return {function({releaseId?: *, totalEpisodesNumber?: *}=): number}
+     */
+    getReleaseProgress: (state, getters) => ({releaseId = 0, totalEpisodesNumber = 0} = {}) => {
+      const watched_episodes = [];
+      for(let i = 1; i <= totalEpisodesNumber; i++){
+        watched_episodes.push(getters.getWatchData({releaseId, episodeId: i}))
+      }
+
+      return totalEpisodesNumber > 0
+        ? (watched_episodes.filter(episode => episode).length / totalEpisodesNumber) * 100
+        : 0;
+    }
+
   },
 
   actions: {

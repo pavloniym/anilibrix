@@ -1,8 +1,9 @@
 <template>
   <v-card color="transparent" @click="$emit('click')">
     <v-layout align-start>
-      <v-card width="160" height="240">
+      <v-card width="160" height="240" min-width="160" min-height="240" :style="{position: 'relative'}">
         <v-img width="160" height="240" :src="image"/>
+        <v-progress-linear color="secondary" :value="progress" :style="{position: 'absolute', bottom: 0}"/>
       </v-card>
       <div>
         <v-card-title v-text="title"/>
@@ -29,7 +30,12 @@
   import __get from 'lodash/get'
   import VClamp from 'vue-clamp'
 
+
   const props = {
+    id: {
+      type: Number,
+      default: null
+    },
     poster: {
       type: Object,
       default: null
@@ -53,6 +59,10 @@
     type: {
       type: String,
       default: null,
+    },
+    episodes: {
+      type: Array,
+      default: null
     }
   };
 
@@ -90,7 +100,19 @@
        */
       subtitle() {
         return __get(this.names, 'original')
+      },
+
+
+      /**
+       * Get release watch progress
+       *
+       * @return {number}
+       */
+      progress() {
+        const getReleaseProgress = this.$store.getters['app/watch/getReleaseProgress'];
+        return getReleaseProgress({releaseId: this.id, totalEpisodesNumber: (this.episodes || []).length});
       }
+
     }
   }
 
