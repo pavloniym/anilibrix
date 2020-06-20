@@ -4,7 +4,7 @@
     <slot name="prepend"/>
 
     <!-- Video container -->
-    <video ref="player" crossorigin="anonymous" autoplay loop preload="auto"/>
+    <video ref="player" crossorigin="anonymous" autoplay preload="auto"/>
 
     <!-- Interface slot -->
     <slot v-if="player" v-bind="{player}"/>

@@ -3,7 +3,7 @@
     <component
       v-bind="{sources, source}"
       :is="component"
-      :key="`${release.id}:${episode.id}`"
+      :key="`${release ? release.id : 0}:${episode ? episode.id : 0}`"
       :time.sync="time"
       :duration.sync="duration"
       @error="toBlank"
