@@ -1,4 +1,4 @@
-import {aboutTemplate, devTemplate} from './../menu/appMenu'
+import {aboutTemplate} from './../menu/appMenu'
 import {Menu, nativeImage, Tray} from "electron";
 
 export default class {

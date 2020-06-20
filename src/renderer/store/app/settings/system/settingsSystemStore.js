@@ -1,11 +1,18 @@
+const SET_ADS = 'SET_ADS';
 const SET_UPDATES = 'SET_UPDATES';
 const TOGGLE_DEVTOOLS = 'TOGGLE_DEVTOOLS';
+const SET_ADS_MAXIMUM = 'SET_ADS_MAXIMUM';
 const SET_UPDATES_TIMEOUT = 'SET_UPDATES_TIMEOUT';
 const SET_SYSTEM_NOTIFICATIONS = 'SET_SYSTEM_NOTIFICATIONS';
 
 export default {
   namespaced: true,
   state: {
+    ads: {
+      enabled: true,
+      maximum: false
+    },
+    ads__maximum: false,
     devtools: false,
     updates: {
       enabled: true,
@@ -13,7 +20,7 @@ export default {
     },
     notifications: {
       system: true,
-    }
+    },
   },
 
 
@@ -54,7 +61,27 @@ export default {
      * @param s
      * @return {boolean}
      */
-    [TOGGLE_DEVTOOLS]: s => s.devtools = !s.devtools
+    [TOGGLE_DEVTOOLS]: s => s.devtools = !s.devtools,
+
+
+    /**
+     * Set ads
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_ADS]: (s, state) => s.ads.enabled = state,
+
+
+    /**
+     * Set ads maximum
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_ADS_MAXIMUM]: (s, state) => s.ads.maximum = state,
 
   },
 
@@ -97,6 +124,26 @@ export default {
      * @return {*}
      */
     toggleDevtools: ({commit}) => commit(TOGGLE_DEVTOOLS),
+
+
+    /**
+     * Set ads
+     *
+     * @param commit
+     * @param state
+     * @return {*}
+     */
+    setAds: ({commit}, state) => commit(SET_ADS, state),
+
+
+    /**
+     * Set ads maximum
+     *
+     * @param commit
+     * @param state
+     * @return {*}
+     */
+    setAdsMaximum: ({commit}, state) => commit(SET_ADS_MAXIMUM, state),
 
   }
 }

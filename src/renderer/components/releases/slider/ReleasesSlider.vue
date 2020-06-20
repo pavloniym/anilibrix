@@ -1,5 +1,5 @@
 <template>
-  <v-layout align-center class="release__slider" v-if="loading || releases.length > 0">
+  <v-layout v-if="loading || releases.length > 0" align-center class="shrink release__slider">
 
 
     <!-- Prev -->
@@ -21,7 +21,7 @@
 
       <!-- Loader -->
       <template v-if="loading">
-        <v-layout class="release__slider__skeleton">
+        <v-layout class="shrink">
           <v-skeleton-loader
             v-for="i in 14"
             boilerplate
@@ -29,8 +29,8 @@
             :key="i"
             :width="width"
             :height="height"
-            :min-width="width"
-            :max-height="height">
+            :min-width="minWidth"
+            :min-height="minHeight">
           </v-skeleton-loader>
         </v-layout>
       </template>
@@ -41,21 +41,21 @@
         <template v-for="(release, k) in releases">
           <v-slide-item v-slot:default="{ active, toggle }" :key="k">
             <v-card
-              width="175"
               class="black"
-              height="250"
+              :width="width"
               :class="{primary: active}"
+              :height="height"
+              :min-width="minWidth"
+              :min-height="minHeight"
               @click="toggle"
               @dblclick="toEpisode(release)">
               <v-img
                 v-if="release && release.poster && release.poster.image"
+                v-bind="{ratio}"
                 eager
-                ratio="0.7"
                 class="black"
-                width="175"
-                height="250"
-                max-width="175"
-                max-height="250"
+                width="100%"
+                height="100%"
                 :src="release.poster.image"
                 :key="`poster:${release.id}`"
                 :class="{'elevation-16': active}">
@@ -104,8 +104,10 @@
     data() {
       return {
         ratio: .7,
-        width: 175,
-        height: 250,
+        width: '14.5vw',
+        height: '34.5vh',
+        minWidth: 175,
+        minHeight: 250,
       }
     },
 
@@ -158,7 +160,7 @@
         // Space or Enter event
         // Check that settings is closed and search string is not active
         if (code === 32 || code === 13) {
-          if(this._drawer === false && this._is_searching === false) {
+          if (this._drawer === false && this._is_searching === false) {
             this.toEpisode(this.releases[this.value]);
           }
         }
@@ -200,19 +202,10 @@
 
   .release {
     &__slider {
-      max-height: 250px;
 
       ::v-deep .v-slide-group {
         &__prev, &__next {
           display: none !important;
-        }
-      }
-
-      &__skeleton {
-        ::v-deep {
-          .v-skeleton-loader__image {
-            height: 100%
-          }
         }
       }
     }

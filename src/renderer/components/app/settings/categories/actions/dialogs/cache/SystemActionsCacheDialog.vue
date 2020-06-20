@@ -16,8 +16,6 @@
 
 <script>
 
-  import {remote} from 'electron'
-
   const props = {
     attach: {
       type: HTMLDivElement,
@@ -55,7 +53,7 @@
         this.loading = true;
         this.$store
           .dispatchPromise('RESET_STORE')
-          .then(() => remote.getCurrentWindow().reload())
+          .then(() => this.$electron.remote.getCurrentWindow().reload())
           .finally(() => this.loading = false)
       }
     }

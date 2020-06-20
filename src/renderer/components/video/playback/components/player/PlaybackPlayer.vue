@@ -1,8 +1,10 @@
 <template>
   <v-layout column class="fill-height">
 
+    <slot name="prepend"/>
+
     <!-- Video container -->
-    <video ref="player"/>
+    <video ref="player" crossorigin="anonymous" autoplay loop preload="auto"/>
 
     <!-- Interface slot -->
     <slot v-if="player" v-bind="{player}"/>
@@ -75,12 +77,13 @@
           const payload = await this.getPayload(source);
 
           // Emit payload to parent
-         this.$emit('update:payload', payload);
+          this.$emit('update:payload', payload);
 
           // Process payload
           this.processPayload({
             payload,
             time: this.time,
+            source: this.source,
             player: this.player,
             playing: this.player.playing,
           });
@@ -119,7 +122,7 @@
       }
 
       // Destroy payload
-      if(this.destroyPayload) {
+      if (this.destroyPayload) {
         await this.destroyPayload({source: this.source});
       }
     },

@@ -1,18 +1,22 @@
 const SET_QUALITY = 'SET_QUALITY';
+const SET_UPSCALE_BOLD = 'SET_UPSCALE_BOLD';
+const SET_UPSCALE_BLUR = 'SET_UPSCALE_BLUR';
 const SET_EPISODES_SORT = 'SET_EPISODES_SORT';
-const SET_TORRENTS_PROCESS = 'SET_TORRENTS_PROCESS';
 const SET_AUTOPLAY_NEXT = 'SET_AUTOPLAY_NEXT';
+const SET_UPSCALE_PROCESS = 'SET_UPSCALE_PROCESS';
+const SET_TORRENTS_PROCESS = 'SET_TORRENTS_PROCESS';
 
 export default {
   namespaced: true,
   state: {
     quality: null,
-    episodes: {
-      order: 'asc',
+    upscale: {
+      bold: 6,
+      blur: 2,
+      process: false
     },
-    torrents: {
-      process: false,
-    },
+    episodes: {order: 'asc'},
+    torrents: {process: false},
     autoplayNext: true
   },
 
@@ -58,6 +62,35 @@ export default {
     [SET_AUTOPLAY_NEXT]: (s, state) => s.autoplayNext = state,
 
 
+    /**
+     * Set upscale blur
+     *
+     * @param s
+     * @param value
+     * @return {number}
+     */
+    [SET_UPSCALE_BLUR]: (s, value) => s.upscale.blur = value,
+
+
+    /**
+     * Set upscale bold
+     *
+     * @param s
+     * @param value
+     * @return {number}
+     */
+    [SET_UPSCALE_BOLD]: (s, value) => s.upscale.bold = value,
+
+
+    /**
+     * Set upscale processing state
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_UPSCALE_PROCESS]: (s, state) => s.upscale.process = state,
+
   },
 
 
@@ -101,6 +134,28 @@ export default {
      * @return {*}
      */
     setAutoplayNext: ({commit}, state) => commit(SET_AUTOPLAY_NEXT, state),
+
+
+    /**
+     * Set upscale process
+     *
+     * @param commit
+     * @param state
+     * @return {*}
+     */
+    setUpscaleProcess: ({commit}, state) => commit(SET_UPSCALE_PROCESS, state),
+
+    /**
+     * Set upscale parameters
+     *
+     * @param commit
+     * @param bold
+     * @param blur
+     */
+    setUpscaleParameters: ({commit}, {bold, blur}) => {
+      commit(SET_UPSCALE_BLUR, blur);
+      commit(SET_UPSCALE_BOLD, bold);
+    }
 
   }
 }

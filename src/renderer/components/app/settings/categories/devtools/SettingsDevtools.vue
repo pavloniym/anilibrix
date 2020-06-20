@@ -27,7 +27,6 @@
 
 <script>
 
-  import {ipcRenderer as ipc} from 'electron'
   import {mapState, mapActions} from 'vuex'
 
   export default {
@@ -43,23 +42,27 @@
         return [
           {
             title: 'Консоль приложения',
-            action: () => ipc.send('app:devtools:main'),
+            action: () => this.$electron.ipcRenderer.send('app:devtools:main'),
           },
           {
             title: 'Консоль торрент-сервера',
-            action: () => ipc.send('app:devtools:torrent'),
+            action: () => this.$electron.ipcRenderer.send('app:devtools:torrent'),
           },
           {
             title: 'Консоль chromecast клиента',
-            action: () => ipc.send('app:devtools:chromecast'),
+            action: () => this.$electron.ipcRenderer.send('app:devtools:chromecast'),
           },
           {
             title: 'Показать уведомление',
-            action: () => ipc.send('app:notification', this._releases[0])
+            action: () => this.$electron.ipcRenderer.send('app:notification', this._releases[0])
           },
           {
-            title: 'Добавить уведомление в стор',
+            title: 'Добавить уведомление в хранилище',
             action: () => this._setRelease(this._releases[0])
+          },
+          {
+            title: 'Показать данные хранилища в консоли',
+            action: () => console.log(this.$store.state),
           }
         ]
       },

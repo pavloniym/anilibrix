@@ -54,7 +54,6 @@
         _updates: s => s.updates.enabled,
         _timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
       })
-
     },
 
     methods: {

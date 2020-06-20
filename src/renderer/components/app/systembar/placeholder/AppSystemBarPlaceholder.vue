@@ -4,7 +4,7 @@
 
 <script>
 
-  import {mapState} from 'vuex'
+  import {AppPlatformMixin} from '@mixins/app'
 
   const props = {
     fixed: {
@@ -15,13 +15,8 @@
 
   export default {
     props,
+    mixins: [AppPlatformMixin],
     computed: {
-      ...mapState('app', {
-        _is_mac: s => s.is_mac,
-        _is_windows: s => s.is_windows,
-        _is_fullscreen: s => s.is_fullscreen,
-      }),
-
 
       /**
        * Check if placeholder is visible
@@ -29,7 +24,7 @@
        * @return {boolean}
        */
       isVisible() {
-        return !!(this._is_windows || (this._is_mac && !this._is_fullscreen));
+        return !!(this.isWindows || (this.isMac && !this.isOnFullscreen));
       }
     }
 

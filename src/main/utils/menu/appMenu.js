@@ -1,6 +1,6 @@
+import store from '@store'
 import {meta} from '@package'
 import {Menu, shell} from 'electron'
-
 
 export const aboutTemplate = [
   {
@@ -26,13 +26,6 @@ export const aboutTemplate = [
   {
     label: 'Поддержать проект',
     click: () => shell.openExternal(meta.links.donate)
-  },
-  {
-    type: 'separator'
-  },
-  {
-    role: 'togglefullscreen',
-    label: 'На полный экран',
   },
   {
     type: 'separator'
@@ -117,29 +110,39 @@ export default class AppMenu {
         label: 'Отладка',
         submenu: [
           {
-            role: 'forcereload',
-            label: 'Перезагрузить приложение',
+            role: 'toggledevtools',
+            label: 'Консоль приложения',
+            click: () => this._mainWindow.showDevTools()
+          },
+          {
+            label: 'Консоль торрент-сервер',
+            click: () => this._torrentWindow.showDevTools()
           },
           {
             type: 'separator'
           },
           {
-            label: 'Инструменты разработчика',
-            submenu: [
-              {
-                label: 'Основное приложение',
-                click: () => this._mainWindow.showDevTools()
-              },
-              {
-                label: 'Торрент-сервер',
-                click: () => this._torrentWindow.showDevTools()
-              },
-              {
-                label: 'Chromecast клиент',
-                click: () => this._chromecastWindow.showDevTools()
-              },
-            ]
-          }
+            label: 'Показать тестовое уведомление',
+            click: () => this._mainWindow.sendToWindow('app:notification', store.state.releases.data[0])
+          },
+          {
+            label: 'Добавить уведомление в хранилище',
+            click: () => store.dispatch('notifications/setRelease', store.state.releases.data[0])
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Показать данные хранилища в консоли',
+            click: () => console.log(store.state),
+          },
+          {
+            type: 'separator'
+          },
+          {
+            role: 'forcereload',
+            label: 'Перезагрузить приложение',
+          },
         ],
       }
     ];

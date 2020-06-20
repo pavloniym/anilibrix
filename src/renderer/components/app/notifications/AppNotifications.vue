@@ -2,7 +2,6 @@
 
   import {meta} from '@package'
   import {mapState} from 'vuex'
-  import {remote, ipcRenderer as ipc} from 'electron'
 
   export default {
     render: () => null,
@@ -33,7 +32,7 @@
 
 
     created() {
-      ipc.on('app:notification', (e, release) => {
+      this.$electron.ipcRenderer.on('app:notification', (e, release) => {
 
         // Check if release is set
         // Check if system notifications is enabled
@@ -48,7 +47,7 @@
           if (title && name) {
 
             // Set notification name
-            remote.app.setAppUserModelId(meta.name);
+            this.$electron.remote.app.setAppUserModelId(meta.name);
 
             // Create notification
             const notification = new window.Notification(title, {

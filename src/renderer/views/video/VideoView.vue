@@ -23,7 +23,7 @@
 
   import PlayerLayout from '@layouts/player'
   import PlayerInterface from '@components/video/interface'
-  import {ServerPlayer, TorrentPlayer} from '@components/video/playback/types'
+  import {ServerPlayer, UpscalePlayer, TorrentPlayer} from '@components/video/playback/types'
 
   import __get from 'lodash/get';
   import {mapState, mapActions} from 'vuex'
@@ -126,7 +126,8 @@
       components() {
         return {
           server: ServerPlayer,
-          torrent: TorrentPlayer
+          upscale: UpscalePlayer,
+          torrent: TorrentPlayer,
         }
       },
 

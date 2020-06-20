@@ -17,12 +17,15 @@ export default class extends Transformer {
   static async fetch(release) {
     try {
 
+      // Get playlist for release
+      const playlist = this.get(release, 'playlist') || [];
       const episodes = {};
 
       // Parse playlist
-      this._parsePlaylist(this.get(release, 'playlist') || [], episodes);
-
+      // Parse upscale
       // Parse torrents
+      this._parsePlaylist(playlist, episodes);
+      this._parseUpscale(playlist, episodes);
       this._parseTorrents(await this._getTorrents(release) || [], episodes);
 
       // Filter all sources without payload
@@ -62,6 +65,60 @@ export default class extends Transformer {
   static _createSource(type, label, alias, payload) {
     return {type, label, alias, payload}
   };
+
+  /**
+   * Parse playlist
+   *
+   * @param playlist
+   * @param episodes
+   * @private
+   */
+  static _parsePlaylist(playlist, episodes) {
+
+    // Parse server playlists
+    playlist.forEach(item => {
+
+      // Get episode number
+      // It is same as id in anilibria API
+      const episode = this.get(item, 'id');
+
+      // Create episode if it not exists
+      this._createEpisode(episode, episodes);
+
+      // Set episode data
+      episodes[episode].id = episode;
+      episodes[episode].title = this.get(item, 'title');
+      episodes[episode].sources.push(this._createSource('server', '1080', 'fhd', this.get(item, 'fullhd')));
+      episodes[episode].sources.push(this._createSource('server', '720', 'hd', this.get(item, 'hd')));
+      episodes[episode].sources.push(this._createSource('server', '480', 'sd', this.get(item, 'sd')));
+
+    });
+  }
+
+  /**
+   * Parse upscale
+   *
+   * @param playlist
+   * @param episodes
+   * @private
+   */
+  static _parseUpscale(playlist, episodes) {
+    if (this.get(store, 'state.app.settings.player.upscale.process') === true) {
+      playlist.forEach(item => {
+
+        // Get episode number
+        // It is same as id in anilibria API
+        // Get upscale payload
+        const episode = this.get(item, 'id');
+        const upscalePayload = {url: this.get(item, 'fullhd'), scale: 1};
+
+        episodes[episode].sources.push(this._createSource('upscale', '4096', '4k', {...upscalePayload, scale: 2}));
+        episodes[episode].sources.push(this._createSource('upscale', '2048', '2k', {...upscalePayload, scale: 1}));
+
+      });
+    }
+  }
+
 
   /**
    * Get torrents data
@@ -107,35 +164,6 @@ export default class extends Transformer {
         .map(response => response.value)
         .filter(torrent => torrent);
     }
-  }
-
-  /**
-   * Parse playlist
-   *
-   * @param playlist
-   * @param episodes
-   * @private
-   */
-  static _parsePlaylist(playlist, episodes) {
-
-    // Parse server playlists
-    playlist.forEach(item => {
-
-      // Get episode number
-      // It is same as id in anilibria API
-      const episode = this.get(item, 'id');
-
-      // Create episode if it not exists
-      this._createEpisode(episode, episodes);
-
-      // Set episode data
-      episodes[episode].id = episode;
-      episodes[episode].title = this.get(item, 'title');
-      episodes[episode].sources.push(this._createSource('server', '1080', 'fhd', this.get(item, 'fullhd')));
-      episodes[episode].sources.push(this._createSource('server', '720', 'hd', this.get(item, 'hd')));
-      episodes[episode].sources.push(this._createSource('server', '480', 'sd', this.get(item, 'sd')));
-
-    });
   }
 
 

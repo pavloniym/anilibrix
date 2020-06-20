@@ -10,7 +10,7 @@
     <app-system-bar-placeholder fixed/>
 
     <!-- Playlist -->
-    <v-card :class="{'mt-9': !(_is_mac && _is_fullscreen)}">
+    <v-card :class="{'mt-9': !this.isMacOnFullscreen}">
       <v-card-title>Плейлист</v-card-title>
       <v-card-subtitle>Список всех серий релиза</v-card-subtitle>
       <release-playlist
@@ -30,7 +30,7 @@
   import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
 
   import __get from 'lodash/get'
-  import {mapState} from "vuex";
+  import {AppPlatformMixin} from '@mixins/app'
 
   const props = {
     release: {
@@ -45,6 +45,7 @@
 
   export default {
     props,
+    mixins: [AppPlatformMixin],
     components: {
       ReleasePlaylist,
       AppSystemBarPlaceholder
@@ -57,10 +58,6 @@
     },
 
     computed: {
-      ...mapState('app', {
-        _is_mac: s => s.is_mac,
-        _is_fullscreen: s => s.is_fullscreen,
-      }),
 
       /**
        * Get episodes

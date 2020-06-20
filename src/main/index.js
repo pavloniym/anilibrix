@@ -37,9 +37,11 @@ const communications = [
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
-if (process.env.NODE_ENV !== 'development') // eslint-disable-line
+if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\'); // eslint-disable-line
+}
 
+app.commandLine.appendSwitch('disable-site-isolation-trials');
 
 app.on('window-all-closed', () => app.quit());
 app.on('ready', async () => {
@@ -57,11 +59,6 @@ app.on('ready', async () => {
 
   // Main window close event
   Main.getWindow().on('close', () => app.quit());
-
-  // Set initial fullscreen mode
-  // Set os
-  store.dispatch('app/setFullscreen', Main.getWindow().isFullScreen());
-  store.dispatch('app/setOS');
 
   // Create menu
   menuController
@@ -99,14 +96,9 @@ app.on('ready', async () => {
   // Set dock number
   // If dock is available
   ipc.on('app:dock:number', (e, number) => {
-    if(app.dock) {
+    if (app.dock) {
       app.dock.setBadge(number && number > 0 ? number.toString() : '')
     }
   });
-
-
-  // Set fullscreen events to main window
-  Main.getWindow().on('enter-full-screen', () => store.dispatch('app/setFullscreen', true));
-  Main.getWindow().on('leave-full-screen', () => store.dispatch('app/setFullscreen', false));
 
 });

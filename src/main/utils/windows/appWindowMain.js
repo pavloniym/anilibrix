@@ -26,11 +26,15 @@ class MainWindow extends Window {
       titleBarStyle: 'hiddenInset',
       useContentSize: true,
       webPreferences: {
-        plugins: true,
+        webgl: true,
+        webSecurity: false,
         nodeIntegration: true,
+        experimentalFeatures: true,
+        allowRunningInsecureContent: true,
+        enableBlinkFeatures: 'SameSiteDefaultChecksMethodRigorously',
+        disableBlinkFeatures: 'CookiesWithoutSameSiteMustBeSecure'
       },
       backgroundColor: '#121212',
-      disableHtmlFullscreenWindowResize: true,
     }
   }
 

@@ -11,7 +11,7 @@
     <app-system-bar-placeholder fixed/>
 
     <!-- Torrent Details -->
-    <v-card :class="{'mt-9': !(_is_mac && _is_fullscreen)}">
+    <v-card :class="{'mt-9': !this.isMacOnFullscreen}">
       <v-card-title>Торрент</v-card-title>
       <v-card-subtitle>Данные по воспроизводимому торренту и соединению</v-card-subtitle>
       <v-list dense>
@@ -27,7 +27,7 @@
 
         </template>
       </v-list>
-      <v-divider />
+      <v-divider/>
     </v-card>
 
     <!-- Notice -->
@@ -44,9 +44,8 @@
   import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
 
   import __get from 'lodash/get'
-  import {mapState} from "vuex";
   import prettyBytes from 'pretty-bytes'
-  import {ipcRenderer as ipc} from 'electron'
+  import {AppPlatformMixin} from '@mixins/app'
 
   const props = {
     source: {
@@ -57,6 +56,7 @@
 
   export default {
     props,
+    mixins: [AppPlatformMixin],
     components: {
       AppSystemBarPlaceholder
     },
@@ -69,11 +69,6 @@
     },
 
     computed: {
-      ...mapState('app', {
-        _is_mac: s => s.is_mac,
-        _is_fullscreen: s => s.is_fullscreen,
-      }),
-
 
       /**
        * Get torrent data
@@ -156,8 +151,7 @@
     },
 
     created() {
-
-      ipc.on('torrent:download', (e, data) => {
+      this.$electron.ipcRenderer.on('torrent:download', (e, data) => {
         if (this.torrent && this.torrent.id === data.torrentId) {
 
           // Set download speed
@@ -166,11 +160,10 @@
           // Find current file
           // Set it's progress
           const file = (data.files || []).find(file => file.name === this.file.name);
-          if(file) {
+          if (file) {
             this.progress = file.progress;
           }
         }
-
       })
     }
 

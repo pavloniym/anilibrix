@@ -9,7 +9,6 @@ const resolve = function (dir) {
 module.exports = {
   resolve: {
     alias: {
-      'electron': resolve('node_modules/electron-nightly'),
       '@': resolve('src'),
       '@main': resolve('src/main'),
       '@package': resolve('package.json'),
@@ -25,6 +24,7 @@ module.exports = {
       '@proxies': resolve('src/renderer/proxies'),
       '@proxy': resolve('src/renderer/proxies/Proxy'),
       '@utils': resolve('src/renderer/utils'),
+      '@mixins': resolve('src/renderer/mixins'),
     },
   },
 };

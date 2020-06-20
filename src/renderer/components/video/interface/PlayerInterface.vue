@@ -12,6 +12,7 @@
           <v-col align-self="center">
             <interface-links
               v-bind="{release, source}"
+              :upscale="() => $refs.upscale"
               :torrent="() => $refs.torrent"
               :playlist="() => $refs.playlist">
             </interface-links>
@@ -37,6 +38,7 @@
 
     <interface-next v-bind="{player, release, episode}"/>
     <interface-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
+    <!--<interface-upscale v-bind="{source}" ref="upscale" :key="`upscale:${source.label}`"/>-->
     <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
     <interface-playback v-bind="{player, payload}"/>
     <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
@@ -50,6 +52,7 @@
   import InterfacePlay from './components/play'
   import InterfaceNext from './components/next'
   import InterfaceLinks from './components/links'
+  import InterfaceUpscale from './components/upscale'
   import InterfaceTorrent from './components/torrent'
   import InterfaceHeadline from './components/headline'
   import InterfaceTimeline from './components/timeline'
@@ -95,6 +98,7 @@
       InterfacePlay,
       InterfaceNext,
       InterfaceLinks,
+      InterfaceUpscale,
       InterfaceTorrent,
       InterfaceHeadline,
       InterfaceTimeline,
@@ -142,7 +146,7 @@
       async handleKeyboardEvent(e) {
         if (e.which === 39 || e.which === 37) this.showInterface();
         if (e.which === 32) this.togglePlay();
-        if (e.code === 'KeyF') await this.toggleFullscreen();
+        if (e.code === 'KeyF') this.toggleFullscreen();
       },
 
 

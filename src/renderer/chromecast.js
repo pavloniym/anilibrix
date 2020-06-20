@@ -60,11 +60,11 @@ const playOnDevice = ({device, src, options = null} = {}) => {
   console.log('Play On Device', {device, src, options});
 
   // Search for device from local store
-  device = store.devices.find(d => d.name === device.name);
+  const player = store.devices.find(d => device && d.name === device.name);
 
   // If device is found
-  if (device && src) {
-    device.play(src, options, e => console.log('Player Error: ', e));
+  if (player && src) {
+    player.play(src, options, e => console.log('Player Error: ', e));
   }
 
 };

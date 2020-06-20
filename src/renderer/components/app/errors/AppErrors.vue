@@ -1,11 +1,9 @@
 <script>
 
-  import {ipcRenderer as ipc} from 'electron'
-
   export default {
     render: () => null,
     created() {
-      ipc.on('app:error', (e, error) =>
+      this.$electron.ipcRenderer.on('app:error', (e, error) =>
         this.$toasted.show(error, {type: 'error'})
       )
     }

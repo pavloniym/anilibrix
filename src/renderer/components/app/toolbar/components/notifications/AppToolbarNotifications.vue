@@ -18,7 +18,7 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-layout>
-      <v-divider />
+      <v-divider/>
       <v-list dense>
         <template v-for="(item, k) in _items">
           <v-divider v-if="k > 0" :key="`d: ${k}`"/>
@@ -54,9 +54,7 @@
 
 <script>
 
-
   import moment from 'moment'
-  import {ipcRenderer as ipc} from 'electron'
   import {mapState, mapActions} from 'vuex'
 
   export default {
@@ -120,7 +118,7 @@
       unseen: {
         immediate: true,
         handler(unseen) {
-          ipc.send('app:dock:number', unseen)
+          this.$electron.ipcRenderer.send('app:dock:number', unseen)
         }
       }
 

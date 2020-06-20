@@ -40,10 +40,6 @@
 
 <script>
 
-
-  import __get from 'lodash/get'
-  import {ipcRenderer as ipc} from 'electron'
-
   const props = {
     player: {
       type: Object,
@@ -90,7 +86,7 @@
         this.player.pause();
 
         // Send chromecast play event
-        ipc.send('chromecast:play', {
+        this.$electron.ipcRenderer.send('chromecast:play', {
           device,
           src: this.payload,
           options: {
@@ -98,9 +94,6 @@
           }
 
         });
-
-        //ipc.on('chromecast:')
-
       }
     },
 
@@ -115,10 +108,10 @@
             this.loading = true;
 
             // Send event to get devices from chromecast server
-            ipc.send('chromecast:devices:request');
+            this.$electron.ipcRenderer.send('chromecast:devices:request');
 
             // Get devices from chromecast server
-            ipc.on('chromecast:devices:items', (e, devices) => {
+            this.$electron.ipcRenderer.on('chromecast:devices:items', (e, devices) => {
               this.devices = devices;
               this.loading = false;
             })

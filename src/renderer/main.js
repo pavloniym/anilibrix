@@ -14,6 +14,7 @@ import '@plugins/plyr'
 import '@plugins/moment'
 import '@plugins/vue-meta'
 import '@plugins/vue-toasted'
+import '@plugins/vue-electron'
 
 // Import styles
 import '@assets/scss/style.scss'

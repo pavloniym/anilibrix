@@ -17,7 +17,6 @@ let mainConfig = {
   },
   externals: [
     ...Object.keys(dependencies || {}),
-    /^firebase/
   ],
 
   module: {

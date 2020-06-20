@@ -17,7 +17,6 @@
 
   import app from '@/../package'
   import {mapActions} from 'vuex'
-  import {shell, ipcRenderer as ipc} from 'electron'
 
   export default {
     computed: {
@@ -62,7 +61,7 @@
        * @return void
        */
       showAbout() {
-        ipc.send('app:about')
+        this.$electron.ipcRenderer.send('app:about')
       },
 
       /**
@@ -71,7 +70,7 @@
        * @param link
        */
       toLink(link) {
-        shell.openExternal(link);
+        this.$electron.shell.openExternal(link);
       },
 
 

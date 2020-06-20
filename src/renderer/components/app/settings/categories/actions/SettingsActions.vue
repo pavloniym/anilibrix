@@ -42,8 +42,6 @@
   import ExitDialog from './dialogs/exit'
   import CacheDialog from './dialogs/cache'
 
-  import {remote} from 'electron'
-
   export default {
     data() {
       return {
@@ -63,17 +61,12 @@
           {
             title: 'Перезагрузить приложение',
             value: this.shortcuts['reload'],
-            action: () => remote.getCurrentWindow().reload(),
+            action: () => this.$electron.remote.getCurrentWindow().reload(),
           },
           {
             title: 'Свернуть приложение',
             value: this.shortcuts['minimize'],
-            action: () => remote.getCurrentWindow().minimize(),
-          },
-          {
-            title: 'На полный экран',
-            value: this.shortcuts['fullscreen'],
-            action: () => remote.getCurrentWindow().setFullScreen(!remote.getCurrentWindow().isFullScreen()),
+            action: () => this.$electron.remote.getCurrentWindow().minimize(),
           },
           {
             title: 'Закрыть приложение',

@@ -1,5 +1,5 @@
 <template>
-  <div class="release" :class="{'is-mac--fullscreen': _is_mac && _is_fullscreen}">
+  <div class="release" :class="{'is-mac--fullscreen': this.isMacOnFullscreen}">
 
     <!-- Toolbar -->
     <app-tool-bar hide-update>
@@ -28,19 +28,13 @@
   import AppSettings from '@components/app/settings'
 
   import __get from 'lodash/get'
-  import {mapState} from "vuex";
+  import {AppPlatformMixin} from '@mixins/app'
 
   export default {
+    mixins: [AppPlatformMixin],
     components: {
       AppToolBar,
       AppSettings,
-    },
-
-    computed: {
-      ...mapState('app', {
-        _is_mac: s => s.is_mac,
-        _is_fullscreen: s => s.is_fullscreen,
-      }),
     },
 
     methods: {

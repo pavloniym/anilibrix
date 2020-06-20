@@ -17,6 +17,7 @@ jobs:
     env:
       ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
       ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
+      ADS_URLS: ${{ secrets.ADS_URLS }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       YANDEX_TRACKING_ID: ${{ secrets.YANDEX_TRACKING_ID }}
 

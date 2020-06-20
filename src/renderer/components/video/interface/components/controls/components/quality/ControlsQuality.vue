@@ -10,21 +10,17 @@
 
     <!-- Qualities -->
     <v-list dense>
-      <v-list-item
-        v-for="(s, k) in sources"
-        :input-value="s.alias === source.alias"
-        :key="k"
-        @click="_setQuality(s.alias)">
-
-        <!-- Icon -->
-        <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
-
-        <!-- Label -->
-        <v-list-item-content>
-          <v-list-item-subtitle v-text="s.label"/>
-        </v-list-item-content>
-
-      </v-list-item>
+      <template v-for="(s, k) in sortedSources">
+        <v-list-item
+          :key="k"
+          :input-value="s.alias === source.alias"
+          @click="_setQuality(s.alias)">
+          <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
+          <v-list-item-content>
+            <v-list-item-subtitle v-text="s.label"/>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
 
   </v-menu>
@@ -34,7 +30,6 @@
 
 
   import __get from "lodash/get";
-  import prettyBytes from 'pretty-bytes'
   import {mapActions} from "vuex";
 
   const props = {
@@ -54,7 +49,51 @@
 
   export default {
     props,
+    computed: {
 
+      /**
+       * Get upscale sources
+       *
+       * @return {array}
+       */
+      upscaleSources() {
+        return (this.sources || []).filter(item => item.type === 'upscale')
+      },
+
+      /**
+       * Get server sources
+       *
+       * @return {array}
+       */
+      serverSources() {
+        return (this.sources || []).filter(item => item.type === 'server')
+      },
+
+      /**
+       * Get torrent sources
+       *
+       * @return {array}
+       */
+      torrentSources() {
+        return (this.sources || []).filter(item => item.type === 'torrent')
+      },
+
+
+      /**
+       * Get sorted sources
+       *
+       * @return {array}
+       */
+      sortedSources() {
+        return [
+          ...this.upscaleSources,
+          ...this.serverSources,
+          ...this.torrentSources,
+        ].filter(item => item)
+      }
+
+
+    },
     methods: {
       ...mapActions('app/settings/player', {_setQuality: 'setQuality'}),
 
@@ -69,41 +108,15 @@
         const type = __get(source, 'type');
         const alias = __get(source, 'alias');
 
-        if (type === 'server') {
-          if (alias === 'sd') return 'mdi-standard-definition';
-          if (alias === 'hd' || alias === 'fhd') return 'mdi-high-definition';
-        } else if (type === 'torrent') return 'mdi-alpha-t';
+        if (alias === 'sd') return 'mdi-standard-definition';
+        if (alias === 'hd') return 'mdi-high-definition';
+        if (alias === 'fhd') return 'mdi-high-definition';
+        if (alias === '2k') return 'mdi-ultra-high-definition';
+        if (alias === '4k') return 'mdi-ultra-high-definition';
+        if (type === 'torrent') return 'mdi-alpha-t';
 
         return null;
-      },
-
-
-      /**
-       * Get source caption
-       *
-       * @param source
-       * @return {string|null}
-       */
-      /*getSourceCaption(source) {
-
-        const type = __get(source, 'type');
-        if (type === 'torrent') {
-
-          const length = __get(source, 'payload.file.length') || null;
-
-          // const seeders = __get(source, 'payload.torrent.seeders') || 0;
-          // const leechers = __get(source, 'payload.torrent.leechers') || 0;
-
-          /!*return [`С: ${seeders}`, `Л: ${leechers}`, ]
-            .filter(item => item)
-            .join(' • ')*!/
-
-          return length ? prettyBytes(length) : null;
-        }
-
-        return null;
-
-      }*/
+      }
 
     },
   }

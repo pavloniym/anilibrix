@@ -22,14 +22,12 @@
           в меню выбора качества воспроизведения релиза.
         </div>
       </v-card-subtitle>
-
-      <v-list-item dense @click="_setTorrentsProcess(!_torrents.process)">
+      <v-list-item dense @click="_setTorrentsProcess(!_torrents)">
         <v-list-item-title>Воспроизоводить торренты</v-list-item-title>
         <v-list-item-action class="mr-2">
-          <v-switch :input-value="_torrents.process" @change="_setTorrentsProcess" />
+          <v-switch :input-value="_torrents" @change="_setTorrentsProcess"/>
         </v-list-item-action>
       </v-list-item>
-
       <v-card-text class="pt-2">
         <div class="caption">
           Использование торрентов требует бОльшего времени подключения и парсинга,
@@ -38,17 +36,37 @@
         </div>
       </v-card-text>
     </v-card>
-    <v-divider/>
 
+    <!-- Upscale -->
+    <!--<v-card class="mt-2">
+      <v-list-item dense @click="_setUpscaleProcess(!_upscale)">
+        <v-list-item-title>Включить 4K интерполяцию</v-list-item-title>
+        <v-list-item-action class="mr-2">
+          <v-switch :input-value="_upscale" @change="_setUpscaleProcess"/>
+        </v-list-item-action>
+      </v-list-item>
+      <v-card-text class="pt-2">
+        <div class="caption">
+          Позволяет выбрать 2k и 4k разрешения,
+          которые получаются с помощью специального алгоритма нейросети в реальном времени.
+        </div>
+      </v-card-text>
+    </v-card>-->
 
     <!-- Autoplay -->
-    <v-card>
+    <v-card class="mt-2">
       <v-list-item dense @click="_setAutoplayNext(!_autoplayNext)">
         <v-list-item-title>Автовоспроизведение следующего эпизода</v-list-item-title>
         <v-list-item-action class="mr-2">
-          <v-switch :input-value="_autoplayNext" @change="_setAutoplayNext" />
+          <v-switch :input-value="_autoplayNext" @change="_setAutoplayNext"/>
         </v-list-item-action>
       </v-list-item>
+      <v-card-text class="pt-2">
+        <div class="caption">
+          После окончания эпизода плеер автоматически начнет воспроизведение следующего эпизода в релизе,
+          при его наличии
+        </div>
+      </v-card-text>
     </v-card>
 
   </div>
@@ -61,7 +79,8 @@
   export default {
     computed: {
       ...mapState('app/settings/player', {
-        _torrents: s => s.torrents,
+        _upscale: s => s.upscale.process,
+        _torrents: s => s.torrents.process,
         _autoplayNext: s => s.autoplayNext,
       })
     },
@@ -70,6 +89,7 @@
     methods: {
       ...mapActions('app/settings/player', {
         _setAutoplayNext: 'setAutoplayNext',
+        _setUpscaleProcess: 'setUpscaleProcess',
         _setTorrentsProcess: 'setTorrentsProcess'
       })
     }

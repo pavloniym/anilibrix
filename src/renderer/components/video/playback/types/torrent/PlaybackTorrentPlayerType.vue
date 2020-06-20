@@ -16,7 +16,6 @@
   import PlaybackPlayer from './../../components/player'
 
   import __get from 'lodash/get';
-  import {ipcRenderer as ipc} from 'electron';
 
   const props = {
     time: {
@@ -73,11 +72,11 @@
           if (torrentId) {
 
             // Send event to start server with provided torrent id
-            ipc.send('torrent:start', {torrentId, fileIndex});
+            this.$electron.ipcRenderer.send('torrent:start', {torrentId, fileIndex});
 
             // Listen event with torrent server data
             // Resolve when event is caught
-            ipc.on(`torrent:server`, (e, server) => {
+            this.$electron.ipcRenderer.on(`torrent:server`, (e, server) => {
               if (server.torrentId === torrentId) {
                 resolve(`${server.url}/${fileIndex}/${encodeURIComponent(payload.file.name)}`);
               }
@@ -141,8 +140,8 @@
       destroyPayload({source}) {
         return new Promise(resolve => {
 
-          ipc.send('torrent:destroy', {torrentId: this._getSourceTorrentId(source)});
-          ipc.on('torrent:clear', (e, {torrentId} = {}) => {
+          this.$electron.ipcRenderer.send('torrent:destroy', {torrentId: this._getSourceTorrentId(source)});
+          this.$electron.ipcRenderer.on('torrent:clear', (e, {torrentId} = {}) => {
             if (torrentId === this._getSourceTorrentId(source)) {
               resolve();
             }
@@ -168,7 +167,7 @@
     created() {
 
       // Set torrent error handler
-      ipc.on('torrent:error', (e, {torrentId, message, error} = {}) => {
+      this.$electron.ipcRenderer.on('torrent:error', (e, {torrentId, message, error} = {}) => {
           if (torrentId === this._getSourceTorrentId(this.source)) {
             this.$emit('error', {torrentId, message, error})
           }

@@ -48,6 +48,16 @@
       </v-tooltip>
 
 
+      <!--&lt;!&ndash; Upscale &ndash;&gt;
+      <v-tooltip v-if="source.type === 'upscale'" right :attach="$refs.links">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large @click="upscale().show()">
+            <v-icon size="24">mdi-resize</v-icon>
+          </v-btn>
+        </template>
+        <span>Настройки интерполяций</span>
+      </v-tooltip>-->
+
     </template>
   </v-layout>
 </template>
@@ -68,6 +78,10 @@
       default: null
     },
     torrent: {
+      type: Function,
+      default: null
+    },
+    upscale: {
       type: Function,
       default: null
     },

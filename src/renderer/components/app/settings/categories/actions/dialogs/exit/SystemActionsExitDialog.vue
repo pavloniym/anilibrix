@@ -16,8 +16,6 @@
 
 <script>
 
-  import {remote} from 'electron'
-
   const props = {
     attach: {
       type: HTMLDivElement,
@@ -52,7 +50,7 @@
        * @return void
        */
       exitApp() {
-        remote.app.exit(0);
+        this.$electron.remote.app.exit(0);
       }
     }
 

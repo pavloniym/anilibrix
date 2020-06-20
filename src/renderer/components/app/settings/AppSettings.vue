@@ -12,7 +12,7 @@
     <system-bar-placeholder fixed/>
 
     <!-- Header -->
-    <v-toolbar flat class="shrink" color="#363636" :class="{'mt-9': !(_is_mac && _is_fullscreen)}">
+    <v-toolbar flat class="shrink" color="#363636" :class="{'mt-9': !this.isMacOnFullscreen}">
       <v-app-bar-nav-icon @click="drawer = false">
         <v-icon>mdi-arrow-left</v-icon>
       </v-app-bar-nav-icon>
@@ -50,19 +50,17 @@
 
   import SystemBarPlaceholder from './../systembar/placeholder'
 
+  import {AppPlatformMixin} from '@mixins/app'
   import {mapState, mapActions} from 'vuex'
 
   export default {
+    mixins: [AppPlatformMixin],
     components: {
       Credentials,
       SystemBarPlaceholder
     },
     computed: {
-      ...mapState('app', {
-        _drawer: s => s.drawer,
-        _is_mac: s => s.is_mac,
-        _is_fullscreen: s => s.is_fullscreen,
-      }),
+      ...mapState('app', {_drawer: s => s.drawer}),
       ...mapState('app/settings/system', {_devtools: s => s.devtools}),
 
       /**
@@ -72,14 +70,12 @@
        */
       categories() {
         return [
-
           PlayerSettings,
           SystemSettings,
           ConnectionSettings,
           ActionsSettings,
           AnilibriaSettings,
           this._devtools ? DevtoolsSettings : null
-
         ].filter(category => category)
       },
 
@@ -109,7 +105,6 @@
 
     methods: {
       ...mapActions('app', {_setDrawer: 'setDrawer'}),
-
     }
 
   }
