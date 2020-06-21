@@ -8642,6 +8642,11 @@ plyr@^3.5.7-beta.0:
     rangetouch "^2.0.1"
     url-polyfill "^1.1.8"
 
+portal-vue@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/portal-vue/-/portal-vue-2.1.7.tgz#ea08069b25b640ca08a5b86f67c612f15f4e4ad4"
+  integrity sha512-+yCno2oB3xA7irTt0EU5Ezw22L2J51uKAacE/6hMPMoO/mx3h4rXFkkBkT4GFsMDv/vEe8TNKC3ujJJ0PTwb6g==
+
 portfinder@^1.0.25:
   version "1.0.25"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.25.tgz#254fd337ffba869f4b9d37edc298059cb4d35eca"
@@ -11158,7 +11163,7 @@ vue-yandex-metrika@^1.8.3:
   resolved "https://registry.yarnpkg.com/vue-yandex-metrika/-/vue-yandex-metrika-1.8.3.tgz#f27d71f385ae3f20544a4d295865a2e446293c60"
   integrity sha512-WD/2CPM5NWXg7JdmgfiOq8J5QbidrCDoDAaE0JfE32wceY56ewzERVGnOGS/Tfx+HvarGc+oJsBbZxl/e2BWTA==
 
-vue@^2.5.16:
+vue@2.6:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==

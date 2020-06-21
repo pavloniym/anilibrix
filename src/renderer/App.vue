@@ -1,22 +1,29 @@
 <template>
   <v-app>
 
-    <!-- System bar -->
+    <!-- System Bar -->
     <app-system-bar/>
+    <app-settings/>
 
+    <!-- Content -->
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
-      <div v-else id="container" class="fill-height">
-        <v-fade-transition mode="out-in" appear>
-          <router-view :key="$route.name"/>
-        </v-fade-transition>
-      </div>
+      <app-base-layout v-else>
+
+        <!-- App Toolbar -->
+        <app-tool-bar/>
+
+        <!-- Router View -->
+        <router-view :key="$route.name"/>
+
+      </app-base-layout>
     </v-fade-transition>
 
-    <!-- Errors -->
-    <app-errors/>
 
+    <!-- Errors -->
+    <!-- App Settings -->
     <!-- Notifications -->
+    <app-errors/>
     <app-notifications/>
 
   </v-app>
@@ -26,7 +33,10 @@
 
   import AppLoader from '@components/app/loader'
   import AppErrors from '@components/app/errors'
+  import AppToolBar from "@components/app/toolbar";
+  import AppSettings from "@components/app/settings";
   import AppSystemBar from '@components/app/systembar'
+  import AppBaseLayout from '@layouts/base'
   import AppNotifications from "@components/app/notifications";
 
   import {mapState, mapActions} from 'vuex'
@@ -34,9 +44,12 @@
   export default {
     name: 'AniLibrix',
     components: {
-      AppErrors,
       AppLoader,
+      AppErrors,
+      AppToolBar,
+      AppSettings,
       AppSystemBar,
+      AppBaseLayout,
       AppNotifications,
     },
     data() {

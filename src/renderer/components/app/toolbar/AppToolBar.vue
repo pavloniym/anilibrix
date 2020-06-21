@@ -1,17 +1,32 @@
 <template>
-  <v-app-bar v-bind="{color, flat}" class="px-4 toolbar shrink">
+  <v-app-bar flat color="transparent" class="toolbar">
 
     <slot name="left"/>
 
-    <v-spacer/>
+    <!-- Releases -->
+    <v-btn small text exact class="mr-1" height="38" :to="{name: 'releases'}">
+      <v-icon size="18" class="mr-2">mdi-view-column</v-icon>
+      <span>Релизы</span>
+    </v-btn>
 
-    <slot name="right"/>
+    <!-- Catalog-->
+    <v-btn small text exact class="mr-1" height="38" :to="{name: 'catalog'}">
+      <v-icon size="18" class="mr-2">mdi-folder-text-outline</v-icon>
+      <span>Каталог</span>
+    </v-btn>
 
-    <catalog v-if="!hideCatalog"/>
-    <search v-if="!hideSearch"/>
-    <update v-if="!hideUpdate"/>
-    <notifications v-if="!hideNotifications"/>
-    <settings v-if="!hideSettings"/>
+    <!-- Favorite -->
+    <v-btn small text class="mr-1" height="38">
+      <v-icon size="18" class="mr-2">mdi-star</v-icon>
+      <span>Избранное</span>
+    </v-btn>
+
+    <!-- Search-->
+    <search class="mr-4"/>
+
+    <update/>
+    <notifications/>
+    <settings/>
 
   </v-app-bar>
 </template>
@@ -24,39 +39,7 @@
   import Settings from './components/settings'
   import Notifications from './components/notifications'
 
-  const props = {
-    hideSearch: {
-      type: Boolean,
-      default: false
-    },
-    hideUpdate: {
-      type: Boolean,
-      default: false
-    },
-    hideSettings: {
-      type: Boolean,
-      default: false
-    },
-    hideCatalog: {
-      type: Boolean,
-      default: false
-    },
-    hideNotifications: {
-      type: Boolean,
-      default: false
-    },
-    color: {
-      type: String,
-      default: 'transparent'
-    },
-    flat: {
-      type: Boolean,
-      default: true
-    }
-  };
-
   export default {
-    props,
     components: {
       Update,
       Search,
@@ -68,3 +51,16 @@
   }
 
 </script>
+
+<style lang="scss" scoped>
+
+  .toolbar {
+    ::v-deep {
+      .v-toolbar__content {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+
+</style>

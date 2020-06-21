@@ -1,21 +1,18 @@
 <template>
   <v-layout v-if="loading || releases.length > 0" align-center class="shrink release__slider">
 
-
     <!-- Prev -->
-    <div :style="{width: '5%'}" class="d-flex justify-start">
-      <v-btn icon :disabled="loading || value <= 0" @click="$emit('input', value - 1)">
+    <v-layout class="controls controls--left">
+      <v-btn icon :disabled="loading || value <= 0" @click="$emit('previous')">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-    </div>
-
+    </v-layout>
 
     <!-- Posters -->
     <v-slide-group
       v-bind="{value}"
       mandatory
       center-active
-      :style="{width: '90%'}"
       :show-arrows="false"
       @change="$emit('input', $event)">
 
@@ -48,7 +45,7 @@
               :min-width="minWidth"
               :min-height="minHeight"
               @click="toggle"
-              @dblclick="toEpisode(release)">
+              @dblclick="$emit('toEpisode')">
               <v-img
                 v-if="release && release.poster && release.poster.image"
                 v-bind="{ratio}"
@@ -70,8 +67,8 @@
 
 
     <!-- Next -->
-    <div :style="{width: '5%'}" class="d-flex justify-end">
-      <v-btn icon :disabled="loading || value >= releases.length - 1" @click="$emit('input', value + 1)">
+    <div class="controls controls--right">
+      <v-btn icon :disabled="loading || value >= releases.length - 1" @click="$emit('next')">
         <v-icon>mdi-arrow-right</v-icon>
       </v-btn>
     </div>
@@ -80,9 +77,6 @@
 </template>
 
 <script>
-
-  import __get from 'lodash/get'
-  import {mapState} from 'vuex'
 
   const props = {
     value: {
@@ -109,104 +103,33 @@
         minWidth: 175,
         minHeight: 250,
       }
-    },
-
-    computed: {
-      ...mapState('app', {
-        _drawer: s => s.drawer,
-        _is_searching: s => s.is_searching,
-      }),
-    },
-
-    methods: {
-
-
-      /**
-       * Move to next slide
-       *
-       * @return void
-       */
-      showNext() {
-        if (this.value < this.releases.length - 1) {
-          this.$emit('input', this.value + 1);
-        }
-      },
-
-
-      /**
-       * Move to previous slide
-       *
-       * @return void
-       */
-      showPrev() {
-        if (this.value > 0) {
-          this.$emit('input', this.value - 1);
-        }
-      },
-
-
-      /**
-       * Switch slider using keyboard
-       *
-       * @param e
-       */
-      switchSlider(e) {
-
-        const code = e.which || e.keyCode;
-
-        if (code === 37) this.showPrev(); // Left arrow
-        if (code === 39) this.showNext(); // Right arrow
-
-        // Space or Enter event
-        // Check that settings is closed and search string is not active
-        if (code === 32 || code === 13) {
-          if (this._drawer === false && this._is_searching === false) {
-            this.toEpisode(this.releases[this.value]);
-          }
-        }
-      },
-
-
-      /**
-       * Watch episode
-       *
-       * @param release
-       */
-      toEpisode(release) {
-        this.$emit('watch', {
-          release,
-          episode: __get(release, ['episodes', 0]) || null
-        });
-      }
-
-    },
-
-    mounted() {
-
-      // Listen keyboard events
-      document.addEventListener('keydown', this.switchSlider, true);
-
-
-    },
-
-    destroyed() {
-
-      // Remove scroll and keyboard listeners
-      document.removeEventListener('keydown', this.switchSlider);
     }
-
   }
+
 </script>
 
 <style scoped lang="scss">
 
-  .release {
-    &__slider {
+  .release__slider {
+    position: relative;
 
-      ::v-deep .v-slide-group {
-        &__prev, &__next {
-          display: none !important;
-        }
+    .controls {
+      position: absolute;
+
+      &--left {
+        left: 0;
+        margin-left: -43px;
+      }
+
+      &--right {
+        right: 0;
+        margin-right: -43px;
+      }
+    }
+
+    ::v-deep .v-slide-group {
+      &__prev, &__next {
+        display: none !important;
       }
     }
   }

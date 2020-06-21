@@ -1,30 +1,36 @@
 <template>
-  <releases-layout>
-    <v-layout column justify-center fill-height class="mx-4">
+  <v-layout column justify-center fill-height class="releases">
 
-      <releases-slider v-model="index" v-bind="{loading}" :releases="_releases" @watch="toEpisode"/>
-      <releases-data v-bind="{release, loading}" class="mt-4" @watch="toEpisode"/>
+    <slider
+      v-bind="{loading}"
+      v-model="index"
+      class="mb-4"
+      :releases="_releases"
+      @next="showNextRelease"
+      @previous="showPreviousRelease"
+      @toEpisode="toEpisode">
+    </slider>
+    <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
+    <actions v-bind="{loading}" @toEpisode="toEpisode" @toRelease="toRelease"/>
 
-    </v-layout>
-  </releases-layout>
+  </v-layout>
 </template>
 
 <script>
 
-  import ReleasesLayout from '@layouts/releases'
-  import {ReleasesData, ReleasesSlider} from '@components/releases'
+  import Slider from './components/slider'
+  import Release from './components/release'
+  import Actions from './components/actions'
 
   import {mapState, mapActions} from 'vuex'
 
   export default {
     name: 'Releases.View',
-    meta: {
-      title: 'Последние релизы'
-    },
+    meta: {title: 'Последние релизы'},
     components: {
-      ReleasesData,
-      ReleasesLayout,
-      ReleasesSlider,
+      Slider,
+      Release,
+      Actions,
     },
 
     data() {
@@ -34,6 +40,11 @@
     },
 
     computed: {
+      ...mapState('app', {
+        _drawer: s => s.drawer,
+        _is_searching: s => s.is_searching,
+      }),
+
       ...mapState('releases', {
         _index: s => s.index,
         _loading: s => s.loading,
@@ -76,35 +87,121 @@
        */
       release() {
         return this._releases[this.index] || null;
+      },
+
+
+      /**
+       * Get episode
+       *
+       * @return Object|null
+       */
+      episode() {
+        return this.$__get(this.release, ['episodes', 0]) || null;
       }
+
     },
 
 
     methods: {
       ...mapActions('releases', {_setIndex: 'setIndex'}),
 
+      /**
+       * Listen keyboard event
+       *
+       * @param e
+       * @return void
+       */
+      handleKeyboardEvents(e) {
+        const code = e.which || e.keyCode;
+
+        // space || enter
+        if (code === 32 || code === 13) {
+          if (this._drawer === false && this._is_searching === false) {
+            this.toEpisode();
+          }
+        }
+
+        // left and right arrows
+        if (code === 37) this.showPreviousRelease();
+        if (code === 39) this.showNextRelease();
+
+      },
+
+
+      /**
+       * Move to next slide
+       *
+       * @return void
+       */
+      showNextRelease() {
+        if (this.index < this._releases.length - 1) {
+          this.index = this.index + 1;
+        }
+      },
+
+
+      /**
+       * Move to previous slide
+       *
+       * @return void
+       */
+      showPreviousRelease() {
+        if (this.index > 0) {
+          this.index = this.index - 1;
+        }
+      },
+
 
       /**
        * Watch episode
+       * Go to player with provided release and episode
        *
-       * @param release
-       * @param episode
+       * @return void
        */
-      toEpisode({release, episode}) {
-        if (release && episode) {
+      toEpisode() {
+        if (this.release && this.episode) {
+          const releaseName = this.$__get(this.release, 'names.original');
           this.$router.push({
             name: 'video',
             params: {
-              key: `${release.id}:${episode.id}`,
-              release,
-              episode,
-              releaseName: release.names.original
+              key: `${this.release.id}:${this.episode.id}`,
+              release: this.release,
+              episode: this.episode,
+              releaseName,
             }
           });
         }
       },
 
+
+      /**
+       * Go to release
+       *
+       * @return void
+       */
+      toRelease() {
+        if (this.release) {
+          const releaseId = this.$__get(this.release, 'id');
+          const releaseName = this.$__get(this.release, 'names.original');
+          this.$router.push({
+            name: 'release',
+            params: {releaseId, releaseName}
+          })
+        }
+      }
+
     },
+
+
+    mounted() {
+      document.addEventListener('keydown', this.handleKeyboardEvents);
+    },
+
+
+    beforeDestroy() {
+      document.removeEventListener('keydown', this.handleKeyboardEvents);
+    },
+
 
     watch: {
 
@@ -122,3 +219,18 @@
   }
 </script>
 
+<style lang="scss" scoped>
+
+  .releases {
+    &::-webkit-scrollbar-thumb {
+      background-color: red;
+    }
+
+    &::-webkit-scrollbar {
+      width: 9px;
+      background-color: red;
+    }
+
+  }
+
+</style>

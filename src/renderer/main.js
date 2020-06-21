@@ -12,6 +12,7 @@ import vuetify from '@plugins/vuetify'
 // Import plugins
 import '@plugins/plyr'
 import '@plugins/moment'
+import '@plugins/lodash'
 import '@plugins/vue-meta'
 import '@plugins/vue-toasted'
 import '@plugins/vue-electron'

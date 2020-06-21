@@ -1,5 +1,5 @@
 <template>
-  <catalog-layout>
+  <v-layout fill-height column>
 
     <!-- Header-->
     <v-card color="transparent">
@@ -30,7 +30,7 @@
     <!-- Load More -->
     <v-btn v-if="_items && _items.length > 0 && hasMoreItems" block text @click="loadReleases">Загрузить еще</v-btn>
 
-  </catalog-layout>
+  </v-layout>
 </template>
 
 <script>

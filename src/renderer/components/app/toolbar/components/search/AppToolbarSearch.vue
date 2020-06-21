@@ -1,49 +1,32 @@
 <template>
-  <v-layout class="shrink">
+  <v-autocomplete
+    v-bind="{items, loading}"
+    solo
+    dense
+    no-filter
+    hide-details
+    hide-no-data
+    return-object
+    ref="search"
+    item-value="id"
+    item-text="names.ru"
+    class="grey darken-2"
+    placeholder="Поиск релиза ..."
+    :append-icon="null"
+    :allow-overflow="false"
+    :search-input.sync="search"
+    @focus="_setSearching(true)"
+    @blur="_setSearching(false)"
+    @input="toRelease">
 
-    <!-- Search -->
-    <v-tooltip left>
-      <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon @click="visible = !visible">
-          <v-icon>mdi-{{_is_searching ? 'arrow-right' : 'magnify'}}</v-icon>
-        </v-btn>
-      </template>
-      <span>Поиск релизов</span>
-    </v-tooltip>
+    <template v-slot:item="{item}">
+      <v-list-item-content :style="{width: '100%', maxWidth: '100%'}">
+        <v-list-item-title v-text="item.names.ru"/>
+        <v-list-item-subtitle v-text="item.names.original"/>
+      </v-list-item-content>
+    </template>
 
-    <v-expand-x-transition>
-      <v-autocomplete
-        v-if="visible"
-        v-bind="{items, loading}"
-        solo
-        autofocus
-        no-filter
-        hide-details
-        hide-no-data
-        return-object
-        ref="search"
-        item-value="id"
-        item-text="names.ru"
-        placeholder="Поиск релиза ..."
-        :style="{width: '400px', maxWidth: '400px'}"
-        :append-icon="null"
-        :allow-overflow="false"
-        :search-input.sync="search"
-        @focus="_setSearching(true)"
-        @blur="_setSearching(false)"
-        @input="toRelease">
-
-        <template v-slot:item="{item}">
-          <v-list-item-content :style="{width: '350px', maxWidth: '350px'}">
-            <v-list-item-title v-text="item.names.ru"/>
-            <v-list-item-subtitle v-text="item.names.original"/>
-          </v-list-item-content>
-        </template>
-
-      </v-autocomplete>
-    </v-expand-x-transition>
-
-  </v-layout>
+  </v-autocomplete>
 </template>
 
 <script>

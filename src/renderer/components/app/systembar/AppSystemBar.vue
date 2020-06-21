@@ -95,8 +95,11 @@
 <style lang="scss" scoped>
 
   .system-bar {
-    z-index: 5;
+    top:0;
     height: 40px;
+    width: 100%;
+    z-index: 10;
+    position: fixed;
     -webkit-app-region: drag;
 
     &__button {
