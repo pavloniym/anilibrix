@@ -35,6 +35,7 @@
     components: {
       AppToolBar
     },
+
     data() {
       return {
         plyr: null,

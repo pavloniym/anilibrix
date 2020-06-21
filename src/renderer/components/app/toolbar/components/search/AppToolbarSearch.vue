@@ -20,7 +20,7 @@
     @input="toRelease">
 
     <template v-slot:item="{item}">
-      <v-list-item-content :style="{width: '100%', maxWidth: '100%'}">
+      <v-list-item-content>
         <v-list-item-title v-text="item.names.ru"/>
         <v-list-item-subtitle v-text="item.names.original"/>
       </v-list-item-content>
@@ -31,6 +31,7 @@
 
 <script>
 
+  import __debounce from 'lodash/debounce'
   import {mapState, mapActions} from 'vuex';
 
   export default {
@@ -55,9 +56,8 @@
        * Get releases
        *
        * @param searchQuery
-       * @return void
        */
-      async getReleases(searchQuery) {
+      getReleases: __debounce(async function(searchQuery) {
 
         // Set loading state
         // Get releases from server
@@ -66,7 +66,8 @@
 
         // Reset loading
         this.loading = false;
-      },
+
+      }, 1000),
 
 
       /**
@@ -108,8 +109,9 @@
             // Get releases
             this.getReleases(search);
 
+            // Check if yandex-metrika is available
             // Hit yandex-metrika event
-            this.$metrika.hit(`/search?query=${search}`);
+            if(this.$metrika) this.$metrika.hit(`/search?query=${search}`);
 
           } else {
 

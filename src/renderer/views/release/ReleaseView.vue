@@ -1,30 +1,23 @@
 <template>
-  <release-layout>
+  <v-layout v-if="loading || _release" column>
 
-    <!-- Card -->
-    <release-card
-      v-bind="{loading}"
-      :release="_release">
-    </release-card>
-
-    <!-- Playlist -->
-    <release-playlist
+    <card v-bind="{loading}" :release="_release"/>
+    <playlist
       v-bind="{loading}"
       class="mt-6"
       :episodes="_episodes"
       :release="_release"
       @episode="toVideo">
-    </release-playlist>
+    </playlist>
 
-  </release-layout>
+  </v-layout>
 </template>
 
 <script>
 
-  import ReleaseLayout from '@layouts/release'
-  import {ReleaseCard, ReleasePlaylist} from '@components/release'
+  import Card from '@components/release/card'
+  import Playlist from '@components/release/playlist'
 
-  import __get from 'lodash/get'
   import {mapState} from 'vuex'
 
   const props = {
@@ -42,14 +35,11 @@
     props,
     name: "Release.View",
     meta() {
-      return {
-        title: `Релиз [${this.releaseId}]: ${this.releaseName}`
-      }
+      return {title: `Релиз [${this.releaseId}]: ${this.releaseName}`}
     },
     components: {
-      ReleaseCard,
-      ReleaseLayout,
-      ReleasePlaylist,
+      Card,
+      Playlist
     },
 
     data() {
@@ -61,7 +51,7 @@
     computed: {
       ...mapState('release', {
         _release: s => s.data,
-        _episodes: s => __get(s, 'data.episodes') || [],
+        _episodes: s => s.data && s.data.episodes ? s.data.episodes : [],
       })
     },
 

@@ -20,4 +20,11 @@
     min-height: 200px;
   }
 
+  &__avatar {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 48px;
+    min-width: 48px;
+  }
+
 }

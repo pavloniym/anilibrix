@@ -5,20 +5,6 @@
 <script>
 
   export default {
-    methods: {
-
-      /**
-       * Resize noise
-       *
-       * @param noise
-       */
-      resizeNoise(noise) {
-        noise.style.width = window.innerWidth + 'px';
-        noise.style.height = window.innerHeight + 'px';
-      }
-
-    },
-
     mounted() {
       this.$nextTick(() => {
 
@@ -28,11 +14,6 @@
         // Closer to analouge appearance
         // Resize noise to window
         canvas.width = canvas.height = 256;
-        this.resizeNoise(canvas);
-
-        // Add resize listeners
-        window.addEventListener('resize', () => this.resizeNoise(canvas), true);
-
 
         function noise(ctx) {
 
@@ -81,11 +62,6 @@
       })
     },
 
-
-    destroyed() {
-      window.removeEventListener('resize', this.resizeNoise)
-    }
-
   }
 </script>
 
@@ -101,6 +77,8 @@
     background-color: white;
     z-index: 0;
     opacity: .05;
+    width: 100%;
+    height: 100%;
   }
 
 

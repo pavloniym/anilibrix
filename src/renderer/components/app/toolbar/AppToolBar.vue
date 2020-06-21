@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar flat color="transparent" class="toolbar">
+  <v-app-bar v-if="!hideToolbar" flat color="transparent" class="toolbar shrink">
 
     <slot name="left"/>
 
@@ -48,6 +48,18 @@
       Notifications
     },
 
+    computed: {
+
+      /**
+       * Check if should hide toolbar
+       *
+       * @return {*|boolean}
+       */
+      hideToolbar() {
+        return this.$__get(this.$route, 'meta.layout.hide_toolbar') || false;
+      }
+
+    }
   }
 
 </script>

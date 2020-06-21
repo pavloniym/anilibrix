@@ -1,5 +1,5 @@
 <template>
-  <player-layout>
+  <video-layout>
     <component
       v-bind="{sources, source}"
       :is="component"
@@ -17,16 +17,15 @@
       </template>
 
     </component>
-  </player-layout>
+  </video-layout>
 </template>
 
 <script>
 
-  import PlayerLayout from '@layouts/player'
+  import VideoLayout from '@layouts/video'
   import PlayerInterface from '@components/video/interface'
   import {ServerPlayer, UpscalePlayer, TorrentPlayer} from '@components/video/playback/types'
 
-  import __get from 'lodash/get';
   import {mapState, mapActions} from 'vuex'
 
   const props = {
@@ -63,7 +62,7 @@
       }
     },
     components: {
-      PlayerLayout,
+      VideoLayout,
       PlayerInterface,
     },
     computed: {
@@ -96,7 +95,7 @@
        * @return Array
        */
       sources() {
-        return __get(this.episode, 'sources') || [];
+        return this.$__get(this.episode, 'sources') || [];
       },
 
 
@@ -115,7 +114,7 @@
        * @return string|null
        */
       type() {
-        return __get(this.source, 'type') || null;
+        return this.$__get(this.source, 'type') || null;
       },
 
 
@@ -138,7 +137,7 @@
        * @return Object|null
        */
       component() {
-        return __get(this.components, this.type) || null;
+        return this.$__get(this.components, this.type) || null;
       },
 
 

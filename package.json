@@ -66,17 +66,11 @@
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
+          "arch": ["x64", "ia32"]
         },
         {
           "target": "portable",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
+          "arch": ["x64", "ia32"]
         }
       ]
     },
@@ -117,7 +111,6 @@
     "pac-resolver": "^4.0.0",
     "parse-torrent": "^7.0.1",
     "plyr": "^3.5.7-beta.0",
-    "portal-vue": "^2.1.7",
     "pretty-bytes": "^5.3.0",
     "rimraf": "^3.0.2",
     "screenfull": "^5.0.2",

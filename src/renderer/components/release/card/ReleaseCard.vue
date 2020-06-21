@@ -1,42 +1,41 @@
 <template>
+  <v-card flat color="transparent">
+    <loader v-if="loading"/>
+    <v-layout v-else column>
 
-  <!-- Loading -->
-  <div v-if="loading" class="ma-4">
-    <v-skeleton-loader boilerplate type="heading" height="50" width="70%"/>
-    <v-skeleton-loader boilerplate type="text" class="mt-6" width="140"/>
-    <v-skeleton-loader boilerplate type="text" class="mt-1" width="260"/>
-    <v-layout class="mt-2">
-      <v-skeleton-loader boilerplate type="button" width="65" class="mr-1"/>
-      <v-skeleton-loader boilerplate type="button" width="160"/>
+      <!-- Avatar + Release main data -->
+      <v-layout align-center class="my-4">
+
+        <!-- Poster -->
+        <v-avatar size="220" class="mx-4">
+          <v-img :src="poster"/>
+        </v-avatar>
+
+        <!-- Title -->
+        <!-- Original Name + Genres -->
+        <!-- Meta -->
+        <div>
+          <v-card-title v-text="title" class="display-1 mb-2 font-weight-black" :style="{wordBreak: 'break-word'}"/>
+          <v-card-subtitle v-text="original" class="pb-0"/>
+          <v-card-subtitle v-text="genres" class="pt-0"/>
+          <v-card-text>
+            <v-chip v-text="year" label class="mb-1"/>
+            <v-chip v-text="type" label class="mb-1"/>
+          </v-card-text>
+        </div>
+
+      </v-layout>
+
+      <!-- Description -->
+      <v-card-text v-text="description" class="pb-0"/>
+
     </v-layout>
-    <v-skeleton-loader boilerplate type="text@10" class="mt-6"/>
-  </div>
-
-  <!-- Data -->
-  <v-card v-else-if="loading === false && release" flat color="transparent">
-
-    <!-- Title -->
-    <v-card-title
-      v-text="release.names.ru"
-      class="display-2 mb-4 font-weight-black"
-      :style="{wordBreak: 'break-word'}">
-    </v-card-title>
-
-    <!-- Original Name + Genres -->
-    <v-card-subtitle v-text="release.names.original" class="pb-0"/>
-    <v-card-subtitle v-text="release.genres.join(' | ')" class="pt-0"/>
-
-    <!-- Meta + Description -->
-    <v-card-text class="pb-0">
-      <v-chip label class="mb-1">{{release.year}}</v-chip>
-      <v-chip label class="mb-1">{{release.type}}</v-chip>
-      <div class="pt-4 white--text">{{release.description}}</div>
-    </v-card-text>
-
   </v-card>
 </template>
 
 <script>
+
+  import Loader from './components/loader'
 
   const props = {
     loading: {
@@ -51,5 +50,79 @@
 
   export default {
     props,
+    components: {
+      Loader
+    },
+    computed: {
+
+      /**
+       * Get title
+       *
+       * @return {string|null}
+       */
+      title() {
+        return this.$__get(this.release, 'names.ru')
+      },
+
+      /**
+       * Get original title
+       *
+       * @return {string|null}
+       */
+      original() {
+        return this.$__get(this.release, 'names.original')
+      },
+
+
+      /**
+       * Get release genres
+       *
+       * @return {string}
+       */
+      genres() {
+        return (this.$__get(this.release, 'genres') || []).join(' | ')
+      },
+
+
+      /**
+       * Get year
+       *
+       * @return {string|number|null}
+       */
+      year() {
+        return this.$__get(this.release, 'year');
+      },
+
+
+      /**
+       * Get release type
+       *
+       * @return {string|null}
+       */
+      type() {
+        return this.$__get(this.release, 'type')
+      },
+
+
+      /**
+       * Get release description
+       *
+       * @return {*}
+       */
+      description() {
+        return this.$__get(this.release, 'description')
+      },
+
+
+      /**
+       * Get release poster
+       *
+       * @return {*}
+       */
+      poster() {
+        return this.$__get(this.release, 'poster.image')
+      }
+
+    }
   }
 </script>

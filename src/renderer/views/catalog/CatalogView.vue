@@ -1,5 +1,5 @@
 <template>
-  <v-layout fill-height column>
+  <v-layout column>
 
     <!-- Header-->
     <v-card color="transparent">
@@ -35,13 +35,10 @@
 
 <script>
 
-
   import CatalogItem from './components/item'
-  import CatalogLayout from "@layouts/catalog";
   import CatalogLoader from './components/loader'
   import CatalogFilters from './components/filters'
 
-  import __get from 'lodash/get'
   import {mapActions, mapState} from 'vuex'
 
   const props = {
@@ -59,7 +56,6 @@
     },
     components: {
       CatalogItem,
-      CatalogLayout,
       CatalogLoader,
       CatalogFilters
     },
@@ -82,7 +78,7 @@
        * @return {number}
        */
       hasMoreItems() {
-        return __get(this._pagination, 'lastItems', 0) === this._perPage;
+        return this.$__get(this._pagination, 'lastItems', 0) === this._perPage;
       },
 
     },

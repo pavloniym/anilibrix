@@ -1,33 +1,34 @@
 <template>
   <v-card color="transparent" @click="$emit('click')">
     <v-layout align-start>
+
       <v-card width="160" height="240" min-width="160" min-height="240" :style="{position: 'relative'}">
         <v-img width="160" height="240" :src="image"/>
         <v-progress-linear color="secondary" :value="progress" :style="{position: 'absolute', bottom: 0}"/>
       </v-card>
+
       <div>
         <v-card-title v-text="title"/>
-        <v-card-subtitle v-if="subtitle" class="pb-0">{{subtitle}}</v-card-subtitle>
-        <v-card-subtitle v-if="genres" class="pt-0">{{genres.join(' | ')}}</v-card-subtitle>
+        <v-card-subtitle v-if="subtitle"  v-text="subtitle" class="pb-0" />
+        <v-card-subtitle v-if="genres" v-text="(genres || []).join(' | ')" class="pt-0" />
+
+        <!-- Meta -->
+        <!-- Description -->
         <v-card-text>
-
-          <v-chip label class="mb-1">{{year}}</v-chip>
-          <v-chip label class="mb-1">{{type}}</v-chip>
-
-          <!-- Description -->
+          <v-chip v-text="year" label class="mb-1"/>
+          <v-chip v-text="type" label class="mb-1"/>
           <div v-if="description" class="my-2 grey--text" :style="{maxHeight: '75px'}">
-            <v-clamp max-height="75px">{{description}}</v-clamp>
+            <v-clamp v-text="description" max-height="75px"/>
           </div>
-
         </v-card-text>
       </div>
+
     </v-layout>
   </v-card>
 </template>
 
 <script>
 
-  import __get from 'lodash/get'
   import VClamp from 'vue-clamp'
 
 
@@ -79,7 +80,7 @@
        * @return {*}
        */
       image() {
-        return __get(this.poster, 'image')
+        return this.$__get(this.poster, 'image')
       },
 
 
@@ -89,7 +90,7 @@
        * @return {string}
        */
       title() {
-        return __get(this.names, 'ru');
+        return this.$__get(this.names, 'ru');
       },
 
 
@@ -99,7 +100,7 @@
        * @return {string}
        */
       subtitle() {
-        return __get(this.names, 'original')
+        return this.$__get(this.names, 'original')
       },
 
 

@@ -10,10 +10,9 @@
 
   export default {
     destroyed() {
+
       // Exit fullscreen if video view is exited
-      if(screenfull.isEnabled) {
-        screenfull.exit();
-      }
+      if(screenfull.isEnabled) screenfull.exit();
     }
   }
 
@@ -30,6 +29,7 @@
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 5;
   }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-layout column justify-center fill-height class="releases">
+  <v-layout column justify-center class="releases">
 
     <slider
       v-bind="{loading}"

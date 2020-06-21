@@ -11,10 +11,12 @@
       <app-base-layout v-else>
 
         <!-- App Toolbar -->
-        <app-tool-bar/>
+        <app-tool-bar key="toolbar"/>
 
         <!-- Router View -->
-        <router-view :key="$route.name"/>
+        <v-fade-transition mode="out-in">
+          <router-view :key="$route.name"/>
+        </v-fade-transition>
 
       </app-base-layout>
     </v-fade-transition>
@@ -25,6 +27,7 @@
     <!-- Notifications -->
     <app-errors/>
     <app-notifications/>
+
 
   </v-app>
 </template>

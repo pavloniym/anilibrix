@@ -1,5 +1,5 @@
 <template>
-  <v-layout fill-height column align-center justify-center>
+  <v-layout column align-center justify-center>
 
     <!-- Noise -->
     <blank-noise />
@@ -31,9 +31,7 @@
 
   export default {
     props,
-    meta: {
-      title: `Видео не доступно`
-    },
+    meta: {title: `Видео не доступно`},
     components: {
       BlankNoise
     },
