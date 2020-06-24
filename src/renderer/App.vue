@@ -23,9 +23,9 @@
 
 
     <!-- Errors -->
-    <!-- App Settings -->
     <!-- Notifications -->
     <app-errors/>
+    <!--<app-scroll-back />-->
     <app-notifications/>
 
 
@@ -40,6 +40,7 @@
   import AppSettings from "@components/app/settings";
   import AppSystemBar from '@components/app/systembar'
   import AppBaseLayout from '@layouts/base'
+  import AppScrollBack from '@components/app/scroll-back'
   import AppNotifications from "@components/app/notifications";
 
   import {mapState, mapActions} from 'vuex'
@@ -53,6 +54,7 @@
       AppSettings,
       AppSystemBar,
       AppBaseLayout,
+      AppScrollBack,
       AppNotifications,
     },
     data() {
