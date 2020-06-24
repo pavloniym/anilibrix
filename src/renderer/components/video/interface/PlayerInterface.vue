@@ -3,64 +3,79 @@
     <v-slide-y-reverse-transition>
       <v-layout v-show="visible" column class="interface pa-8 pt-0">
 
-        <interface-headline v-bind="{player, release, episode}" class="pb-2"/>
-        <interface-timeline v-bind="{player}"/>
+        <player-headline v-bind="{player, release, episode}" class="pb-2"/>
+        <player-timeline v-bind="{player}"/>
 
         <v-row no-gutters justify="center">
 
           <!-- Links -->
           <v-col align-self="center">
-            <interface-links
+            <player-links
               v-bind="{release, source}"
               :upscale="() => $refs.upscale"
               :torrent="() => $refs.torrent"
               :playlist="() => $refs.playlist">
-            </interface-links>
+            </player-links>
           </v-col>
 
           <!-- Play -->
           <v-col align-self="center">
-            <interface-play v-bind="{player, release, episode}"/>
+            <player-play v-bind="{player, release, episode}"/>
           </v-col>
 
           <!-- Controls -->
           <v-col align-self="center">
-            <interface-controls
+            <player-controls
               v-bind="{player, source, sources}"
               :chromecast="() => $refs.chromecast"
               @toggle:fullscreen="toggleFullscreen">
-            </interface-controls>
+            </player-controls>
           </v-col>
         </v-row>
 
       </v-layout>
     </v-slide-y-reverse-transition>
 
-    <interface-next v-bind="{player, release, episode}"/>
-    <interface-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
-    <!--<interface-upscale v-bind="{source}" ref="upscale" :key="`upscale:${source.label}`"/>-->
-    <interface-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
-    <interface-playback v-bind="{player, payload}"/>
-    <interface-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
-    <!--<interface-chromecast v-bind="{player, payload}" ref="chromecast"/>-->
+    <player-next v-bind="{player, release, episode}"/>
+
+    <!-- Player Labels -->
+    <player-label
+      v-bind="{player, payload, time}">
+    </player-label>
+
+    <player-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
+
+    <!-- Hotkeys -->
+    <player-hotkeys
+      v-bind="{player}"
+      @interface:update="showInterface"
+      @toggle:fullscreen="toggleFullscreen">
+    </player-hotkeys>
+
+    <player-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
+    <player-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
+
+    <!--<player-upscale v-bind="{source}" ref="upscale" :key="`upscale:${source.label}`"/>-->
+    <!--<player-chromecast v-bind="{player, payload}" ref="chromecast"/>-->
 
   </div>
 </template>
 
 <script>
 
-  import InterfacePlay from './components/play'
-  import InterfaceNext from './components/next'
-  import InterfaceLinks from './components/links'
-  import InterfaceUpscale from './components/upscale'
-  import InterfaceTorrent from './components/torrent'
-  import InterfaceHeadline from './components/headline'
-  import InterfaceTimeline from './components/timeline'
-  import InterfaceControls from './components/controls'
-  import InterfacePlaylist from './components/playlist'
-  import InterfacePlayback from './components/playback'
-  import InterfaceBuffering from './components/buffering'
-  import InterfaceChromecast from './components/chromecast'
+  import PlayerPlay from './components/play'
+  import PlayerNext from './components/next'
+  import PlayerLabel from './components/label'
+  import PlayerLinks from './components/links'
+  import PlayerUpscale from './components/upscale'
+  import PlayerTorrent from './components/torrent'
+  import PlayerHotkeys from './components/hotkeys'
+  import PlayerHeadline from './components/headline'
+  import PlayerTimeline from './components/timeline'
+  import PlayerControls from './components/controls'
+  import PlayerPlaylist from './components/playlist'
+  import PlayerBuffering from './components/buffering'
+  import PlayerChromecast from './components/chromecast'
 
   import screenfull from "screenfull";
 
@@ -88,6 +103,10 @@
     payload: {
       type: [String, Object],
       default: null,
+    },
+    time: {
+      type: Number,
+      default: null
     }
   };
 
@@ -95,19 +114,21 @@
   export default {
     props,
     components: {
-      InterfacePlay,
-      InterfaceNext,
-      InterfaceLinks,
-      InterfaceUpscale,
-      InterfaceTorrent,
-      InterfaceHeadline,
-      InterfaceTimeline,
-      InterfaceControls,
-      InterfacePlaylist,
-      InterfacePlayback,
-      InterfaceBuffering,
-      InterfaceChromecast,
+      PlayerPlay,
+      PlayerNext,
+      PlayerLinks,
+      PlayerLabel,
+      PlayerUpscale,
+      PlayerTorrent,
+      PlayerHotkeys,
+      PlayerHeadline,
+      PlayerTimeline,
+      PlayerControls,
+      PlayerPlaylist,
+      PlayerBuffering,
+      PlayerChromecast,
     },
+
     data() {
       return {
         video: null,
@@ -117,7 +138,6 @@
     },
 
     methods: {
-
 
       /**
        * Show player controls
@@ -138,19 +158,6 @@
 
 
       /**
-       * Handle keyboard event
-       *
-       * @param e
-       * @return void
-       */
-      async handleKeyboardEvent(e) {
-        if (e.which === 39 || e.which === 37) this.showInterface();
-        if (e.which === 32) this.togglePlay();
-        if (e.code === 'KeyF') this.toggleFullscreen();
-      },
-
-
-      /**
        * Enter fullscreen mode
        * Fullscreen div container with player and controls
        *
@@ -159,16 +166,6 @@
       toggleFullscreen() {
         screenfull.toggle(document.getElementById('player-container'));
       },
-
-
-      /**
-       * Toggle player play state
-       *
-       * @return {void}
-       */
-      togglePlay() {
-        this.player.togglePlay();
-      }
 
     },
 
@@ -187,8 +184,7 @@
       this.video.addEventListener('click', this.togglePlay);
       this.video.addEventListener('dblclick', this.toggleFullscreen);
 
-      // Add keyboard event listener
-      window.addEventListener('keydown', this.handleKeyboardEvent);
+      // Add event listener
       window.addEventListener('mousemove', this.showInterface);
 
     },
@@ -200,9 +196,8 @@
       this.video.removeEventListener('click', this.togglePlay);
       this.video.removeEventListener('dblclick', this.toggleFullscreen);
 
-      // Remove keyboard listener
+      // Remove listener
       window.removeEventListener('mousemove', this.showInterface);
-      window.removeEventListener('keydown', this.handleKeyboardEvent);
     }
 
   }

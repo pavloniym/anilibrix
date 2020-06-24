@@ -11,7 +11,7 @@
 
       <template v-slot:default="{player}">
         <player-interface
-          v-bind="{player, sources, source, release, episode, payload}"
+          v-bind="{player, sources, source, release, episode, payload, time}"
           :key="`interface:${key}`">
         </player-interface>
       </template>

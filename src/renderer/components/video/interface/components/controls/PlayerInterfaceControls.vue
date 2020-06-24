@@ -8,15 +8,13 @@
       <!-- Quality -->
       <quality v-if="source" v-bind="{source, sources}" :attach="$refs.controls"/>
 
+      <!-- Speed -->
+      <speed v-bind="{player}" :attach="$refs.controls" />
+
       <!-- PIP -->
       <v-btn icon large @click="player.pip = true">
         <v-icon size="22">mdi-picture-in-picture-bottom-right</v-icon>
       </v-btn>
-
-      <!-- Chromecast -->
-      <!--<v-btn icon large @click="chromecast().show()">
-        <v-icon size="22">mdi-cast</v-icon>
-      </v-btn>-->
 
       <!-- Fullscreen -->
       <v-btn icon large @click="$emit('toggle:fullscreen')">
@@ -29,6 +27,7 @@
 
 <script>
 
+  import Speed from './components/speed'
   import Volume from './components/volume'
   import Quality from './components/quality'
 
@@ -54,6 +53,7 @@
   export default {
     props,
     components: {
+      Speed,
       Volume,
       Quality,
     },
