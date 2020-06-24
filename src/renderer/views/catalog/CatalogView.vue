@@ -18,7 +18,7 @@
     <!-- Catalog items -->
     <template v-for="item in _items">
       <v-card class="mb-2" :key="item.id">
-        <catalog-item v-bind="item" :id="item.id" @click="toRelease(item)"/>
+        <catalog-item v-bind="item" :ref="item.id" @click="toRelease(item)"/>
       </v-card>
     </template>
 
@@ -131,11 +131,13 @@
       next(vm => {
         if(from && from.name === 'release') {
           const fromReleaseId = vm.$__get(from, 'params.releaseId');
-          const releaseContainer = document.getElementById(fromReleaseId);
+          const releaseContainer = vm.$refs[fromReleaseId];
 
           // If div container is found
           // Scroll into view
-          if (releaseContainer) releaseContainer.scrollIntoView({block: "center"});
+          if (releaseContainer && releaseContainer[0]) {
+            releaseContainer[0].$el.scrollIntoView({block: "center"});
+          }
         }
       })
     },

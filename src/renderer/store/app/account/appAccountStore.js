@@ -122,18 +122,29 @@ export default {
      * @return {Promise<*>}
      */
     getProfile: async ({commit}) => {
+      try {
 
-      // Create request to get profile data
-      const profile = await new AnilibriaProxy().getProfile();
+        // Create request to get profile data
+        const profile = await new AnilibriaProxy().getProfile();
 
-      // Get profile data from response
-      // Get profile avatar
-      const id = __get(profile, 'id');
-      const login = __get(profile, 'login');
-      const avatar = await new AnilibriaProxy().getImage({src: __get(profile, 'avatar')});
+        // Get profile data from response
+        // Get profile avatar
+        const id = __get(profile, 'id');
+        const login = __get(profile, 'login');
+        const avatar = await new AnilibriaProxy().getImage({src: __get(profile, 'avatar')});
 
-      // Set profile data
-      commit(SET_PROFILE, {id, login, avatar});
+        // Set profile data
+        commit(SET_PROFILE, {id, login, avatar});
+
+      } catch (error) {
+
+        // Reset session and profile on error
+        commit(SET_SESSION, null);
+        commit(SET_PROFILE, null);
+
+        // Throw error
+        throw error;
+      }
     },
 
 
@@ -150,8 +161,6 @@ export default {
         await new AnilibriaProxy().logout();
 
       } catch (error) {
-
-        console.log(error);
 
         // Throw error
         throw error;

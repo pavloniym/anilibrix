@@ -1,55 +1,55 @@
 <template>
   <v-fade-transition>
 
-      <!-- Login -->
-      <v-tooltip v-if="!_isAuthorized" left key="login">
-        <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon @click="toLogin">
-            <v-icon>mdi-account</v-icon>
-          </v-btn>
-        </template>
-        <span>Авторизация</span>
-      </v-tooltip>
+    <!-- Login -->
+    <v-tooltip v-if="!_isAuthorized" left key="login">
+      <template v-slot:activator="{on}">
+        <v-btn v-on="on" icon @click="toLogin">
+          <v-icon>mdi-account</v-icon>
+        </v-btn>
+      </template>
+      <span>Авторизация</span>
+    </v-tooltip>
 
-      <!-- Profile -->
-      <v-menu
-        v-else
-        v-model="menu"
-        bottom
-        key="profile"
-        min-width="100"
-        nudge-left="70"
-        nudge-bottom="40">
+    <!-- Profile -->
+    <v-menu
+      v-else
+      v-model="menu"
+      bottom
+      key="profile"
+      min-width="100"
+      nudge-left="70"
+      nudge-bottom="40">
 
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" v-bind="{loading}" icon>
-            <v-fade-transition mode="out-in">
-              <v-icon v-if="menu" key="expanded">mdi-chevron-down</v-icon>
-              <v-avatar size="28" v-else>
-                <v-img :src="_profile.avatar"/>
-              </v-avatar>
-            </v-fade-transition>
-          </v-btn>
-        </template>
-
-        <!-- User -->
-        <v-list dense>
-          <v-list-item>
-            <v-list-item-avatar>
+      <template v-slot:activator="{ on }">
+        <v-btn v-on="on" v-bind="{loading}" icon>
+          <v-fade-transition mode="out-in">
+            <v-icon v-if="menu" key="expanded">mdi-chevron-down</v-icon>
+            <v-avatar size="28" v-else>
               <v-img :src="_profile.avatar"/>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title v-text="_profile.login"/>
-              <v-list-item-subtitle>ID: {{_profile.id}}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider/>
-          <v-list-item @click="logout">
-            <v-list-item-subtitle>Выход</v-list-item-subtitle>
-          </v-list-item>
-        </v-list>
+            </v-avatar>
+          </v-fade-transition>
+        </v-btn>
+      </template>
 
-      </v-menu>
+      <!-- User -->
+      <v-list dense>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img :src="_profile.avatar"/>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title v-text="_profile.login"/>
+            <v-list-item-subtitle>ID: {{_profile.id}}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider/>
+        <v-list-item @click="logout">
+          <v-list-item-subtitle>Выход</v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+
+    </v-menu>
 
   </v-fade-transition>
 </template>
@@ -124,6 +124,10 @@
           this.loading = true;
           await this.$store.dispatchPromise('app/account/getProfile');
 
+        } catch (e) {
+
+          //
+
         } finally {
           this.loading = false;
         }
@@ -142,7 +146,7 @@
     },
 
     beforeDestroy() {
-      if(this.handler) {
+      if (this.handler) {
         clearInterval(this.handler);
       }
     }

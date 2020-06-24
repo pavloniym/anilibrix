@@ -1,5 +1,5 @@
 <template>
-  <v-fade-transition appear mode="out-in">
+  <v-fade-transition appear>
     <v-app-bar v-if="!hideToolbar" flat color="transparent" class="toolbar shrink">
 
       <slot name="left"/>

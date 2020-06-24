@@ -51,7 +51,7 @@ export default class Proxy {
 
     // Set headers
     // Add user-agent
-    const headers = {...parameters.headers, 'User-Agent': this.userAgent};
+    const headers = {...parameters.headers, ...this._getRequestHeaders()};
 
     // Make request
     return await axios.request({url, method, ...parameters, headers, timeout: 15000})
@@ -291,6 +291,18 @@ export default class Proxy {
 
     // Return form data
     return formData;
+  }
+
+
+  /**
+   * Get default request headers
+   *
+   * @return {{}}
+   */
+  _getRequestHeaders() {
+    return {
+      'User-Agent': this.userAgent
+    }
   }
 
 }

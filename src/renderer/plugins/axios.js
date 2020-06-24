@@ -11,13 +11,15 @@
  */
 import Axios from 'axios'
 import store from '@store'
-import __get from 'lodash/get'
+
+// Set cookies
+Axios.defaults.withCredentials = true;
 
 // Create axios
 const axios = Axios.create();
 
-// Set cookies
-axios.defaults.withCredentials = true;
+
+
 
 /**
  * Error handler function
@@ -26,6 +28,9 @@ axios.defaults.withCredentials = true;
  * @return {Promise<never>}
  */
 const responseErrorHandler = async error => {
+
+  console.log(error);
+
   if (error && error.response) {
 
     // If server responded with not authorized:
@@ -41,42 +46,8 @@ const responseErrorHandler = async error => {
 };
 
 
-/**
- * Set response success handler
- *
- * @param response
- * @return {Promise<*>}
- */
-const responseSuccessHandler = async response => {
-
-  // Update PHPSESSID from response
-  return response;
-
-};
-
-
-/**
- * Set request handler
- *
- * @return {function(*): *}
- * @param config
- */
-const requestHandler = (config) => {
-
-  // Set header session
-  // Set session in cookies
-  const session = __get(store, 'state.app.account.session');
-  if (session && session.length > 0) {
-    config.headers.Cookie = `PHPSESSID=${session}`
-  }
-
-  return config;
-};
-
-
 // Add request && response interceptors
-axios.interceptors.request.use(requestHandler, error => error);
-//axios.interceptors.response.use(responseSuccessHandler, responseErrorHandler);
+axios.interceptors.response.use(request => request, responseErrorHandler);
 
 
 export default axios;

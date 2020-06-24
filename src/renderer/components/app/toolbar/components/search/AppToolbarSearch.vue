@@ -13,14 +13,13 @@
     class="grey darken-2"
     placeholder="Поиск релиза ..."
     :append-icon="null"
-    :allow-overflow="false"
     :search-input.sync="search"
     @focus="_setSearching(true)"
     @blur="_setSearching(false)"
     @input="toRelease">
 
     <template v-slot:item="{item}">
-      <v-list-item-content>
+      <v-list-item-content :style="{maxWidth: $refs.search.$el.clientWidth + 'px'}">
         <v-list-item-title v-text="item.names.ru"/>
         <v-list-item-subtitle v-text="item.names.original"/>
       </v-list-item-content>

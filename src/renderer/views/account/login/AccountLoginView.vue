@@ -1,5 +1,5 @@
 <template>
-  <v-layout align-center justify-end class="account__login">
+  <v-layout align-center justify-end class="account__login" @keyup.enter="authorize">
 
     <!-- Image -->
     <div class="account__login__image" :style="{backgroundImage: `url(${zero_two})`}"></div>
@@ -12,46 +12,46 @@
       <v-card-subtitle class="pt-0">Вы также можете авторизоваться по сессии с сайта</v-card-subtitle>
 
       <!-- Tabs -->
-      <v-tabs v-model="tab" background-color="transparent">
+      <!--<v-tabs v-model="tab" background-color="transparent">
         <v-tab>Учетные данные</v-tab>
         <v-tab>Сессия</v-tab>
-      </v-tabs>
+      </v-tabs>-->
 
-      <v-layout class="py-6">
+      <v-layout class="py-6 pt-2">
 
-        <!-- Login / Email -->
-        <!-- Password -->
-        <template v-if="tab === 0">
-          <v-text-field
-            v-model="login"
-            outlined
-            hide-details
-            class="mr-1"
-            color="grey"
-            placeholder="Email или логин"
-            prepend-inner-icon="mdi-account">
-          </v-text-field>
-          <v-text-field
-            v-model="password"
-            outlined
-            hide-details
-            class="ml-1"
-            type="password"
-            placeholder="Пароль"
-            prepend-inner-icon="mdi-lock">
-          </v-text-field>
-        </template>
+          <!-- Login / Email -->
+          <!-- Password -->
+          <template v-if="tab === 0">
+            <v-text-field
+              v-model="login"
+              outlined
+              hide-details
+              class="mr-1"
+              color="grey"
+              placeholder="Email или логин"
+              prepend-inner-icon="mdi-account">
+            </v-text-field>
+            <v-text-field
+              v-model="password"
+              outlined
+              hide-details
+              class="ml-1"
+              type="password"
+              placeholder="Пароль"
+              prepend-inner-icon="mdi-lock">
+            </v-text-field>
+          </template>
 
-        <!-- Session -->
-        <template v-if="tab === 1">
-          <v-text-field
-            v-model="session"
-            outlined
-            hide-details
-            placeholder="Сессия"
-            prepend-inner-icon="mdi-key-variant">
-          </v-text-field>
-        </template>
+          <!-- Session -->
+          <template v-if="tab === 1">
+            <v-text-field
+              v-model="session"
+              outlined
+              hide-details
+              placeholder="Сессия"
+              prepend-inner-icon="mdi-key-variant">
+            </v-text-field>
+          </template>
 
       </v-layout>
 
@@ -129,43 +129,43 @@
        * @return {Promise<void>}
        */
       async authorize() {
-        try {
-          this.loading = true;
+        if (!this.$v.$invalid) {
+          try {
+            this.loading = true;
 
-          // If type is credentials
-          // Try to authorized and set session
-          if (this.type === CREDENTIALS) {
+            // If type is credentials
+            // Try to authorized and set session
+            if (this.type === CREDENTIALS) {
 
-            // Reset session to avoid 'already authorized' error
-            await this.$store.dispatchPromise('app/account/setSession', null);
+              // Reset session to avoid 'already authorized' error
+              await this.$store.dispatchPromise('app/account/setSession', null);
 
-            // Make request
-            // Set session
-            const payload = {login: this.login, password: this.password};
-            const session = await this.$store.dispatchPromise('app/account/authorizeWithLoginAndPassword', payload);
-            await this.$store.dispatchPromise('app/account/setSession', session);
+              // Make request
+              // Set session
+              const payload = {login: this.login, password: this.password};
+              const session = await this.$store.dispatchPromise('app/account/authorizeWithLoginAndPassword', payload);
+              await this.$store.dispatchPromise('app/account/setSession', session);
 
+            }
+
+            // If type is session
+            // Just set session to store
+            if (this.type === SESSION) {
+              await this.$store.dispatchPromise('app/account/setSession', this.session);
+            }
+
+            // Get profile data
+            await this.$store.dispatchPromise('app/account/getProfile');
+            await this.toBack();
+
+          } catch (error) {
+
+            this.$toasted.error('Произошла ошибка при авторизации');
+            this.$toasted.error(error && error.message ? error.message : null);
+
+          } finally {
+            this.loading = false;
           }
-
-          // If type is session
-          // Just set session to store
-          if (this.type === SESSION) {
-            await this.$store.dispatchPromise('app/account/setSession', this.session);
-          }
-
-          // Get profile data
-          await this.$store.dispatchPromise('app/account/getProfile');
-          await this.toBack();
-
-        } catch (error) {
-
-          console.log(error);
-
-          this.$toasted.error('Произошла ошибка при авторизации');
-          this.$toasted.error(error && error.message ? error.message : null);
-
-        } finally {
-          this.loading = false;
         }
       }
 

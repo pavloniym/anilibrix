@@ -73,7 +73,6 @@ export default class AnilibriaProxy extends Proxy {
 
     console.log(response);
 
-
     return this._parseResponse(response.data);
   }
 
@@ -313,6 +312,24 @@ export default class AnilibriaProxy extends Proxy {
     } else {
       throw new Error(message);
     }
+  }
+
+
+  /**
+   * Get request headers
+   *
+   * @return {{}}
+   */
+  _getRequestHeaders() {
+
+    let headers = super._getRequestHeaders();
+
+    // Set header session
+    // Set session in cookies
+    const session = __get(store, 'state.app.account.session');
+    if (session && session.length > 0) headers.Cookie = `PHPSESSID=${session}; Path=/; Secure; HttpOnly`;
+
+    return headers;
   }
 
 };

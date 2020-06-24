@@ -1,13 +1,22 @@
 <template>
-  <v-slider
-    hide-details
-    class="timeline"
-    :min="0"
-    :max="isReady ? duration : 100"
-    :value="isReady ? time : 0"
-    :disabled="isReady === false"
-    @change="player.currentTime = $event">
-  </v-slider>
+  <v-layout>
+
+    <!--<div v-if="tooltip.visible" class="slider__time white black&#45;&#45;text" :style="{left: tooltip.left + 'px'}">
+      test
+    </div>-->
+
+    <v-slider
+      hide-details
+      ref="slider"
+      class="slider__timeline"
+      :min="0"
+      :max="isReady ? duration : 100"
+      :value="isReady ? time : 0"
+      :disabled="isReady === false"
+      @hover="handleHover"
+      @change="player.currentTime = $event">
+    </v-slider>
+  </v-layout>
 </template>
 
 <script>
@@ -23,9 +32,14 @@
     props,
     data() {
       return {
-        isReady: false,
         time: 0,
+        isReady: false,
         duration: 0,
+
+        tooltip: {
+          visible: false,
+          left: 0,
+        }
       }
     },
 
@@ -66,12 +80,17 @@
         this.player.currentTime = this.player.currentTime - 10 < 0
           ? 0
           : this.player.currentTime - 10;
+      },
+
+
+      handleHover(e) {
+        console.log(e);
       }
 
 
     },
 
-    created() {
+    mounted() {
 
       // Get time
       this.player.on('timeupdate', () => this.time = this.player.currentTime);
@@ -87,6 +106,12 @@
       // Set keyboard events
       window.addEventListener('keydown', this.handleKeyboardEvent);
 
+      /*this.$refs.slider.$el.addEventListener('mouseover', e => {
+        console.log(e);
+        this.tooltip.visible = true;
+        this.tooltip.left = e.offsetX;
+      })*/
+
     },
 
     beforeDestroy() {
@@ -100,13 +125,25 @@
 
 <style scoped lang="scss">
 
-  .timeline {
-    ::v-deep {
-      .v-slider--horizontal {
-        margin-left: 0;
-        margin-right: 0;
+  .slider {
+
+    &__timeline {
+      cursor: pointer;
+      position: relative;
+
+      ::v-deep {
+        .v-slider--horizontal {
+          margin-left: 0;
+          margin-right: 0;
+        }
       }
     }
+
+    &__time {
+      position: absolute;
+      top: -25px;
+    }
+
   }
 
 </style>
