@@ -4,13 +4,12 @@ html, body {
   overflow-y: hidden !important;
 }
 
-
 ::-webkit-scrollbar-thumb {
-  background-color: #505050;
   cursor: pointer;
+  background-color: #353535;
 }
 
 ::-webkit-scrollbar {
   width: 9px;
-  background-color: rgb(106, 106, 106);
+  background-color: #1d1d1d;
 }

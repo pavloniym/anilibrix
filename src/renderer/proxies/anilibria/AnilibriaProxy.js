@@ -1,6 +1,7 @@
 import Proxy from '@proxy'
 import store from "@store";
 import __get from "lodash/get";
+import cookieParser from 'set-cookie-parser'
 
 export default class AnilibriaProxy extends Proxy {
 
@@ -13,6 +14,71 @@ export default class AnilibriaProxy extends Proxy {
 
 
   /**
+   * Login
+   *
+   * @param login
+   * @param password
+   * @return {Promise<*>}
+   */
+  async login({login, password}) {
+
+    const data = this._getFormDataObject({mail: login, passwd: password});
+    const params = {data, headers: data.getHeaders()};
+    const response = await this.submit('POST', this._getHost() + '/public/login.php', params);
+
+    // Get status
+    // If err === 'ok' -> authorization is success
+    const status = __get(response, 'data.err') === 'ok';
+    if (status) {
+
+      // Parse header cookies
+      const header_cookies = __get(response, 'headers.set-cookie', null);
+      const cookies = cookieParser(header_cookies, {map: true});
+      const session = __get(cookies, 'PHPSESSID.value', null);
+
+      // Get session
+      // If session is not defined -> throw error
+      if (session && session.length > 0) {
+        return session
+      } else {
+        throw new Error('Сессия не определена');
+      }
+
+    } else {
+      throw new Error(__get(response, 'data.mes', 'Ошибка сервера'));
+    }
+  }
+
+
+  /**
+   * Logout
+   *
+   * @return {Promise<*>}
+   */
+  async logout() {
+    return await this.submit('POST', this._getHost() + '/public/logout.php');
+  }
+
+
+  /**
+   * Get profile
+   *
+   * @return {Promise<*>}
+   */
+  async getProfile() {
+
+    const data = this._getFormDataObject({query: 'user'});
+    const params = {data, headers: data.getHeaders()};
+    const response = await this.submit('POST', this._getHost() + this.endpoint, params);
+
+    console.log(response);
+
+
+    return this._parseResponse(response.data);
+  }
+
+
+  /**
    * Get last 14 releases
    *
    * @return {Promise}
@@ -20,15 +86,8 @@ export default class AnilibriaProxy extends Proxy {
   async getReleases(parameters) {
 
     const data = this._getFormDataObject({query: 'list', perPage: 14});
-    const response = await this.submit(
-      'POST',
-      this._getHost() + this.endpoint,
-      {
-        data,
-        headers: data.getHeaders(),
-        ...parameters
-      }
-    );
+    const params = {data, headers: data.getHeaders(), ...parameters};
+    const response = await this.submit('POST', this._getHost() + this.endpoint, params);
 
     return this._parseResponse(response.data);
   }
@@ -44,11 +103,8 @@ export default class AnilibriaProxy extends Proxy {
   async getRelease(releaseId, parameters = {}) {
 
     const data = this._getFormDataObject({query: 'release', id: releaseId});
-    const response = await this.submit(
-      'POST',
-      this._getHost() + this.endpoint,
-      {...parameters, data, headers: data.getHeaders()}
-    );
+    const params = {data, headers: data.getHeaders(), ...parameters};
+    const response = await this.submit('POST', this._getHost() + this.endpoint, params);
 
     return this._parseResponse(response.data);
   }
@@ -60,7 +116,7 @@ export default class AnilibriaProxy extends Proxy {
    * @param src
    * @return {string}
    */
-  async getPoster({src}) {
+  async getImage({src}) {
     if (src) {
       const response = await this.submit('GET', this._getHost() + src, {responseType: 'arraybuffer'});
       const image = response ? Buffer.from(response.data, 'binary').toString('base64') : null;
@@ -93,15 +149,8 @@ export default class AnilibriaProxy extends Proxy {
   async searchReleases(searchQuery, parameters) {
 
     const data = this._getFormDataObject({query: 'search', search: searchQuery});
-    const response = await this.submit(
-      'POST',
-      this._getHost() + this.endpoint,
-      {
-        data,
-        headers: data.getHeaders(),
-        ...parameters,
-      }
-    );
+    const params = {data, headers: data.getHeaders(), ...parameters};
+    const response = await this.submit('POST', this._getHost() + this.endpoint, params);
 
     return this._parseResponse(response.data);
   }
@@ -115,6 +164,7 @@ export default class AnilibriaProxy extends Proxy {
   async getCatalogGenres() {
     const data = this._getFormDataObject({query: 'genres'});
     const response = await this.submit('POST', this._getHost() + this.endpoint, {data, headers: data.getHeaders()});
+
     return this._parseResponse(response.data);
   }
 
@@ -127,6 +177,7 @@ export default class AnilibriaProxy extends Proxy {
   async getCatalogYears() {
     const data = this._getFormDataObject({query: 'years'});
     const response = await this.submit('POST', this._getHost() + this.endpoint, {data, headers: data.getHeaders()});
+
     return this._parseResponse(response.data);
   }
 
@@ -149,11 +200,8 @@ export default class AnilibriaProxy extends Proxy {
       query: 'catalog', xpage: 'catalog', search: {year: (years || []).join(','), genre: (genres || []).join(',')}
     });
 
-    const response = await this.submit(
-      'POST',
-      this._getHost() + this.endpoint,
-      {data, headers: data.getHeaders(), ...parameters}
-    );
+    const params = {data, headers: data.getHeaders(), ...parameters};
+    const response = await this.submit('POST', this._getHost() + this.endpoint, params);
 
     return this._parseResponse(response.data);
 

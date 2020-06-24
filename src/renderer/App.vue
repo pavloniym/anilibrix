@@ -8,7 +8,7 @@
     <!-- Content -->
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
-      <app-base-layout v-else>
+      <component v-else :is="layout">
 
         <!-- App Toolbar -->
         <app-tool-bar key="toolbar"/>
@@ -18,7 +18,7 @@
           <router-view :key="$route.name"/>
         </v-fade-transition>
 
-      </app-base-layout>
+      </component>
     </v-fade-transition>
 
 
@@ -69,7 +69,17 @@
       ...mapState('app/settings/system', {
         _updates: s => s.updates.enabled,
         _timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
-      })
+      }),
+
+
+      /**
+       * Get route layout
+       *
+       * @return {{}}
+       */
+      layout() {
+        return this.$__get(this.$route, 'meta.layout.is', AppBaseLayout);
+      }
     },
 
     methods: {

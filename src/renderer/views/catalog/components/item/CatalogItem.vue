@@ -18,7 +18,7 @@
           <v-chip v-text="year" label class="mb-1"/>
           <v-chip v-text="type" label class="mb-1"/>
           <div v-if="description" class="my-2 grey--text" :style="{maxHeight: '75px'}">
-            <v-clamp v-text="description" max-height="75px"/>
+            <v-clamp max-height="75px">{{description}}</v-clamp>
           </div>
         </v-card-text>
       </div>

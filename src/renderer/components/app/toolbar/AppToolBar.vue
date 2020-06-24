@@ -1,41 +1,44 @@
 <template>
-  <v-app-bar v-if="!hideToolbar" flat color="transparent" class="toolbar shrink">
+  <v-fade-transition appear mode="out-in">
+    <v-app-bar v-if="!hideToolbar" flat color="transparent" class="toolbar shrink">
 
-    <slot name="left"/>
+      <slot name="left"/>
 
-    <!-- Releases -->
-    <v-btn small text exact class="mr-1" height="38" :to="{name: 'releases'}">
-      <v-icon size="18" class="mr-2">mdi-view-column</v-icon>
-      <span>Релизы</span>
-    </v-btn>
+      <!-- Releases -->
+      <v-btn small text exact class="mr-1" height="38" :to="{name: 'releases'}">
+        <v-icon size="18" class="mr-2">mdi-view-column</v-icon>
+        <span>Релизы</span>
+      </v-btn>
 
-    <!-- Catalog-->
-    <v-btn small text exact class="mr-1" height="38" :to="{name: 'catalog'}">
-      <v-icon size="18" class="mr-2">mdi-folder-text-outline</v-icon>
-      <span>Каталог</span>
-    </v-btn>
+      <!-- Catalog-->
+      <v-btn small text exact class="mr-1" height="38" :to="{name: 'catalog'}">
+        <v-icon size="18" class="mr-2">mdi-folder-text-outline</v-icon>
+        <span>Каталог</span>
+      </v-btn>
 
-    <!-- Favorite -->
-    <v-btn small text class="mr-1" height="38">
-      <v-icon size="18" class="mr-2">mdi-star</v-icon>
-      <span>Избранное</span>
-    </v-btn>
+      <!-- Favorite -->
+      <v-btn small text class="mr-4" height="38">
+        <v-icon size="18" class="mr-2">mdi-star</v-icon>
+        <span>Избранное</span>
+      </v-btn>
 
-    <!-- Search-->
-    <search class="mr-4"/>
+      <!-- Search-->
+      <search class="mr-4"/>
 
-    <update/>
-    <notifications/>
-    <settings/>
+      <update/>
+      <notifications/>
+      <settings/>
+      <account />
 
-  </v-app-bar>
+    </v-app-bar>
+  </v-fade-transition>
 </template>
 
 <script>
 
-  import Update from './components/update';
-  import Search from './components/search';
-  import Catalog from './components/catalog'
+  import Update from './components/update'
+  import Search from './components/search'
+  import Account from './components/account'
   import Settings from './components/settings'
   import Notifications from './components/notifications'
 
@@ -43,7 +46,7 @@
     components: {
       Update,
       Search,
-      Catalog,
+      Account,
       Settings,
       Notifications
     },

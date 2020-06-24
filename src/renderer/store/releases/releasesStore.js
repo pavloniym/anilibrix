@@ -103,7 +103,7 @@ export default {
         // Get posters
         await Promise.allSettled(
           releases.map(async release =>
-            release.poster.image = await new AnilibriaProxy().getPoster({src: release.poster.path})
+            release.poster.image = await new AnilibriaProxy().getImage({src: release.poster.path})
           )
         );
 

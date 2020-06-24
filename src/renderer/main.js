@@ -14,6 +14,7 @@ import '@plugins/plyr'
 import '@plugins/moment'
 import '@plugins/lodash'
 import '@plugins/vue-meta'
+import '@plugins/vuelidate'
 import '@plugins/vue-toasted'
 import '@plugins/vue-electron'
 

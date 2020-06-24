@@ -2,6 +2,7 @@ import __get from 'lodash/get'
 import axios from '@plugins/axios'
 import FormData from 'form-data'
 import {getHttpProxy, getHttpsAgent} from '@utils/proxy'
+import {version, meta} from '@package'
 
 export default class Proxy {
 
@@ -13,6 +14,7 @@ export default class Proxy {
    */
   constructor(endpoint, parameters = {}) {
     this.endpoint = endpoint;
+    this.userAgent = `${meta.name}/${version}`;
     this.parameters = parameters;
   }
 
@@ -46,11 +48,13 @@ export default class Proxy {
    * @return {Promise<any>}
    */
   async _requestDirectly({method, url, parameters = null}) {
-    try {
-      return await axios.request({url, method, ...parameters, timeout: 15000})
-    } catch (error) {
-      throw error;
-    }
+
+    // Set headers
+    // Add user-agent
+    const headers = {...parameters.headers, 'User-Agent': this.userAgent};
+
+    // Make request
+    return await axios.request({url, method, ...parameters, headers, timeout: 15000})
   }
 
 

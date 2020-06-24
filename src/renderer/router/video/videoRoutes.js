@@ -1,4 +1,5 @@
 import VideoView from '@views/video'
+import VideoLayout from '@layouts/video'
 import store from '@store'
 
 export default [
@@ -7,7 +8,7 @@ export default [
     path: '/video/:key/:releaseName',
     meta: {
       layout: {
-        hide_scroll: true,
+        is: VideoLayout,
         hide_toolbar: true,
       }
     },

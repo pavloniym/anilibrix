@@ -80,7 +80,7 @@ export default {
         // Get release data
         const data = await new AnilibriaProxy().getRelease(releaseId, {cancelToken: REQUEST.token});
         const release = await AnilibriaReleaseTransformer.fetchItem(data);
-        const image = await new AnilibriaProxy().getPoster({src: release.poster.path});
+        const image = await new AnilibriaProxy().getImage({src: release.poster.path});
 
         // Save release data
         commit(SET_RELEASE_DATA, release);

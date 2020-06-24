@@ -4,7 +4,7 @@
     fill-height
     id="container"
     class="base-layout"
-    :class="{'hide-scroll': hideScroll}">
+    :class="{'hide-scroll': hideScroll, 'remove-scroll': removeScroll}">
     <slot/>
   </v-layout>
 </template>
@@ -22,6 +22,16 @@
        */
       hideScroll() {
         return this.$__get(this.$route, 'meta.layout.hide_scroll') || false;
+      },
+
+
+      /**
+       * Check if should remove scroll
+       *
+       * @return {*|boolean}
+       */
+      removeScroll() {
+        return this.$__get(this.$route, 'meta.layout.remove_scroll') || false;
       }
 
 
@@ -40,7 +50,6 @@
     height: calc(100vh - 40px);
 
     &.hide-scroll {
-
       &::-webkit-scrollbar-thumb {
         background-color: transparent;
       }
@@ -48,6 +57,10 @@
       &::-webkit-scrollbar {
         background-color: transparent;
       }
+    }
+
+    &.remove-scroll {
+      //overflow-y: overlay;
     }
 
   }

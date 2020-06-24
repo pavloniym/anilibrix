@@ -142,8 +142,18 @@ export default class AppMenu {
           {
             role: 'forcereload',
             label: 'Перезагрузить приложение',
-          },
+          }
         ],
+      },
+      {
+        label: 'Окно',
+        submenu: [
+          {role: 'undo'},
+          {role: 'redo'},
+          {role: 'cut'},
+          {role: 'copy'},
+          {role: 'paste'},
+        ]
       }
     ];
   }

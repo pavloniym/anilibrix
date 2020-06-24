@@ -15,10 +15,10 @@
       </v-btn>
     </template>
 
-    <span>
-      <div>Обновить последние релизы</div>
+    <div class="py-1" :style="{lineHeight: 1}">
+      <div class="font-weight-bold">Обновить последние релизы</div>
       <div class="caption">Обновлено в {{datetime}}</div>
-    </span>
+    </div>
 
   </v-tooltip>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <video-layout>
+  <v-layout fill-height>
     <component
       v-bind="{sources, source}"
       :is="component"
@@ -17,12 +17,11 @@
       </template>
 
     </component>
-  </video-layout>
+  </v-layout>
 </template>
 
 <script>
 
-  import VideoLayout from '@layouts/video'
   import PlayerInterface from '@components/video/interface'
   import {ServerPlayer, UpscalePlayer, TorrentPlayer} from '@components/video/playback/types'
 
@@ -62,7 +61,6 @@
       }
     },
     components: {
-      VideoLayout,
       PlayerInterface,
     },
     computed: {

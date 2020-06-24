@@ -41,19 +41,9 @@
 
   import {mapActions, mapState} from 'vuex'
 
-  const props = {
-    fromReleaseId: {
-      type: [String, Number],
-      default: null
-    }
-  };
-
   export default {
-    props,
     name: "Catalog.View",
-    meta: {
-      title: 'Каталог'
-    },
+    meta: {title: 'Каталог'},
     components: {
       CatalogItem,
       CatalogLoader,
@@ -122,7 +112,6 @@
         this.$router.push({
           name: 'release',
           params: {
-            from: this.$route,
             releaseId: release.id,
             releaseName: release.names.original
           }
@@ -138,19 +127,18 @@
 
     },
 
-    mounted() {
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        if(from && from.name === 'release') {
+          const fromReleaseId = vm.$__get(from, 'params.releaseId');
+          const releaseContainer = document.getElementById(fromReleaseId);
 
-      // Get release from
-      if (this.fromReleaseId) {
-        const releaseContainer = document.getElementById(this.fromReleaseId);
-
-        // If div container is found
-        // Scroll into view
-        if (releaseContainer) {
-          releaseContainer.scrollIntoView({block: "center"});
+          // If div container is found
+          // Scroll into view
+          if (releaseContainer) releaseContainer.scrollIntoView({block: "center"});
         }
+      })
+    },
 
-      }
-    }
   }
 </script>
