@@ -99,6 +99,7 @@
     "@sentry/integrations": "^5.15.5",
     "axios": "^0.19.2",
     "chromecast-api": "^0.3.3",
+    "electron-dl": "^3.0.1",
     "electron-promise-ipc": "^2.0.1",
     "electron-store": "^5.1.1",
     "electron-updater": "^4.2.2",

@@ -69,7 +69,7 @@
        * @return Promise
        */
       getPayload(source) {
-        return __get(source, 'payload');
+        return __get(source, 'payload.playlist');
       },
 
 

@@ -2,8 +2,9 @@
 import path from 'path'
 import {meta} from '@package'
 import sentry from './utils/sentry'
-import store, {setUserId, getStore} from '@store'
+import {download} from 'electron-dl'
 import {app, ipcMain as ipc} from 'electron'
+import store, {setUserId, getStore} from '@store'
 import {Main, Torrent, Chromecast} from './utils/windows'
 
 // Import tray and menu
@@ -100,5 +101,10 @@ app.on('ready', async () => {
       app.dock.setBadge(number && number > 0 ? number.toString() : '')
     }
   });
+
+
+  ipc.on('app:download', async (e, url) => {
+    await download(Main.getWindow(), url, {saveAs: true, openFolderWhenDone: true});
+  })
 
 });

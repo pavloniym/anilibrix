@@ -33,6 +33,7 @@ export default class extends Transformer {
       return Object
         .values(episodes)
         .map(episode => ({...episode, sources: episode.sources.filter(source => source.payload !== null)}))
+        .filter(episode => episode.sources && episode.sources.length > 0)
         .reverse();
 
     } catch (error) {
@@ -85,12 +86,34 @@ export default class extends Transformer {
       // Create episode if it not exists
       this._createEpisode(episode, episodes);
 
+      /**
+       * Get payload
+       *
+       * @param playlistKey
+       * @param fileKey
+       * @return {{file: *, playlist: *}}
+       */
+      const getPayload = (playlistKey = null, fileKey = null) => {
+        return {
+          file: this.get(item, fileKey) || null,
+          playlist: this.get(item, playlistKey) || null,
+        }
+      };
+
+
+      // Get sources fhd, hd, sd source
+      const fhdSource = this._createSource('server', '1080', 'fhd', getPayload('fullhd'));
+      const hdSource = this._createSource('server', '720', 'hd', getPayload('hd', 'srcHd'));
+      const sdSource = this._createSource('server', '480', 'sd', getPayload('sd', 'srcSd'));
+
       // Set episode data
       episodes[episode].id = episode;
       episodes[episode].title = this.get(item, 'title');
-      episodes[episode].sources.push(this._createSource('server', '1080', 'fhd', this.get(item, 'fullhd')));
-      episodes[episode].sources.push(this._createSource('server', '720', 'hd', this.get(item, 'hd')));
-      episodes[episode].sources.push(this._createSource('server', '480', 'sd', this.get(item, 'sd')));
+
+      // Push sources
+      if (fhdSource.payload.playlist) episodes[episode].sources.push(fhdSource);
+      if (hdSource.payload.playlist) episodes[episode].sources.push(hdSource);
+      if (sdSource.payload.playlist) episodes[episode].sources.push(sdSource);
 
     });
   }

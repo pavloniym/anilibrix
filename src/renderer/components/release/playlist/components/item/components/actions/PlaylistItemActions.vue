@@ -62,13 +62,33 @@
             icon: 'mdi-check',
             title: 'Пометить серию как просмотренную',
             action: this.setWatchData,
+            visible: true,
           },
           {
             icon: 'mdi-close',
             title: 'Снять отметку о просмотре',
             action: this.removeWatchData,
+            visible: true,
+          },
+          {
+            icon: 'mdi-download',
+            title: 'Скачать эпизод в 1080p',
+            action: () => this.downloadEpisode('fhd'),
+            visible: !!this.getEpisodeFileUrlByAlias('fhd')
+          },
+          {
+            icon: 'mdi-download',
+            title: 'Скачать эпизод в 720p',
+            action: () => this.downloadEpisode('hd'),
+            visible: !!this.getEpisodeFileUrlByAlias('hd')
+          },
+          {
+            icon: 'mdi-download',
+            title: 'Скачать эпизод в 480p',
+            action: () => this.downloadEpisode('sd'),
+            visible: !!this.getEpisodeFileUrlByAlias('sd')
           }
-        ]
+        ].filter(item => item.visible)
       }
 
     },
@@ -109,6 +129,37 @@
         // Deactivate menu
         this.visible = false;
       },
+
+
+      /**
+       * Get episode source by alias
+       *
+       * @param alias
+       * @return {string|null}
+       */
+      getEpisodeFileUrlByAlias(alias) {
+        const source = this.episode.sources.find(source => source.alias === alias);
+        return this.$__get(source, 'payload.file') || null;
+      },
+
+
+      /**
+       * Download episode
+       *
+       * @param alias
+       */
+      downloadEpisode(alias) {
+
+        // Get episode url for provided alias
+        const url = this.getEpisodeFileUrlByAlias(alias);
+
+        // Send download request
+        this.$electron.ipcRenderer.send('app:download', url);
+
+        // Deactivate menu
+        this.visible = false;
+      }
+
     }
 
   }
