@@ -58,13 +58,31 @@
         <span>Настройки интерполяций</span>
       </v-tooltip>-->
 
+
+      <!-- Opening skip button -->
+      <v-tooltip v-if="_opening_skip_button" right :attach="$refs.links">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large @click="skipOpening">
+            <span class="caption font-weight-bold">+{{_opening_skip_time}}</span>
+          </v-btn>
+        </template>
+        <span>Перемотка опенинга</span>
+      </v-tooltip>
+
+
     </template>
   </v-layout>
 </template>
 
 <script>
 
+  import {mapState} from 'vuex'
+
   const props = {
+    player: {
+      type: Object,
+      default: null
+    },
     release: {
       type: Object,
       default: null
@@ -84,8 +102,7 @@
     upscale: {
       type: Function,
       default: null
-    },
-
+    }
   };
 
   export default {
@@ -94,6 +111,13 @@
       return {
         isMounted: false
       }
+    },
+    computed: {
+      ...mapState('app/settings/player', {
+        _opening_skip_time: s => s.opening.skip_time,
+        _opening_skip_button: s => s.opening.skip_button,
+      }),
+
     },
     methods: {
 
@@ -123,6 +147,16 @@
             releaseName: this.release.names.original
           }
         })
+      },
+
+
+      /**
+       * Skip opening
+       *
+       * @return {void}
+       */
+      skipOpening() {
+        this.player.currentTime = parseInt(this._opening_skip_time || 0) || 0;
       }
     },
 

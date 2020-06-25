@@ -114,7 +114,15 @@
       .v-navigation-drawer__content {
         overflow-y: scroll;
       }
+    }
 
+
+    ::-webkit-scrollbar-thumb {
+      background-color: black;
+    }
+
+    ::-webkit-scrollbar {
+      background-color: transparent;
     }
   }
 

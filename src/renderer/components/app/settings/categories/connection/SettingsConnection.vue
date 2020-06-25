@@ -12,7 +12,7 @@
     <!-- Host -->
     <v-card>
       <v-card-subtitle class="pb-0 font-weight-bold">Настройка точки доступа</v-card-subtitle>
-      <v-card-subtitle class="py-0 pb-2">Укажите адрес точки доступа к порталу Anilibria</v-card-subtitle>
+      <v-card-subtitle class="py-0 pb-2 caption">Укажите адрес точки доступа к порталу Anilibria</v-card-subtitle>
       <v-card-text>
         <v-text-field
           outlined
@@ -28,13 +28,12 @@
         </div>
       </v-card-text>
     </v-card>
-    <v-divider/>
 
 
     <!-- Proxy -->
-    <v-card>
+    <v-card class="mt-2">
       <v-card-subtitle class="pb-0 font-weight-bold">Настройка подключения</v-card-subtitle>
-      <v-card-subtitle class="py-0">Укажите способ подключения к API портала<</v-card-subtitle>
+      <v-card-subtitle class="py-0 caption">Укажите способ подключения к API портала<</v-card-subtitle>
       <v-card-text>
         <v-radio-group hide-details class="my-4" :value="_type" @change="_setProxy">
           <v-radio v-for="(proxy, k) in proxies" v-bind="proxy" :key="k"/>
@@ -44,14 +43,13 @@
         </div>
       </v-card-text>
     </v-card>
-    <v-divider/>
 
 
     <!-- Pac Proxy Settings -->
     <template v-if="_type === 'pac'">
-      <v-card>
+      <v-card class="mt-2">
         <v-card-subtitle class="pb-0 font-weight-bold">Параметры PAC прокси</v-card-subtitle>
-        <v-card-subtitle class="py-0 pb-2">
+        <v-card-subtitle class="py-0 pb-2 caption">
           Укажите ссылку на валидный PAC скрипт, который будет использоваться приложением
         </v-card-subtitle>
         <v-card-text>
@@ -65,15 +63,14 @@
           </v-text-field>
         </v-card-text>
       </v-card>
-      <v-divider/>
     </template>
 
 
     <!-- Custom Proxy Settings -->
     <template v-if="_type === 'custom'">
-      <v-card>
+      <v-card class="mt-2">
         <v-card-subtitle class="pb-0 font-weight-bold">Параметры собственного прокси</v-card-subtitle>
-        <v-card-subtitle class="py-0 pb-2">
+        <v-card-subtitle class="py-0 pb-2 caption">
           Укажите хост и порт собственного прокси. Прокси должен уметь работать через https соединение
         </v-card-subtitle>
         <v-card-text>
@@ -95,7 +92,6 @@
           </v-text-field>
         </v-card-text>
       </v-card>
-      <v-divider/>
     </template>
 
 

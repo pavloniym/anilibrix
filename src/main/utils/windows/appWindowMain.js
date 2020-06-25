@@ -10,10 +10,10 @@ class MainWindow extends Window {
    */
   getWindowConfiguration() {
 
-    const width = 1000;
+    const width = 1120;
     const height = 720;
-    const minWidth = width;
-    const minHeight = height;
+    const minWidth = 820;
+    const minHeight = 520;
 
     return {
       height,
@@ -31,8 +31,6 @@ class MainWindow extends Window {
         nodeIntegration: true,
         experimentalFeatures: true,
         allowRunningInsecureContent: true,
-        enableBlinkFeatures: 'SameSiteDefaultChecksMethodRigorously',
-        disableBlinkFeatures: 'CookiesWithoutSameSiteMustBeSecure'
       },
       backgroundColor: '#121212',
     }

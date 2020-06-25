@@ -11,7 +11,7 @@
           <!-- Links -->
           <v-col align-self="center">
             <player-links
-              v-bind="{release, source}"
+              v-bind="{release, source, player}"
               :upscale="() => $refs.upscale"
               :torrent="() => $refs.torrent"
               :playlist="() => $refs.playlist">

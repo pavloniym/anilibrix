@@ -61,11 +61,44 @@
           <v-switch :input-value="_autoplayNext" @change="_setAutoplayNext"/>
         </v-list-item-action>
       </v-list-item>
-      <v-card-text class="pt-2">
-        <div class="caption">
-          После окончания эпизода плеер автоматически начнет воспроизведение следующего эпизода в релизе,
-          при его наличии
+      <v-card-text class="pt-2 caption">
+        После окончания эпизода плеер автоматически начнет воспроизведение следующего эпизода в релизе,
+        при его наличии
+      </v-card-text>
+    </v-card>
+
+
+    <!-- Opening Skip Button -->
+    <v-card class="mt-2">
+      <v-list-item dense @click="_setOpeningSkipButton(!_opening_skip_button)">
+        <v-list-item-title>Кнопка пропуска опенинга</v-list-item-title>
+        <v-list-item-action class="mr-2">
+          <v-switch :input-value="_opening_skip_button" @change="_setOpeningSkipButton"/>
+        </v-list-item-action>
+      </v-list-item>
+      <v-card-text class="pt-2 caption">
+        <div>
+          В интерфейсе плеера появится дополнительная кнопка, которая перемотает плеер на указанное количество секунд
         </div>
+        <div>Данная кнопка не гарантирует корректный пропуск опенинга</div>
+      </v-card-text>
+    </v-card>
+    <v-divider/>
+
+    <!-- Opening Skip Time -->
+    <v-card>
+      <v-card-text class="pb-2 caption">Вы можете указать на сколько секунд пропускать опенинг</v-card-text>
+      <v-card-text>
+        <v-text-field
+          outlined
+          hide-details
+          class="mb-2"
+          type="number"
+          label="Количество секунд для пропуска опенинга"
+          suffix="сек"
+          :value="_opening_skip_time"
+          @input="_setOpeningSkipTime($event ? parseInt($event) : 0)">
+        </v-text-field>
       </v-card-text>
     </v-card>
 
@@ -82,6 +115,8 @@
         _upscale: s => s.upscale.process,
         _torrents: s => s.torrents.process,
         _autoplayNext: s => s.autoplayNext,
+        _opening_skip_time: s => s.opening.skip_time,
+        _opening_skip_button: s => s.opening.skip_button,
       })
     },
 
@@ -90,7 +125,9 @@
       ...mapActions('app/settings/player', {
         _setAutoplayNext: 'setAutoplayNext',
         _setUpscaleProcess: 'setUpscaleProcess',
-        _setTorrentsProcess: 'setTorrentsProcess'
+        _setTorrentsProcess: 'setTorrentsProcess',
+        _setOpeningSkipTime: 'setOpeningSkipTime',
+        _setOpeningSkipButton: 'setOpeningSkipButton',
       })
     }
 

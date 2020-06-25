@@ -1,3 +1,3 @@
-import PlayerInterfaceLinks from './PlayerInterfaceLinks'
+import PlayerLinks from './PlayerLinks'
 
-export default PlayerInterfaceLinks
+export default PlayerLinks

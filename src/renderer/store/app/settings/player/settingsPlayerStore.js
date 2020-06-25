@@ -6,6 +6,8 @@ const SET_EPISODES_SORT = 'SET_EPISODES_SORT';
 const SET_AUTOPLAY_NEXT = 'SET_AUTOPLAY_NEXT';
 const SET_UPSCALE_PROCESS = 'SET_UPSCALE_PROCESS';
 const SET_TORRENTS_PROCESS = 'SET_TORRENTS_PROCESS';
+const SET_OPENING_SKIP_TIME = 'SET_OPENING_SKIP_TIME';
+const SET_OPENING_SKIP_BUTTON = 'SET_OPENING_SKIP_BUTTON';
 
 export default {
   namespaced: true,
@@ -20,6 +22,10 @@ export default {
     episodes: {order: 'asc'},
     torrents: {process: false},
     autoplayNext: true,
+    opening: {
+      skip_time: 30,
+      skip_button: false,
+    }
   },
 
   mutations: {
@@ -102,6 +108,25 @@ export default {
      */
     [SET_UPSCALE_PROCESS]: (s, state) => s.upscale.process = state,
 
+
+    /**
+     * Set opening skip time
+     *
+     * @param s
+     * @param time
+     * @return {*}
+     */
+    [SET_OPENING_SKIP_TIME]: (s, time) => s.opening.skip_time = time,
+
+
+    /**
+     * Set opening skip button state
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_OPENING_SKIP_BUTTON]: (s, state) => s.opening.skip_button = state,
   },
 
 
@@ -177,7 +202,26 @@ export default {
     setUpscaleParameters: ({commit}, {bold, blur}) => {
       commit(SET_UPSCALE_BLUR, blur);
       commit(SET_UPSCALE_BOLD, bold);
-    }
+    },
+
+
+    /**
+     * Set opening skip time
+     *
+     * @param commit
+     * @param time
+     * @return {*}
+     */
+    setOpeningSkipTime: ({commit}, time) => commit(SET_OPENING_SKIP_TIME, time),
+
+    /**
+     * Set opening skip button state
+     *
+     * @param commit
+     * @param state
+     * @return {*}
+     */
+    setOpeningSkipButton: ({commit}, state) => commit(SET_OPENING_SKIP_BUTTON, state),
 
   }
 }
