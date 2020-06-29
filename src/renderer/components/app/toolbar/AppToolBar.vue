@@ -2,7 +2,6 @@
   <v-fade-transition appear>
     <v-app-bar v-if="!hideToolbar" flat color="transparent" class="toolbar shrink">
 
-      <slot name="left"/>
 
       <!-- Releases -->
       <v-btn small text exact class="mr-1" height="38" :to="{name: 'releases'}">

@@ -22,9 +22,9 @@
       nudge-bottom="40">
 
       <template v-slot:activator="{ on }">
-        <v-btn v-on="on" v-bind="{loading}" icon>
+        <v-btn v-on="on" icon>
           <v-fade-transition mode="out-in">
-            <v-icon v-if="menu" key="expanded">mdi-chevron-down</v-icon>
+            <v-icon v-if="menu" key="expanded">mdi-account</v-icon>
             <v-avatar size="28" v-else>
               <v-img :src="_profile.avatar"/>
             </v-avatar>

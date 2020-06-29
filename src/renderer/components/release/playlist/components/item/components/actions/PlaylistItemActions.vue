@@ -30,6 +30,7 @@
 <script>
 
   import {mapActions} from 'vuex'
+  import {initDownload} from "@main/handlers/download/downloadHandlers";
 
   const props = {
     release: {
@@ -151,10 +152,11 @@
       downloadEpisode(alias) {
 
         // Get episode url for provided alias
+        const source = this.episode.sources.find(source => source.alias === alias);
         const url = this.getEpisodeFileUrlByAlias(alias);
 
         // Send download request
-        this.$electron.ipcRenderer.send('app:download', url);
+        initDownload(url, source, this.release, this.episode);
 
         // Deactivate menu
         this.visible = false;

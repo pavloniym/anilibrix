@@ -8,23 +8,20 @@
     <!-- Content -->
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
-      <component v-else :is="layout">
-
-        <!-- App Toolbar -->
-        <app-tool-bar key="toolbar"/>
-
-        <!-- Router View -->
+      <template v-else>
         <v-fade-transition mode="out-in">
-          <router-view :key="$route.name"/>
+          <component :is="layout">
+            <router-view :key="$route.name"/>
+          </component>
         </v-fade-transition>
-
-      </component>
+      </template>
     </v-fade-transition>
-
 
     <!-- Errors -->
     <!-- Notifications -->
+
     <app-errors/>
+    <app-downloads/>
     <!--<app-scroll-back />-->
     <app-notifications/>
 
@@ -39,6 +36,7 @@
   import AppToolBar from "@components/app/toolbar";
   import AppSettings from "@components/app/settings";
   import AppSystemBar from '@components/app/systembar'
+  import AppDownloads from "@components/app/downloads";
   import AppBaseLayout from '@layouts/base'
   import AppScrollBack from '@components/app/scroll-back'
   import AppNotifications from "@components/app/notifications";
@@ -53,6 +51,7 @@
       AppToolBar,
       AppSettings,
       AppSystemBar,
+      AppDownloads,
       AppBaseLayout,
       AppScrollBack,
       AppNotifications,
@@ -73,7 +72,6 @@
         _timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
       }),
 
-
       /**
        * Get route layout
        *
@@ -82,7 +80,9 @@
       layout() {
         return this.$__get(this.$route, 'meta.layout.is', AppBaseLayout);
       }
+
     },
+
 
     methods: {
       ...mapActions('releases', {_getReleases: 'getReleases'}),

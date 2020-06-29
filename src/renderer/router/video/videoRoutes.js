@@ -1,17 +1,12 @@
-import VideoView from '@views/video'
-import VideoLayout from '@layouts/video'
 import store from '@store'
+import VideoView from '@views/video'
+import VideoLayout from "@layouts/video";
 
 export default [
   {
     name: 'video',
     path: '/video/:key/:releaseName',
-    meta: {
-      layout: {
-        is: VideoLayout,
-        hide_toolbar: true,
-      }
-    },
+    meta: {layout: {is: VideoLayout}},
     props: true,
     component: VideoView,
     beforeEnter(to, from, next) {

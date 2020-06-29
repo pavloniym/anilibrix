@@ -27,7 +27,7 @@
       </v-layout>
 
       <!-- Description -->
-      <v-card-text v-text="description" class="pb-0"/>
+      <v-card-text v-text="description" class="white--text"/>
 
     </v-layout>
   </v-card>

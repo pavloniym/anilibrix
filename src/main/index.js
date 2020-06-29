@@ -2,10 +2,10 @@
 import path from 'path'
 import {meta} from '@package'
 import sentry from './utils/sentry'
-import {download} from 'electron-dl'
 import {app, ipcMain as ipc} from 'electron'
 import store, {setUserId, getStore} from '@store'
 import {Main, Torrent, Chromecast} from './utils/windows'
+import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
 
 // Import tray and menu
 import Tray from './utils/tray'
@@ -14,6 +14,9 @@ import Menu from './utils/menu'
 // Create tray and menu controller
 const trayController = new Tray();
 const menuController = new Menu();
+
+// Create download storage
+const downloadStorage = {};
 
 // Communications between windows
 const communications = [
@@ -103,8 +106,29 @@ app.on('ready', async () => {
   });
 
 
-  ipc.on('app:download', async (e, url) => {
-    await download(Main.getWindow(), url, {saveAs: true, openFolderWhenDone: true});
-  })
+  // Apply download handlers
+  downloadHandlers();
+
 
 });
+
+
+/**
+ * Download handlers
+ * Start download, cancel and open file
+ *
+ * @return {void}
+ */
+const downloadHandlers = () => {
+
+  // Create storage
+  const storage = {};
+
+  // Start download
+  // Cancel download
+  // Open downloaded file
+  startingDownload(storage, Main);
+  cancelingDownload(storage);
+  openingDownload(storage);
+
+};

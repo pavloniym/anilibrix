@@ -21,17 +21,19 @@ const router = new Router({
     account,
     releases,
   ),
-  scrollBehavior(to, from, savedPosition) {
 
+  /*
+  scrollBehavior(to, from, savedPosition) {
     // Reset scroll position
     // Get container element
     // If exists -> reset top scroll to 0
     // Make 200ms delay, for fade transition
     if (document.getElementById('container')) {
-      setTimeout(() => document.getElementById('container').scrollTop = 0, 200);
+      setTimeout(() => document.getElementById('container').scrollTop = 0, 400);
     }
-
   }
+  */
+
 });
 
 export default router;

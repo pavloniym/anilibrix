@@ -1,27 +1,30 @@
 <template>
-  <v-layout fill-height>
-    <component
-      v-bind="{sources, source}"
-      :is="component"
-      :key="`${release ? release.id : 0}:${episode ? episode.id : 0}`"
-      :time.sync="time"
-      :duration.sync="duration"
-      @error="toBlank"
-      @update:payload="payload = $event">
+  <video-layout>
+    <v-layout fill-height>
+      <component
+        v-bind="{sources, source}"
+        :is="component"
+        :key="`${release ? release.id : 0}:${episode ? episode.id : 0}`"
+        :time.sync="time"
+        :duration.sync="duration"
+        @error="toBlank"
+        @update:payload="payload = $event">
 
-      <template v-slot:default="{player}">
-        <player-interface
-          v-bind="{player, sources, source, release, episode, payload, time}"
-          :key="`interface:${key}`">
-        </player-interface>
-      </template>
+        <template v-slot:default="{player}">
+          <player-interface
+            v-bind="{player, sources, source, release, episode, payload, time}"
+            :key="`interface:${key}`">
+          </player-interface>
+        </template>
 
-    </component>
-  </v-layout>
+      </component>
+    </v-layout>
+  </video-layout>
 </template>
 
 <script>
 
+  import VideoLayout from "@layouts/video";
   import PlayerInterface from '@components/video/interface'
   import {ServerPlayer, UpscalePlayer, TorrentPlayer} from '@components/video/playback/types'
 
@@ -46,6 +49,10 @@
   export default {
     props,
     name: 'Video.View',
+    components: {
+      VideoLayout,
+      PlayerInterface,
+    },
     meta() {
       return {
         title: this.release
@@ -59,9 +66,6 @@
         payload: null,
         duration: 0,
       }
-    },
-    components: {
-      PlayerInterface,
     },
     computed: {
       ...mapState('app/settings/player', {_quality: s => s.quality}),

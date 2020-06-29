@@ -2,7 +2,8 @@ export default [
   {
     name: 'release',
     path: '/release/:releaseId/:releaseName',
-    component: () => import('@views/release'),
-    props: true
+    meta: {layout: {show_scroll: true}},
+    props: true,
+    component: () => import('@views/release')
   }
 ]
