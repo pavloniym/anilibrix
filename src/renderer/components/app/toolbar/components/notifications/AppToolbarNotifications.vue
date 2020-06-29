@@ -10,7 +10,7 @@
     </template>
 
     <!-- Notifications -->
-    <v-card v-if="_items && _items.length > 0">
+    <v-card v-if="_items && _items.length > 0" elevation="12">
       <v-layout align-center class="px-4 py-2">
         <h5 class="grey--text">Последние уведомления за неделю</h5>
         <v-spacer/>

@@ -6,8 +6,10 @@ html, body {
 
 ::-webkit-scrollbar-thumb {
   cursor: pointer;
+  background-color: #353535;
 }
 
 ::-webkit-scrollbar {
   width: 9px;
+  background-color: #1d1d1d;
 }
