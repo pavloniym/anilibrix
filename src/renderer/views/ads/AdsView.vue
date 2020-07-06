@@ -1,23 +1,10 @@
 <template>
   <v-layout column fill-height class="ads black">
-
-    <!-- Toolbar -->
-    <app-tool-bar hide-search hide-catalog hide-notifications hide-update hide-settings>
-      <template v-slot:left>
-        <v-btn icon @click="toReleases">
-          <v-icon>mdi-arrow-left</v-icon>
-        </v-btn>
-      </template>
-    </app-tool-bar>
-
-    <!-- Video -->
     <video ref="video" autoplay muted playsinline/>
-
   </v-layout>
 </template>
 
 <script>
-
 
   import __shuffle from 'lodash/shuffle'
   import AppToolBar from "@components/app/toolbar";
@@ -129,7 +116,6 @@
         }
       }
 
-
     },
 
     mounted() {
@@ -149,7 +135,6 @@
 
       // If no url provided -> push to route
       if (this.tagUrl === null) this.toRoute();
-
     }
 
   }

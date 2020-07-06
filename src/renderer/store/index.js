@@ -4,13 +4,14 @@ import Storage from 'electron-store'
 
 import {getInitialState} from '@utils/store/state'
 import createPromiseAction from '@plugins/vuex-promise-action'
+import createPersistedState from 'vuex-persistedstate'
 import {createSharedMutations} from 'vuex-electron'
-import createPersistedState from "vuex-persistedstate";
 
 import app from './app'
 import release from './release'
 import catalog from './catalog'
 import releases from './releases'
+import favorites from './favorites'
 import notifications from './notifications'
 
 import __merge from 'lodash/merge'
@@ -23,6 +24,7 @@ const modules = {
   release,
   catalog,
   releases,
+  favorites,
   notifications
 };
 
@@ -33,34 +35,16 @@ const storage = new Storage({name: 'anilibrix'});
 
 
 /**
- * Get item from storage
+ * Storage update handler
  *
- * @param key
+ * @param callback
  * @return {*}
  */
-const getItem = (key) => storage.get(key);
-
-
-/**
- * Set storage Item
- *
- */
-const setItem = __throttle((key, value) => {
+const storageHandler = (callback) => __throttle(() => {
   try {
-    storage.set(key, value)
+    callback();
   } catch (error) {
-  }
-}, 2500);
-
-
-/**
- * Remove item from storage
- *
- */
-const removeItem = __throttle(key => {
-  try {
-    storage.delete(key)
-  } catch (error) {
+    // catch storage event error
   }
 }, 2500);
 
@@ -72,8 +56,16 @@ const store = new Vuex.Store({
     createPromiseAction(),
     createPersistedState({
       key: 'anilibrix',
-      paths: ['app', 'notifications'],
-      storage: {getItem, setItem, removeItem},
+      paths: [
+        'app',
+        'notifications',
+        'favorites.settings'
+      ],
+      storage: {
+        getItem: (key) => storageHandler(() => storage.get(key)),
+        setItem: (key, value) => storageHandler(() => storage.set(key, value)),
+        removeItem: (key) => storageHandler(() => storage.delete(key))
+      },
     }),
     createSharedMutations()
   ],

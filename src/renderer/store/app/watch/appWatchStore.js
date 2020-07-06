@@ -32,7 +32,7 @@ export default {
      */
     [REMOVE_WATCH_DATA]: (s, k) => Vue.delete(s.items, k),
 
-},
+  },
 
 
   getters: {
@@ -41,26 +41,38 @@ export default {
      * Get data for provided release and episode
      *
      * @param state
-     * @return {function({releaseId?: *, episodeId?: *}=): *|null}
+     * @return {function({release_id?: *, episode_id?: *}=): *|null}
      */
-    getWatchData: state => ({releaseId = 0, episodeId = 0} = {}) => __get(state, ['items', `${releaseId}:${episodeId}`]) || null,
+    getWatchData: state => ({release_id = 0, episode_id = 0} = {}) => __get(state, ['items', `${release_id}:${episode_id}`]) || null,
 
 
     /**
      * Get release total progress
+     * Calculate only seen
      *
      * @param state
      * @param getters
-     * @return {function({releaseId?: *, totalEpisodesNumber?: *}=): number}
+     * @return {function({release_id?: *, total_episodes_number?: *}=): number}
      */
-    getReleaseProgress: (state, getters) => ({releaseId = 0, totalEpisodesNumber = 0} = {}) => {
+    getReleaseProgress: (state, getters) => ({release_id = 0, total_episodes_number = 0} = {}) => {
+
       const watched_episodes = [];
-      for(let i = 1; i <= totalEpisodesNumber; i++){
-        watched_episodes.push(getters.getWatchData({releaseId, episodeId: i}))
+
+      // Iterate through total episodes number
+      for (let i = 1; i <= total_episodes_number; i++) {
+
+        // Try to get episode watch data
+        const episode = getters.getWatchData({release_id, episode_id: i});
+
+        // If episode exists and episode is seen
+        // Add it to watched episode
+        if (episode && episode.isSeen === true) {
+          watched_episodes.push(episode);
+        }
       }
 
-      return totalEpisodesNumber > 0
-        ? (watched_episodes.filter(episode => episode).length / totalEpisodesNumber) * 100
+      return total_episodes_number > 0
+        ? (watched_episodes.length / total_episodes_number) * 100
         : 0;
     }
 
@@ -79,14 +91,13 @@ export default {
      * @param releaseId
      * @param episodeId
      * @param percentage
-     * @param isSeen
      * @return {Promise<void>}
      */
-    setWatchData: async ({commit, getters, dispatch}, {time = 0, quality = null, releaseId = null, episodeId = -1, percentage = 0} = {}) => {
+    setWatchData: async ({commit, getters, dispatch}, {time = 0, releaseId = null, episodeId = -1, percentage = 0} = {}) => {
       if (releaseId && episodeId > -1) {
 
         // Create episode watch data object
-        const data = {time, quality, percentage};
+        const data = {time, percentage, isSeen: false};
 
         // If isSeen flag is true -> append it to data object
         // This is one-way flag, can't be reset by changing time and percentage
@@ -114,7 +125,7 @@ export default {
           episodes.map(episode => {
 
             const episodeId = episode.id;
-            const watchData = getters.getWatchData({releaseId, episodeId});
+            const watchData = getters.getWatchData({release_id: releaseId, episode_id: episodeId});
 
             // Check if episode is not marked as seen
             if (!watchData || watchData.isSeen !== true) {

@@ -4,7 +4,7 @@
       <component
         v-bind="{sources, source}"
         :is="component"
-        :key="`${release ? release.id : 0}:${episode ? episode.id : 0}`"
+        :key="`video:${key}`"
         :time.sync="time"
         :duration.sync="duration"
         @error="toBlank"
@@ -70,31 +70,20 @@
     computed: {
       ...mapState('app/settings/player', {_quality: s => s.quality}),
 
-      /**
-       * Get instance data
-       *
-       * @return Object
-       */
-      instance() {
-        return {
-          release: this.release,
-          episode: this.episode,
-        }
-      },
 
       /**
        * Get key string
        *
-       * @return String
+       * @return {string}
        */
       key() {
-        return `${this.release.id}:${this.episode.id}`
+        return `${this.release ? this.release.id : 0}:${this.episode ? this.episode.id : 0}`
       },
 
       /**
        * Get sources list
        *
-       * @return Array
+       * @return {array}
        */
       sources() {
         return this.$__get(this.episode, 'sources') || [];
@@ -104,16 +93,17 @@
       /**
        * Get first source with max available quality
        *
-       * @return Object|null
+       * @return {*|null}
        */
       source() {
         return this.sources.find(source => source.alias === this._quality) || this.sources[0];
       },
 
+
       /**
        * Get active type
        *
-       * @return string|null
+       * @return {string|null}
        */
       type() {
         return this.$__get(this.source, 'type') || null;
@@ -123,20 +113,20 @@
       /**
        * Get available components
        *
-       * @return Object
+       * @return {*}
        */
       components() {
         return {
           server: ServerPlayer,
-          upscale: UpscalePlayer,
           torrent: TorrentPlayer,
+          upscale: UpscalePlayer,
         }
       },
 
       /**
        * Get active component
        *
-       * @return Object|null
+       * @return {*}
        */
       component() {
         return this.$__get(this.components, this.type) || null;
@@ -146,7 +136,7 @@
       /**
        * Get watch percentage
        *
-       * @return Number
+       * @return {number}
        */
       percentage() {
         return this.time > 0 && this.duration > 0
@@ -156,9 +146,9 @@
 
 
       /**
-       * Watch part
+       * Get watch part
        *
-       * @return Number
+       * @return {number}
        */
       part() {
         return Math.floor(this.percentage / 10);
@@ -189,8 +179,12 @@
        * @param episode
        * @return Object|null
        */
-      getWatchData({release, episode}) {
-        return this.$store.getters['app/watch/getWatchData']({releaseId: release.id, episodeId: episode.id});
+      async getWatchData({release, episode}) {
+
+        const release_id = release.id;
+        const episode_id = episode.id;
+
+        return await this.$store.getters['app/watch/getWatchData']({release_id, episode_id});
       },
 
 
@@ -214,46 +208,25 @@
     },
 
 
+    async mounted() {
+      if (this.release && this.episode) {
+
+        // Get watch data
+        // Set last watch time
+        const watch = await this.getWatchData({release: this.release, episode: this.episode});
+        this.time = watch && this.fromStart === false ? watch.time : 0;
+
+      }
+    },
+
     beforeDestroy() {
 
       // Set episode watch data before destroy
-      this.setWatchData({
-        time: this.time,
-        release: this.release,
-        episode: this.episode,
-        percentage: this.percentage
-      });
+      this.setWatchData({time: this.time, release: this.release, episode: this.episode, percentage: this.percentage});
     },
 
 
     watch: {
-
-      instance: {
-        deep: true,
-        immediate: true,
-        handler({release, episode}, prev) {
-
-          // Set previous episode watch data after change
-          if (prev) {
-            this.setWatchData({
-              time: this.time,
-              release: prev.release,
-              episode: prev.episode,
-              percentage: this.percentage
-            });
-          }
-
-          if (release && episode) {
-
-            // Get watch data
-            // Set last watch time
-            const watch = this.getWatchData({release, episode});
-            this.time = watch && this.fromStart === false ? watch.time : 0;
-
-          }
-        }
-      },
-
 
       source: {
         deep: true,
@@ -261,11 +234,8 @@
         handler(source) {
           if (source) {
 
-            // If settings quality not matched with current
             // Update settings quality and set it as current quality
-            if (source.alias === this._quality) {
-              this._setQuality(source.alias)
-            }
+            this._setQuality(source.alias)
 
           } else {
 
@@ -281,13 +251,10 @@
         immediate: true,
         handler() {
 
+          // Prepare payload for watch data
           // Set watch data then playing part is updated
-          this.setWatchData({
-            time: this.time,
-            release: this.release,
-            episode: this.episode,
-            percentage: this.percentage
-          });
+          const payload = {time: this.time, release: this.release, episode: this.episode, percentage: this.percentage};
+          this.setWatchData(payload);
         }
       },
 

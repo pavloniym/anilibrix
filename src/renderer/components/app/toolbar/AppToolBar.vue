@@ -16,7 +16,7 @@
       </v-btn>
 
       <!-- Favorite -->
-      <v-btn small text class="mr-4" height="38">
+      <v-btn small text exact class="mr-4" height="38" :to="{name: 'favorites'}">
         <v-icon size="18" class="mr-2">mdi-star</v-icon>
         <span>Избранное</span>
       </v-btn>
@@ -27,7 +27,7 @@
       <update/>
       <notifications/>
       <settings/>
-      <account />
+      <account/>
 
     </v-app-bar>
   </v-fade-transition>

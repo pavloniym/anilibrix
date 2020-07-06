@@ -1,5 +1,4 @@
 import __get from 'lodash/get'
-import {Main} from "@main/utils/windows";
 import {v4 as uuid} from 'uuid'
 import AnilibriaProxy from "@proxies/anilibria";
 

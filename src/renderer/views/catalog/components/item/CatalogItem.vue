@@ -103,17 +103,6 @@
         return this.$__get(this.names, 'original')
       },
 
-
-      /**
-       * Get release watch progress
-       *
-       * @return {number}
-       */
-      progress() {
-        const getReleaseProgress = this.$store.getters['app/watch/getReleaseProgress'];
-        return getReleaseProgress({releaseId: this.id, totalEpisodesNumber: (this.episodes || []).length});
-      }
-
     }
   }
 

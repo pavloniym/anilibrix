@@ -9,7 +9,7 @@
     <div
       v-if="isReady && currentTime > 0 && totalDuration > 0"
       class="d-flex align-self-end font-weight-bold"
-         :style="{fontSize: '.8rem'}">
+      :style="{fontSize: '.8rem'}">
       {{time}} / {{duration}}
     </div>
 

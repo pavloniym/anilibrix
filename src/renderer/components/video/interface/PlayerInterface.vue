@@ -48,6 +48,7 @@
     <!-- Hotkeys -->
     <player-hotkeys
       v-bind="{player}"
+      @toggle:play="togglePlay"
       @interface:update="showInterface"
       @toggle:fullscreen="toggleFullscreen">
     </player-hotkeys>
@@ -166,6 +167,17 @@
       toggleFullscreen() {
         screenfull.toggle(document.getElementById('player-container'));
       },
+
+
+      /**
+       * Toggle player play state
+       *
+       * @return {void}
+       */
+      togglePlay() {
+        this.player.togglePlay();
+      },
+
 
     },
 

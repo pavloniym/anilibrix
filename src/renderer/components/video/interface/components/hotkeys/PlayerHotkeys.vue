@@ -1,6 +1,5 @@
 <script>
 
-  import screenfull from "screenfull";
   import {mapActions, mapState} from "vuex";
 
   const props = {
@@ -29,21 +28,12 @@
        */
       handleKeyboardEvent(e) {
         if (e.which === 39 || e.which === 37) this.$emit('update:interface');
-        if (e.which === 32) this.togglePlay();
+        if (e.which === 32) this.$emit('toggle:play');
         if (e.code === 'KeyF') this.$emit('toggle:fullscreen');
         if (e.which === 190 && e.shiftKey) this.setSpeed(0.25);
         if (e.which === 188 && e.shiftKey) this.setSpeed(-0.25);
       },
 
-
-      /**
-       * Toggle player play state
-       *
-       * @return {void}
-       */
-      togglePlay() {
-        this.player.togglePlay();
-      },
 
 
       /**

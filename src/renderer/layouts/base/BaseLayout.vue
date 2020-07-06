@@ -4,7 +4,7 @@
     fill-height
     id="container"
     class="base-layout"
-    :class="{'show-scroll': showScroll}">
+    :class="{showScroll, isOnBlack}">
 
     <!-- App Toolbar -->
     <!-- Content -->
@@ -35,6 +35,16 @@
       },
 
 
+      /**
+       * Check if is on black background
+       *
+       * @return {*|boolean}
+       */
+      isOnBlack() {
+        return this.$__get(this.$route, 'meta.layout.is_on_black') || false;
+      }
+
+
     }
   }
 </script>
@@ -52,19 +62,22 @@
     &::-webkit-scrollbar-thumb {
       background-color: transparent;
     }
-
     &::-webkit-scrollbar {
       background-color: transparent;
     }
 
-    &.show-scroll {
+
+    &.showScroll {
       &::-webkit-scrollbar-thumb {
         background-color: #353535;
       }
-
       &::-webkit-scrollbar {
         background-color: #1d1d1d;
       }
+    }
+
+    &.isOnBlack {
+      background: black;
     }
   }
 

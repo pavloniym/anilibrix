@@ -100,15 +100,18 @@ export default {
         const {items} = await new AnilibriaProxy().getReleases({cancelToken: REQUESTS.releases.token});
         const releases = await AnilibriaReleaseTransformer.fetchCollection(items);
 
+        // Filters releases without episodes
+        const filteredReleases = releases.filter(release => release.episodes.length > 0);
+
         // Get posters
         await Promise.allSettled(
-          releases.map(async release =>
+          filteredReleases.map(async release =>
             release.poster.image = await new AnilibriaProxy().getImage({src: release.poster.path})
           )
         );
 
         // Sort releases from newest to oldest
-        const sortedReleases = releases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
+        const sortedReleases = filteredReleases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
 
         // Try to find new releases and show notifications
         // If previous releases exists (ignore initial request)

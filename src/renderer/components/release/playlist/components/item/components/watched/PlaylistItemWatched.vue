@@ -31,14 +31,11 @@
       watchData() {
         if (this.release && this.episode) {
 
-          // Get getters from store
-          const getWatchData = this.$store.getters['app/watch/getWatchData'];
+          const release_id = this.release.id;
+          const episode_id = this.episode.id;
 
           // Get watch data for provided release
-          return getWatchData({
-            releaseId: this.release.id,
-            episodeId: this.episode.id
-          });
+          return this.$store.getters['app/watch/getWatchData']({release_id, episode_id});
         }
       },
 

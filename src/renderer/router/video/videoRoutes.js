@@ -19,8 +19,6 @@ export default [
       const from_ads = from && from.name === 'ads';
       const is_shown_this_time = Math.random() >= 0.5 || ads_maximum;
 
-      console.log({ads, ads_maximum, is_shown_this_time, from_ads});
-
       // Redirect to ads view or to episode video
       if (ads && is_shown_this_time && !from_ads) {
 

@@ -10,6 +10,7 @@
       @previous="showPreviousRelease"
       @toEpisode="toEpisode">
     </slider>
+
     <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
     <actions v-bind="{loading}" @toEpisode="toEpisode" @toRelease="toRelease"/>
 

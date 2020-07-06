@@ -71,8 +71,6 @@ export default class AnilibriaProxy extends Proxy {
     const params = {data, headers: data.getHeaders()};
     const response = await this.submit('POST', this._getHost() + this.endpoint, params);
 
-    console.log(response);
-
     return this._parseResponse(response.data);
   }
 
@@ -203,6 +201,50 @@ export default class AnilibriaProxy extends Proxy {
     const response = await this.submit('POST', this._getHost() + this.endpoint, params);
 
     return this._parseResponse(response.data);
+
+  }
+
+
+  /**
+   * Get favorites
+   *
+   * @param page
+   * @param perPage
+   * @param parameters
+   * @return {Promise<*>}
+   */
+  async getFavorites({page = 1, perPage = 15}, parameters = {}) {
+
+    const data = this._getFormDataObject({page, perPage, query: 'favorites'});
+    const params = {data, headers: data.getHeaders(), ...parameters};
+    const response = await this.submit('POST', this._getHost() + this.endpoint, params);
+
+    return this._parseResponse(response.data);
+  }
+
+
+  /**
+   * Add release to favorites
+   *
+   * @param releaseId
+   * @return {Promise<*>}
+   */
+  async addToFavorites(releaseId) {
+
+    const data = this._getFormDataObject({id: releaseId, action: 'add', query: 'favorites'});
+    const params = {data, headers: data.getHeaders()};
+    const response = await this.submit('POST', this._getHost() + this.endpoint, params);
+
+    return this._parseResponse(response.data);
+  }
+
+  /**
+   * Remove from favorites
+   *
+   * @param releaseId
+   * @return {Promise<void>}
+   */
+  async removeFromFavorites(releaseId) {
 
   }
 
