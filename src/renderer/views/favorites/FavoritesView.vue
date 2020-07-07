@@ -4,29 +4,40 @@
     <!-- Header-->
     <v-card flat color="transparent">
       <v-card-title>Избранные релизы</v-card-title>
-      <v-card-subtitle>Список ваших избранных релизов</v-card-subtitle>
+
+      <!-- Authorized user -->
+      <v-card-subtitle v-if="_isAuthorized">Список ваших избранных релизов</v-card-subtitle>
+
+      <!-- Not Authorized user -->
+      <!-- Show authorized button -->
+      <template v-if="!_isAuthorized">
+        <v-card-subtitle>Для просмотра избранных релизов необходимо авторизоваться в приложении</v-card-subtitle>
+        <v-card-actions>
+          <v-btn @click="toLogin">Авторизоваться</v-btn>
+        </v-card-actions>
+      </template>
     </v-card>
 
-    <!-- Toolbar -->
-    <toolbar class="mb-2" :search.sync="search" :settings.sync="settings"/>
 
-    <!-- Favorites Settings -->
-    <v-expand-transition>
-      <settings v-if="settings" class="mb-2"/>
-    </v-expand-transition>
+    <!-- Authorized user -->
+    <!-- Show user favorites -->
+    <template v-if="_isAuthorized">
 
+      <!-- Toolbar -->
+      <toolbar class="mb-2" :search.sync="search" :settings.sync="settings"/>
 
-    <!-- Favorites loader -->
-    <loader v-if="_loading"/>
+      <!-- Favorites Settings -->
+      <v-expand-transition>
+        <settings v-if="settings" class="mb-2"/>
+      </v-expand-transition>
 
-    <!-- Favorites View -->
-    <component
-      v-else
-      v-bind="{releases}"
-      :is="view"
-      @to:release="toRelease">
-    </component>
+      <!-- Favorites loader -->
+      <loader v-if="_loading"/>
 
+      <!-- Favorites View -->
+      <component v-else v-bind="{releases}" :is="view" @to:release="toRelease" />
+
+    </template>
   </v-layout>
 </template>
 
@@ -39,8 +50,9 @@
   import Toolbar from './components/toolbar'
   import Settings from './components/settings'
 
-  import {mapActions, mapState} from 'vuex'
   import Fuse from "fuse.js";
+  import {toLogin, toRelease} from "@utils/router/views";
+  import {mapActions, mapGetters, mapState} from 'vuex'
 
   export default {
     name: "Favorites.View",
@@ -57,6 +69,7 @@
       }
     },
     computed: {
+      ...mapGetters('app/account', {_isAuthorized: 'isAuthorized'}),
       ...mapState('favorites', {
         _items: s => s.items,
         _loading: s => s.loading,
@@ -144,29 +157,15 @@
     methods: {
       ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
 
-
-      /**
-       * To release
-       *
-       * @param release
-       */
-      toRelease(release) {
-        if (release) {
-
-          const releaseId = this.$__get(release, 'id');
-          const releaseName = this.$__get(release, 'names.original');
-
-          this.$router.push({
-            name: 'release',
-            params: {releaseId, releaseName}
-          });
-        }
-      }
-
+      toLogin,
+      toRelease,
     },
 
     created() {
-      this._getFavorites();
+
+      // Get favorites from server
+      // Check if user is authorized
+      if (this._isAuthorized) this._getFavorites();
     },
 
   }

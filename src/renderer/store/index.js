@@ -2,10 +2,12 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import Storage from 'electron-store'
 
+import __merge from 'lodash/merge'
 import {getInitialState} from '@utils/store/state'
 import createPromiseAction from '@plugins/vuex-promise-action'
 import createPersistedState from 'vuex-persistedstate'
 import {createSharedMutations} from 'vuex-electron'
+import {getItem, setItem, removeItem} from '@utils/store/storage'
 
 import app from './app'
 import release from './release'
@@ -14,8 +16,6 @@ import releases from './releases'
 import favorites from './favorites'
 import notifications from './notifications'
 
-import __merge from 'lodash/merge'
-import __throttle from 'lodash/throttle'
 
 Vue.use(Vuex);
 
@@ -34,21 +34,6 @@ const debug = process.env.NODE_ENV !== 'production';
 const storage = new Storage({name: 'anilibrix'});
 
 
-/**
- * Storage update handler
- *
- * @param callback
- * @return {*}
- */
-const storageHandler = (callback) => __throttle(() => {
-  try {
-    callback();
-  } catch (error) {
-    // catch storage event error
-  }
-}, 2500);
-
-
 // Create store instance
 const store = new Vuex.Store({
   modules,
@@ -62,9 +47,9 @@ const store = new Vuex.Store({
         'favorites.settings'
       ],
       storage: {
-        getItem: (key) => storageHandler(() => storage.get(key)),
-        setItem: (key, value) => storageHandler(() => storage.set(key, value)),
-        removeItem: (key) => storageHandler(() => storage.delete(key))
+        getItem: getItem(storage),
+        setItem: setItem(storage),
+        removeItem: removeItem(storage),
       },
     }),
     createSharedMutations()

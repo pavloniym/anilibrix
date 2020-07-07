@@ -47,21 +47,25 @@
     },
     computed: {
 
+      /**
+       * Get years groups
+       *
+       * @return {array}
+       */
       years() {
-
         const years = {};
 
         (this.releases || []).forEach(release => {
-
           const year = release.year;
 
           years[year] = {...years[year]};
           years[year].year = year;
           years[year].releases = [...(years[year].releases || []), ...[release]]
-
         });
 
-        return Object.values(years);
+        return Object
+          .values(years)
+          .sort((a, b) => b.year - a.year);
       }
 
     }
