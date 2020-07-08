@@ -15,7 +15,7 @@
 
 
             <!-- Release Progress -->
-            <v-progress-linear class="release-card--progress mx-n4" height="25" color="secondary" :value="progress">
+            <v-progress-linear class="release-card--progress mx-n4" height="30" color="secondary" :value="progress">
               <template v-slot>
                 <div class="caption white--text font-weight-bold">{{watched}} из {{episodes.length}}</div>
               </template>
