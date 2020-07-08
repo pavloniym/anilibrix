@@ -69,8 +69,9 @@
     data() {
       return {
         sort: [
+          {title: 'По названию', value: 'title'},
           {title: 'По дате добавления в избранное', value: 'original'},
-          {title: 'По названию', value: 'title'}
+          {title: 'По дате обновления релизов', value: 'updates'}
         ],
         group: [
           {title: 'Без группировки', value: 'original'},

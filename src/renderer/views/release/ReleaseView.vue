@@ -2,6 +2,7 @@
   <v-layout v-if="loading || _release" column>
 
     <card v-bind="{loading}" class="mb-6" :release="_release"/>
+    
     <playlist
       v-bind="{loading}"
       :episodes="_episodes"

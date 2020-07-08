@@ -8,7 +8,7 @@
 
         <!-- Poster -->
         <v-avatar size="220" class="mx-4">
-          <v-img :src="poster"/>
+          <v-img :src="poster" aspect-ratio="1"/>
         </v-avatar>
 
         <!-- Title -->

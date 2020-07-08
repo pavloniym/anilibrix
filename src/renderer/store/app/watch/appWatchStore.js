@@ -43,18 +43,19 @@ export default {
      * @param state
      * @return {function({release_id?: *, episode_id?: *}=): *|null}
      */
-    getWatchData: state => ({release_id = 0, episode_id = 0} = {}) => __get(state, ['items', `${release_id}:${episode_id}`]) || null,
+    getWatchData: state => ({release_id = 0, episode_id = 0} = {}) => {
+      return __get(state, ['items', `${release_id}:${episode_id}`]) || null;
+    },
 
 
     /**
-     * Get release total progress
-     * Calculate only seen
+     * Get release watched episodes
      *
      * @param state
      * @param getters
-     * @return {function({release_id?: *, total_episodes_number?: *}=): number}
+     * @return {function({release_id?: *, total_episodes_number?: *}=): []}
      */
-    getReleaseProgress: (state, getters) => ({release_id = 0, total_episodes_number = 0} = {}) => {
+    getReleaseWatchedEpisodes: (state, getters) => ({release_id = 0, total_episodes_number = 0} = {}) => {
 
       const watched_episodes = [];
 
@@ -71,6 +72,25 @@ export default {
         }
       }
 
+      return watched_episodes;
+
+    },
+
+
+    /**
+     * Get release total progress
+     * Calculate only seen
+     *
+     * @param state
+     * @param getters
+     * @return {function({release_id?: *, total_episodes_number?: *}=): number}
+     */
+    getReleaseProgress: (state, getters) => ({release_id = 0, total_episodes_number = 0} = {}) => {
+
+      // Get release watched episodes
+      const watched_episodes = getters.getReleaseWatchedEpisodes({release_id, total_episodes_number});
+
+      // Calculate watched progress percentage
       return total_episodes_number > 0
         ? (watched_episodes.length / total_episodes_number) * 100
         : 0;

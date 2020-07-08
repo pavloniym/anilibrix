@@ -32,10 +32,9 @@
       </v-expand-transition>
 
       <!-- Favorites loader -->
-      <loader v-if="_loading"/>
-
       <!-- Favorites View -->
-      <component v-else v-bind="{releases}" :is="view" @to:release="toRelease" />
+      <loader v-if="_loading" class="my-2"/>
+      <component v-else v-bind="{releases}" class="my-2" :is="view" @toRelease="toRelease"/>
 
     </template>
   </v-layout>
@@ -66,6 +65,7 @@
       return {
         search: null,
         settings: false,
+        l: false,
       }
     },
     computed: {
@@ -130,7 +130,9 @@
 
         // Check sort type
         // Sort by title if sort type is 'title'
-        if (sort === 'title') releases = releases.sort((a, b) => a.names.ru.localeCompare(b.names.ru))
+        // Sort by release update datetime if sort type is 'updates'
+        if (sort === 'title') releases = releases.sort((a, b) => a.names.ru.localeCompare(b.names.ru));
+        if (sort === 'updates') releases = releases.sort((a, b) => b.datetime.system - a.datetime.system);
 
         // Check search string
         // Apply search if search is provided

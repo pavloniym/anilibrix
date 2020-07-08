@@ -18,7 +18,7 @@ export default {
     loading: false,
     settings: {
       sort: 'original',
-      group: 'original',
+      group: 'years',
       show_seen: true,
     },
 
