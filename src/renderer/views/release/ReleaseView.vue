@@ -1,14 +1,18 @@
 <template>
   <v-layout v-if="loading || _release" column>
 
-    <card v-bind="{loading}" class="mb-6" :release="_release"/>
-    
-    <playlist
-      v-bind="{loading}"
-      :episodes="_episodes"
-      :release="_release"
-      @episode="toVideo">
-    </playlist>
+    <!-- Release Card -->
+    <card v-bind="{loading}" class="mb-2" :release="_release"/>
+
+    <!-- Release Tabs -->
+    <v-tabs v-if="!loading" v-model="tab" class="shrink mb-4" background-color="transparent">
+      <v-tab>Эпизоды</v-tab>
+      <v-tab disabled>Комментарии</v-tab>
+    </v-tabs>
+
+    <!-- Release Components -->
+    <!-- Release Playlist -->
+    <component v-if="component" v-on="component.events" v-bind="component.props" :is="component.is"/>
 
   </v-layout>
 </template>
@@ -18,6 +22,7 @@
   import Card from '@components/release/card'
   import Playlist from '@components/release/playlist'
 
+  import {toVideo} from "@utils/router/views";
   import {mapState} from 'vuex'
 
   const props = {
@@ -44,34 +49,64 @@
 
     data() {
       return {
+        tab: 0,
         loading: false,
       }
     },
 
     computed: {
-      ...mapState('release', {
-        _release: s => s.data,
-        _episodes: s => s.data && s.data.episodes ? s.data.episodes : [],
-      })
+      ...mapState('release', {_release: s => s.data}),
+
+      /**
+       * Get release episodes
+       *
+       * @return {array}
+       */
+      episodes() {
+        return this.$__get(this._release, 'episodes') || [];
+      },
+
+
+      /**
+       * Get available components
+       *
+       * @return {array}
+       */
+      components() {
+        return [
+          {
+            is: Playlist,
+            props: {
+              loading: this.loading,
+              release: this._release,
+              episodes: this.episodes,
+            },
+            events: {episode: $event => toVideo($event)},
+          }
+        ]
+      },
+
+
+      /**
+       * Get active component
+       *
+       * @return {*}
+       */
+      component() {
+        return this.components[this.tab] || null;
+      }
+
     },
 
     methods: {
 
       /**
-       * Watch episode
+       * Watch provided episode
        *
        * @param episode
        */
       toVideo(episode) {
-        this.$router.push({
-          name: 'video',
-          params: {
-            key: `${this._release.id}:${episode.id}`,
-            release: this._release,
-            episode: episode,
-            releaseName: this._release.names.original
-          }
-        });
+        toVideo(this._release, episode);
       },
 
     },
