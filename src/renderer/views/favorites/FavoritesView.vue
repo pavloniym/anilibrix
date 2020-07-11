@@ -100,10 +100,7 @@
 
         const options = {
           keys: ['names.ru', 'names.original'],
-          tokenize: true,
           threshold: .2,
-          shouldSort: true,
-          matchAllTokens: true
         };
 
         return new Fuse(this._items, options);
@@ -161,13 +158,6 @@
 
       toLogin,
       toRelease,
-    },
-
-    created() {
-
-      // Get favorites from server
-      // Check if user is authorized
-      if (this._isAuthorized) this._getFavorites();
     },
 
   }

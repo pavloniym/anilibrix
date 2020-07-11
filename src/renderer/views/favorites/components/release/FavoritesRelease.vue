@@ -8,30 +8,30 @@
 
             <!-- Title -->
             <!-- Description -->
-            <div class="body-2 font-weight-bold mb-2">{{title}}</div>
-            <v-clamp autoresize class="caption" max-height="80%" :style="{hyphens: 'auto'}">
-              {{description}}
-            </v-clamp>
-
-
             <!-- Release Progress -->
-            <v-progress-linear class="release-card--progress mx-n4" height="30" color="secondary" :value="progress">
-              <template v-slot>
-                <div class="caption white--text font-weight-bold">{{watched}} из {{episodes.length}}</div>
-              </template>
-            </v-progress-linear>
+            <div class="body-2 font-weight-bold mb-2">{{title}}</div>
+            <v-clamp autoresize class="caption mb-4" max-height="80%" :style="{hyphens: 'auto'}">{{description}}
+            </v-clamp>
+            <release-progress
+              v-bind="{release, episodes}"
+              color="secondary"
+              class="release-card--progress mx-n4"
+              height="25">
+            </release-progress>
 
           </div>
         </v-fade-transition>
 
         <!-- Release Progress -->
         <v-slide-y-reverse-transition>
-          <v-progress-linear
+          <release-progress
             v-if="!hover"
-            class="release-card--progress"
+            v-bind="{release, episodes}"
             color="secondary"
-            :value="progress">
-          </v-progress-linear>
+            class="release-card--progress"
+            height="5"
+            :show-numbers="false">
+          </release-progress>
         </v-slide-y-reverse-transition>
 
       </v-img>
@@ -42,7 +42,7 @@
 <script>
 
   import VClamp from 'vue-clamp'
-  import pluralize from "@utils/strings/pluralize";
+  import ReleaseProgress from '@components/release/progress'
 
   const props = {
     release: {
@@ -58,7 +58,8 @@
   export default {
     props,
     components: {
-      VClamp
+      VClamp,
+      ReleaseProgress
     },
     computed: {
 
@@ -98,41 +99,7 @@
        */
       description() {
         return this.$__get(this.release, 'description')
-      },
-
-
-      /**
-       * Get release watch progress
-       *
-       * @return {number}
-       */
-      progress() {
-
-        const release_id = this.release.id;
-        const total_episodes_number = this.episodes.length;
-
-        return this.$store.getters['app/watch/getReleaseProgress']({release_id, total_episodes_number});
-      },
-
-
-      /**
-       * Get watched episodes
-       *
-       * @return {*}
-       */
-      watched() {
-
-        const release_id = this.release.id;
-        const total_episodes_number = this.episodes.length;
-        const payload = {release_id, total_episodes_number};
-
-        // Get watched episodes
-        // Convert to string with suffix
-        const watched_episodes = this.$store.getters['app/watch/getReleaseWatchedEpisodes'](payload);
-        return pluralize(watched_episodes.length, ['эпизод', 'эпизода', 'эпизодов'])
-
       }
-
     }
 
   }
@@ -154,8 +121,9 @@
     }
 
     &--progress {
-      position: absolute;
       bottom: 0;
+      position: absolute;
+      border-radius: 0;
     }
   }
 

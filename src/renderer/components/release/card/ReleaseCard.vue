@@ -18,9 +18,10 @@
           <v-card-title v-text="title" class="display-1 mb-2 font-weight-black" :style="{wordBreak: 'break-word'}"/>
           <v-card-subtitle v-text="original" class="pb-0"/>
           <v-card-subtitle v-text="genres" class="pt-0"/>
-          <v-card-text>
-            <v-chip v-text="year" label class="mb-1"/>
-            <v-chip v-text="type" label class="mb-1"/>
+          <v-card-text class="mb-1">
+            <favorite v-bind="{release}" color="grey darken-3"/>
+            <v-chip v-if="year" v-text="year" label color="grey darken-3" :style="{height: '36px'}"/>
+            <v-chip v-if="type" v-text="type" label color="grey darken-3" :style="{height: '36px'}"/>
           </v-card-text>
         </div>
 
@@ -36,6 +37,7 @@
 <script>
 
   import Loader from './components/loader'
+  import Favorite from './../favorite'
 
   const props = {
     loading: {
@@ -51,7 +53,8 @@
   export default {
     props,
     components: {
-      Loader
+      Loader,
+      Favorite
     },
     computed: {
 

@@ -1,32 +1,27 @@
 <template>
 
   <!-- Loading -->
-  <div v-if="loading">
-    <v-layout>
-      <v-skeleton-loader boilerplate type="button" height="48" width="100%" class="mr-1"/>
-      <v-skeleton-loader boilerplate type="button" height="48" width="72" class="mr-1"/>
-      <v-skeleton-loader boilerplate type="button" height="48" width="72"/>
-    </v-layout>
-    <v-skeleton-loader boilerplate type="list-item-two-line@15" class="mt-2"/>
-  </div>
-
+  <loader v-if="loading"/>
 
   <!-- Playlist -->
   <div v-else-if="loading === false && release" id="playlist">
 
     <!-- Toolbar -->
-    <playlist-toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
+    <!-- Release progress -->
+    <toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
+    <release-progress v-bind="{release, episodes}" class="mb-2" color="grey darken-3" height="30"/>
+
 
     <!-- Playlist Items -->
     <v-list v-if="playlistSearched.length > 0" dense dark>
       <template v-for="(episode, k) in playlistSearched">
         <v-divider v-if="k > 0" :key="`d:${k}`"/>
-        <playlist-item
+        <episode
           v-bind="{release, episode}"
           :key="episode.id"
           :is-playing="playing && playing.id === episode.id"
           @click="$emit('episode', episode)">
-        </playlist-item>
+        </episode>
       </template>
     </v-list>
 
@@ -35,9 +30,15 @@
 
 <script>
 
-  import PlaylistItem from './components/item'
-  import PlaylistToolbar from './components/toolbar'
+  // Episodes
+  import Loader from './components/loader'
+  import Episode from './components/episode'
+  import Toolbar from './components/toolbar'
 
+  // Release
+  import ReleaseProgress from './../progress'
+
+  // Utils
   import Fuse from "fuse.js";
   import __orderBy from 'lodash/orderBy'
   import {mapState} from 'vuex'
@@ -64,20 +65,18 @@
   export default {
     props,
     components: {
-      PlaylistItem,
-      PlaylistToolbar
+      Loader,
+      Episode,
+      Toolbar,
+      ReleaseProgress,
     },
+
     data() {
       return {
         search: null,
-        searchOptions: {
-          shouldSort: true,
-          tokenize: true,
-          matchAllTokens: true,
-          keys: ['title']
-        },
       }
     },
+
     computed: {
       ...mapState('app/settings/player', {_sort: s => s.episodes.order}),
 
@@ -97,7 +96,7 @@
        * @return Object
        */
       playlistSearchable() {
-        return new Fuse(this.playlist, this.searchOptions);
+        return new Fuse(this.playlist, {keys: ['title']});
       },
 
 
@@ -110,7 +109,8 @@
         return this.search
           ? this.playlistSearchable.search(this.search)
           : this.playlist;
-      }
+      },
+
 
     }
   }

@@ -2,7 +2,6 @@ import Proxy from '@proxy'
 import store from "@store";
 import __get from "lodash/get";
 import cookieParser from 'set-cookie-parser'
-import axios from "@plugins/axios";
 
 export default class AnilibriaProxy extends Proxy {
 
@@ -247,7 +246,13 @@ export default class AnilibriaProxy extends Proxy {
    */
   async removeFromFavorites(releaseId) {
 
+    const data = this._getFormDataObject({id: releaseId, action: 'delete', query: 'favorites'});
+    const params = {data, headers: data.getHeaders()};
+    const response = await this.submit('POST', this._getHost() + this.endpoint, params);
+
+    return this._parseResponse(response.data);
   }
+
 
   /**
    * Get anilibria host

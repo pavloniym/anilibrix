@@ -11,7 +11,8 @@
     </v-tabs>
 
     <!-- Release Components -->
-    <!-- Release Playlist -->
+    <!-- Release Episodes -->
+    <!-- Release Comments -->
     <component v-if="component" v-on="component.events" v-bind="component.props" :is="component.is"/>
 
   </v-layout>
@@ -20,7 +21,7 @@
 <script>
 
   import Card from '@components/release/card'
-  import Playlist from '@components/release/playlist'
+  import Episodes from '@components/release/episodes'
   import Comments from '@components/release/comments'
 
   import {toVideo} from "@utils/router/views";
@@ -45,7 +46,8 @@
     },
     components: {
       Card,
-      Playlist
+      Episodes,
+      Comments
     },
 
     data() {
@@ -76,13 +78,13 @@
       components() {
         return [
           {
-            is: Playlist,
+            is: Episodes,
             props: {
               loading: this.loading,
               release: this._release,
               episodes: this.episodes,
             },
-            events: {episode: $event => toVideo($event)},
+            events: {episode: episode => toVideo(this._release, episode)},
           },
           {
             is: Comments,
@@ -103,18 +105,6 @@
 
     },
 
-    methods: {
-
-      /**
-       * Watch provided episode
-       *
-       * @param episode
-       */
-      toVideo(episode) {
-        toVideo(this._release, episode);
-      },
-
-    },
 
     watch: {
 

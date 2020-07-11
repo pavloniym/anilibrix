@@ -9,21 +9,18 @@
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
       <template v-else>
-        <v-fade-transition mode="out-in">
-          <component :is="layout">
-            <router-view :key="$route.name"/>
-          </component>
-        </v-fade-transition>
+        <component :is="layout">
+          <router-view :key="$route.name"/>
+        </component>
       </template>
     </v-fade-transition>
 
     <!-- Errors -->
+    <!-- Downloads -->
     <!-- Notifications -->
-
     <app-errors/>
     <app-downloads/>
     <app-notifications/>
-
 
   </v-app>
 </template>
@@ -83,6 +80,7 @@
 
     methods: {
       ...mapActions('releases', {_getReleases: 'getReleases'}),
+      ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
 
 
       /**
@@ -109,10 +107,12 @@
 
       // Initial loading
       this.loading = true;
-      setTimeout(() => this.loading = false, 500);
+      setTimeout(() => this.loading = false, 1000);
 
-      // Get latest releases
+      // Get releases
+      // Get favorites
       this._getReleases();
+      this._getFavorites();
     },
 
 
