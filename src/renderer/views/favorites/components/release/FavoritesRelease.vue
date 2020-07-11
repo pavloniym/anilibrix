@@ -7,13 +7,17 @@
           <div v-if="hover" class="release-card--reveal grey darken-4 pa-4">
 
             <!-- Title -->
-            <!-- Description -->
-            <!-- Release Progress -->
             <div class="body-2 font-weight-bold mb-2">{{title}}</div>
-            <v-clamp autoresize class="caption mb-4" max-height="80%" :style="{hyphens: 'auto'}">{{description}}
+
+            <!-- Description -->
+            <v-clamp autoresize class="caption" max-height="70%" :style="{hyphens: 'auto'}">
+              {{description}}
             </v-clamp>
+
+            <!-- Release Progress -->
             <release-progress
               v-bind="{release, episodes}"
+              dense
               color="secondary"
               class="release-card--progress mx-n4"
               height="25">
@@ -23,16 +27,14 @@
         </v-fade-transition>
 
         <!-- Release Progress -->
-        <v-slide-y-reverse-transition>
-          <release-progress
-            v-if="!hover"
-            v-bind="{release, episodes}"
-            color="secondary"
-            class="release-card--progress"
-            height="5"
-            :show-numbers="false">
-          </release-progress>
-        </v-slide-y-reverse-transition>
+        <release-progress
+          v-if="!hover"
+          v-bind="{release, episodes}"
+          color="secondary"
+          class="release-card--progress"
+          height="5"
+          :show-numbers="false">
+        </release-progress>
 
       </v-img>
     </v-card>

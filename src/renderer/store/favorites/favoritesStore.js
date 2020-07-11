@@ -8,6 +8,7 @@ const SET_LOADING = 'SET_LOADING';
 const SET_SETTINGS_SORT = 'SET_SETTINGS_SORT';
 const SET_SETTINGS_GROUP = 'SET_SETTINGS_GROUP';
 const SET_SETTINGS_SHOW_SEEN = 'SET_SETTINGS_SHOW_SEEN';
+const SET_SETTINGS_YEARS_COLLAPSED = 'SET_SETTINGS_YEARS_COLLAPSED';
 
 const REQUESTS = {releases: null};
 
@@ -20,6 +21,7 @@ export default {
       sort: 'original',
       group: 'years',
       show_seen: true,
+      years_collapsed: [],
     },
 
   },
@@ -99,6 +101,15 @@ export default {
      */
     [SET_SETTINGS_SHOW_SEEN]: (s, state) => s.settings.show_seen = state,
 
+
+    /**
+     * Set years collapsed
+     *
+     * @param s
+     * @param years
+     * @return {*}
+     */
+    [SET_SETTINGS_YEARS_COLLAPSED]: (s, years) => s.settings.years_collapsed = years,
 
   },
 
@@ -244,6 +255,25 @@ export default {
      * @return {*}
      */
     setSettingsShowSeen: ({commit}, state) => commit(SET_SETTINGS_SHOW_SEEN, state),
+
+
+    /**
+     * Set settings year collapsed
+     *
+     * @param commit
+     * @param state
+     * @param year
+     */
+    setSettingsYearsCollapsed: ({commit, state}, year) => {
+
+      const years = [...state.settings.years_collapsed];
+      const year_index = years.findIndex(item => item === year);
+
+      if (year_index > -1) years.splice(year_index, 1);
+      if (year_index === -1) years.push(year);
+
+      commit(SET_SETTINGS_YEARS_COLLAPSED, years);
+    }
 
   }
 }

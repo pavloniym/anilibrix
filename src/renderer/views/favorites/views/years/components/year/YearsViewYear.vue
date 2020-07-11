@@ -2,10 +2,10 @@
   <v-card flat color="transparent">
 
     <!-- Year -->
-    <v-card-title :style="{cursor: 'pointer'}" @click="collapsed = !collapsed">
+    <v-card-title :style="{cursor: 'pointer'}" @click="_setSettingsYearsCollapsed(year)">
       <span>{{year}}</span>
       <v-divider class="mx-6"/>
-      <v-btn icon color="grey" @click.stop="collapsed = !collapsed">
+      <v-btn icon color="grey" @click.stop="_setSettingsYearsCollapsed(year)">
         <v-icon>mdi-arrow-{{collapsed ? 'down' : 'up'}}</v-icon>
       </v-btn>
     </v-card-title>
@@ -37,6 +37,7 @@
   import Release from './../../../../components/release'
 
   import pluralize from "@utils/strings/pluralize";
+  import {mapState, mapActions} from 'vuex'
 
   const props = {
     year: {
@@ -54,13 +55,19 @@
     components: {
       Release
     },
-    data() {
-      return {
-        collapsed: false
-      }
-    },
 
     computed: {
+      ...mapState('favorites', {_years: s => s.settings.years_collapsed}),
+
+
+      /**
+       * Check if year is collapsed
+       *
+       * @return {boolean}
+       */
+      collapsed() {
+        return (this._years || []).findIndex(year => year === this.year) > -1;
+      },
 
       /**
        * Get subtitle string
@@ -109,7 +116,10 @@
           .join(', ');
       }
 
+    },
 
+    methods: {
+      ...mapActions('favorites', {_setSettingsYearsCollapsed: 'setSettingsYearsCollapsed'})
     }
 
   }

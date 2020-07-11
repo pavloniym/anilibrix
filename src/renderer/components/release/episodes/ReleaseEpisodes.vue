@@ -6,10 +6,10 @@
   <!-- Playlist -->
   <div v-else-if="loading === false && release" id="playlist">
 
-    <!-- Toolbar -->
     <!-- Release progress -->
-    <toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
+    <!-- Toolbar -->
     <release-progress v-bind="{release, episodes}" class="mb-2" color="grey darken-3" height="30"/>
+    <toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
 
 
     <!-- Playlist Items -->

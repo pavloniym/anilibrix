@@ -11,8 +11,6 @@
     </v-tabs>
 
     <!-- Release Components -->
-    <!-- Release Episodes -->
-    <!-- Release Comments -->
     <component v-if="component" v-on="component.events" v-bind="component.props" :is="component.is"/>
 
   </v-layout>

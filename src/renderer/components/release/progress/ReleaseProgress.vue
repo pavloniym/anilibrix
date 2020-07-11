@@ -1,7 +1,27 @@
 <template>
   <v-progress-linear v-bind="{color, height}" class="release__progress" :value="progress">
     <template v-if="showNumbers" v-slot>
-      <div class="caption white--text font-weight-bold">{{watched}} из {{episodes.length}}</div>
+      <div class="caption white--text font-weight-bold">
+
+        <!-- Complete All Episodes -->
+        <span v-if="isComplete">
+          <span v-if="!dense">Просмотрены все эпизоды</span>
+          <span v-else>Все эпизоды</span>
+        </span>
+
+        <!-- Not seen episodes -->
+        <span v-else-if="isUnseen">
+          <span v-if="!dense">Не просмотрен еще ни один эпизод</span>
+          <span v-else>Ни один эпизод</span>
+        </span>
+
+        <!-- Episodes Progress -->
+        <span v-else>
+          <span v-if="!dense">Просмотрено {{watched}} из {{episodes.length}}</span>
+          <span v-else>{{watched}} из {{episodes.length}}</span>
+        </span>
+
+      </div>
     </template>
   </v-progress-linear>
 </template>
@@ -30,6 +50,10 @@
     height: {
       type: [Number, String],
       default: '25'
+    },
+    dense: {
+      type: Boolean,
+      default: false
     }
   };
 
@@ -69,6 +93,25 @@
         const watched_episodes = this.$store.getters['app/watch/getReleaseWatchedEpisodes'](payload);
         return pluralize(watched_episodes.length, ['эпизод', 'эпизода', 'эпизодов'])
 
+      },
+
+      /**
+       * Check if release if fully watched
+       *
+       * @return {boolean}
+       */
+      isComplete() {
+        return this.progress === 100;
+      },
+
+
+      /**
+       * Check if release is not seen
+       *
+       * @return {boolean}
+       */
+      isUnseen() {
+        return this.progress === 0;
       }
 
     }

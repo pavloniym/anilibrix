@@ -1,27 +1,27 @@
 <template>
 
-  <!-- Release is in favorite -->
-  <!-- Remove release from favorites -->
-  <v-tooltip v-if="release && _isAuthorized && isInFavorite" v-bind="{...tooltipDirection}">
-    <template v-slot:activator="{on}">
-      <v-btn v-on="on" color="secondary" :loading="_loading" @click="_removeFromFavorites(release)">
-        <v-icon>mdi-star</v-icon>
-      </v-btn>
-    </template>
-    <div :style="{height: '26px', lineHeight: '26px'}">Убрать из избранного</div>
-  </v-tooltip>
+    <!-- Release is in favorite -->
+    <!-- Remove release from favorites -->
+    <v-tooltip v-if="release && _isAuthorized && isInFavorite" v-bind="{...tooltipDirection}">
+      <template v-slot:activator="{on}">
+        <v-btn v-on="on" color="secondary" :loading="_loading" @click="_removeFromFavorites(release)">
+          <v-icon>mdi-star</v-icon>
+        </v-btn>
+      </template>
+      <div :style="{height: '26px', lineHeight: '26px'}">Убрать из избранного</div>
+    </v-tooltip>
 
 
-  <!-- Release is not in favorite -->
-  <!-- Add release to favorites -->
-  <v-tooltip v-else-if="release && _isAuthorized && !isInFavorite" v-bind="{...tooltipDirection}">
-    <template v-slot:activator="{on}">
-      <v-btn v-on="on" v-bind="{color}" :loading="_loading" @click="_addToFavorites(release)">
-        <v-icon>mdi-star-outline</v-icon>
-      </v-btn>
-    </template>
-    <div :style="{height: '26px', lineHeight: '26px'}">Добавить в избранное</div>
-  </v-tooltip>
+    <!-- Release is not in favorite -->
+    <!-- Add release to favorites -->
+    <v-tooltip v-else-if="release && _isAuthorized && !isInFavorite" v-bind="{...tooltipDirection}">
+      <template v-slot:activator="{on}">
+        <v-btn v-on="on" v-bind="{color}" :loading="_loading" @click="_addToFavorites(release)">
+          <v-icon>mdi-star-outline</v-icon>
+        </v-btn>
+      </template>
+      <div :style="{height: '26px', lineHeight: '26px'}">Добавить в избранное</div>
+    </v-tooltip>
 
 </template>
 
