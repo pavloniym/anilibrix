@@ -27,6 +27,7 @@ class MainWindow extends Window {
       useContentSize: true,
       webPreferences: {
         webgl: true,
+        webviewTag: true,
         webSecurity: false,
         nodeIntegration: true,
         experimentalFeatures: true,

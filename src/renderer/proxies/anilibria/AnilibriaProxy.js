@@ -2,6 +2,7 @@ import Proxy from '@proxy'
 import store from "@store";
 import __get from "lodash/get";
 import cookieParser from 'set-cookie-parser'
+import axios from "@plugins/axios";
 
 export default class AnilibriaProxy extends Proxy {
 

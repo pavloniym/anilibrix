@@ -7,7 +7,7 @@
     <!-- Release Tabs -->
     <v-tabs v-if="!loading" v-model="tab" class="shrink mb-4" background-color="transparent">
       <v-tab>Эпизоды</v-tab>
-      <v-tab disabled>Комментарии</v-tab>
+      <v-tab>Комментарии</v-tab>
     </v-tabs>
 
     <!-- Release Components -->
@@ -21,6 +21,7 @@
 
   import Card from '@components/release/card'
   import Playlist from '@components/release/playlist'
+  import Comments from '@components/release/comments'
 
   import {toVideo} from "@utils/router/views";
   import {mapState} from 'vuex'
@@ -82,6 +83,10 @@
               episodes: this.episodes,
             },
             events: {episode: $event => toVideo($event)},
+          },
+          {
+            is: Comments,
+            props: {release: this._release}
           }
         ]
       },

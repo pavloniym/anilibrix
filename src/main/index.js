@@ -10,6 +10,7 @@ import {startingDownload, cancelingDownload, openingDownload} from "@main/handle
 // Import tray and menu
 import Tray from './utils/tray'
 import Menu from './utils/menu'
+import axios from "@plugins/axios";
 
 // Create tray and menu controller
 const trayController = new Tray();

@@ -15,11 +15,12 @@ jobs:
         node-version: [12.x]
 
     env:
-      ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
-      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
       ADS_URLS: ${{ secrets.ADS_URLS }}
+      VK_APP_ID: ${{ secrets.VK_APP_ID }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
       YANDEX_TRACKING_ID: ${{ secrets.YANDEX_TRACKING_ID }}
+      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
 
     steps:
       - name: Check out Git repository

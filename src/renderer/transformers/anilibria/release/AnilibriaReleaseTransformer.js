@@ -29,6 +29,7 @@ export default class extends Transformer {
       id: this.get(release, 'id'),
       year: this.get(release, 'year'),
       type: this.get(release, 'type'),
+      code: this.get(release, 'code'),
       names: {
         ru: this._stripHtml(this.get(release, 'names.0')),
         original: this._stripHtml(this.get(release, 'names.1'))
