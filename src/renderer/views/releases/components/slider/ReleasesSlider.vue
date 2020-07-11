@@ -2,11 +2,7 @@
   <v-layout v-if="loading || releases.length > 0" align-center class="shrink release__slider">
 
     <!-- Prev -->
-    <v-layout class="controls controls--left">
-      <v-btn icon :disabled="loading || value <= 0" @click="$emit('previous')">
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
-    </v-layout>
+    <control v-bind="{loading, value, releases}" left @click="$emit('previous')"/>
 
     <!-- Posters -->
     <v-slide-group
@@ -17,48 +13,16 @@
       @change="$emit('input', $event)">
 
       <!-- Loader -->
-      <template v-if="loading">
-        <v-layout class="shrink">
-          <v-skeleton-loader
-            v-for="i in 14"
-            boilerplate
-            type="image"
-            :key="i"
-            :width="width"
-            :height="height"
-            :min-width="minWidth"
-            :min-height="minHeight">
-          </v-skeleton-loader>
-        </v-layout>
-      </template>
-
-
       <!-- Slider Items -->
+      <loader v-if="loading"/>
       <template v-else>
         <template v-for="(release, k) in releases">
           <v-slide-item v-slot:default="{ active, toggle }" :key="k">
-            <v-card
-              class="black"
-              :width="width"
-              :class="{primary: active}"
-              :height="height"
-              :min-width="minWidth"
-              :min-height="minHeight"
+            <poster
+              v-bind="{release, active}"
               @click="toggle"
-              @dblclick="$emit('toEpisode')">
-              <v-img
-                v-if="release && release.poster && release.poster.image"
-                v-bind="{ratio}"
-                eager
-                class="black"
-                width="100%"
-                height="100%"
-                :src="release.poster.image"
-                :key="`poster:${release.id}`"
-                :class="{'elevation-16': active}">
-                <div v-if="!active" class="fill-height" :style="{background: 'black', opacity: .75}"></div>
-              </v-img>
-            </v-card>
+              @dblclick="$emit('toVideo')">
+            </poster>
           </v-slide-item>
         </template>
       </template>
@@ -67,16 +31,16 @@
 
 
     <!-- Next -->
-    <div class="controls controls--right">
-      <v-btn icon :disabled="loading || value >= releases.length - 1" @click="$emit('next')">
-        <v-icon>mdi-arrow-right</v-icon>
-      </v-btn>
-    </div>
+    <control v-bind="{loading, value, releases}" right @click="$emit('next')"/>
 
   </v-layout>
 </template>
 
 <script>
+
+  import Loader from './components/loader'
+  import Poster from './components/poster'
+  import Control from './components/control'
 
   const props = {
     value: {
@@ -95,14 +59,10 @@
 
   export default {
     props,
-    data() {
-      return {
-        ratio: .7,
-        width: '14.5vw',
-        height: '34.5vh',
-        minWidth: 175,
-        minHeight: 250,
-      }
+    components: {
+      Loader,
+      Poster,
+      Control,
     }
   }
 
@@ -112,20 +72,6 @@
 
   .release__slider {
     position: relative;
-
-    .controls {
-      position: absolute;
-
-      &--left {
-        left: 0;
-        margin-left: -43px;
-      }
-
-      &--right {
-        right: 0;
-        margin-right: -43px;
-      }
-    }
 
     ::v-deep .v-slide-group {
       &__prev, &__next {

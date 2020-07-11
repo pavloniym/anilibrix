@@ -9,9 +9,11 @@
     <v-fade-transition mode="out-in" appear>
       <app-loader v-if="loading"/>
       <template v-else>
-        <component :is="layout">
-          <router-view :key="$route.name"/>
-        </component>
+        <v-fade-transition mode="out-in" appear>
+          <component :is="layout">
+            <router-view :key="$route.name"/>
+          </component>
+        </v-fade-transition>
       </template>
     </v-fade-transition>
 

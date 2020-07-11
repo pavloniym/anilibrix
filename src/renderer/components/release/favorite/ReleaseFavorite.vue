@@ -2,24 +2,25 @@
 
   <!-- Release is in favorite -->
   <!-- Remove release from favorites -->
-  <v-tooltip v-if="_isAuthorized && isInFavorite" bottom>
+  <v-tooltip v-if="release && _isAuthorized && isInFavorite" v-bind="{...tooltipDirection}">
     <template v-slot:activator="{on}">
       <v-btn v-on="on" color="secondary" :loading="_loading" @click="_removeFromFavorites(release)">
         <v-icon>mdi-star</v-icon>
       </v-btn>
     </template>
-    <span>Убрать из избранного</span>
+    <div :style="{height: '26px', lineHeight: '26px'}">Убрать из избранного</div>
   </v-tooltip>
+
 
   <!-- Release is not in favorite -->
   <!-- Add release to favorites -->
-  <v-tooltip v-else-if="_isAuthorized && !isInFavorite" bottom>
+  <v-tooltip v-else-if="release && _isAuthorized && !isInFavorite" v-bind="{...tooltipDirection}">
     <template v-slot:activator="{on}">
       <v-btn v-on="on" v-bind="{color}" :loading="_loading" @click="_addToFavorites(release)">
         <v-icon>mdi-star-outline</v-icon>
       </v-btn>
     </template>
-    <span>Добавить в избранное</span>
+    <div :style="{height: '26px', lineHeight: '26px'}">Добавить в избранное</div>
   </v-tooltip>
 
 </template>
@@ -36,6 +37,10 @@
     color: {
       type: String,
       default: null
+    },
+    tooltipPosition: {
+      type: String,
+      default: 'bottom'
     }
   };
 
@@ -52,6 +57,17 @@
        */
       isInFavorite() {
         return this.$store.getters['favorites/isInFavorite'](this.release);
+      },
+
+
+      /**
+       * Calculate tooltip direction
+       *
+       * @return {*}
+       */
+      tooltipDirection() {
+        return ['top', 'right', 'bottom', 'left']
+          .reduce((storage, position) => ({...storage, [position]: this.tooltipPosition === position}), {});
       }
 
     },

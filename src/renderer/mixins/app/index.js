@@ -1,5 +1,7 @@
 import AppPlatformMixin from './appPlatformMixin'
+import AppKeyboardHandlerMixin from './appKeyboardHandlerMixin'
 
 export {
-  AppPlatformMixin
+  AppPlatformMixin,
+  AppKeyboardHandlerMixin
 }

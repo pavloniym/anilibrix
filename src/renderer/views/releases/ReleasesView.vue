@@ -6,13 +6,13 @@
       v-model="index"
       class="mb-4"
       :releases="_releases"
-      @next="showNextRelease"
-      @previous="showPreviousRelease"
-      @toEpisode="toEpisode">
+      @next="next"
+      @previous="previous"
+      @toVideo="toVideo(release, episode)">
     </slider>
 
     <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
-    <actions v-bind="{loading}" @toEpisode="toEpisode" @toRelease="toRelease"/>
+    <actions v-bind="{loading, release}" @toVideo="toVideo(release, episode)" @toRelease="toRelease(release)"/>
 
   </v-layout>
 </template>
@@ -23,11 +23,14 @@
   import Release from './components/release'
   import Actions from './components/actions'
 
+  import {toRelease, toVideo} from "@utils/router/views";
   import {mapState, mapActions} from 'vuex'
+  import {AppKeyboardHandlerMixin} from '@mixins/app'
 
   export default {
     name: 'Releases.View',
     meta: {title: 'Последние релизы'},
+    mixins: [AppKeyboardHandlerMixin],
     components: {
       Slider,
       Release,
@@ -107,6 +110,19 @@
       ...mapActions('releases', {_setIndex: 'setIndex'}),
 
       /**
+       * Push to video
+       *
+       */
+      toVideo,
+
+      /**
+       * Push to release
+       *
+       */
+      toRelease,
+
+
+      /**
        * Listen keyboard event
        *
        * @param e
@@ -123,8 +139,8 @@
         }
 
         // left and right arrows
-        if (code === 37) this.showPreviousRelease();
-        if (code === 39) this.showNextRelease();
+        if (code === 37) this.previous();
+        if (code === 39) this.next();
 
       },
 
@@ -134,10 +150,8 @@
        *
        * @return void
        */
-      showNextRelease() {
-        if (this.index < this._releases.length - 1) {
-          this.index = this.index + 1;
-        }
+      next() {
+        if (this.index < this._releases.length - 1) this.index = this.index + 1;
       },
 
 
@@ -146,61 +160,11 @@
        *
        * @return void
        */
-      showPreviousRelease() {
-        if (this.index > 0) {
-          this.index = this.index - 1;
-        }
+      previous() {
+        if (this.index > 0) this.index = this.index - 1;
       },
 
 
-      /**
-       * Watch episode
-       * Go to player with provided release and episode
-       *
-       * @return void
-       */
-      toEpisode() {
-        if (this.release && this.episode) {
-          const releaseName = this.$__get(this.release, 'names.original');
-          this.$router.push({
-            name: 'video',
-            params: {
-              key: `${this.release.id}:${this.episode.id}`,
-              release: this.release,
-              episode: this.episode,
-              releaseName,
-            }
-          });
-        }
-      },
-
-
-      /**
-       * Go to release
-       *
-       * @return void
-       */
-      toRelease() {
-        if (this.release) {
-          const releaseId = this.$__get(this.release, 'id');
-          const releaseName = this.$__get(this.release, 'names.original');
-          this.$router.push({
-            name: 'release',
-            params: {releaseId, releaseName}
-          })
-        }
-      }
-
-    },
-
-
-    mounted() {
-      document.addEventListener('keydown', this.handleKeyboardEvents);
-    },
-
-
-    beforeDestroy() {
-      document.removeEventListener('keydown', this.handleKeyboardEvents);
     },
 
 

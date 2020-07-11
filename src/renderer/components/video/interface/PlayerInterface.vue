@@ -53,7 +53,7 @@
       @toggle:fullscreen="toggleFullscreen">
     </player-hotkeys>
 
-    <player-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>
+    <!--<player-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>-->
     <player-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
 
     <!--<player-upscale v-bind="{source}" ref="upscale" :key="`upscale:${source.label}`"/>-->
@@ -74,7 +74,7 @@
   import PlayerHeadline from './components/headline'
   import PlayerTimeline from './components/timeline'
   import PlayerControls from './components/controls'
-  import PlayerPlaylist from './components/playlist'
+  //import PlayerPlaylist from './components/playlist'
   import PlayerBuffering from './components/buffering'
   import PlayerChromecast from './components/chromecast'
 
@@ -125,7 +125,7 @@
       PlayerHeadline,
       PlayerTimeline,
       PlayerControls,
-      PlayerPlaylist,
+    //  PlayerPlaylist,
       PlayerBuffering,
       PlayerChromecast,
     },
