@@ -8,8 +8,8 @@
 
     <!-- Release progress -->
     <!-- Toolbar -->
-    <release-progress v-bind="{release, episodes}" class="mb-2" color="grey darken-3" height="30"/>
     <toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
+    <release-progress v-bind="{release, episodes}" class="mb-2" color="grey darken-3" height="30"/>
 
 
     <!-- Playlist Items -->

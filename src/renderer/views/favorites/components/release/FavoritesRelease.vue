@@ -18,6 +18,7 @@
             <release-progress
               v-bind="{release, episodes}"
               dense
+              center
               color="secondary"
               class="release-card--progress mx-n4"
               height="25">

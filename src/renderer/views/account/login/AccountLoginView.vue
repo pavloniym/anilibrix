@@ -6,10 +6,8 @@
 
     <v-card flat color="transparent">
       <v-card-title>Авторизация</v-card-title>
-      <v-card-subtitle class="pb-0">
-        Укажите данные, с которыми вы зарегистрировались на сайте Анилибрии
-      </v-card-subtitle>
-      <v-card-subtitle class="pt-0">Вы также можете авторизоваться по сессии с сайта</v-card-subtitle>
+      <v-card-subtitle class="pb-0" v-text="'Укажите данные, с которыми вы зарегистрировались на сайте Анилибрии'"/>
+      <v-card-subtitle class="pt-0" v-text="'Приложение не хранит ваши учетные данные ни в каком виде'"/>
 
       <!-- Tabs -->
       <!--<v-tabs v-model="tab" background-color="transparent">
@@ -19,39 +17,39 @@
 
       <v-layout class="py-6 pt-2">
 
-          <!-- Login / Email -->
-          <!-- Password -->
-          <template v-if="tab === 0">
-            <v-text-field
-              v-model="login"
-              outlined
-              hide-details
-              class="mr-1"
-              color="grey"
-              placeholder="Email или логин"
-              prepend-inner-icon="mdi-account">
-            </v-text-field>
-            <v-text-field
-              v-model="password"
-              outlined
-              hide-details
-              class="ml-1"
-              type="password"
-              placeholder="Пароль"
-              prepend-inner-icon="mdi-lock">
-            </v-text-field>
-          </template>
+        <!-- Login / Email -->
+        <!-- Password -->
+        <template v-if="tab === 0">
+          <v-text-field
+            v-model="login"
+            outlined
+            hide-details
+            class="mr-1"
+            color="grey"
+            placeholder="Email или логин"
+            prepend-inner-icon="mdi-account">
+          </v-text-field>
+          <v-text-field
+            v-model="password"
+            outlined
+            hide-details
+            class="ml-1"
+            type="password"
+            placeholder="Пароль"
+            prepend-inner-icon="mdi-lock">
+          </v-text-field>
+        </template>
 
-          <!-- Session -->
-          <template v-if="tab === 1">
-            <v-text-field
-              v-model="session"
-              outlined
-              hide-details
-              placeholder="Сессия"
-              prepend-inner-icon="mdi-key-variant">
-            </v-text-field>
-          </template>
+        <!-- Session -->
+        <template v-if="tab === 1">
+          <v-text-field
+            v-model="session"
+            outlined
+            hide-details
+            placeholder="Сессия"
+            prepend-inner-icon="mdi-key-variant">
+          </v-text-field>
+        </template>
 
       </v-layout>
 
@@ -70,12 +68,14 @@
 
   import ZeroTwo from '@assets/images/account/zero-two.svg'
   import {requiredIf} from 'vuelidate/lib/validators'
+  import {BackViewMixin} from '@mixins/views'
 
   const SESSION = 'session';
   const CREDENTIALS = 'credentials';
 
   export default {
     name: "Account.Login.View",
+    mixins: [BackViewMixin],
     data() {
       return {
         tab: 0,
@@ -106,21 +106,12 @@
       type() {
         if (this.tab === 0) return CREDENTIALS;
         if (this.tab === 1) return SESSION;
-
         return null;
       }
 
     },
 
     methods: {
-      /**
-       * Go to back view
-       *
-       * @return {void}
-       */
-      async toBack() {
-        await this.$router.replace(this.from || {name: 'releases'});
-      },
 
 
       /**
@@ -155,7 +146,9 @@
             }
 
             // Get profile data
+            // Get user favorites
             await this.$store.dispatchPromise('app/account/getProfile');
+            await this.$store.dispatchPromise('favorites/getFavorites');
             await this.toBack();
 
           } catch (error) {
@@ -171,9 +164,6 @@
 
     },
 
-    beforeRouteEnter(to, from, next) {
-      next(vm => vm.from = from || null)
-    },
 
   }
 </script>

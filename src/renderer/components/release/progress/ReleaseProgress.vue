@@ -1,7 +1,7 @@
 <template>
-  <v-progress-linear v-bind="{color, height}" class="release__progress" :value="progress">
+  <v-progress-linear v-bind="{height, color}" class="release__progress" :value="progress">
     <template v-if="showNumbers" v-slot>
-      <div class="caption white--text font-weight-bold">
+      <div class="release__progress__description caption white--text font-weight-bold px-4">
 
         <!-- Complete All Episodes -->
         <span v-if="isComplete">
@@ -11,8 +11,8 @@
 
         <!-- Not seen episodes -->
         <span v-else-if="isUnseen">
-          <span v-if="!dense">Не просмотрен еще ни один эпизод</span>
-          <span v-else>Ни один эпизод</span>
+          <span v-if="!dense">Не просмотрено ни одного эпизода</span>
+          <span v-else>Ни одного эпизода</span>
         </span>
 
         <!-- Episodes Progress -->
@@ -54,6 +54,10 @@
     dense: {
       type: Boolean,
       default: false
+    },
+    center: {
+      type: Boolean,
+      default: false,
     }
   };
 
@@ -123,6 +127,11 @@
   .release__progress {
     cursor: default;
     border-radius: 4px;
+
+    &__description {
+      left: 0;
+      position: absolute;
+    }
   }
 
 </style>
