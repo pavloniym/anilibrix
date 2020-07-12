@@ -1,38 +1,31 @@
 <script>
 
   import {meta} from '@package'
+  import {toVideo} from "@utils/router/views";
   import {mapState} from 'vuex'
+  import {handleAppNotificationEvent, sendAppDockNumberEvent} from "@main/handlers/app/appHandlers";
 
   export default {
     render: () => null,
     computed: {
+      ...mapState('notifications', {_items: s => s.items}),
       ...mapState('app/settings/system', {_notifications: s => s.notifications.system}),
-    },
 
-    methods: {
 
       /**
-       * Watch episode
+       * Get unseen notifications
        *
-       * @param release
-       * @param episode
+       * @return {number}
        */
-      toVideo({release, episode}) {
-        this.$router.push({
-          name: 'video',
-          params: {
-            key: `${release.id}:${episode.id}`,
-            release: release,
-            episode: episode,
-            releaseName: release.names.original
-          }
-        });
-      },
+      unseen() {
+        return this._items.filter(item => item.is_seen === false).length
+      }
+
     },
 
 
     created() {
-      this.$electron.ipcRenderer.on('app:notification', (e, release) => {
+      handleAppNotificationEvent((release => {
 
         // Check if release is set
         // Check if system notifications is enabled
@@ -50,18 +43,25 @@
             this.$electron.remote.app.setAppUserModelId(meta.name);
 
             // Create notification
-            const notification = new window.Notification(title, {
-              body: name,
-              icon: poster
-            });
-
             // If the user clicks in the Notifications Center, show the app
-            notification.onclick = () => this.toVideo({release, episode});
+            const notification = new window.Notification(title, {body: name, icon: poster});
+            notification.onclick = () => toVideo(release, episode);
 
           }
         }
-      })
+
+      }));
+    },
+
+    watch: {
+      unseen: {
+        immediate: true,
+        handler(unseen) {
+          sendAppDockNumberEvent(unseen);
+        }
+      }
     }
+
 
   }
 </script>

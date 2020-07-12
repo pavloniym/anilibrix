@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import moment from 'moment';
 
 // Import russian locale
@@ -7,5 +8,4 @@ import 'moment/locale/ru';
 moment.locale('ru');
 
 // Set to prototype
-
-//Vue.$prototype.$moment = moment;
+Vue.prototype.$moment = moment;

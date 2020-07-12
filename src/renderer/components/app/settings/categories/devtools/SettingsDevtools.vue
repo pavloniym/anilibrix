@@ -28,6 +28,11 @@
 <script>
 
   import {mapState, mapActions} from 'vuex'
+  import {
+    sendAppDevtoolsMainEvent,
+    sendAppDevtoolsTorrentEvent,
+    sendAppNotificationEvent
+  } from "@main/handlers/app/appHandlers";
 
   export default {
     computed: {
@@ -42,19 +47,15 @@
         return [
           {
             title: 'Консоль приложения',
-            action: () => this.$electron.ipcRenderer.send('app:devtools:main'),
+            action: sendAppDevtoolsMainEvent,
           },
           {
             title: 'Консоль торрент-сервера',
-            action: () => this.$electron.ipcRenderer.send('app:devtools:torrent'),
-          },
-          {
-            title: 'Консоль chromecast клиента',
-            action: () => this.$electron.ipcRenderer.send('app:devtools:chromecast'),
+            action: sendAppDevtoolsTorrentEvent,
           },
           {
             title: 'Показать уведомление',
-            action: () => this.$electron.ipcRenderer.send('app:notification', this._releases[0])
+            action: () => sendAppNotificationEvent(this._releases[0])
           },
           {
             title: 'Добавить уведомление в хранилище',

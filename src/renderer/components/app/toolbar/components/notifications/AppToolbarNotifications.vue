@@ -11,6 +11,7 @@
 
     <!-- Notifications -->
     <v-card v-if="_items && _items.length > 0" elevation="12">
+
       <v-layout align-center class="px-4 py-2">
         <h5 class="grey--text">Последние уведомления за неделю</h5>
         <v-spacer/>
@@ -18,20 +19,13 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-layout>
+
       <v-divider/>
+
       <v-list dense>
-        <template v-for="(item, k) in _items">
+        <template v-for="(notification, k) in _items">
           <v-divider v-if="k > 0" :key="`d: ${k}`"/>
-          <v-list-item :key="k" @click="toVideo(item)">
-            <v-list-item-avatar>
-              <v-img :src="item.release.poster.image"/>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.release.names.ru"/>
-              <v-list-item-subtitle>Вышла {{item.episode.id}} серия</v-list-item-subtitle>
-              <v-list-item-subtitle v-text="getDatetime(item)" class="grey--text text--darken-2"/>
-            </v-list-item-content>
-          </v-list-item>
+          <notification-item v-bind="{notification}" :key="k" />
         </template>
       </v-list>
     </v-card>
@@ -54,10 +48,13 @@
 
 <script>
 
-  import moment from 'moment'
+  import NotificationItem from './components/item'
   import {mapState, mapActions} from 'vuex'
 
   export default {
+    components: {
+      NotificationItem
+    },
     computed: {
       ...mapState('notifications', {_items: s => s.items}),
 
@@ -77,51 +74,8 @@
       ...mapActions('notifications', {
         _setSeen: 'setSeen',
         _clearNotifications: 'clearNotifications'
-      }),
-
-
-      /**
-       * Watch episode
-       *
-       * @param release
-       * @param episode
-       */
-      toVideo({release, episode}) {
-        if (release && episode) {
-          this.$router.push({
-            name: 'video',
-            params: {
-              key: `${release.id}:${episode.id}`,
-              release: release,
-              episode: episode,
-              releaseName: release.names.original
-            }
-          });
-        }
-      },
-
-
-      /**
-       * Get datetime
-       *
-       * @param notification
-       * @return {string}
-       */
-      getDatetime(notification) {
-        return moment(notification.datetime).fromNow();
-      },
-
-    },
-
-    watch: {
-
-      unseen: {
-        immediate: true,
-        handler(unseen) {
-          this.$electron.ipcRenderer.send('app:dock:number', unseen)
-        }
-      }
-
+      })
     }
+
   }
 </script>

@@ -1,6 +1,7 @@
 import store from '@store'
 import {meta} from '@package'
 import {Menu, shell} from 'electron'
+import {APP_NOTIFICATION} from "@main/handlers/app/appHandlers";
 
 export const aboutTemplate = [
   {
@@ -123,7 +124,7 @@ export default class AppMenu {
           },
           {
             label: 'Показать тестовое уведомление',
-            click: () => this._mainWindow.sendToWindow('app:notification', store.state.releases.data[0])
+            click: () => this._mainWindow.sendToWindow(APP_NOTIFICATION, store.state.releases.data[0])
           },
           {
             label: 'Добавить уведомление в хранилище',

@@ -6,18 +6,21 @@ import {app, ipcMain as ipc} from 'electron'
 import store, {setUserId, getStore} from '@store'
 import {Main, Torrent, Chromecast} from './utils/windows'
 import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
+import {
+  listenAppNotificationEvent,
+  listenAppAboutEvent,
+  listenAppDevtoolsMainEvent,
+  listenAppDevtoolsTorrentEvent, listenAppDockNumberEvent
+} from '@main/handlers/app/appHandlers'
 
 // Import tray and menu
 import Tray from './utils/tray'
 import Menu from './utils/menu'
-import axios from "@plugins/axios";
 
 // Create tray and menu controller
 const trayController = new Tray();
 const menuController = new Menu();
 
-// Create download storage
-const downloadStorage = {};
 
 // Communications between windows
 const communications = [
@@ -87,31 +90,25 @@ app.on('ready', async () => {
   });
 
 
-  // Show about panel
-  ipc.on('app:about', () => app.showAboutPanel());
-
-  // Notification
-  ipc.on('app:notification', (e, payload) => Main.sendToWindow('app:notification', payload));
-
-  // Devtools
-  ipc.on('app:devtools:main', () => Main.showDevTools());
-  ipc.on('app:devtools:torrent', () => Torrent.showDevTools());
-  ipc.on('app:devtools:chromecast', () => Chromecast.showDevTools());
-
-  // Set dock number
-  // If dock is available
-  ipc.on('app:dock:number', (e, number) => {
-    if (app.dock) {
-      app.dock.setBadge(number && number > 0 ? number.toString() : '')
-    }
-  });
-
-
-  // Apply download handlers
-  downloadHandlers();
-
+  appHandlers(); // App handlers
+  downloadHandlers(); // Download handlers
 
 });
+
+
+/**
+ * App handlers
+ * Show about handlers
+ *
+ * @return {void}
+ */
+const appHandlers = () => {
+  listenAppAboutEvent(); // about dialog
+  listenAppDockNumberEvent(); // app dock number event
+  listenAppNotificationEvent(); // app system notification event
+  listenAppDevtoolsMainEvent(); // devtools main
+  listenAppDevtoolsTorrentEvent(); //devtools torrent
+};
 
 
 /**
@@ -125,11 +122,8 @@ const downloadHandlers = () => {
   // Create storage
   const storage = {};
 
-  // Start download
-  // Cancel download
-  // Open downloaded file
-  startingDownload(storage, Main);
-  cancelingDownload(storage);
-  openingDownload(storage);
-
+  // Handlers
+  startingDownload(storage, Main); // Start download
+  cancelingDownload(storage); // Cancel download
+  openingDownload(storage); // Open downloaded file
 };

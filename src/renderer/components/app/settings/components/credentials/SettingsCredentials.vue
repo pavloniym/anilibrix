@@ -3,7 +3,7 @@
     <v-card-text class="caption">
       <v-layout class="with-divider">
         <div>Версия {{app.version}}</div>
-        <a href="#" @click.prevent="showAbout">О приложении</a>
+        <a href="#" @click.prevent="sendAppAboutEvent">О приложении</a>
       </v-layout>
       <div>Весь материал в приложении представлен исключительно для домашнего ознакомительного просмотра.</div>
       <div>
@@ -17,6 +17,7 @@
 
   import app from '@/../package'
   import {mapActions} from 'vuex'
+  import {sendAppAboutEvent} from "@main/handlers/app/appHandlers";
 
   export default {
     computed: {
@@ -60,9 +61,8 @@
        *
        * @return void
        */
-      showAbout() {
-        this.$electron.ipcRenderer.send('app:about')
-      },
+      sendAppAboutEvent,
+
 
       /**
        * Open link in OS default browser
