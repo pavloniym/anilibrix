@@ -1,3 +1,3 @@
-import PlaybackTorrentPlayerType from './PlaybackTorrentPlayerType'
+import PlayerTorrentHandler from './PlayerTorrentHandler'
 
-export default PlaybackTorrentPlayerType
+export default PlayerTorrentHandler

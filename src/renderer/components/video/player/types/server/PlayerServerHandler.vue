@@ -1,5 +1,5 @@
 <template>
-  <playback-player
+  <player-handler
     v-bind="options"
     @error="$emit('error', $event)"
     @update:time="$emit('update:time', $event)"
@@ -10,22 +10,23 @@
       <slot v-bind="context"/>
     </template>
 
-  </playback-player>
+  </player-handler>
 </template>
 
 <script>
 
-  import PlaybackPlayer from './../../components/handler'
+  // Components
+  import PlayerHandler from './../../components/handler'
 
+  // Utils
   import Hls from 'hls.js';
-  import __get from 'lodash/get'
 
   const props = {
     source: {
       type: Object,
       default: null
     },
-    time: {
+    startingTime: {
       type: Number,
       default: null
     }
@@ -34,7 +35,7 @@
   export default {
     props,
     components: {
-      PlaybackPlayer,
+      PlayerHandler,
     },
 
     data() {
@@ -48,7 +49,7 @@
       /**
        * Playback player options
        *
-       * @return Object
+       * @return {*}
        */
       options() {
         return {
@@ -69,7 +70,7 @@
        * @return Promise
        */
       getPayload(source) {
-        return __get(source, 'payload.playlist');
+        return this.$__get(source, 'payload.playlist');
       },
 
 
@@ -81,8 +82,7 @@
        *
        * @return void
        */
-      processPayload({player, payload, time = 0} = {}) {
-
+      processPayload({player, payload} = {}) {
         // If payload provided - create new hls instance
         if (payload) {
 
@@ -101,7 +101,7 @@
 
             // Set event to forward on current time
             // If play should play -> play source automatically
-            //player.once('playing', () => player.forward(time));
+            player.once('canplay', () => player.forward(this.startingTime));
             player.play();
 
           });

@@ -56,9 +56,10 @@ export const toReleases = () => {
  *
  * @param release
  * @param episode
+ * @param params
  * @return {Promise<Route>}
  */
-export const toVideo = (release = null, episode = null) => {
+export const toVideo = (release = null, episode = null, params = {}) => {
   if (release && episode) {
 
     const key = `${release.id}:${episode.id}`;
@@ -66,7 +67,7 @@ export const toVideo = (release = null, episode = null) => {
 
     return router.push({
       name: VIDEO_VIEW,
-      params: {key, release, episode, releaseName}
+      params: {key, release, episode, releaseName, ...params}
     });
   }
 };

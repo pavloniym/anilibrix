@@ -13,7 +13,7 @@
     @mouseup="is_seeking = false">
 
     <template v-slot:thumb-label="{ value }">
-      <div class="time">{{humanTime(value)}}</div>
+      <div class="time font-weight-bold">{{humanTime(value)}}</div>
     </template>
 
   </v-slider>

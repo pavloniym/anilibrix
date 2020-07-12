@@ -1,25 +1,29 @@
 <template>
   <video-layout :hide-cursor="cursor_is_hidden">
     <v-layout fill-height>
-      <component
-        v-bind="{sources, source}"
-        :is="component"
-        :key="`video:${key}`"
-        :time.sync="time"
-        :duration.sync="duration"
-        @error="toBlank">
+      <v-fade-transition mode="out-in" appear>
+        <component
+          v-if="is_mounted"
+          v-bind="{sources, source}"
+          :is="component"
+          :key="`video:${key}`"
+          :time.sync="time"
+          :duration.sync="duration"
+          :starting-time="starting_time"
+          @error="toBlank">
 
-        <template v-slot="{player}">
-          <player-interface
-            v-bind="{player, source, release, episode, time}"
-            :key="`interface:${key}`"
-            @set:source="setSource"
-            @show:cursor="cursor_is_hidden = false"
-            @hide:cursor="cursor_is_hidden = true">
-          </player-interface>
-        </template>
+          <template v-slot="{player}">
+            <player-interface
+              v-bind="{player, source, release, episode}"
+              :key="`interface:${key}`"
+              @set:source="setSource"
+              @show:cursor="cursor_is_hidden = false"
+              @hide:cursor="cursor_is_hidden = true">
+            </player-interface>
+          </template>
 
-      </component>
+        </component>
+      </v-fade-transition>
     </v-layout>
   </video-layout>
 </template>
@@ -28,7 +32,7 @@
 
   import VideoLayout from "@layouts/video";
   import PlayerInterface from '@components/video/interface'
-  import {ServerHandler, UpscalePlayer, TorrentPlayer} from '@components/video/player/types'
+  import {ServerHandler, TorrentHandler} from '@components/video/player/types'
 
   import {mapState, mapActions} from 'vuex'
   import {toBlank} from "@utils/router/views";
@@ -63,6 +67,8 @@
       return {
         time: 0,
         duration: 0,
+        is_mounted: false,
+        starting_time: 0,
         cursor_is_hidden: true,
       }
     },
@@ -132,8 +138,7 @@
       components() {
         return {
           server: ServerHandler,
-          // torrent: TorrentPlayer,
-          // upscale: UpscalePlayer,
+          torrent: TorrentHandler,
         }
       },
 
@@ -206,7 +211,14 @@
        *
        * @return
        */
-      setWatchedEpisode({release, episode, time, percentage} = {}) {
+      setWatchedEpisode() {
+
+        // Get watching data
+        const time = this.time;
+        const release = this.release;
+        const episode = this.episode;
+        const percentage = this.percentage;
+
         if (release && episode) {
 
           // Set correct time (fix last episode seconds)
@@ -220,6 +232,7 @@
 
           // Set watch data in local store
           this._setWatchedEpisode(payload)
+
         }
       },
 
@@ -248,16 +261,13 @@
 
         // Set last watch time
         // Check if not from start
-        this.time = watched_time && this.fromStart === false ? watched_time : 0;
-
+        this.starting_time = watched_time && this.fromStart === false ? watched_time : 0;
+        this.is_mounted = true;
       }
     },
 
     beforeDestroy() {
-
-      // Set episode watch data before destroy
-      //this.setWatchData({time: this.time, release: this.release, episode: this.episode, percentage: this.percentage});
-
+      this.setWatchedEpisode();
     },
 
 
@@ -270,7 +280,7 @@
           if (source) {
 
             // Update settings quality and set it as current quality
-            this._setQuality(source.alias)
+            this._setQuality(source.alias);
 
           } else {
 
@@ -281,20 +291,11 @@
         }
       },
 
-
       part: {
-        immediate: true,
         handler() {
 
-          // Prepare payload for watch data
           // Set watch data then playing part is updated
-          const time = this.time;
-          const release = this.release;
-          const episode = this.episode;
-          const percentage = this.percentage;
-          const payload = {time, release, episode, percentage};
-
-          this.setWatchedEpisode(payload);
+          this.setWatchedEpisode();
         }
       },
 

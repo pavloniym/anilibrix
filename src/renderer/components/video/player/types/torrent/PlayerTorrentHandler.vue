@@ -1,24 +1,23 @@
 <template>
-  <playback-player
+  <player-handler
     v-bind="options"
     @error="$emit('error', $event)"
-    @update:time="$emit('update:time', $event)">
+    @update:time="$emit('update:time', $event)"
+    @update:duration="$emit('update:duration', $event)">
 
     <template v-slot="context">
       <slot v-bind="context"/>
     </template>
 
-  </playback-player>
+  </player-handler>
 </template>
 
 <script>
 
-  import PlaybackPlayer from './../../components/handler'
-
-  import __get from 'lodash/get';
+  import PlayerHandler from './../../components/handler'
 
   const props = {
-    time: {
+    startingTime: {
       type: Number,
       default: null
     },
@@ -31,7 +30,7 @@
   export default {
     props,
     components: {
-      PlaybackPlayer,
+      PlayerHandler,
     },
 
     computed: {
@@ -43,7 +42,6 @@
        */
       options() {
         return {
-          time: this.time,
           source: this.source,
           getPayload: this.getPayload,
           processPayload: this.processPayload,
@@ -65,9 +63,9 @@
       getPayload(source) {
         return new Promise(resolve => {
 
-          const payload = __get(source, 'payload');
+          const payload = this.$__get(source, 'payload');
           const torrentId = this._getSourceTorrentId(source);
-          const fileIndex = __get(payload, 'file.index', -1);
+          const fileIndex = this.$__get(payload, 'file.index', -1);
 
           if (torrentId) {
 
@@ -101,7 +99,7 @@
        *
        * @return void
        */
-      processPayload({player, payload, time} = {}) {
+      processPayload({player, payload} = {}) {
         if (payload) {
 
           // Pause player
@@ -115,7 +113,7 @@
 
           // Set event to forward on current time
           // Play source automatically
-          player.once('playing', () => player.forward(time));
+          player.once('playing', () => player.forward(this.startingTime));
           player.play();
 
         } else {
@@ -158,7 +156,7 @@
        * @private
        */
       _getSourceTorrentId(source) {
-        return __get(source, 'payload.torrent.id') || null;
+        return this.$__get(source, 'payload.torrent.id') || null;
       }
 
     },

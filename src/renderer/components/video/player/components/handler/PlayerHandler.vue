@@ -15,10 +15,6 @@
 <script>
 
   const props = {
-    time: {
-      type: Number,
-      default: null
-    },
     source: {
       type: Object,
       default: null
@@ -80,7 +76,6 @@
           // Process payload
           this.processPayload({
             payload,
-            time: this.time,
             source: this.source,
             player: this.player,
             playing: this.player.playing,
@@ -102,9 +97,7 @@
       // Update current player position on time update
       this.player.on('timeupdate', () => {
           const time = this.player.currentTime;
-          if (time > 0) {
-            this.$emit('update:time', time);
-          }
+          if (time > 0) this.$emit('update:time', time);
         }
       );
     },
