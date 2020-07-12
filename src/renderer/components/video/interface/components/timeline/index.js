@@ -1,3 +1,3 @@
-import PlayerInterfaceTimeline from './PlayerInterfaceTimeline'
+import PlayerTimeline from './PlayerTimeline'
 
-export default PlayerInterfaceTimeline
+export default PlayerTimeline

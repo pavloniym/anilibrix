@@ -1,4 +1,3 @@
-const SET_SPEED = 'SET_SPEED';
 const SET_QUALITY = 'SET_QUALITY';
 const SET_UPSCALE_BOLD = 'SET_UPSCALE_BOLD';
 const SET_UPSCALE_BLUR = 'SET_UPSCALE_BLUR';
@@ -12,7 +11,6 @@ const SET_OPENING_SKIP_BUTTON = 'SET_OPENING_SKIP_BUTTON';
 export default {
   namespaced: true,
   state: {
-    speed: 1,
     quality: null,
     upscale: {
       bold: 6,
@@ -29,15 +27,6 @@ export default {
   },
 
   mutations: {
-
-    /**
-     * Set speed
-     *
-     * @param s
-     * @param speed
-     * @return {*}
-     */
-    [SET_SPEED]: (s, speed) => s.speed = speed,
 
     /**
      * Set quality
@@ -131,16 +120,6 @@ export default {
 
 
   actions: {
-
-
-    /**
-     * Set speed
-     *
-     * @param commit
-     * @param speed
-     * @return {*}
-     */
-    setSpeed: ({commit}, speed) => commit(SET_SPEED, speed),
 
 
     /**

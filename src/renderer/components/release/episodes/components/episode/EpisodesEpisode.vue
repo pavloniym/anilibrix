@@ -4,7 +4,7 @@
     <v-list-item-content>
       <v-list-item-title v-text="episode.title"/>
       <v-list-item-subtitle>
-        <item-quality v-bind="{episode}"/>
+        <quality v-bind="{episode}"/>
       </v-list-item-subtitle>
     </v-list-item-content>
 
@@ -13,12 +13,12 @@
 
         <!-- Episode Progress -->
         <v-layout align-center justify-center :style="{width: '40px'}">
-          <item-playing v-if="isPlaying"/>
-          <item-watched v-else v-bind="{episode, release}"/>
+          <playing v-if="isPlaying"/>
+          <watched v-else v-bind="{episode, release}"/>
         </v-layout>
 
         <!-- Actions -->
-        <item-actions v-bind="{episode, release, container}" />
+        <actions v-bind="{episode, release, container}" />
 
       </v-layout>
     </v-list-item-action>
@@ -28,10 +28,10 @@
 
 <script>
 
-  import ItemQuality from './components/quality'
-  import ItemWatched from './components/watched'
-  import ItemPlaying from './components/playing'
-  import ItemActions from './components/actions'
+  import Quality from './components/quality'
+  import Watched from './components/watched'
+  import Playing from './components/playing'
+  import Actions from './components/actions'
 
   const props = {
     release: {
@@ -51,10 +51,10 @@
   export default {
     props,
     components: {
-      ItemQuality,
-      ItemWatched,
-      ItemPlaying,
-      ItemActions,
+      Quality,
+      Watched,
+      Playing,
+      Actions,
     },
     data() {
       return {

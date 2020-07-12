@@ -1,5 +1,5 @@
 <template>
-    <div id="player-container">
+    <div id="player-container" :class="{'hide-cursor': hideCursor}">
       <slot/>
     </div>
 </template>
@@ -8,7 +8,15 @@
 
   import screenfull from 'screenfull'
 
+  const props = {
+    hideCursor: {
+      type: Boolean,
+      default: false
+    }
+  };
+
   export default {
+    props,
     destroyed() {
 
       // Exit fullscreen if video view is exited
@@ -30,6 +38,12 @@
     left: 0;
     right: 0;
     z-index: 5;
+
+    &.hide-cursor {
+      * {
+        cursor: none !important;
+      }
+    }
   }
 
 </style>

@@ -1,3 +1,3 @@
-import PlaylistItemPlaying from './PlaylistItemPlaying'
+import EpisodePlaying from './EpisodePlaying'
 
-export default PlaylistItemPlaying
+export default EpisodePlaying

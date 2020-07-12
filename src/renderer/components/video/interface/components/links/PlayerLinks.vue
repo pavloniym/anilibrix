@@ -16,24 +16,24 @@
       <!-- Release -->
       <v-tooltip right :attach="$refs.links">
         <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon large @click="toRelease">
+          <v-btn v-on="on" icon large @click="() => toRelease(release)">
             <v-avatar size="24">
-              <img :src="release.poster.image">
+              <img v-bind="{src}">
             </v-avatar>
           </v-btn>
         </template>
-        <span>{{release.names.ru}}</span>
+        <span>{{title}}</span>
       </v-tooltip>
 
 
-      <!-- Playlist -->
+      <!-- Episodes -->
       <v-tooltip right :attach="$refs.links">
         <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon large @click="playlist().show()">
+          <v-btn v-on="on" icon large @click="episodes().show()">
             <v-icon size="24">mdi-playlist-play</v-icon>
           </v-btn>
         </template>
-        <span>Плейлист</span>
+        <span>Эпизоды"</span>
       </v-tooltip>
 
 
@@ -77,6 +77,7 @@
 <script>
 
   import {mapState} from 'vuex'
+  import {toRelease, toReleases} from "@utils/router/views";
 
   const props = {
     player: {
@@ -91,7 +92,7 @@
       type: Object,
       default: null
     },
-    playlist: {
+    episodes: {
       type: Function,
       default: null
     },
@@ -118,6 +119,24 @@
         _opening_skip_button: s => s.opening.skip_button,
       }),
 
+      /**
+       * Get release poster src
+       *
+       * @return {string}
+       */
+      src() {
+        return this.$__get(this.release, 'poster.image');
+      },
+
+      /**
+       * Get title
+       *
+       * @return {string}
+       */
+      title() {
+        return this.$__get(this.release, 'names.ru');
+      }
+
     },
     methods: {
 
@@ -127,27 +146,14 @@
        *
        * @return void
        */
-      toReleases() {
-        this.$router.push({
-          name: 'releases'
-        })
-      },
-
+      toReleases,
 
       /**
        * Go to release
        *
        * @return void
        */
-      toRelease() {
-        this.$router.push({
-          name: 'release',
-          params: {
-            releaseId: this.release.id,
-            releaseName: this.release.names.original
-          }
-        })
-      },
+      toRelease,
 
 
       /**
@@ -156,7 +162,7 @@
        * @return {void}
        */
       skipOpening() {
-        this.player.currentTime = parseInt(this._opening_skip_time || 0) || 0;
+        this.$emit('set:time', this.player.currentTime + (this._opening_skip_time || 0));
       }
     },
 

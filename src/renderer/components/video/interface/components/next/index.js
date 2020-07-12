@@ -1,3 +1,3 @@
-import PlayerInterfaceNext from './PlayerInterfaceNext'
+import PlayerNext from './PlayerNext'
 
-export default PlayerInterfaceNext
+export default PlayerNext

@@ -1,5 +1,5 @@
 <template>
-  <video-layout>
+  <video-layout :hide-cursor="cursor_is_hidden">
     <v-layout fill-height>
       <component
         v-bind="{sources, source}"
@@ -7,13 +7,15 @@
         :key="`video:${key}`"
         :time.sync="time"
         :duration.sync="duration"
-        @error="toBlank"
-        @update:payload="payload = $event">
+        @error="toBlank">
 
-        <template v-slot:default="{player}">
+        <template v-slot="{player}">
           <player-interface
-            v-bind="{player, sources, source, release, episode, payload, time}"
-            :key="`interface:${key}`">
+            v-bind="{player, source, release, episode, time}"
+            :key="`interface:${key}`"
+            @set:source="setSource"
+            @show:cursor="cursor_is_hidden = false"
+            @hide:cursor="cursor_is_hidden = true">
           </player-interface>
         </template>
 
@@ -26,9 +28,10 @@
 
   import VideoLayout from "@layouts/video";
   import PlayerInterface from '@components/video/interface'
-  import {ServerPlayer, UpscalePlayer, TorrentPlayer} from '@components/video/playback/types'
+  import {ServerHandler, UpscalePlayer, TorrentPlayer} from '@components/video/player/types'
 
   import {mapState, mapActions} from 'vuex'
+  import {toBlank} from "@utils/router/views";
 
   const props = {
     release: {
@@ -54,22 +57,32 @@
       PlayerInterface,
     },
     meta() {
-      return {
-        title: this.release
-          ? `Эпизод [${this.release.id} / ${this.episode.id}]: ${this.release.names.original}`
-          : null
-      }
+      return {title: this.title}
     },
     data() {
       return {
         time: 0,
-        payload: null,
         duration: 0,
+        cursor_is_hidden: true,
       }
     },
     computed: {
       ...mapState('app/settings/player', {_quality: s => s.quality}),
 
+      /**
+       * Get title
+       *
+       * @return {string|null}
+       */
+      title() {
+
+        const release_id = this.$__get(this.release, 'id');
+        const episode_id = this.$__get(this.episode, 'id');
+        const release_name = this.$__get(this.release, 'names.original');
+
+        return release_id ? `Эпизод [${release_id} / ${episode_id}]: ${release_name}` : null;
+
+      },
 
       /**
        * Get key string
@@ -79,6 +92,7 @@
       key() {
         return `${this.release ? this.release.id : 0}:${this.episode ? this.episode.id : 0}`
       },
+
 
       /**
        * Get sources list
@@ -117,9 +131,9 @@
        */
       components() {
         return {
-          server: ServerPlayer,
-          torrent: TorrentPlayer,
-          upscale: UpscalePlayer,
+          server: ServerHandler,
+          // torrent: TorrentPlayer,
+          // upscale: UpscalePlayer,
         }
       },
 
@@ -158,33 +172,32 @@
     },
 
     methods: {
-      ...mapActions('app/watch', {_setWatchData: 'setWatchData'}),
+      ...mapActions('app/watch', {_setWatchedEpisode: 'setWatchedEpisode'}),
       ...mapActions('app/settings/player', {_setQuality: 'setQuality'}),
-
 
       /**
        * Go to blank page
        *
-       * @param payload
+       * @return Promise
        */
-      toBlank(payload) {
-        this.$router.push({name: 'blank', params: payload})
+      toBlank({message, referer}) {
+        return toBlank(message, referer)
       },
-
 
       /**
        * Get watch data from store
        *
        * @param release
        * @param episode
-       * @return Object|null
+       * @return {*}
        */
-      async getWatchData({release, episode}) {
+      async getWatchedEpisode({release, episode}) {
 
         const release_id = release.id;
         const episode_id = episode.id;
+        const payload = {release_id, episode_id};
 
-        return await this.$store.getters['app/watch/getWatchData']({release_id, episode_id});
+        return await this.$store.getters['app/watch/getWatchedEpisode'](payload);
       },
 
 
@@ -193,17 +206,32 @@
        *
        * @return
        */
-      setWatchData({release = null, episode = null, time = 0, percentage = 0} = {}) {
+      setWatchedEpisode({release, episode, time, percentage} = {}) {
         if (release && episode) {
 
           // Set correct time (fix last episode seconds)
           // Set correct percentage
-          time = time >= this.duration ? this.duration - 5 : time;
-          percentage = percentage > 100 ? 100 : percentage;
+          const watched_time = time >= this.duration ? this.duration - 5 : (time || 0);
+          const watched_percentage = percentage > 100 ? 100 : (percentage || 0);
+
+          const release_id = release.id;
+          const episode_id = episode.id;
+          const payload = {release_id, episode_id, time: watched_time, percentage: watched_percentage};
 
           // Set watch data in local store
-          this._setWatchData({time, percentage, releaseId: release.id, episodeId: episode.id})
+          this._setWatchedEpisode(payload)
         }
+      },
+
+
+      /**
+       * Set source
+       *
+       * @param source
+       * @return {*}
+       */
+      setSource(source) {
+        return this._setQuality(source.alias);
       }
     },
 
@@ -212,9 +240,15 @@
       if (this.release && this.episode) {
 
         // Get watch data
+        const release = this.release;
+        const episode = this.episode;
+        const payload = {release, episode};
+        const watched_episode = await this.getWatchedEpisode(payload);
+        const watched_time = this.$__get(watched_episode, 'time');
+
         // Set last watch time
-        const watch = await this.getWatchData({release: this.release, episode: this.episode});
-        this.time = watch && this.fromStart === false ? watch.time : 0;
+        // Check if not from start
+        this.time = watched_time && this.fromStart === false ? watched_time : 0;
 
       }
     },
@@ -222,7 +256,8 @@
     beforeDestroy() {
 
       // Set episode watch data before destroy
-      this.setWatchData({time: this.time, release: this.release, episode: this.episode, percentage: this.percentage});
+      //this.setWatchData({time: this.time, release: this.release, episode: this.episode, percentage: this.percentage});
+
     },
 
 
@@ -253,8 +288,13 @@
 
           // Prepare payload for watch data
           // Set watch data then playing part is updated
-          const payload = {time: this.time, release: this.release, episode: this.episode, percentage: this.percentage};
-          this.setWatchData(payload);
+          const time = this.time;
+          const release = this.release;
+          const episode = this.episode;
+          const percentage = this.percentage;
+          const payload = {time, release, episode, percentage};
+
+          this.setWatchedEpisode(payload);
         }
       },
 

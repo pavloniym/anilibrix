@@ -14,11 +14,13 @@
         <v-list-item
           :key="k"
           :input-value="s.alias === source.alias"
-          @click="_setQuality(s.alias)">
+          @click="$emit('click', s)">
+
           <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
           <v-list-item-content>
             <v-list-item-subtitle v-text="s.label"/>
           </v-list-item-content>
+
         </v-list-item>
       </template>
     </v-list>
@@ -28,17 +30,13 @@
 
 <script>
 
-
-  import __get from "lodash/get";
-  import {mapActions} from "vuex";
-
   const props = {
     source: {
       type: Object,
       default: null
     },
-    sources: {
-      type: Array,
+    episode: {
+      type: Object,
       default: null
     },
     attach: {
@@ -50,6 +48,17 @@
   export default {
     props,
     computed: {
+
+
+      /**
+       * Get sources from episode
+       *
+       * @return {array}
+       */
+      sources() {
+        return this.$__get(this.episode, 'sources') || [];
+      },
+
 
       /**
        * Get upscale sources
@@ -95,7 +104,6 @@
 
     },
     methods: {
-      ...mapActions('app/settings/player', {_setQuality: 'setQuality'}),
 
       /**
        * Get source icon
@@ -105,8 +113,8 @@
        */
       getSourceIcon(source) {
 
-        const type = __get(source, 'type');
-        const alias = __get(source, 'alias');
+        const type = this.$__get(source, 'type');
+        const alias = this.$__get(source, 'alias');
 
         if (alias === 'sd') return 'mdi-standard-definition';
         if (alias === 'hd') return 'mdi-high-definition';

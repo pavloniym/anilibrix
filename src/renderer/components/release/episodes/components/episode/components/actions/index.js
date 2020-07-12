@@ -1,3 +1,3 @@
-import PlaylistItemActions from './PlaylistItemActions'
+import EpisodeActions from './EpisodeActions'
 
-export default PlaylistItemActions
+export default EpisodeActions

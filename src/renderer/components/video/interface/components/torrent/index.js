@@ -1,3 +1,3 @@
-import PlayerInterfaceTorrent from './PlayerInterfaceTorrent'
+import PlayerTorrent from './PlayerTorrent'
 
-export default PlayerInterfaceTorrent
+export default PlayerTorrent

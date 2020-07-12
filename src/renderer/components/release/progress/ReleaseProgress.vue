@@ -94,7 +94,7 @@
 
         // Get watched episodes
         // Convert to string with suffix
-        const watched_episodes = this.$store.getters['app/watch/getReleaseWatchedEpisodes'](payload);
+        const watched_episodes = this.$store.getters['app/watch/getWatchedEpisodes'](payload);
         return pluralize(watched_episodes.length, ['эпизод', 'эпизода', 'эпизодов'])
 
       },

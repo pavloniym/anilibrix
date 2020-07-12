@@ -2,8 +2,8 @@
   <v-layout align-center class="shrink">
 
     <!-- Volume Mute -->
-    <v-btn icon large @click="player.muted = !isMuted">
-      <v-icon size="24">mdi-volume-{{isMuted ? 'off' : getVolumeState}}</v-icon>
+    <v-btn icon large @click="$emit('change', 0)">
+      <v-icon size="24">mdi-volume-{{getVolumeState}}</v-icon>
     </v-btn>
 
     <!-- Volume Level -->
@@ -14,7 +14,7 @@
       step=".1"
       :value="volume"
       :style="{maxWidth: '70px', width: '70px'}"
-      @input="player.volume = $event">
+      @input="$emit('change', $event)">
     </v-slider>
 
   </v-layout>
@@ -34,7 +34,6 @@
     data() {
       return {
         volume: .5,
-        isMuted: false,
       }
     },
     computed: {
@@ -45,6 +44,7 @@
        * @return {string}
        */
       getVolumeState() {
+        if (this.volume === 0) return 'off';
         if (this.volume <= .33) return 'low';
         if (this.volume > .33 && this.volume <= .66) return 'medium';
         if (this.volume > .66) return 'high';
@@ -57,14 +57,10 @@
 
       // Set initial values
       this.volume = this.player.volume;
-      this.isMuted = this.player.muted;
 
       // Watch for player volume change
       // Update player interface
-      this.player.on('volumechange', e => {
-        this.volume = e.detail.plyr.volume;
-        this.isMuted = e.detail.plyr.muted;
-      });
+      this.player.on('volumechange', e => this.volume = this.player.volume);
 
     },
 

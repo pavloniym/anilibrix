@@ -7,15 +7,9 @@
 
 <script>
 
-  import {mapState} from 'vuex'
-
   const props = {
     player: {
       type: Object,
-      default: null
-    },
-    payload: {
-      type: [String, Object],
       default: null
     },
     time: {
@@ -32,15 +26,10 @@
         content: null,
         handler: null,
         visible: false,
-
-        initialized_play: false,
-        initialized_speed: false,
+        is_ready: false,
       }
     },
 
-    computed: {
-      ...mapState('app/settings/player', {_speed: s => s.speed})
-    },
 
     methods: {
 
@@ -74,14 +63,14 @@
 
       /**
        * Play handler
+       * Check player initialized
        *
        * @return {void}
        */
       playHandler() {
-        if(this.initialized_play) {
+        if(this.is_ready) {
           this.showLabel({icon: 'mdi-play'});
         }
-        this.initialized_play = true;
       },
 
 
@@ -91,7 +80,9 @@
        * @return {void}
        */
       pauseHandler() {
-        this.showLabel({icon: 'mdi-pause'})
+        if(this.is_ready) {
+          this.showLabel({icon: 'mdi-pause'})
+        }
       },
 
 
@@ -101,28 +92,32 @@
        * @return {void}
        */
       seekingHandler() {
-        const forward = this.time < this.player.currentTime;
-        const backward = this.time > this.player.currentTime;
+        if(this.is_ready) {
 
-        if (forward || backward) {
-          let icon = null;
-          if (forward) icon = 'mdi-fast-forward';
-          if (backward) icon = 'mdi-rewind';
-          if (icon) this.showLabel({icon})
+          const forward = this.time < this.player.currentTime;
+          const backward = this.time > this.player.currentTime;
+
+          if (forward || backward) {
+            let icon = null;
+            if (forward) icon = 'mdi-fast-forward';
+            if (backward) icon = 'mdi-rewind';
+            if (icon) this.showLabel({icon})
+          }
+
         }
       },
 
 
       /**
        * Speed handler
+       * Check speed
        *
        * @return {void}
        */
       speedHandler() {
-        if(this.initialized_speed) {
-          this.showLabel({content: `${this._speed}x`});
+        if(this.is_ready) {
+          this.showLabel({content: `${this.player.speed}x`});
         }
-        this.initialized_speed = true;
       }
 
     },
@@ -141,18 +136,13 @@
       this.player.on('seeking', this.seekingHandler);
 
       // Speed handler
-      this.player.on('ratechange', this.speedHandler)
+      this.player.on('ratechange', this.speedHandler);
+
+
+      this.player.on('canplay', () => setTimeout(() => this.is_ready = true, 1000));
 
     },
 
-    watch: {
-      payload: {
-        deep: true,
-        handler() {
-          this.initialized = false;
-        }
-      }
-    }
 
   }
 </script>

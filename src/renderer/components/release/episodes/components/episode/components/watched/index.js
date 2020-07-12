@@ -1,3 +1,3 @@
-import PlaylistItemWatched from './PlaylistItemWatched'
+import EpisodeWatched from './EpisodeWatched'
 
-export default PlaylistItemWatched
+export default EpisodeWatched

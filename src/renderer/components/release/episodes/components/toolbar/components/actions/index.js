@@ -1,3 +1,3 @@
-import PlaylistToolbarActions from './PlaylistToolbarActions'
+import EpisodesToolbarActions from './EpisodesToolbarActions'
 
-export default PlaylistToolbarActions
+export default EpisodesToolbarActions

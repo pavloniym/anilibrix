@@ -1,3 +1,3 @@
-import PlayerInterfaceBuffering from './PlayerInterfaceBuffering'
+import PlayerBuffering from './PlayerBuffering'
 
-export default PlayerInterfaceBuffering
+export default PlayerBuffering

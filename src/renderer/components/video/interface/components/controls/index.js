@@ -1,3 +1,3 @@
-import PlayerInterfaceControls from './PlayerInterfaceControls'
+import PlayerControls from './PlayerControls'
 
-export default PlayerInterfaceControls
+export default PlayerControls

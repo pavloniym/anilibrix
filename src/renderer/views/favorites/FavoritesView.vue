@@ -142,8 +142,9 @@
 
           const release_id = release.id;
           const total_episodes_number = (this.$__get(release, 'episodes') || []).length;
-          const progress = this.$store.getters['app/watch/getReleaseProgress']({release_id, total_episodes_number});
+          const payload = {release_id, total_episodes_number};
 
+          const progress = this.$store.getters['app/watch/getReleaseProgress'](payload);
           return progress < 100 || (progress === 100 && show_seen === true);
         });
 

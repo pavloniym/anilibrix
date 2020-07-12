@@ -1,3 +1,3 @@
-import PlaylistItemQuality from './PlaylistItemQuality'
+import EpisodeQuality from './EpisodeQuality'
 
-export default PlaylistItemQuality
+export default EpisodeQuality

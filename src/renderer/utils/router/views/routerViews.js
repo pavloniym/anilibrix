@@ -2,7 +2,9 @@ import __get from 'lodash/get'
 import router from '@router'
 
 const VIDEO_VIEW = 'video';
+const BLANK_VIEW = 'blank';
 const RELEASE_VIEW = 'release';
+const RELEASES_VIEW = 'releases';
 const ACCOUNT_LOGIN_VIEW = 'account.login';
 
 
@@ -40,6 +42,16 @@ export const toRelease = (release = null) => {
 
 
 /**
+ * Go to releases
+ *
+ * @return {Promise<Route>}
+ */
+export const toReleases = () => {
+  return router.push({name: RELEASES_VIEW});
+};
+
+
+/**
  * Go to video
  *
  * @param release
@@ -58,3 +70,15 @@ export const toVideo = (release = null, episode = null) => {
     });
   }
 };
+
+
+/**
+ * Go to blank view
+ *
+ * @param message
+ * @param referer
+ * @return {Promise<Route>}
+ */
+export const toBlank = (message = null, referer = null) => {
+  return router.push({name: BLANK_VIEW, params: {message, referer}})
+}

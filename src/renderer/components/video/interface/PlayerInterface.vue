@@ -1,11 +1,12 @@
 <template>
   <div>
+
+    <!-- Main Interface Components -->
     <v-slide-y-reverse-transition>
       <v-layout v-show="visible" column class="interface pa-8 pt-0">
 
         <player-headline v-bind="{player, release, episode}" class="pb-2"/>
         <player-timeline v-bind="{player}"/>
-
         <v-row no-gutters justify="center">
 
           <!-- Links -->
@@ -14,7 +15,8 @@
               v-bind="{release, source, player}"
               :upscale="() => $refs.upscale"
               :torrent="() => $refs.torrent"
-              :playlist="() => $refs.playlist">
+              :episodes="() => $refs.episodes"
+              @set:time="setTime">
             </player-links>
           </v-col>
 
@@ -26,8 +28,11 @@
           <!-- Controls -->
           <v-col align-self="center">
             <player-controls
-              v-bind="{player, source, sources}"
-              :chromecast="() => $refs.chromecast"
+              v-bind="{episode, source, player}"
+              @set:speed="setSpeed"
+              @set:source="setSource"
+              @set:volume="setVolume"
+              @toggle:pip="togglePIP"
               @toggle:fullscreen="toggleFullscreen">
             </player-controls>
           </v-col>
@@ -36,28 +41,21 @@
       </v-layout>
     </v-slide-y-reverse-transition>
 
-    <player-next v-bind="{player, release, episode}"/>
-
-    <!-- Player Labels -->
-    <player-label
-      v-bind="{player, payload, time}">
-    </player-label>
-
-    <player-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
-
-    <!-- Hotkeys -->
-    <player-hotkeys
+    <!-- Keyboard -->
+    <player-keyboard
       v-bind="{player}"
+      @set:time="setTime"
+      @set:speed="setSpeed"
       @toggle:play="togglePlay"
-      @interface:update="showInterface"
       @toggle:fullscreen="toggleFullscreen">
-    </player-hotkeys>
+    </player-keyboard>
 
-    <!--<player-playlist v-bind="{release, episode}" ref="playlist" :key="`playlist:${source.label}`"/>-->
+    <player-next v-bind="{player, release, episode}"/>
+    <player-mouse v-bind="{player}" @set:volume="setVolume"/>
+    <player-label v-bind="{player, time}" :key="`label:${episode.id}:${source.label}`"/>
+    <player-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
+    <player-episodes v-bind="{release, episode}" ref="episodes" :key="`episodes:${source.label}`"/>
     <player-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
-
-    <!--<player-upscale v-bind="{source}" ref="upscale" :key="`upscale:${source.label}`"/>-->
-    <!--<player-chromecast v-bind="{player, payload}" ref="chromecast"/>-->
 
   </div>
 </template>
@@ -68,25 +66,21 @@
   import PlayerNext from './components/next'
   import PlayerLabel from './components/label'
   import PlayerLinks from './components/links'
-  import PlayerUpscale from './components/upscale'
+  import PlayerMouse from './components/mouse'
   import PlayerTorrent from './components/torrent'
-  import PlayerHotkeys from './components/hotkeys'
+  import PlayerKeyboard from './components/keyboard'
   import PlayerHeadline from './components/headline'
   import PlayerTimeline from './components/timeline'
   import PlayerControls from './components/controls'
-  //import PlayerPlaylist from './components/playlist'
+  import PlayerEpisodes from './components/episodes'
   import PlayerBuffering from './components/buffering'
-  import PlayerChromecast from './components/chromecast'
 
   import screenfull from "screenfull";
+  import {AppMouseHandlerMixin, AppKeyboardHandlerMixin} from '@mixins/app'
 
   const props = {
     player: {
       type: Object,
-      default: null
-    },
-    sources: {
-      type: Array,
       default: null
     },
     source: {
@@ -101,10 +95,6 @@
       type: Object,
       default: null
     },
-    payload: {
-      type: [String, Object],
-      default: null,
-    },
     time: {
       type: Number,
       default: null
@@ -114,27 +104,30 @@
 
   export default {
     props,
+    mixins: [
+      AppMouseHandlerMixin,
+      AppKeyboardHandlerMixin,
+    ],
     components: {
       PlayerPlay,
       PlayerNext,
       PlayerLinks,
+      PlayerMouse,
       PlayerLabel,
-      PlayerUpscale,
       PlayerTorrent,
-      PlayerHotkeys,
+      PlayerKeyboard,
       PlayerHeadline,
       PlayerTimeline,
       PlayerControls,
-    //  PlayerPlaylist,
+      PlayerEpisodes,
       PlayerBuffering,
-      PlayerChromecast,
     },
 
     data() {
       return {
         video: null,
         visible: true,
-        visibilityHandler: null,
+        visible_handler: null,
       }
     },
 
@@ -148,13 +141,50 @@
       showInterface() {
 
         // Show controls
+        // Send event to show cursor
         this.visible = true;
+        this.$emit('show:cursor');
 
         // Clear previous interval
-        if (this.visibilityHandler) clearTimeout(this.visibilityHandler);
-
         // Create new interval
-        this.visibilityHandler = setTimeout(() => this.visible = false, 2500)
+        if (this.visible_handler) clearTimeout(this.visible_handler);
+        this.visible_handler = setTimeout(() => {
+
+          // Hide interface
+          // Send event to hide cursor
+          this.visible = false;
+          this.$emit('hide:cursor');
+
+        }, 2500)
+      },
+
+      /**
+       * Handle mouse move
+       * Show interface on mouse move
+       *
+       * @return {void}
+       */
+      handleMouseEvents() {
+        this.showInterface();
+      },
+
+
+      /**
+       * Handler mouse scroll
+       * Show interface on mouse move
+       */
+      handleMouseScroll() {
+        this.showInterface();
+      },
+
+      /**
+       * Handle keyboard move
+       * Show interface on mouse move
+       *
+       * @return {void}
+       */
+      handleKeyboardEvents() {
+        this.showInterface();
       },
 
 
@@ -162,10 +192,20 @@
        * Enter fullscreen mode
        * Fullscreen div container with player and controls
        *
-       * @return void
+       * @return {void}
        */
       toggleFullscreen() {
         screenfull.toggle(document.getElementById('player-container'));
+      },
+
+
+      /**
+       * Toggle pip
+       *
+       * @return {void}
+       */
+      togglePIP() {
+        this.player.pip = !this.player.pip;
       },
 
 
@@ -179,6 +219,45 @@
       },
 
 
+      /**
+       * Set player speed
+       *
+       * @param speed
+       */
+      setSpeed(speed) {
+        this.player.speed = speed;
+      },
+
+
+      /**
+       * Set player time
+       *
+       * @return void
+       */
+      setTime(time) {
+        this.player.currentTime = time;
+      },
+
+
+      /**
+       * Set source
+       *
+       * @param source
+       */
+      setSource(source) {
+        this.$emit('set:source', source);
+      },
+
+
+      /**
+       * Set volume
+       *
+       * @param volume
+       */
+      setVolume(volume) {
+        this.player.volume = volume;
+      }
+
     },
 
     mounted() {
@@ -189,15 +268,11 @@
       // Get video element
       this.video = document.getElementsByClassName('plyr')[0];
 
-
       // Add some event listeners
       // Set player click event
       // Toggle player state
       this.video.addEventListener('click', this.togglePlay);
       this.video.addEventListener('dblclick', this.toggleFullscreen);
-
-      // Add event listener
-      window.addEventListener('mousemove', this.showInterface);
 
     },
 
@@ -208,8 +283,6 @@
       this.video.removeEventListener('click', this.togglePlay);
       this.video.removeEventListener('dblclick', this.toggleFullscreen);
 
-      // Remove listener
-      window.removeEventListener('mousemove', this.showInterface);
     }
 
   }
@@ -224,6 +297,7 @@
     position: absolute;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 50%, rgba(255, 255, 255, 0) 100%);
     user-select: none;
+
   }
 
 </style>

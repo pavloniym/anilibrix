@@ -4,14 +4,14 @@
     <!-- Quality -->
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" icon large>
-        <span class="caption font-weight-bold">{{speed.label}}</span>
+        <span class="caption font-weight-bold">{{active.label}}</span>
       </v-btn>
     </template>
 
     <!-- Qualities -->
     <v-list dense>
       <template v-for="(s, k) in variants">
-        <v-list-item :key="k" :input-value="s.value === speed.value" @click="_setSpeed(s.value)">
+        <v-list-item :key="k" :input-value="s.value === active.value" @click="$emit('click', s.value)">
           <v-list-item-subtitle v-text="s.label"/>
         </v-list-item>
       </template>
@@ -21,9 +21,6 @@
 </template>
 
 <script>
-
-
-  import {mapState, mapActions} from "vuex";
 
   const props = {
     player: {
@@ -38,8 +35,12 @@
 
   export default {
     props,
+    data() {
+      return {
+        speed: 1
+      }
+    },
     computed: {
-      ...mapState('app/settings/player', {_speed: s => s.speed}),
 
       /**
        * Get speed variants
@@ -64,28 +65,16 @@
        *
        * @return {{}}
        */
-      speed() {
-        return this.variants.find(variant => variant.value === this._speed);
+      active() {
+        return this.variants.find(variant => variant.value === this.speed);
       }
 
     },
 
-    methods: {
-      ...mapActions('app/settings/player', {_setSpeed: 'setSpeed'}),
+    created() {
 
-    },
-
-    watch: {
-
-      speed: {
-        deep: true,
-        immediate: true,
-        handler(speed) {
-          if (speed) {
-            this.player.speed = speed.value;
-          }
-        }
-      }
+      this.speed = this.player.speed;
+      this.player.on('ratechange', () => this.speed = this.player.speed);
 
     }
   }

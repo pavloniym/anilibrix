@@ -1,3 +1,3 @@
-import PlayerInterfacePlay from './PlayerInterfacePlay'
+import PlayerPlay from './PlayerPlay'
 
-export default PlayerInterfacePlay
+export default PlayerPlay

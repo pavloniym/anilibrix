@@ -1,3 +1,3 @@
-import PlayerInterfaceHeadline from './PlayerInterfaceHeadline'
+import PlayerHeadline from './PlayerHeadline'
 
-export default PlayerInterfaceHeadline
+export default PlayerHeadline
