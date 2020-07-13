@@ -11,10 +11,6 @@
     player: {
       type: Object,
       default: null
-    },
-    time: {
-      type: Number,
-      default: null
     }
   };
 
@@ -27,6 +23,7 @@
         handler: null,
         visible: false,
         is_ready: false,
+        current_time: null,
       }
     },
 
@@ -94,8 +91,8 @@
       seekingHandler() {
         if(this.is_ready) {
 
-          const forward = this.time < this.player.currentTime;
-          const backward = this.time > this.player.currentTime;
+          const forward = this.current_time < this.player.currentTime;
+          const backward = this.current_time > this.player.currentTime;
 
           if (forward || backward) {
             let icon = null;
@@ -138,9 +135,11 @@
       // Speed handler
       this.player.on('ratechange', this.speedHandler);
 
-
+      // Add some delay to prevent showing label on episode start
       this.player.on('canplay', () => setTimeout(() => this.is_ready = true, 1000));
 
+      // Set current time
+      this.player.on('timeupdate', () => this.current_time = this.player.currentTime);
     },
 
 

@@ -52,7 +52,7 @@
 
     <player-next v-bind="{player, release, episode}"/>
     <player-mouse v-bind="{player}" @set:volume="setVolume"/>
-    <player-label v-bind="{player, time}" :key="`label:${episode.id}:${source.label}`"/>
+    <player-label v-bind="{player}" :key="`label:${episode.id}:${source.label}`"/>
     <player-torrent v-bind="{source}" ref="torrent" :key="`torrent:${source.label}`"/>
     <player-episodes v-bind="{release, episode}" ref="episodes" :key="`episodes:${source.label}`"/>
     <player-buffering v-bind="{player}" :key="`buffering:${source.label}`"/>
@@ -93,10 +93,6 @@
     },
     episode: {
       type: Object,
-      default: null
-    },
-    time: {
-      type: Number,
       default: null
     }
   };
