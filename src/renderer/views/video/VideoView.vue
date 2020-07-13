@@ -59,9 +59,11 @@
       VideoLayout,
       PlayerInterface,
     },
+
     meta() {
       return {title: this.title}
     },
+
     data() {
       return {
         time: 0,

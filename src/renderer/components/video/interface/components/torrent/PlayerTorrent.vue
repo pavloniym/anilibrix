@@ -62,6 +62,7 @@
     data() {
       return {
         speed: 0,
+        seeding: 0,
         visible: false,
         progress: 0,
       }
@@ -123,8 +124,12 @@
             value: prettyBytes(this.$__get(this.file, 'length')),
           },
           {
-            title: 'Скорость скачивания',
+            title: 'Скорость загрузки',
             value: prettyBytes(parseFloat(this.speed.toFixed(2)), {bits: true}),
+          },
+          {
+            title: 'Скорость раздачи',
+            value: prettyBytes(parseFloat(this.seeding.toFixed(2)), {bits: true}),
           },
           {
             title: 'Прогресс',
@@ -155,6 +160,7 @@
 
           // Set download speed
           this.speed = data.speed || 0;
+          this.seeding = data.seeding || 0;
 
           // Find current file
           // Set it's progress

@@ -75,23 +75,13 @@ export default class AppMenu {
    * @param chromecast
    * @return {AppMenu}
    */
-  setWindows({main, torrent, chromecast}) {
+  setWindows(main = null, torrent = null, chromecast = null) {
     this._mainWindow = main;
     this._torrentWindow = torrent;
     this._chromecastWindow = chromecast;
 
     return this;
 
-  }
-
-
-  /**
-   * Set windows events
-   *
-   * @return {AppMenu}
-   */
-  setWindowsEvents() {
-    return this;
   }
 
 

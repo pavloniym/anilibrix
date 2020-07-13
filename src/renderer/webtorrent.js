@@ -122,6 +122,7 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
           ipc.send('torrent:download', {
             torrentId,
             speed: torrent.downloadSpeed,
+            seeding: torrent.uploadSpeed,
             files: (torrent.files || []).map(file => {
               return {
                 name: file.name,
@@ -136,11 +137,12 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
             torrentId,
             fileIndex,
             name: file.name,
-            length: file.length,
             path: file.path,
+            speed: torrent.downloadSpeed,
+            length: file.length,
+            seeding: torrent.uploadSpeed,
             progress: file.progress,
             downloaded: file.downloaded,
-            speed: torrent.downloadSpeed
           });
 
         }, 2000);

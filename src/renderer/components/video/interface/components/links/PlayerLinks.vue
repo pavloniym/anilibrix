@@ -33,7 +33,7 @@
             <v-icon size="24">mdi-playlist-play</v-icon>
           </v-btn>
         </template>
-        <span>Эпизоды"</span>
+        <span>Эпизоды</span>
       </v-tooltip>
 
 
@@ -44,20 +44,8 @@
             <v-icon size="20">mdi-file-table-box-multiple</v-icon>
           </v-btn>
         </template>
-        <span>Данные по торренту</span>
+        <span>Торрент</span>
       </v-tooltip>
-
-
-      <!--&lt;!&ndash; Upscale &ndash;&gt;
-      <v-tooltip v-if="source.type === 'upscale'" right :attach="$refs.links">
-        <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon large @click="upscale().show()">
-            <v-icon size="24">mdi-resize</v-icon>
-          </v-btn>
-        </template>
-        <span>Настройки интерполяций</span>
-      </v-tooltip>-->
-
 
       <!-- Opening skip button -->
       <v-tooltip v-if="_opening_skip_button" right :attach="$refs.links">

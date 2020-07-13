@@ -3,9 +3,17 @@ import path from 'path'
 import {meta} from '@package'
 import sentry from './utils/sentry'
 import {app, ipcMain as ipc} from 'electron'
+
+// Store
 import store, {setUserId, getStore} from '@store'
-import {Main, Torrent, Chromecast} from './utils/windows'
+
+// Windows
+import {Main, Torrent} from './utils/windows'
+
+// Download handlers
 import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
+
+// App Handlers
 import {
   listenAppNotificationEvent,
   listenAppAboutEvent,
@@ -33,11 +41,6 @@ const communications = [
   {channel: 'torrent:destroy', window: () => Torrent},
   {channel: 'torrent:download', window: () => Main},
 
-  // Chromecast channels
-  {channel: 'chromecast:play', window: () => Chromecast}, // play on chromecast device
-  {channel: 'chromecast:devices:items', window: () => Main}, // send found devices from chromecast server to main app window
-  {channel: 'chromecast:devices:request', window: () => Chromecast}, // make request for devices items to chromecast server,
-
 ];
 
 
@@ -63,23 +66,16 @@ app.on('ready', async () => {
   // Create windows
   Main.createWindow({title: meta.name}).loadUrl();
   Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
-  Chromecast.createWindow({title: `${meta.name} Chromecast Server`}).loadUrl();
 
   // Main window close event
   Main.getWindow().on('close', () => app.quit());
 
   // Create menu
-  menuController
-    .setWindows({main: Main, torrent: Torrent, chromecast: Chromecast})
-    .setWindowsEvents()
-    .init();
-
+  menuController.setWindows(Main, Torrent).init();
 
   // Create tray icon
   // Set data folder
-  trayController
-    .createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')})
-    .setTooltip(meta.name);
+  trayController.createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')}).setTooltip(meta.name);
 
 
   // Init windows communications
