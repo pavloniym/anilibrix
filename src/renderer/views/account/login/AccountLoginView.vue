@@ -1,8 +1,5 @@
 <template>
-  <v-layout align-center justify-end class="account__login" @keyup.enter="authorize">
-
-    <!-- Image -->
-    <div class="account__login__image" :style="{backgroundImage: `url(${zero_two})`}"></div>
+  <v-layout align-center class="account__login" @keyup.enter="authorize">
 
     <v-card flat color="transparent">
       <v-card-title>Авторизация</v-card-title>
@@ -59,6 +56,10 @@
         <v-btn v-bind="{loading}" text @click="toBack">Назад</v-btn>
       </v-layout>
     </v-card>
+
+
+    <!-- Image -->
+    <div class="account__login__image" :style="{backgroundImage: `url(${zero_two})`}"></div>
 
   </v-layout>
 </template>
@@ -174,10 +175,12 @@
     &__image {
       position: absolute;
       bottom: 0;
-      width: 100%;
-      height: 70vh;
-      left: 0;
-      opacity: .8;
+      width: 30vw;
+      height: 100vh;
+      max-width: 80vh;
+      right: 20px;
+      opacity: 0.8;
+      background-position: bottom;
     }
 
     ::v-deep {
