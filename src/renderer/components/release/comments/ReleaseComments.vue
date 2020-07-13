@@ -2,12 +2,10 @@
   <div>
 
     <!-- Comments loader -->
-    <v-skeleton-loader v-if="visible === false" type="list-item-two-line@20"/>
+    <v-skeleton-loader v-if="visible === false" type="list-item-avatar-three-line@19"/>
 
     <!-- Comments content -->
-    <v-fade-transition appear mode="out-in">
-      <webview v-bind="configuration" ref="comments" class="comments" :class="{visible}" :style="{height}"/>
-    </v-fade-transition>
+    <webview v-bind="configuration" ref="comments" class="comments" :class="{visible}" :style="{height}"/>
 
   </div>
 </template>
@@ -75,15 +73,18 @@
     mounted() {
 
       const webview = this.$refs.comments;
-
       webview.addEventListener('dom-ready', () => {
+        this.visible = false;
 
         // Insert custom css theme
         // Open devtools
         webview.insertCSS(darkThemeStyle);
         //webview.openDevTools();
 
+
+        // Check dom-ready was fired before
         // Set interval to update parent container
+        if (this.interval) clearInterval(this.interval);
         this.interval = setInterval(() => {
           webview.executeJavaScript(preloadScript).then(({width, height}) => {
             this.width = width + 'px';
@@ -95,8 +96,10 @@
         setTimeout(() => this.visible = true, 1000);
 
       });
-    },
 
+      webview.addEventListener('did-navigate', () => this.visible = false);
+
+    },
 
     beforeDestroy() {
       if (this.interval) clearInterval(this.interval);
@@ -111,11 +114,13 @@
   .comments {
     width: 100%;
     height: 100vh;
-    opacity: 0;
-    transition: opacity .2s ease;
+    position: absolute;
+    top: -999999px;
 
     &.visible {
-      opacity: 1;
+      top: 0;
+      position: relative;
+
     }
   }
 

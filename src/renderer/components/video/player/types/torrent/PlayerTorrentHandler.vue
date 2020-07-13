@@ -17,7 +17,7 @@
   import PlayerHandler from './../../components/handler'
 
   const props = {
-    startingTime: {
+    time: {
       type: Number,
       default: null
     },
@@ -113,7 +113,7 @@
 
           // Set event to forward on current time
           // Play source automatically
-          player.once('playing', () => player.forward(this.startingTime));
+          player.once('playing', () => player.currentTime = this.time);
           player.play();
 
         } else {

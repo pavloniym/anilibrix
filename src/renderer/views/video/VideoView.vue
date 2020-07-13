@@ -9,7 +9,6 @@
           :key="`video:${key}`"
           :time.sync="time"
           :duration.sync="duration"
-          :starting-time="starting_time"
           @error="toBlank">
 
           <template v-slot="{player}">
@@ -68,7 +67,6 @@
         time: 0,
         duration: 0,
         is_mounted: false,
-        starting_time: 0,
         cursor_is_hidden: true,
       }
     },
@@ -261,7 +259,7 @@
 
         // Set last watch time
         // Check if not from start
-        this.starting_time = watched_time && this.fromStart === false ? watched_time : 0;
+        this.time = watched_time && this.fromStart === false ? watched_time : 0;
         this.is_mounted = true;
       }
     },

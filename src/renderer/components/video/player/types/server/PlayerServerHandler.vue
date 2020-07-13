@@ -26,7 +26,7 @@
       type: Object,
       default: null
     },
-    startingTime: {
+    time: {
       type: Number,
       default: null
     }
@@ -97,11 +97,8 @@
           this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
 
             // Load source payload
-            this.hls.loadSource(payload);
-
-            // Set event to forward on current time
             // If play should play -> play source automatically
-            player.once('canplay', () => player.forward(this.startingTime));
+            this.hls.loadSource(payload);
             player.play();
 
           });
@@ -115,9 +112,7 @@
        * @return void
        */
       destroyPayload() {
-        if (this.hls) {
-          this.hls.destroy();
-        }
+        if (this.hls) this.hls.destroy();
       }
     }
 
