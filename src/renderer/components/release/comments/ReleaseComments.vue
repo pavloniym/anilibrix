@@ -73,6 +73,17 @@
     mounted() {
 
       const webview = this.$refs.comments;
+
+      // Hide webview to hide glitched on dom-ready event
+      webview.addEventListener('did-navigate', () => this.visible = false);
+
+      // Added certificate error
+      webview.addEventListener('certificate-error', () => this.$toasted.error('Произошла ошибка при загрузке комментариев. Ошибка с сертификатом'));
+      webview.addEventListener('did-fail-load', () => this.$toasted.error('Произошла ошибка при загрузке комментариев'));
+
+
+      // Dom ready event
+      // Inject custom css and js
       webview.addEventListener('dom-ready', () => {
         this.visible = false;
 
@@ -96,8 +107,6 @@
         setTimeout(() => this.visible = true, 1000);
 
       });
-
-      webview.addEventListener('did-navigate', () => this.visible = false);
 
     },
 
