@@ -1,5 +1,5 @@
 <template>
-  <v-layout align-center class="account__login" @keyup.enter="authorize">
+  <v-layout align-center justify-center @keyup.enter="authorize">
 
     <v-card flat color="transparent">
       <v-card-title>Авторизация</v-card-title>
@@ -57,17 +57,11 @@
       </v-layout>
     </v-card>
 
-
-    <!-- Image -->
-    <div class="account__login__image" :style="{backgroundImage: `url(${zero_two})`}"></div>
-
   </v-layout>
 </template>
 
 <script>
 
-
-  import ZeroTwo from '@assets/images/account/zero-two.svg'
   import {requiredIf} from 'vuelidate/lib/validators'
   import {BackViewMixin} from '@mixins/views'
 
@@ -86,8 +80,6 @@
         session: null,
         loading: false,
         password: null,
-
-        zero_two: ZeroTwo,
       }
     },
 
@@ -168,27 +160,3 @@
 
   }
 </script>
-
-<style lang="scss" scoped>
-
-  .account__login {
-    &__image {
-      position: absolute;
-      bottom: 0;
-      width: 30vw;
-      height: 100vh;
-      max-width: 80vh;
-      right: 20px;
-      opacity: 0.8;
-      background-position: bottom;
-    }
-
-    ::v-deep {
-      .v-tab {
-        text-transform: unset;
-      }
-    }
-
-  }
-
-</style>

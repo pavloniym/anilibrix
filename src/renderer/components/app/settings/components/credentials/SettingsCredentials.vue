@@ -1,5 +1,6 @@
 <template>
-  <v-card class="mt-auto py-3 credentials" color="transparent" flat>
+  <v-card flat color="transparent" class="mt-auto py-3 credentials__data">
+
     <v-card-text class="caption">
       <v-layout class="with-divider">
         <div>Версия {{app.version}}</div>
@@ -10,6 +11,7 @@
         <a href="#" @click.prevent="toggleDevtools">Инструменты отладки</a>
       </div>
     </v-card-text>
+
   </v-card>
 </template>
 
@@ -65,16 +67,6 @@
 
 
       /**
-       * Open link in OS default browser
-       *
-       * @param link
-       */
-      toLink(link) {
-        this.$electron.shell.openExternal(link);
-      },
-
-
-      /**
        * Toggle devtools
        *
        * @return void
@@ -92,31 +84,33 @@
 <style lang="scss" scoped>
 
   .credentials {
-    a {
-      color: inherit;
-      text-decoration: none;
+    &__data {
 
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+      a {
+        color: inherit;
+        text-decoration: none;
 
-    .with-divider {
-      > * {
-        &::after {
-          content: "-";
-          display: inline-block;
-          padding: 0 3px;
-          text-decoration: none;
+        &:hover {
+          text-decoration: underline;
         }
+      }
 
-        &:last-child {
+      .with-divider {
+        > * {
           &::after {
-            content: none;
+            content: "-";
+            display: inline-block;
+            padding: 0 3px;
+            text-decoration: none;
+          }
+
+          &:last-child {
+            &::after {
+              content: none;
+            }
           }
         }
       }
-
     }
   }
 
