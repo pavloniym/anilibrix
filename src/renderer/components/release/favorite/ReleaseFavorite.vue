@@ -3,7 +3,6 @@
   <!-- Check if release is in favorite -->
   <!-- Remove release from favorites -->
   <v-btn
-    v-on="on"
     :color="isInFavorite ? 'secondary' : color"
     :loading="_loading"
     @click="isInFavorite ? _removeFromFavorites(release) : _addToFavorites(release)">

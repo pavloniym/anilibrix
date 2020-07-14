@@ -14,7 +14,7 @@ export default class extends Transformer {
    * @param release
    * @returns Promise
    */
-  static async fetch(release) {
+  async fetch(release) {
     try {
 
       // Get playlist for release
@@ -48,7 +48,7 @@ export default class extends Transformer {
    * @param number
    * @param episodes
    */
-  static _createEpisode(number, episodes) {
+  _createEpisode(number, episodes) {
     if (episodes.hasOwnProperty(number) === false) {
       episodes[number] = {id: null, title: null, sources: []}
     }
@@ -63,7 +63,7 @@ export default class extends Transformer {
    * @param payload
    * @return {{payload: *, alias: *, label: *, type: *}}
    */
-  static _createSource(type, label, alias, payload) {
+  _createSource(type, label, alias, payload) {
     return {type, label, alias, payload}
   };
 
@@ -74,7 +74,7 @@ export default class extends Transformer {
    * @param episodes
    * @private
    */
-  static _parsePlaylist(playlist, episodes) {
+  _parsePlaylist(playlist, episodes) {
 
     // Parse server playlists
     playlist.forEach(item => {
@@ -125,7 +125,7 @@ export default class extends Transformer {
    * @param episodes
    * @private
    */
-  static _parseUpscale(playlist, episodes) {
+  _parseUpscale(playlist, episodes) {
     if (this.get(store, 'state.app.settings.player.upscale.process') === true) {
       playlist.forEach(item => {
 
@@ -150,7 +150,7 @@ export default class extends Transformer {
    * @return Array
    * @private
    */
-  static async _getTorrents(release) {
+  async _getTorrents(release) {
 
     // Check if torrents should be processed
     if (this.get(store, 'state.app.settings.player.torrents.process') === true) {
@@ -197,7 +197,7 @@ export default class extends Transformer {
    * @param episodes
    * @private
    */
-  static _parseTorrents(torrents, episodes) {
+  _parseTorrents(torrents, episodes) {
     torrents.forEach(torrent => {
 
       const type = 'torrent';
@@ -256,13 +256,12 @@ export default class extends Transformer {
    * @return {null|*}
    * @private
    */
-  static _parseEpisodeFromTorrentFilename(filename) {
+  _parseEpisodeFromTorrentFilename(filename) {
     if (filename && typeof filename === 'string') {
-      const episode = this.get(filename.match(/_\[(\d+)\]_/), [1]) || null;
 
-      return episode !== null
-        ? parseInt(episode, 10)
-        : null;
+      const episode = this.get(filename.match(/_\[(\d+)\]_/), [1]) || null;
+      return episode !== null ? parseFloat(episode) : null;
+
     }
 
     return null;

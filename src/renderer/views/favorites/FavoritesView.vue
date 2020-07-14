@@ -24,7 +24,13 @@
     <template v-if="_isAuthorized">
 
       <!-- Toolbar -->
-      <toolbar class="mb-2" :search.sync="search" :settings.sync="settings"/>
+      <toolbar
+        class="mb-2"
+        :loading="_loading"
+        :search.sync="search"
+        :settings.sync="settings"
+        @reload="_getFavorites">
+      </toolbar>
 
       <!-- Favorites Settings -->
       <v-expand-transition>

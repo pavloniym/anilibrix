@@ -5,8 +5,10 @@ import AnilibriaReleaseTransformer from "@transformers/anilibria/release";
 
 const SET_ITEMS = 'SET_ITEMS';
 const SET_LOADING = 'SET_LOADING';
+const SET_ITEM_EPISODES = 'SET_ITEM_EPISODES';
 const SET_SETTINGS_SORT = 'SET_SETTINGS_SORT';
 const SET_SETTINGS_GROUP = 'SET_SETTINGS_GROUP';
+const SET_LOADING_EPISODES = 'SET_LOADING_EPISODES';
 const SET_SETTINGS_SHOW_SEEN = 'SET_SETTINGS_SHOW_SEEN';
 const SET_SETTINGS_YEARS_COLLAPSED = 'SET_SETTINGS_YEARS_COLLAPSED';
 
@@ -17,6 +19,7 @@ export default {
   state: {
     items: [],
     loading: false,
+    loading_episodes: false,
     settings: {
       sort: 'original',
       group: 'years',
@@ -73,6 +76,19 @@ export default {
 
 
     /**
+     * Set item episodes
+     *
+     * @param s
+     * @param release
+     * @param episodes
+     */
+    [SET_ITEM_EPISODES](s, {release, episodes}) {
+      const item_index = s.items.findIndex(item => item.id === release.id);
+      if (item_index > -1) s.items.splice(item_index, 1, {...s.items[item_index], episodes});
+    },
+
+
+    /**
      * Set settings sort type
      *
      * @param s
@@ -90,6 +106,16 @@ export default {
      * @return {*}
      */
     [SET_SETTINGS_GROUP]: (s, group) => s.settings.group = group,
+
+
+    /**
+     * Set loading episodes state
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_LOADING_EPISODES]: (s, state) => s.loading_episodes = state,
 
 
     /**
@@ -121,14 +147,16 @@ export default {
      *
      * @param commit
      * @param getters
+     * @param dispatch
      * @return {Promise<void>}
      */
-    getFavorites: async ({commit, getters}) => {
+    getFavorites: async ({commit, getters, dispatch}) => {
       if (getters.isAuthorized) {
         try {
 
           // Set loading
           commit(SET_LOADING, true);
+          commit(SET_LOADING_EPISODES, true);
 
           // Cancel previous request if it was stored
           // Create new request token
@@ -139,7 +167,7 @@ export default {
           // Get releases from server
           // Transform releases
           const {items} = await new AnilibriaProxy().getFavorites({page: 1}, {cancelToken: REQUESTS.releases.token});
-          const releases = await AnilibriaReleaseTransformer.fetchCollection(items);
+          const releases = await new AnilibriaReleaseTransformer({skip_episodes: true}).fetchCollection(items);
 
           // Get posters
           await Promise.allSettled(
@@ -150,16 +178,28 @@ export default {
 
           // Set releases
           commit(SET_ITEMS, releases);
+          commit(SET_LOADING, false);
+
+          // Get favorites episodes
+          await Promise.allSettled(
+            items.map(async item =>
+              commit(SET_ITEM_EPISODES, {release: item, episodes: await dispatch('_getFavoriteEpisodes', item)}))
+          );
+
+          // Reset loading episodes
+          commit(SET_LOADING_EPISODES, false);
 
         } catch (error) {
           if (!axios.isCancel(error)) {
 
-            Main.sendToWindow('app:error', 'Произошла ошибка при загрузке релизов');
+            // Show error
+            Main.sendToWindow('app:error', 'Произошла ошибка при загрузке избранных релизов');
             Main.sendToWindow('app:error', error);
 
+            // Reset loading
+            commit(SET_LOADING, false);
+            commit(SET_LOADING_EPISODES, false);
           }
-        } finally {
-          commit(SET_LOADING, false);
         }
       }
     },
@@ -195,6 +235,7 @@ export default {
         }
       }
     },
+
 
     /**
      * Remove release from favorites
@@ -236,7 +277,6 @@ export default {
      */
     setSettingsSort: ({commit}, sort) => commit(SET_SETTINGS_SORT, sort),
 
-
     /**
      * Set settings group type
      *
@@ -273,6 +313,20 @@ export default {
       if (year_index === -1) years.push(year);
 
       commit(SET_SETTINGS_YEARS_COLLAPSED, years);
+    },
+
+
+    /**
+     * Get favorite episodes
+     *
+     * @param commit
+     * @param release
+     * @return {Promise<*>}
+     * @private
+     */
+    _getFavoriteEpisodes: async ({commit}, release) => {
+      const {episodes} = await new AnilibriaReleaseTransformer().fetchItem(release);
+      return episodes;
     }
 
   }

@@ -171,7 +171,7 @@ export default {
         // Get items from server
         // Transform items
         const {items} = await new AnilibriaProxy().getCatalogItems({sort, genres, years, page, perPage});
-        const releases = await AnilibriaReleaseTransformer.fetchCollection(items);
+        const releases = await new AnilibriaReleaseTransformer().fetchCollection(items);
 
         // Collect all poster images
         await Promise.allSettled(

@@ -13,10 +13,16 @@
       @input="$emit('update:search', $event)">
     </v-text-field>
 
+    <!-- Reload -->
+    <v-btn v-bind="{loading}" class="mr-2" height="48" @click="$emit('reload')">
+      <v-icon>mdi-refresh</v-icon>
+    </v-btn>
+
     <!-- Settings -->
-    <v-btn height="48" @click="$emit('update:settings', !settings)">
+    <v-btn v-bind="{loading}" height="48" @click="$emit('update:settings', !settings)">
       <v-icon>mdi-settings</v-icon>
     </v-btn>
+
 
   </v-layout>
 </template>
@@ -29,6 +35,10 @@
       default: null
     },
     settings: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
       type: Boolean,
       default: false,
     }

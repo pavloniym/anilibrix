@@ -21,7 +21,8 @@
               center
               color="secondary"
               class="release-card--progress mx-n4"
-              height="25">
+              height="25"
+              :loading="_loading">
             </release-progress>
 
           </div>
@@ -34,6 +35,7 @@
           color="secondary"
           class="release-card--progress"
           height="5"
+          :loading="_loading"
           :show-numbers="false">
         </release-progress>
 
@@ -46,6 +48,7 @@
 
   import VClamp from 'vue-clamp'
   import ReleaseProgress from '@components/release/progress'
+  import {mapState} from "vuex";
 
   const props = {
     release: {
@@ -65,6 +68,7 @@
       ReleaseProgress
     },
     computed: {
+      ...mapState('favorites', {_loading: s => s.loading_episodes}),
 
       /**
        * Get release poster image

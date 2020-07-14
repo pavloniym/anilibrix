@@ -1,6 +1,6 @@
 <template>
-  <v-progress-linear v-bind="{height, color}" class="release__progress" :value="progress">
-    <template v-if="showNumbers" v-slot>
+  <v-progress-linear  v-bind="{height, color}" class="release__progress" :value="progress" :indeterminate="loading">
+    <template v-if="!loading && showNumbers" v-slot>
       <div class="release__progress__description caption white--text font-weight-bold px-4">
 
         <!-- Complete All Episodes -->
@@ -56,6 +56,10 @@
       default: false
     },
     center: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
       type: Boolean,
       default: false,
     }

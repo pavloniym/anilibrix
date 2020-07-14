@@ -9,7 +9,7 @@ export default class AnilibriaCatalogTransformer extends Transformer {
    * @param release
    * @returns {{}}
    */
-  static fetch(release) {
+  fetch(release) {
     return {
       id: this.get(release, 'id'),
       year: this.get(release, 'year'),
@@ -36,7 +36,7 @@ export default class AnilibriaCatalogTransformer extends Transformer {
    * @return {*}
    * @private
    */
-  static _stripHtml(value) {
+  _stripHtml(value) {
     return value ? stripHtml(value) : null;
   }
 }

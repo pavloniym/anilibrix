@@ -8,7 +8,7 @@ export default class extends Transformer {
    * @param release
    * @returns {{}}
    */
-  static fetch(release) {
+  fetch(release) {
     return {
       ...release,
       notification: {

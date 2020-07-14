@@ -13,6 +13,8 @@
 import get from 'lodash/get'
 
 export default class Transformer {
+
+
   /**
    * Method used to transform a fetched collection.
    *
@@ -21,7 +23,7 @@ export default class Transformer {
    * @param fetcher
    * @returns {Array} The transformed items.
    */
-  static fetchCollection(items, modules = [], fetcher = 'fetchItem') {
+  fetchCollection(items, modules = [], fetcher = 'fetchItem') {
     return (items || []).map(item => this[fetcher](item, modules));
   }
 
@@ -33,7 +35,7 @@ export default class Transformer {
    * @param fetcher
    * @returns {*}
    */
-  static fetchItem(item, modules = [], fetcher = 'fetch') {
+  fetchItem(item, modules = [], fetcher = 'fetch') {
     const data = this[fetcher](item);
 
     // Inject modules
@@ -53,7 +55,7 @@ export default class Transformer {
    * @param modules Additional modules that should be added to transformed item
    * @returns {Array} The transformed items.
    */
-  static sendCollection(items, modules = []) {
+  sendCollection(items, modules = []) {
     return items.map(item => this.sendItem(item, modules));
   }
 
@@ -64,7 +66,7 @@ export default class Transformer {
    * @param modules
    * @returns {*}
    */
-  static sendItem(item, modules = []) {
+  sendItem(item, modules = []) {
     const data = this.send(item);
 
     // Inject modules
@@ -85,7 +87,7 @@ export default class Transformer {
    * @param fallback
    * @returns {*}
    */
-  static get(source, search, fallback = null) {
+  get(source, search, fallback = null) {
     return get(source, search, fallback);
   }
 }

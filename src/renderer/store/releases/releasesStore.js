@@ -110,7 +110,7 @@ export default {
         // Get releases from server
         // Transform releases
         const {items} = await new AnilibriaProxy().getReleases({cancelToken: REQUESTS.releases.token});
-        const releases = await AnilibriaReleaseTransformer.fetchCollection(items);
+        const releases = await new AnilibriaReleaseTransformer().fetchCollection(items);
 
         // Filters releases without episodes
         const filteredReleases = releases.filter(release => release.episodes.length > 0);
