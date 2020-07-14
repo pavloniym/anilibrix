@@ -15,12 +15,14 @@
 
     <!-- Reload -->
     <v-btn v-bind="{loading}" class="mr-2" height="48" @click="$emit('reload')">
-      <v-icon>mdi-refresh</v-icon>
+      <v-icon small class="mr-2">mdi-refresh</v-icon>
+      <span>Обновить</span>
     </v-btn>
 
     <!-- Settings -->
     <v-btn v-bind="{loading}" height="48" @click="$emit('update:settings', !settings)">
-      <v-icon>mdi-settings</v-icon>
+      <v-icon small class="mr-2">mdi-settings</v-icon>
+      <span>Настройки</span>
     </v-btn>
 
 

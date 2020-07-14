@@ -2,30 +2,27 @@
   <v-layout column>
 
     <!-- Header-->
-    <v-card color="transparent">
+    <v-card flat color="transparent">
       <v-card-title>Каталог релизов</v-card-title>
       <v-card-subtitle>Вы можете выбрать жанры и года для более тонкой настройки списка релизов</v-card-subtitle>
     </v-card>
 
-    <!-- Filters -->
-    <catalog-filters class="mx-1"/>
+    <!-- Catalog Filters -->
+    <v-expand-transition>
+      <filters v-if="settings" class="mb-2"/>
+    </v-expand-transition>
 
-    <!-- Show Action -->
-    <v-layout class="my-2 mb-6">
-      <v-btn @click="showReleases">Показать</v-btn>
-    </v-layout>
+    <!-- Toolbar -->
+    <toolbar class="mb-2" :settings.sync="settings" @reload="showReleases"/>
 
-    <!-- Catalog items -->
-    <template v-for="item in _items">
-      <v-card class="mb-2" :key="item.id">
-        <catalog-item v-bind="item" :ref="item.id" @click="toRelease(item)"/>
-      </v-card>
-    </template>
-
-    <!-- Loading -->
-    <template v-if="_loading">
-      <catalog-loader v-for="i in _perPage" class="mb-2" :key="i"/>
-    </template>
+    <!-- Catalog Loader -->
+    <!-- Catalog Items -->
+    <div class="my-2">
+      <template v-for="release in _items">
+        <release v-bind="{release}" class="mb-2" :ref="release.id" :key="release.id" @click="toRelease(release)"/>
+      </template>
+      <loader v-if="_loading" v-for="i in _perPage" class="mb-2" :key="i"/>
+    </div>
 
     <!-- Load More -->
     <v-btn v-if="_items && _items.length > 0 && hasMoreItems" block text @click="loadReleases">Загрузить еще</v-btn>
@@ -35,19 +32,28 @@
 
 <script>
 
-  import CatalogItem from './components/item'
-  import CatalogLoader from './components/loader'
-  import CatalogFilters from './components/filters'
+  import Loader from './components/loader'
+  import Toolbar from './components/toolbar'
+  import Filters from './components/filters'
+  import Release from './components/release'
 
+  import {toRelease} from "@utils/router/views";
   import {mapActions, mapState} from 'vuex'
 
   export default {
     name: "Catalog.View",
     meta: {title: 'Каталог'},
     components: {
-      CatalogItem,
-      CatalogLoader,
-      CatalogFilters
+      Loader,
+      Toolbar,
+      Filters,
+      Release,
+    },
+
+    data() {
+      return {
+        settings: false,
+      }
     },
 
     computed: {
@@ -65,7 +71,7 @@
        * Check if last items from server is equals to pet page items
        * That means that there are more items on server
        *
-       * @return {number}
+       * @return {boolean}
        */
       hasMoreItems() {
         return this.$__get(this._pagination, 'lastItems', 0) === this._perPage;
@@ -82,6 +88,13 @@
 
 
       /**
+       * Go to release
+       *
+       * @return void
+       */
+      toRelease,
+
+      /**
        * Show releases
        * Reset releases
        *
@@ -91,6 +104,7 @@
         await this._setPaginationPage(1);
         await this._getCatalogItems();
       },
+
 
       /**
        * Load more releases from next page
@@ -102,22 +116,6 @@
         await this._getCatalogItems();
       },
 
-
-      /**
-       * Go to release
-       *
-       * @return void
-       */
-      toRelease(release) {
-        this.$router.push({
-          name: 'release',
-          params: {
-            releaseId: release.id,
-            releaseName: release.names.original
-          }
-        })
-      }
-
     },
 
     created() {
@@ -127,9 +125,9 @@
 
     },
 
-    beforeRouteEnter (to, from, next) {
+    beforeRouteEnter(to, from, next) {
       next(vm => {
-        if(from && from.name === 'release') {
+        if (from && from.name === 'release') {
           const fromReleaseId = vm.$__get(from, 'params.releaseId');
           const releaseContainer = vm.$refs[fromReleaseId];
 

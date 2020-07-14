@@ -44,7 +44,8 @@ const store = new Vuex.Store({
       paths: [
         'app',
         'notifications',
-        'favorites.settings'
+        'catalog.filters',
+        'favorites.settings',
       ],
       storage: {
         getItem: getItem(storage),

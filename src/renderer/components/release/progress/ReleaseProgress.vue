@@ -1,5 +1,11 @@
 <template>
-  <v-progress-linear  v-bind="{height, color}" class="release__progress" :value="progress" :indeterminate="loading">
+  <v-progress-linear
+    v-bind="{height, color}"
+    class="release__progress"
+    :class="{square}"
+    :value="progress"
+    :indeterminate="loading">
+
     <template v-if="!loading && showNumbers" v-slot>
       <div class="release__progress__description caption white--text font-weight-bold px-4">
 
@@ -23,6 +29,7 @@
 
       </div>
     </template>
+
   </v-progress-linear>
 </template>
 
@@ -62,6 +69,10 @@
     loading: {
       type: Boolean,
       default: false,
+    },
+    square: {
+      type: Boolean,
+      default: false
     }
   };
 
@@ -130,7 +141,12 @@
 
   .release__progress {
     cursor: default;
-    border-radius: 4px;
+    border-radius: 4px !important;
+    transition: height 0s;
+
+    &.square {
+      border-radius: 0 !important;
+    }
 
     &__description {
       left: 0;

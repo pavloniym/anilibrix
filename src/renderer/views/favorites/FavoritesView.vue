@@ -23,6 +23,12 @@
     <!-- Show user favorites -->
     <template v-if="_isAuthorized">
 
+      <!-- Favorites Settings -->
+      <v-expand-transition>
+        <settings v-if="settings" class="mb-2"/>
+      </v-expand-transition>
+
+
       <!-- Toolbar -->
       <toolbar
         class="mb-2"
@@ -32,10 +38,6 @@
         @reload="_getFavorites">
       </toolbar>
 
-      <!-- Favorites Settings -->
-      <v-expand-transition>
-        <settings v-if="settings" class="mb-2"/>
-      </v-expand-transition>
 
       <!-- Favorites loader -->
       <!-- Favorites View -->

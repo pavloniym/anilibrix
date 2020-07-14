@@ -5,7 +5,7 @@
   <v-btn
     :color="isInFavorite ? 'secondary' : color"
     :loading="_loading"
-    @click="isInFavorite ? _removeFromFavorites(release) : _addToFavorites(release)">
+    @click.stop="isInFavorite ? _removeFromFavorites(release) : _addToFavorites(release)">
 
     <v-icon v-if="isInFavorite">mdi-star</v-icon>
     <v-icon v-else>mdi-star-outline</v-icon>
