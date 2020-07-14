@@ -8,8 +8,9 @@ import {Main} from '@main/utils/windows'
 const SET_INDEX = 'SET_INDEX';
 const SET_RELEASES_DATA = 'SET_RELEASES_DATA';
 const SET_RELEASES_LOADING = 'SET_RELEASES_LOADING';
-
 const SET_RELEASES_DATETIME = 'SET_RELEASES_DATETIME';
+const SET_RELEASES_HAS_ERROR = 'SET_RELEASES_HAS_ERROR';
+
 const REQUESTS = {search: null, releases: null};
 
 export default {
@@ -18,7 +19,8 @@ export default {
     data: [],
     index: null,
     loading: false,
-    datetime: null
+    datetime: null,
+    has_error: false,
   },
 
   mutations: {
@@ -61,6 +63,15 @@ export default {
      */
     [SET_RELEASES_DATETIME]: (s, datetime) => s.datetime = datetime,
 
+    /**
+     * Set release has error
+     *
+     * @param s
+     * @param state
+     * @return {*}
+     */
+    [SET_RELEASES_HAS_ERROR]: (s, state) => s.has_error = state,
+
   },
 
   actions: {
@@ -88,6 +99,7 @@ export default {
 
         // Set loading state
         commit(SET_RELEASES_LOADING, true);
+        commit(SET_RELEASES_HAS_ERROR, false);
 
         // Cancel previous request if it was stored
         if (REQUESTS.releases) REQUESTS.releases.cancel();
@@ -147,8 +159,12 @@ export default {
       } catch (error) {
         if (!axios.isCancel(error)) {
 
+          // Show error
           Main.sendToWindow('app:error', 'Произошла ошибка при загрузке релизов');
           Main.sendToWindow('app:error', error);
+
+          // Set release has error
+          commit(SET_RELEASES_HAS_ERROR, true);
 
         }
       } finally {

@@ -1,24 +1,28 @@
 <template>
-  <v-layout column justify-center class="releases">
+   <v-fade-transition appear mode="out-in">
+     <v-layout v-if="loading || !_has_error" column justify-center class="releases">
 
-    <slider
-      v-bind="{loading}"
-      v-model="index"
-      class="mb-4"
-      :releases="_releases"
-      @next="next"
-      @previous="previous"
-      @toVideo="toVideo(release, episode)">
-    </slider>
+       <slider
+         v-bind="{loading}"
+         v-model="index"
+         class="mb-4"
+         :releases="_releases"
+         @next="next"
+         @previous="previous"
+         @toVideo="toVideo(release, episode)">
+       </slider>
 
-    <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
-    <actions v-bind="{loading, release}" @toVideo="toVideo(release, episode)" @toRelease="toRelease(release)"/>
+       <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
+       <actions v-bind="{loading, release}" @toVideo="toVideo(release, episode)" @toRelease="toRelease(release)"/>
 
-  </v-layout>
+     </v-layout>
+     <error v-else-if="!loading && _has_error"/>
+   </v-fade-transition>
 </template>
 
 <script>
 
+  import Error from './components/error'
   import Slider from './components/slider'
   import Release from './components/release'
   import Actions from './components/actions'
@@ -32,6 +36,7 @@
     meta: {title: 'Последние релизы'},
     mixins: [AppKeyboardHandlerMixin],
     components: {
+      Error,
       Slider,
       Release,
       Actions,
@@ -53,6 +58,7 @@
         _index: s => s.index,
         _loading: s => s.loading,
         _releases: s => s.data || [],
+        _has_error: s => s.has_error,
       }),
 
 
@@ -134,7 +140,7 @@
         // space || enter
         if (code === 32 || code === 13) {
           if (this._drawer === false && this._is_searching === false) {
-            this.toEpisode();
+            this.toVideo();
           }
         }
 
@@ -176,6 +182,12 @@
           if (_loading === false && this.loading === true) {
             this.loading = false;
           }
+        }
+      },
+
+      _has_error: {
+        handler() {
+          this.loading = true;
         }
       }
 
