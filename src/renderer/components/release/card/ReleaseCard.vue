@@ -19,9 +19,9 @@
           <v-card-subtitle v-text="original" class="pb-0"/>
           <v-card-subtitle v-text="genres" class="pt-0"/>
           <v-card-text class="mb-1">
+            <favorite v-bind="{release}" color="grey darken-3"/>
             <v-chip v-if="year" v-text="year" label color="grey darken-3" :style="{height: '36px'}"/>
             <v-chip v-if="type" v-text="type" label color="grey darken-3" :style="{height: '36px'}"/>
-            <favorite v-bind="{release}" color="grey darken-3"/>
           </v-card-text>
         </div>
 

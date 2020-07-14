@@ -9,18 +9,14 @@
       <div class="body-2">{{genres}}</div>
 
       <!-- Episode -->
-      <v-chip
-        v-if="episode"
-        v-text="episode.title"
-        label
-        color="secondary"
-        class="mt-2 subtitle-2 font-weight-black">
-      </v-chip>
+      <!-- Favorite action -->
+      <v-layout class="my-3">
+        <favorite v-bind="{release}" class="mr-1"/>
+        <v-chip v-text="episode.title" label color="secondary" class="font-weight-black" :style="{height: '36px'}"/>
+      </v-layout>
 
       <!-- Description -->
-      <div class="my-2 grey--text lighten-1" :style="{maxHeight: '75px'}">
-        <v-clamp max-height="75px">{{description}}</v-clamp>
-      </div>
+      <v-clamp class="my-3 grey--text lighten-1" max-height="75px">{{description}}</v-clamp>
 
     </div>
   </v-layout>
@@ -28,8 +24,9 @@
 
 <script>
 
-  import Loader from './components/loader'
   import VClamp from 'vue-clamp'
+  import Loader from './components/loader'
+  import Favorite from '@components/release/favorite'
 
   const props = {
     release: {
@@ -49,8 +46,9 @@
   export default {
     props,
     components: {
+      VClamp,
       Loader,
-      VClamp
+      Favorite,
     },
     computed: {
 
@@ -102,7 +100,7 @@
 
   .release {
     &__data {
-      max-height: 220px;
+      max-height: 230px;
       user-select: none;
     }
   }

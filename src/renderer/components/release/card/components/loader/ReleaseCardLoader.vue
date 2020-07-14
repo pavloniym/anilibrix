@@ -10,8 +10,8 @@
 
         <v-layout class="shrink mt-4">
           <v-skeleton-loader boilerplate type="button" width="65" class="mr-1"/>
-          <v-skeleton-loader boilerplate type="button" width="160" class="mr-1"/>
-          <v-skeleton-loader boilerplate type="button" width="65"/>
+          <v-skeleton-loader boilerplate type="button" width="65" class="mr-1"/>
+          <v-skeleton-loader boilerplate type="button" width="160" />
         </v-layout>
 
       </v-layout>
