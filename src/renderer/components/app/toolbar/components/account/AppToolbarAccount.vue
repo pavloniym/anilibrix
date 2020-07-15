@@ -44,6 +44,20 @@
           </v-list-item-content>
         </v-list-item>
         <v-divider/>
+
+        <!-- Profile statistics -->
+        <template v-for="(item, k) in statistics">
+          <v-list-item :key="k">
+            <v-list-item-content>
+              <v-list-item-subtitle v-text="item.title"/>
+              <v-list-item-title v-text="item.value" class="font-weight-bold"/>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider :key="`d:${k}`"/>
+        </template>
+
+
+        <!-- Logout -->
         <v-list-item @click="logout">
           <v-list-item-subtitle>Выход</v-list-item-subtitle>
         </v-list-item>
@@ -57,6 +71,7 @@
 <script>
 
   import {mapGetters, mapState} from 'vuex'
+  import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
 
   export default {
     data() {
@@ -67,8 +82,70 @@
       }
     },
     computed: {
+      ...mapState('app/watch', {_watch: s => s.items}),
+      ...mapState('favorites', {_favorites: s => s.items}),
       ...mapState('app/account', {_profile: s => s.profile}),
       ...mapGetters('app/account', {_isAuthorized: 'isAuthorized'}),
+
+
+      /**
+       * Get favorites length
+       *
+       * @return {number}
+       */
+      favorites() {
+        return (this._favorites || []).length
+      },
+
+
+      /**
+       * Get episodes
+       *
+       * @return {number}
+       */
+      episodes() {
+        return Object.values(this._watch || {})
+          .filter(item => item.isSeen)
+          .length;
+      },
+
+
+      /**
+       * Get hours
+       *
+       * @return {number}
+       */
+      hours() {
+        const seconds =  Object.values(this._watch || {})
+          .reduce((storage, episode) => storage + (episode.time || 0), 0);
+
+        return Math.floor(seconds / 60 / 60);
+      },
+
+
+      /**
+       * Get profile statistics
+       *
+       * @return {array}
+       */
+      statistics() {
+        return [
+          {
+            title: 'В избранном',
+            value: stringsPluralize(this.favorites, ['релиз', 'релиза', 'релизов']),
+          },
+          {
+            title: 'Просмотрено',
+            value: stringsPluralize(this.episodes, ['эпизод', 'эпизода', 'эпизодов']),
+          },
+          {
+            title: 'Потрачено на просмотр',
+            value: stringsPluralize(this.hours, ['час', 'часа', 'часов']),
+          }
+        ]
+      }
+
+
     },
 
 

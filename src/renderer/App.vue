@@ -99,7 +99,12 @@
         }
 
         if (this._updates === true) {
-          this.update.handler = setInterval(() => this._getReleases(), this._timeout);
+          this.update.handler = setInterval(() => {
+
+            this._getReleases();
+            this._getFavorites();
+
+          }, this._timeout);
         }
       }
 

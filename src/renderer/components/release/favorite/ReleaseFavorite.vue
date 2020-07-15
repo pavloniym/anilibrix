@@ -3,6 +3,7 @@
   <!-- Check if release is in favorite -->
   <!-- Remove release from favorites -->
   <v-btn
+    v-if="_isAuthorized"
     :color="isInFavorite ? 'secondary' : color"
     :loading="_loading"
     @click.stop="isInFavorite ? _removeFromFavorites(release) : _addToFavorites(release)">
