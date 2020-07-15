@@ -8,6 +8,10 @@ html, body {
   overflow: hidden !important;
 }
 
+.wcomments_page{
+  width: 100% !important;
+}
+
 .wcomments_head {
   background: #1E1E1E !important;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-layout column>
 
     <!-- Comments loader -->
     <v-skeleton-loader v-if="visible === false" type="list-item-avatar-three-line@19"/>
@@ -7,7 +7,7 @@
     <!-- Comments content -->
     <webview v-bind="configuration" ref="comments" class="comments" :class="{visible}" :style="{height}"/>
 
-  </div>
+  </v-layout>
 </template>
 
 <script>
@@ -121,7 +121,7 @@
 <style lang="scss">
 
   .comments {
-    width: 100%;
+    //width: 100vw;
     height: 100vh;
     position: absolute;
     top: -999999px;
