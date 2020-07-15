@@ -8,11 +8,13 @@ export default class extends Transformer {
   /**
    * Constructor
    *
-   * @param skip_episodes
+   * @param skipEpisodes
+   * @param cancel_token
    */
-  constructor({skip_episodes = false} = {}) {
+  constructor({skipEpisodes = false, cancelToken = null} = {}) {
     super();
-    this.skip_episodes = skip_episodes;
+    this.cancelToken = cancelToken;
+    this.skipEpisodes = skipEpisodes;
   }
 
 
@@ -52,8 +54,8 @@ export default class extends Transformer {
         image: null,
       },
       datetime: this._getReleaseDatetime(release),
-      episodes: this.skip_episodes === false
-        ? await new AnilibriaReleaseEpisodeTransformer().fetch(release)
+      episodes: this.skipEpisodes === false
+        ? await new AnilibriaReleaseEpisodeTransformer({cancelToken: this.cancelToken}).fetch(release)
         : [],
       description: this._stripHtml(this.get(release, 'description')),
     }

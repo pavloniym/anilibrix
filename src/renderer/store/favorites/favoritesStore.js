@@ -167,12 +167,12 @@ export default {
           // Get releases from server
           // Transform releases
           const {items} = await new AnilibriaProxy().getFavorites({page: 1}, {cancelToken: REQUESTS.releases.token});
-          const releases = await new AnilibriaReleaseTransformer({skip_episodes: true}).fetchCollection(items);
+          const releases = await new AnilibriaReleaseTransformer({skipEpisodes: true}).fetchCollection(items);
 
           // Get posters
           await Promise.allSettled(
             releases.map(async release =>
-              release.poster.image = await new AnilibriaProxy().getImage({src: release.poster.path})
+              release.poster.image = await new AnilibriaProxy().getImage({src: release.poster.path}, {cancelToken: REQUESTS.releases.token})
             )
           );
 
@@ -325,7 +325,10 @@ export default {
      * @private
      */
     _getFavoriteEpisodes: async ({commit}, release) => {
-      const {episodes} = await new AnilibriaReleaseTransformer().fetchItem(release);
+
+      const {episodes} = await new AnilibriaReleaseTransformer({cancelToken: REQUESTS.releases.token})
+        .fetchItem(release);
+      
       return episodes;
     }
 

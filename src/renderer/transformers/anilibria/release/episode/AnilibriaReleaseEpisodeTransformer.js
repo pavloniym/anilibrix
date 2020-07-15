@@ -8,6 +8,12 @@ import {Torrent} from '@main/utils/windows'
 
 export default class extends Transformer {
 
+  constructor({cancelToken = null} = {}) {
+    super();
+    this.cancelToken = cancelToken;
+  }
+
+
   /**
    * Transform incoming data
    *
@@ -165,7 +171,7 @@ export default class extends Transformer {
               try {
 
                 // Get blob torrent file from server
-                const response = await new AnilibriaProxy().getTorrent({url: torrent.url});
+                const response = await new AnilibriaProxy().getTorrent({url: torrent.url}, {cancelToken: this.cancelToken});
 
                 // Send to torrent for parsing data
                 Torrent.sendToWindow('torrent:parse', {torrentId: torrent.id, blob: response.data});

@@ -111,11 +111,12 @@ export default class AnilibriaProxy extends Proxy {
    * Get poster image
    *
    * @param src
+   * @param parameters
    * @return {string}
    */
-  async getImage({src}) {
+  async getImage({src}, parameters = {}) {
     if (src) {
-      const response = await this.submit('GET', this._getHost() + src, {responseType: 'arraybuffer'});
+      const response = await this.submit('GET', this._getHost() + src, {...parameters, responseType: 'arraybuffer'});
       const image = response ? Buffer.from(response.data, 'binary').toString('base64') : null;
       return image ? `data:image/jpeg;base64,${image}` : null;
     }
@@ -128,10 +129,11 @@ export default class AnilibriaProxy extends Proxy {
    *
    * @param torrentUrl
    * @return {Promise<unknown>}
+   * @param parameters
    */
-  async getTorrent({url}) {
+  async getTorrent({url}, parameters = {}) {
     if (url) {
-      return await this.submit('GET', this._getHost() + url, {responseType: 'arraybuffer'});
+      return await this.submit('GET', this._getHost() + url, {...parameters, responseType: 'arraybuffer'});
     }
   }
 
