@@ -1,26 +1,25 @@
 <template>
-  <!-- Reload -->
-  <v-tooltip left>
+  <div>
 
-    <template v-slot:activator="{ on }">
-      <v-btn
-        v-on="datetime ? on : null"
-        icon
-        :disabled="_loading"
-        @click="getReleases">
-        <v-fade-transition mode="out-in">
-          <v-progress-circular v-if="_loading" indeterminate size="20"/>
-          <v-icon v-else>mdi-refresh</v-icon>
-        </v-fade-transition>
-      </v-btn>
-    </template>
+    <v-tooltip left activator="#toolbar__reload">
+      <div class="py-1" :style="{lineHeight: 1}">
+        <div class="font-weight-bold">Обновить последние релизы</div>
+        <div class="caption">Обновлено в {{datetime}}</div>
+      </div>
+    </v-tooltip>
 
-    <div class="py-1" :style="{lineHeight: 1}">
-      <div class="font-weight-bold">Обновить последние релизы</div>
-      <div class="caption">Обновлено в {{datetime}}</div>
-    </div>
+    <v-btn
+      icon
+      id="toolbar__reload"
+      :disabled="_loading"
+      @click="getReleases">
+      <v-fade-transition mode="out-in">
+        <v-progress-circular v-if="_loading" indeterminate size="20"/>
+        <v-icon v-else>mdi-refresh</v-icon>
+      </v-fade-transition>
+    </v-btn>
 
-  </v-tooltip>
+  </div>
 </template>
 
 <script>

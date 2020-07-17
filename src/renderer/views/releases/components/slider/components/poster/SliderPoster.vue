@@ -51,13 +51,14 @@
         return `poster:${this.release ? this.release.id : null}`
       },
 
+
       /**
-       * Get poster
+       * Get poster full src
        *
-       * @return {*|null}
+       * @return {string|null}
        */
       src() {
-        return this.$__get(this.release, 'poster.image') || null
+        return this.$__get(this.release, 'poster');
       }
 
 

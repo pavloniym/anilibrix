@@ -27,12 +27,12 @@
 
 <script>
 
+  // Utils
   import {mapState, mapActions} from 'vuex'
-  import {
-    sendAppDevtoolsMainEvent,
-    sendAppDevtoolsTorrentEvent,
-    sendAppNotificationEvent
-  } from "@main/handlers/app/appHandlers";
+
+  // Handlers
+  import {sendReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
+  import {sendAppDevtoolsMainEvent, sendAppDevtoolsTorrentEvent,} from "@main/handlers/app/appHandlers";
 
   export default {
     computed: {
@@ -55,7 +55,7 @@
           },
           {
             title: 'Показать уведомление',
-            action: () => sendAppNotificationEvent(this._releases[0])
+            action: () => sendReleaseNotification(this._releases[0])
           },
           {
             title: 'Добавить уведомление в хранилище',

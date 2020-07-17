@@ -97,24 +97,23 @@ const store = new Vuex.Store({
 
 
 /**
- * Set user's id on app startup
- *
- * @return {Promise<any>}
- */
-const setUserId = async () => await store.dispatch('app/account/setUserId');
-
-
-/**
  * Get store
  *
  * @return {Store<unknown>}
  */
-const getStore = () => store;
+export const getStore = () => store;
 
 
+/**
+ * Set user's id on app startup
+ *
+ * @return {Promise<any>}
+ */
+export const setUserId = async () => await store.dispatch('app/account/setUserId');
+
+
+/**
+ * Export store
+ *
+ */
 export default store
-
-export {
-  getStore,
-  setUserId,
-}

@@ -55,17 +55,15 @@
     data() {
       return {
         loading: false,
-        update: {
-          handler: null
-        }
+        update_handler: null
       }
     },
 
 
     computed: {
       ...mapState('app/settings/system', {
-        _updates: s => s.updates.enabled,
-        _timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
+        _updates_enabled: s => s.updates.enabled,
+        _updates_timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
       }),
 
       /**
@@ -93,18 +91,16 @@
       toggleUpdates() {
 
         // Clear update interval
-        if (this.update.handler) {
-          clearInterval(this.update.handler);
-          this.update.handler = null;
-        }
+        if (this.update_handler) clearInterval(this.update_handler);
 
-        if (this._updates === true) {
-          this.update.handler = setInterval(() => {
+        // If updated are enabled -> set interval for auto updates
+        if (this._updates_enabled === true) {
+          this.update_handler = setInterval(() => {
 
             this._getReleases();
             this._getFavorites();
 
-          }, this._timeout);
+          }, this._updates_timeout);
         }
       }
 

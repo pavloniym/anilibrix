@@ -1,7 +1,7 @@
 import stripHtml from 'string-strip-html';
-import Transformer from '@transformer'
+import BaseTransformer from "@transformers/BaseTransformer";
 
-export default class AnilibriaCatalogTransformer extends Transformer {
+export default class CatalogTransformer extends BaseTransformer {
 
   /**
    * Transform incoming data
@@ -18,12 +18,8 @@ export default class AnilibriaCatalogTransformer extends Transformer {
         ru: this._stripHtml(this.get(release, 'names.0')),
         original: this._stripHtml(this.get(release, 'names.1'))
       },
-      voices: this.get(release, 'voices') || [],
+      poster: this.get(release, 'poster'),
       genres: this.get(release, 'genres') || [],
-      poster: {
-        path: this.get(release, 'poster'),
-        image: null,
-      },
       description: this._stripHtml(this.get(release, 'description')),
     }
   }

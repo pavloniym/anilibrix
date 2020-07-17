@@ -1,17 +1,27 @@
-import AnilibriaProxy from '@proxies/anilibria'
-import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
+// Proxy
+import ReleaseProxy from "@proxies/release";
 
+// Transformers
+import SearchTransformer from "@transformers/search";
+import ReleaseTransformer from '@transformers/release'
+import EpisodesTransformer from "@transformers/episode";
+
+// Utils
 import axios from 'axios'
-import __get from 'lodash/get'
-import {Main} from '@main/utils/windows'
 
+// Handlers
+import {showAppError, sendReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
+
+// Mutations
 const SET_INDEX = 'SET_INDEX';
 const SET_RELEASES_DATA = 'SET_RELEASES_DATA';
 const SET_RELEASES_LOADING = 'SET_RELEASES_LOADING';
 const SET_RELEASES_DATETIME = 'SET_RELEASES_DATETIME';
 const SET_RELEASES_HAS_ERROR = 'SET_RELEASES_HAS_ERROR';
 
-const REQUESTS = {search: null, releases: null};
+// Requests
+let REQUEST_FOR_SEARCH = null;
+let REQUEST_FOR_RELEASES = null;
 
 export default {
   namespaced: true,
@@ -102,33 +112,43 @@ export default {
         commit(SET_RELEASES_HAS_ERROR, false);
 
         // Cancel previous request if it was stored
-        if (REQUESTS.releases) REQUESTS.releases.cancel();
+        if (REQUEST_FOR_RELEASES) REQUEST_FOR_RELEASES.cancel();
 
         // Create new request token if exists
-        REQUESTS.releases = axios.CancelToken.source();
+        REQUEST_FOR_RELEASES = axios.CancelToken.source();
 
         // Get releases from server
         // Transform releases
-        const {items} = await new AnilibriaProxy().getReleases({cancelToken: REQUESTS.releases.token});
-        const releases = await new AnilibriaReleaseTransformer().fetchCollection(items);
+        const {items} = await new ReleaseProxy().getReleases({cancelToken: REQUEST_FOR_RELEASES.token});
+        const releases = new ReleaseTransformer().fetchCollection(items);
 
         // Filters releases without episodes
-        const filteredReleases = releases.filter(release => release.episodes.length > 0);
-
-        // Get posters
-        await Promise.allSettled(
-          filteredReleases.map(async release =>
-            release.poster.image = await new AnilibriaProxy().getImage({src: release.poster.path})
-          )
-        );
-
         // Sort releases from newest to oldest
-        const sortedReleases = filteredReleases.sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
+        const filteredReleases = releases
+          .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}))
+          .sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
+
+
+        // Load episodes
+        // Filter releases with episodes
+        const processedReleases = (await Promise
+          .allSettled(
+            filteredReleases
+              .map(async release => ({
+                ...release,
+                episodes: await new EpisodesTransformer({cancelToken: REQUEST_FOR_RELEASES.token})
+                  .fetchItem(release.episodes)
+              }))
+          ))
+          .filter(promise => promise.status === 'fulfilled')
+          .map(promise => promise.value)
+          .filter(release => release.episodes.length > 0);
+
 
         // Try to find new releases and show notifications
         // If previous releases exists (ignore initial request)
         if (state.data && state.data.length > 0) {
-          sortedReleases.forEach(release => {
+          processedReleases.forEach(release => {
 
             // Get release id and episodes number
             const releaseId = release.id;
@@ -143,7 +163,7 @@ export default {
             if (previousRelease === null) {
 
               // Send notification event to main window
-              Main.sendToWindow('app:notification', release);
+              sendReleaseNotification(release);
 
               // Send release to notifications store
               dispatch('notifications/setRelease', release, {root: true})
@@ -153,18 +173,19 @@ export default {
 
         // Set updated datetime
         // Commit releases
-        commit(SET_RELEASES_DATA, sortedReleases);
+        commit(SET_RELEASES_DATA, processedReleases);
         commit(SET_RELEASES_DATETIME, new Date());
 
       } catch (error) {
         if (!axios.isCancel(error)) {
 
-          // Show error
-          Main.sendToWindow('app:error', 'Произошла ошибка при загрузке релизов');
-          Main.sendToWindow('app:error', error);
-
           // Set release has error
           commit(SET_RELEASES_HAS_ERROR, true);
+
+          // Show error
+          // Throw error
+          showAppError('Произошла ошибка при загрузке релизов');
+          throw error;
 
         }
       } finally {
@@ -178,47 +199,35 @@ export default {
     /**
      * Search releases
      *
-     * @param dispatch
-     * @param state
-     * @param commit
-     * @param searchQuery
-     * @param parameters
-     * @return {Promise<{names: {ru: string, original: *}, id: *}[]>}
+     * @param context
+     * @param search_query
+     * @return {array}
      */
-    searchReleases: async ({dispatch, state, commit}, searchQuery) => {
+    searchReleases: async (context, search_query) => {
       try {
 
         // Cancel previous request if it was stored
-        if (REQUESTS.search) REQUESTS.search.cancel();
-
         // Create new request token if exists
-        REQUESTS.search = axios.CancelToken.source();
+        if (REQUEST_FOR_SEARCH) REQUEST_FOR_SEARCH.cancel();
+        REQUEST_FOR_SEARCH = axios.CancelToken.source();
 
         // Get releases
-        const releases = await new AnilibriaProxy()
-          .searchReleases(searchQuery, {cancelToken: REQUESTS.search.token});
+        const response = await new ReleaseProxy().searchReleases(search_query, {cancelToken: REQUEST_FOR_SEARCH.token});
 
         // Transform releases
-        return (releases || [])
-          .map(release => {
-            return {
-              id: __get(release, 'id'),
-              names: {
-                ru: __get(release, ['names', 0]),
-                original: __get(release, ['names', 1])
-              }
-            }
-          })
-          .filter(release => release.id);
-
+        // Get posters src
+        return new SearchTransformer()
+          .fetchCollection(response || [])
+          .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}))
 
       } catch (error) {
         if (!axios.isCancel(error)) {
 
-          Main.sendToWindow('app:error', 'Произошла ошибка при поиске релизов');
-          Main.sendToWindow('app:error', error);
-
+          // Show app error
+          // Return empty array
+          showAppError('Произошла ошибка при поиске релизов');
           return [];
+
         }
       }
     }

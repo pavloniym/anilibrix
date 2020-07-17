@@ -1,38 +1,56 @@
+// Proxy
+import AnilibriaReleaseProxy from "@proxies/release";
+
+// Transformer
+import BaseTransformer from "@transformers/BaseTransformer";
+
+// Utils
 import store from '@store'
 import __camelCase from 'lodash/camelCase'
 
-import Transformer from "@transformers/Transformer";
-import AnilibriaProxy from '@proxies/anilibria'
-import {ipcMain as ipc} from 'electron'
-import {Torrent} from '@main/utils/windows'
+// Handlers
+import {catchParsedTorrentData, sendTorrentDataToParse} from "@main/handlers/torrents/torrentsHandler";
 
-export default class extends Transformer {
 
-  constructor({cancelToken = null} = {}) {
+export default class EpisodesTransformer extends BaseTransformer {
+
+  constructor({cancelToken = null, skipTorrents = false} = {}) {
     super();
     this.cancelToken = cancelToken;
+    this.skipTorrents = skipTorrents;
   }
 
 
   /**
-   * Transform incoming data
+   * Make fetch item async/await
    *
-   * @param release
-   * @returns Promise
+   * @param playlist
+   * @param torrents
+   * @return {Promise<*>}
    */
-  async fetch(release) {
+  async fetchItem({playlist, torrents}) {
+    return await this.fetch({playlist, torrents});
+  }
+
+
+  /**
+   * Transform episodes data
+   *
+   * @returns Promise
+   * @param playlist
+   * @param torrents
+   */
+  async fetch({playlist, torrents}) {
     try {
 
-      // Get playlist for release
-      const playlist = this.get(release, 'playlist') || [];
       const episodes = {};
 
       // Parse playlist
       // Parse upscale
       // Parse torrents
-      this._parsePlaylist(playlist, episodes);
-      this._parseUpscale(playlist, episodes);
-      this._parseTorrents(await this._getTorrents(release) || [], episodes);
+      //this._parseUpscale(playlist, episodes);
+      this._parsePlaylist(playlist || [], episodes);
+      this._parseTorrents(await this._getTorrents(torrents || []), episodes);
 
       // Filter all sources without payload
       // Reverse to descending order
@@ -151,48 +169,49 @@ export default class extends Transformer {
 
   /**
    * Get torrents data
+   * Check if torrents should be processed
    *
-   * @param release
-   * @return Array
+   * @return {array}
    * @private
+   * @param torrents
    */
-  async _getTorrents(release) {
+  async _getTorrents(torrents = []) {
+    if (this.skipTorrents === false && this.get(store, 'state.app.settings.player.torrents.process') === true) {
 
-    // Check if torrents should be processed
-    if (this.get(store, 'state.app.settings.player.torrents.process') === true) {
+      // Filter torrents
+      // Exclude HEVC torrents (no codec available)
+      const filteredTorrents = torrents
+        .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false);
 
-      const requests = [];
 
-      (this.get(release, 'torrents') || [])
-        .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false)
-        .forEach(torrent => {
-          requests.push(
-            new Promise(async resolve => {
-              try {
+      // Try to parse all torrents data
+      return (await Promise
+        .allSettled(
+          filteredTorrents.map(torrent => new Promise(async resolve => {
 
-                // Get blob torrent file from server
-                const response = await new AnilibriaProxy().getTorrent({url: torrent.url}, {cancelToken: this.cancelToken});
+              // Get blob torrent file from server
+              const file = await new AnilibriaReleaseProxy().getReleaseTorrent(torrent.url, {cancelToken: this.cancelToken});
 
-                // Send to torrent for parsing data
-                Torrent.sendToWindow('torrent:parse', {torrentId: torrent.id, blob: response.data});
+              // Check file data is available
+              // Resolve empty if null
+              if (file && file.data) {
 
-                // Listen event with torrent data to main process
-                // Resolve when event is caught
-                ipc.on(`torrent:data:${torrent.id}`, (e, {data}) => resolve({torrent, data}));
+                // Send torrent for parsing data
+                // Catch torrent for parsing
+                sendTorrentDataToParse(torrent, file.data);
+                catchParsedTorrentData(torrent, data => resolve({torrent, data}));
 
-              } catch (e) {
-                resolve([])
-              }
+              } else resolve(null);
+
             })
           )
-        });
-
-
-      return (await Promise.allSettled(requests))
+        ))
         .filter(response => response.status === 'fulfilled')
         .map(response => response.value)
         .filter(torrent => torrent);
     }
+
+    return [];
   }
 
 

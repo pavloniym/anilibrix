@@ -12,9 +12,9 @@
       <!-- Show authorized button -->
       <template v-if="!_isAuthorized">
         <v-card-subtitle>Для просмотра избранных релизов необходимо авторизоваться в приложении</v-card-subtitle>
-        <v-card-actions>
+        <v-layout>
           <v-btn @click="toLogin">Авторизоваться</v-btn>
-        </v-card-actions>
+        </v-layout>
       </template>
     </v-card>
 

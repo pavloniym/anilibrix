@@ -1,42 +1,31 @@
 <template>
-  <v-hover v-slot:default="{ hover }">
-    <v-card flat color="transparent" @click="$emit('click')">
-      <v-layout align-start>
+  <v-card flat color="transparent" @click="$emit('click')">
+    <v-layout align-start>
 
-        <v-card width="160" height="240" min-width="160" min-height="240" :style="{position: 'relative'}">
-          <v-img width="160" height="240" :src="src"/>
-          <r-progress
-            v-bind="{release, episodes}"
-            dense
-            square
-            color="secondary"
-            :height="hover ? 25 : 5"
-            :style="{position: 'absolute', bottom: 0}"
-            :show-numbers="hover">
-          </r-progress>
-        </v-card>
+      <v-card width="160" height="240" min-width="160" min-height="240" :style="{position: 'relative'}">
+        <v-img v-bind="{src}" width="160" height="240"/>
+      </v-card>
 
-        <div>
-          <v-card-title v-text="title"/>
-          <v-card-subtitle v-if="subtitle" v-text="subtitle" class="pb-0"/>
-          <v-card-subtitle v-if="genres" v-text="genres" class="pt-0"/>
+      <div>
+        <v-card-title v-text="title"/>
+        <v-card-subtitle v-if="subtitle" v-text="subtitle" class="pb-0"/>
+        <v-card-subtitle v-if="genres" v-text="genres" class="pt-0"/>
 
-          <!-- Meta -->
-          <v-card-text>
-            <favorite v-bind="{release}"/>
-            <v-chip v-text="year" label color="grey darken-4" :style="{height: '36px'}"/>
-            <v-chip v-text="type" label color="grey darken-4" :style="{height: '36px'}"/>
-          </v-card-text>
+        <!-- Meta -->
+        <v-card-text>
+          <favorite v-bind="{release}"/>
+          <v-chip v-text="year" label color="grey darken-4" :style="{height: '36px'}"/>
+          <v-chip v-text="type" label color="grey darken-4" :style="{height: '36px'}"/>
+        </v-card-text>
 
-          <!-- Description -->
-          <v-card-text v-if="description" class="pt-0 grey--text">
-            <v-clamp max-height="85px">{{description}}</v-clamp>
-          </v-card-text>
-        </div>
+        <!-- Description -->
+        <v-card-text v-if="description" class="pt-0 grey--text">
+          <v-clamp max-height="85px">{{description}}</v-clamp>
+        </v-card-text>
+      </div>
 
-      </v-layout>
-    </v-card>
-  </v-hover>
+    </v-layout>
+  </v-card>
 </template>
 
 <script>
@@ -67,7 +56,7 @@
        * @return {*}
        */
       src() {
-        return this.$__get(this.release, 'poster.image')
+        return this.$__get(this.release, 'poster')
       },
 
 

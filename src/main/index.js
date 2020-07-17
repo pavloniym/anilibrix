@@ -15,15 +15,16 @@ import {startingDownload, cancelingDownload, openingDownload} from "@main/handle
 
 // App Handlers
 import {
-  listenAppNotificationEvent,
-  listenAppAboutEvent,
-  listenAppDevtoolsMainEvent,
-  listenAppDevtoolsTorrentEvent, listenAppDockNumberEvent
+  catchAppAboutEvent,
+  catchAppDevtoolsMainEvent,
+  catchAppDevtoolsTorrentEvent,
+  catchAppDockNumberEvent
 } from '@main/handlers/app/appHandlers'
 
 // Import tray and menu
 import Tray from './utils/tray'
 import Menu from './utils/menu'
+import {catchReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
 
 // Create tray and menu controller
 const trayController = new Tray();
@@ -99,11 +100,10 @@ app.on('ready', async () => {
  * @return {void}
  */
 const appHandlers = () => {
-  listenAppAboutEvent(); // about dialog
-  listenAppDockNumberEvent(); // app dock number event
-  listenAppNotificationEvent(); // app system notification event
-  listenAppDevtoolsMainEvent(); // devtools main
-  listenAppDevtoolsTorrentEvent(); //devtools torrent
+  catchAppAboutEvent(); // about dialog
+  catchAppDockNumberEvent(); // app dock number event
+  catchAppDevtoolsMainEvent(); // devtools main
+  catchAppDevtoolsTorrentEvent(); //devtools torrent
 };
 
 

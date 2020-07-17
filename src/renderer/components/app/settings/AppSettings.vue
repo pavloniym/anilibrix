@@ -43,7 +43,6 @@
   import ActionsSettings from './categories/actions'
   import DevtoolsSettings from './categories/devtools'
   import AnilibriaSettings from './categories/app'
-  import ConnectionSettings from './categories/connection'
 
   import SystemBarPlaceholder from './../systembar/placeholder'
 
@@ -69,7 +68,6 @@
         return [
           PlayerSettings,
           SystemSettings,
-          ConnectionSettings,
           ActionsSettings,
           AnilibriaSettings,
           this._devtools ? DevtoolsSettings : null

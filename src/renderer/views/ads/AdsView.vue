@@ -6,8 +6,12 @@
 
 <script>
 
-  import __shuffle from 'lodash/shuffle'
+  // Components
   import AppToolBar from "@components/app/toolbar";
+
+  // Utils
+  import __shuffle from 'lodash/shuffle'
+  import {toReleases} from "@utils/router/views";
 
   const props = {
     to: {
@@ -94,15 +98,12 @@
         }
       },
 
-
       /**
        * Go to releases
        *
        * @return {void}
        */
-      toReleases() {
-        this.$router.push({name: 'releases'})
-      },
+      toReleases,
 
 
       /**

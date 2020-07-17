@@ -17,6 +17,7 @@
 <script>
 
   import BlankNoise from './components/noise';
+  import {toReleases} from "@utils/router/views";
 
   const props = {
     message: {
@@ -56,11 +57,7 @@
        *
        * @return void
        */
-      toReleases() {
-        this.$router.replace({
-          name: 'releases'
-        })
-      },
+      toReleases,
 
     }
 

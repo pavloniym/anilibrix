@@ -1,25 +1,36 @@
-import axios from "axios";
-import {Main} from "@main/utils/windows";
-import AnilibriaProxy from "@proxies/anilibria";
-import AnilibriaReleaseTransformer from "@transformers/anilibria/release";
+// Proxy
+import ReleaseProxy from "@proxies/release";
+import FavoritesProxy from "@proxies/favorites";
 
+// Transformer
+import ReleaseTransformer from "@transformers/release";
+import EpisodesTransformer from "@transformers/episode";
+
+// Utils
+import axios from "axios";
+import {showAppError} from "@main/handlers/notifications/notificationsHandler";
+
+
+
+// Mutations
+const ADD_ITEM = 'ADD_ITEM';
 const SET_ITEMS = 'SET_ITEMS';
 const SET_LOADING = 'SET_LOADING';
-const SET_ITEM_EPISODES = 'SET_ITEM_EPISODES';
+const REMOVE_ITEM = 'REMOVE_ITEM';
 const SET_SETTINGS_SORT = 'SET_SETTINGS_SORT';
 const SET_SETTINGS_GROUP = 'SET_SETTINGS_GROUP';
-const SET_LOADING_EPISODES = 'SET_LOADING_EPISODES';
 const SET_SETTINGS_SHOW_SEEN = 'SET_SETTINGS_SHOW_SEEN';
 const SET_SETTINGS_YEARS_COLLAPSED = 'SET_SETTINGS_YEARS_COLLAPSED';
 
-const REQUESTS = {releases: null};
+// Requests
+let REQUEST_FOR_FAVORITES = null;
+let REQUESTS_FOR_CHANGES = {};
 
 export default {
   namespaced: true,
   state: {
     items: [],
     loading: false,
-    loading_episodes: false,
     settings: {
       sort: 'original',
       group: 'years',
@@ -56,6 +67,16 @@ export default {
   mutations: {
 
     /**
+     * Add item to array
+     *
+     * @param s
+     * @param release
+     * @return {*|void|number}
+     */
+    [ADD_ITEM]: (s, release) => s.items.unshift(release),
+
+
+    /**
      * Set items
      *
      * @param s
@@ -76,17 +97,13 @@ export default {
 
 
     /**
-     * Set item episodes
+     * Remove release from items
      *
      * @param s
      * @param release
-     * @param episodes
+     * @return {*|any[]}
      */
-    [SET_ITEM_EPISODES](s, {release, episodes}) {
-      const item_index = s.items.findIndex(item => item.id === release.id);
-      if (item_index > -1) s.items.splice(item_index, 1, {...s.items[item_index], episodes});
-    },
-
+    [REMOVE_ITEM]: (s, release) => s.items.splice(s.items.findIndex(item => item.id === release.id), 1),
 
     /**
      * Set settings sort type
@@ -106,16 +123,6 @@ export default {
      * @return {*}
      */
     [SET_SETTINGS_GROUP]: (s, group) => s.settings.group = group,
-
-
-    /**
-     * Set loading episodes state
-     *
-     * @param s
-     * @param state
-     * @return {*}
-     */
-    [SET_LOADING_EPISODES]: (s, state) => s.loading_episodes = state,
 
 
     /**
@@ -147,59 +154,62 @@ export default {
      *
      * @param commit
      * @param getters
-     * @param dispatch
      * @return {Promise<void>}
      */
-    getFavorites: async ({commit, getters, dispatch}) => {
+    getFavorites: async ({commit, getters}) => {
       if (getters.isAuthorized) {
         try {
 
           // Set loading
           commit(SET_LOADING, true);
-          commit(SET_LOADING_EPISODES, true);
 
           // Cancel previous request if it was stored
           // Create new request token
-          if (REQUESTS.releases) REQUESTS.releases.cancel();
-          REQUESTS.releases = axios.CancelToken.source();
-
+          if (REQUEST_FOR_FAVORITES) REQUEST_FOR_FAVORITES.cancel();
+          REQUEST_FOR_FAVORITES = axios.CancelToken.source();
 
           // Get releases from server
           // Transform releases
-          const {items} = await new AnilibriaProxy().getFavorites({page: 1}, {cancelToken: REQUESTS.releases.token});
-          const releases = await new AnilibriaReleaseTransformer({skipEpisodes: true}).fetchCollection(items);
+          const {items} = await new FavoritesProxy().getFavorites({cancelToken: REQUEST_FOR_FAVORITES.token});
+          const releases = new ReleaseTransformer().fetchCollection(items);
 
-          // Get posters
-          await Promise.allSettled(
-            releases.map(async release =>
-              release.poster.image = await new AnilibriaProxy().getImage({src: release.poster.path}, {cancelToken: REQUESTS.releases.token})
-            )
-          );
+          // Load episodes
+          // Filter releases with episodes
+          const processedReleases = (await Promise
+            .allSettled(
+              releases
+                .map(async release => ({
+                  ...release,
+                  episodes: await new EpisodesTransformer(
+                    {
+                      cancelToken: REQUEST_FOR_FAVORITES.token,
+                      skipTorrents: true
+                    }
+                  )
+                    .fetchItem(release.episodes)
+                }))
+            ))
+            .filter(promise => promise.status === 'fulfilled')
+            .map(promise => promise.value)
+            .filter(release => release.episodes.length > 0)
+            .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}));
 
           // Set releases
-          commit(SET_ITEMS, releases);
-          commit(SET_LOADING, false);
-
-          // Get favorites episodes
-          await Promise.allSettled(
-            items.map(async item =>
-              commit(SET_ITEM_EPISODES, {release: item, episodes: await dispatch('_getFavoriteEpisodes', item)}))
-          );
-
-          // Reset loading episodes
-          commit(SET_LOADING_EPISODES, false);
+          commit(SET_ITEMS, processedReleases);
 
         } catch (error) {
           if (!axios.isCancel(error)) {
 
             // Show error
-            Main.sendToWindow('app:error', 'Произошла ошибка при загрузке избранных релизов');
-            Main.sendToWindow('app:error', error);
+            // Throw error
+            showAppError('Произошла ошибка при загрузке избранных релизов');
+            throw error;
 
-            // Reset loading
-            commit(SET_LOADING, false);
-            commit(SET_LOADING_EPISODES, false);
           }
+        } finally {
+
+          commit(SET_LOADING, false);
+
         }
       }
     },
@@ -219,23 +229,33 @@ export default {
       if (release && getters.isAuthorized) {
         try {
 
-          commit(SET_LOADING, true);
+          // Cancel previous request if it was stored
+          // Create new request token
+          if (REQUESTS_FOR_CHANGES[release.id]) REQUESTS_FOR_CHANGES[release.id].cancel();
+          REQUESTS_FOR_CHANGES[release.id] = axios.CancelToken.source();
 
           // Add release to favorites
-          // Refresh favorites
-          await new AnilibriaProxy().addToFavorites(release.id);
-          await dispatch('getFavorites');
+          commit(ADD_ITEM, release);
+
+          // Make request to server
+          // On error -> rollback
+          await new FavoritesProxy().addToFavorites(release.id, {cancelToken: REQUESTS_FOR_CHANGES[release.id].token});
 
         } catch (error) {
+          if (!axios.isCancel(error)) {
 
-          Main.sendToWindow('app:error', 'Произошла ошибка при добавлении релиза в избранное');
+            // Rollback added release
+            commit(REMOVE_ITEM, release);
 
-        } finally {
-          commit(SET_LOADING, false);
+            // Show app error
+            // Throw error
+            showAppError(error);
+            throw error;
+
+          }
         }
       }
     },
-
 
     /**
      * Remove release from favorites
@@ -251,51 +271,33 @@ export default {
       if (release && getters.isAuthorized) {
         try {
 
-          commit(SET_LOADING, true);
+          // Cancel previous request if it was stored
+          // Create new request token
+          if (REQUESTS_FOR_CHANGES[release.id]) REQUESTS_FOR_CHANGES[release.id].cancel();
+          REQUESTS_FOR_CHANGES[release.id] = axios.CancelToken.source();
 
           // Remove release from favorites
-          // Refresh favorites
-          await new AnilibriaProxy().removeFromFavorites(release.id);
-          await dispatch('getFavorites');
+          commit(REMOVE_ITEM, release);
+
+          // Make request to server
+          // On error -> rollback
+          await new FavoritesProxy().removeFromFavorites(release.id, {cancelToken: REQUESTS_FOR_CHANGES[release.id].token});
 
         } catch (error) {
+          if (!axios.isCancel(error)) {
 
-          Main.sendToWindow('app:error', 'Произошла ошибка при удалении релиза из избранного');
+            // Rollback removed release
+            commit(ADD_ITEM, release);
 
-        } finally {
-          commit(SET_LOADING, false);
+            // Show app error
+            // Throw error
+            showAppError(error);
+            throw error;
+
+          }
         }
       }
     },
-
-    /**
-     * Set settings sort type
-     *
-     * @param commit
-     * @param sort
-     * @return {*}
-     */
-    setSettingsSort: ({commit}, sort) => commit(SET_SETTINGS_SORT, sort),
-
-    /**
-     * Set settings group type
-     *
-     * @param commit
-     * @param group
-     * @return {*}
-     */
-    setSettingsGroup: ({commit}, group) => commit(SET_SETTINGS_GROUP, group),
-
-
-    /**
-     * Set settings show seen
-     *
-     * @param commit
-     * @param state
-     * @return {*}
-     */
-    setSettingsShowSeen: ({commit}, state) => commit(SET_SETTINGS_SHOW_SEEN, state),
-
 
     /**
      * Set settings year collapsed
@@ -317,20 +319,33 @@ export default {
 
 
     /**
-     * Get favorite episodes
+     * Set settings sort type
      *
      * @param commit
-     * @param release
-     * @return {Promise<*>}
-     * @private
+     * @param sort
+     * @return {*}
      */
-    _getFavoriteEpisodes: async ({commit}, release) => {
+    setSettingsSort: ({commit}, sort) => commit(SET_SETTINGS_SORT, sort),
 
-      const {episodes} = await new AnilibriaReleaseTransformer({cancelToken: REQUESTS.releases.token})
-        .fetchItem(release);
-      
-      return episodes;
-    }
+
+    /**
+     * Set settings group type
+     *
+     * @param commit
+     * @param group
+     * @return {*}
+     */
+    setSettingsGroup: ({commit}, group) => commit(SET_SETTINGS_GROUP, group),
+
+
+    /**
+     * Set settings show seen
+     *
+     * @param commit
+     * @param state
+     * @return {*}
+     */
+    setSettingsShowSeen: ({commit}, state) => commit(SET_SETTINGS_SHOW_SEEN, state)
 
   }
 }

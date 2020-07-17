@@ -9,7 +9,7 @@
     <!-- Release progress -->
     <!-- Toolbar -->
     <toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
-    <release-progress v-bind="{release, episodes}" class="mb-2" color="grey darken-3" height="30"/>
+    <release-progress v-bind="{release, episodes}" class="mb-2" color="grey darken-3" height="48"/>
 
 
     <!-- Playlist Items -->

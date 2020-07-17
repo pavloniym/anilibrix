@@ -1,30 +1,38 @@
 <template>
-  <v-menu v-model="visible" left bottom ref="menu" close-on-click :attach="container">
+  <div>
 
-    <template v-slot:activator="{ on }">
-      <v-btn icon color="grey darken-2" @click.stop="on.click">
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
-    </template>
+    <v-btn icon color="grey darken-2" :id="`episode__actions-${episode.id}`">
+      <v-icon>mdi-dots-vertical</v-icon>
+    </v-btn>
 
-    <v-list dense class="grey darken-4">
-      <template v-for="(item, k) in actions">
-        <v-divider v-if="k > 0" :key="`d:${k}`"/>
-        <v-list-item :key="k" :disabled="loading" @click.stop="item.action">
+    <v-menu
+      v-model="visible"
+      left
+      bottom
+      close-on-click
+      ref="menu"
+      :attach="container"
+      :activator="`#episode__actions-${episode.id}`">
 
-          <!-- Icon -->
-          <v-icon class="mr-2" color="grey">{{item.icon}}</v-icon>
+      <v-list dense class="grey darken-4">
+        <template v-for="(item, k) in actions">
+          <v-divider v-if="k > 0" :key="`d:${k}`"/>
+          <v-list-item :key="k" :disabled="loading" @click.stop="item.action">
 
-          <!-- Item -->
-          <v-list-item-content>
-            <v-list-item-title>{{item.title}}</v-list-item-title>
-          </v-list-item-content>
+            <!-- Icon -->
+            <v-icon class="mr-2" color="grey">{{item.icon}}</v-icon>
 
-        </v-list-item>
-      </template>
-    </v-list>
+            <!-- Item -->
+            <v-list-item-content>
+              <v-list-item-title>{{item.title}}</v-list-item-title>
+            </v-list-item-content>
 
-  </v-menu>
+          </v-list-item>
+        </template>
+      </v-list>
+    </v-menu>
+
+  </div>
 </template>
 
 <script>

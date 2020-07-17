@@ -25,7 +25,14 @@
     </div>
 
     <!-- Load More -->
-    <v-btn v-if="_items && _items.length > 0 && hasMoreItems" block text @click="loadReleases">Загрузить еще</v-btn>
+    <v-btn
+      v-if="_items && _items.length > 0 && hasMoreItems"
+      block
+      text
+      class="grey darken-4 shrink"
+      @click="loadReleases">
+      Показать еще
+    </v-btn>
 
   </v-layout>
 </template>
