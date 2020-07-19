@@ -43,7 +43,14 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 // Add command lines arguments
+app.commandLine.appendSwitch('ignore-certificate-errors');
 app.commandLine.appendSwitch('disable-site-isolation-trials');
+
+// Append proxy pac url if provided
+if (process.env.PAC_PROXY_URL && process.env.PAC_PROXY_URL.length > 0) {
+  app.commandLine.appendSwitch('proxy-pac-url', process.env.PAC_PROXY_URL);
+}
+
 
 // Close app on all windows closed (relevant for mac users)
 app.on('window-all-closed', () => app.quit());

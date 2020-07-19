@@ -1,23 +1,23 @@
 <template>
-   <v-fade-transition appear mode="out-in">
-     <v-layout v-if="loading || !_has_error" column justify-center class="releases">
+  <v-fade-transition appear mode="out-in">
+    <error v-if="_has_error"/>
+    <v-layout v-else column justify-center class="releases">
 
-       <slider
-         v-bind="{loading}"
-         v-model="index"
-         class="mb-4"
-         :releases="_releases"
-         @next="next"
-         @previous="previous"
-         @toVideo="toVideo(release, episode)">
-       </slider>
+      <slider
+        v-bind="{loading}"
+        v-model="index"
+        class="mb-4"
+        :releases="_releases"
+        @next="next"
+        @previous="previous"
+        @toVideo="toVideo(release, episode)">
+      </slider>
 
-       <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
-       <actions v-bind="{loading, release}" @toVideo="toVideo(release, episode)" @toRelease="toRelease(release)"/>
+      <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
+      <actions v-bind="{loading, release}" @toVideo="toVideo(release, episode)" @toRelease="toRelease(release)"/>
 
-     </v-layout>
-     <error v-else-if="!loading && _has_error"/>
-   </v-fade-transition>
+    </v-layout>
+  </v-fade-transition>
 </template>
 
 <script>

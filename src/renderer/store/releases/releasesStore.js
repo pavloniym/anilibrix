@@ -184,7 +184,7 @@ export default {
 
           // Show error
           // Throw error
-          showAppError('Произошла ошибка при загрузке релизов');
+          //showAppError('Произошла ошибка при загрузке релизов');
           throw error;
 
         }
