@@ -11,12 +11,21 @@ const parseTorrentData = require('parse-torrent');
 // client, as explained here: https://webtorrent.io/faq
 const torrentClient = new webTorrent();
 
-
 import app from '@/../package'
 import sentry from './../main/utils/sentry'
+import {remote} from 'electron'
 import {getStore} from '@store'
-import {ipcRenderer as ipc, remote} from 'electron'
 
+
+// Torrent handlers
+import {
+  catchTorrentDestroy,
+  catchTorrentParse,
+  catchTorrentStart, sendTorrentClear, sendTorrentDownload, sendTorrentError,
+  sendTorrentParsedData, sendTorrentServer
+} from "@main/handlers/torrents/torrentsHandler";
+
+// Utils
 import {parse, stringify} from 'flatted'
 
 // Enable Sentry.io electron handler
@@ -43,10 +52,10 @@ const torrentPath = path.join(remote.app.getPath('temp'), app.build.appId);
 /**
  * Get torrent data from torrent stream
  *
+ * @param torrent_id
  * @param blob
- * @param id
  */
-const parseTorrent = ({blob, torrentId}) => {
+const parseTorrent = ({torrent_id, blob} = {}) => {
   try {
 
     let data = null;
@@ -58,17 +67,16 @@ const parseTorrent = ({blob, torrentId}) => {
       data = parseTorrentData(new Buffer(blob));
 
       // Save torrent data to store
-      store.collection[torrentId] = data;
-
       // Show console
+      store.collection[torrent_id] = data;
       console.log('Parse Torrent', {torrent: parse(stringify(data))});
     }
 
     // Send result to main process
-    ipc.send(`torrent:data:${torrentId}`, {torrentId, data});
+    sendTorrentParsedData(torrent_id, data);
 
   } catch (error) {
-    _sendError({torrentId, message: 'Произошла ошибка при парсинге торрент-файла', error});
+    _sendError({torrentId: torrent_id, message: 'Произошла ошибка при парсинге торрент-файла', error});
   }
 
 };
@@ -86,9 +94,7 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
   if (torrentClient && store.collection[torrentId]) {
 
     // Destroy torrent if it already added
-    if (store.torrents[torrentId]) {
-      store.torrents[torrentId].destroy();
-    }
+    if (store.torrents[torrentId]) store.torrents[torrentId].destroy();
 
     // Add torrent
     torrentClient.add(store.collection[torrentId], {path: torrentPath}, async torrent => {
@@ -112,14 +118,14 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
         const result = await _startServer({torrentId, torrent});
 
         // Send event with server
-        ipc.send(`torrent:server`, {...result, torrentId});
+        sendTorrentServer({...result, torrentId});
 
         //Send torrent download data
         if (store.handlers[torrentId]) clearInterval(store.handlers[torrentId]);
         store.handlers[torrentId] = setInterval(() => {
 
           // Send message to another window
-          ipc.send('torrent:download', {
+          sendTorrentDownload({
             torrentId,
             speed: torrent.downloadSpeed,
             seeding: torrent.uploadSpeed,
@@ -208,7 +214,7 @@ const destroyTorrent = ({torrentId}) => {
 
         // Remove files from torrent
         // Send clear event
-        ipc.send('torrent:clear', {torrentId});
+        sendTorrentClear({torrentId});
       });
     }
 
@@ -267,16 +273,15 @@ const _startServer = ({torrentId, torrent}) => {
 const _sendError = ({torrentId, message = null, error = null} = {}) => {
 
   // Show in console
-  console.log('Torrent Error', {torrentId, error, message});
-
   // Send error message
-  ipc.send('torrent:error', {torrentId, error, message})
+  console.log('Torrent Error', {torrentId, error, message});
+  sendTorrentError({torrentId, error, message});
 
 };
 
 
 (() => {
-  ipc.on('torrent:parse', (e, payload) => parseTorrent(payload));
-  ipc.on('torrent:start', (e, payload) => startTorrent(payload));
-  ipc.on('torrent:destroy', (e, payload) => destroyTorrent(payload));
+  catchTorrentParse(payload => parseTorrent(payload));
+  catchTorrentStart(payload => startTorrent(payload));
+  catchTorrentDestroy(payload => destroyTorrent(payload));
 })();

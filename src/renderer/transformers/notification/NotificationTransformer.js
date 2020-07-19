@@ -1,6 +1,6 @@
-import Transformer from '@transformer'
+import BaseTransformer from "@transformers/BaseTransformer";
 
-export default class extends Transformer {
+export default class NotificationTransformer extends BaseTransformer {
 
   /**
    * Transform incoming data

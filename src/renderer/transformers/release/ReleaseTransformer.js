@@ -1,35 +1,10 @@
-import Transformer from '@transformer'
-import AnilibriaReleaseEpisodeTransformer from './episode'
+// Transformers
+import BaseTransformer from "@transformers/BaseTransformer";
 
+// Utils
 import stripHtml from 'string-strip-html';
 
-export default class extends Transformer {
-
-  /**
-   * Constructor
-   *
-   * @param skipEpisodes
-   * @param cancel_token
-   */
-  constructor({skipEpisodes = false, cancelToken = null} = {}) {
-    super();
-    this.cancelToken = cancelToken;
-    this.skipEpisodes = skipEpisodes;
-  }
-
-
-  /**
-   * Method used to transform a fetched collection.
-   *
-   * @param items The items to be transformed.
-   * @returns Promise The transformed items.
-   */
-  async fetchCollection(items) {
-    return (await Promise.allSettled((items || []).map(async item => await this.fetch(item))))
-      .filter(response => response.status === 'fulfilled')
-      .map(response => response.value);
-  }
-
+export default class ReleaseTransformer extends BaseTransformer {
 
   /**
    * Transform incoming data
@@ -37,7 +12,7 @@ export default class extends Transformer {
    * @param release
    * @returns {{}}
    */
-  async fetch(release) {
+  fetch(release) {
     return {
       id: this.get(release, 'id'),
       year: this.get(release, 'year'),
@@ -49,14 +24,12 @@ export default class extends Transformer {
       },
       voices: this.get(release, 'voices') || [],
       genres: this.get(release, 'genres') || [],
-      poster: {
-        path: this.get(release, 'poster'),
-        image: null,
-      },
+      poster: this.get(release, 'poster'),
       datetime: this._getReleaseDatetime(release),
-      episodes: this.skipEpisodes === false
-        ? await new AnilibriaReleaseEpisodeTransformer({cancelToken: this.cancelToken}).fetch(release)
-        : [],
+      episodes: {
+        playlist: this.get(release, 'playlist'),
+        torrents: this.get(release, 'torrents')
+      },
       description: this._stripHtml(this.get(release, 'description')),
     }
   }
@@ -73,11 +46,7 @@ export default class extends Transformer {
     const system = timestamp ? new Date(timestamp * 1000) : null;
     const human = system ? new Intl.DateTimeFormat(undefined, {}).format(system) : null;
 
-    return {
-      timestamp,
-      system,
-      human
-    }
+    return {timestamp, system, human}
   }
 
 

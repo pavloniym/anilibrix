@@ -1,51 +1,41 @@
 <template>
-  <v-layout column>
 
-    <!-- Header-->
+  <!-- Favorites  -->
+  <v-layout v-if="_isAuthorized" column>
+
+    <!-- Header -->
     <v-card flat color="transparent">
       <v-card-title>Избранные релизы</v-card-title>
-
-      <!-- Authorized user -->
-      <v-card-subtitle v-if="_isAuthorized">Список ваших избранных релизов</v-card-subtitle>
-
-      <!-- Not Authorized user -->
-      <!-- Show authorized button -->
-      <template v-if="!_isAuthorized">
-        <v-card-subtitle>Для просмотра избранных релизов необходимо авторизоваться в приложении</v-card-subtitle>
-        <v-card-actions>
-          <v-btn @click="toLogin">Авторизоваться</v-btn>
-        </v-card-actions>
-      </template>
+      <v-card-subtitle>Список ваших избранных релизов</v-card-subtitle>
     </v-card>
 
 
-    <!-- Authorized user -->
     <!-- Show user favorites -->
-    <template v-if="_isAuthorized">
-
-      <!-- Favorites Settings -->
-      <v-expand-transition>
-        <settings v-if="settings" class="mb-2"/>
-      </v-expand-transition>
+    <!-- Favorites Settings -->
+    <v-expand-transition>
+      <settings v-if="settings" class="mb-2"/>
+    </v-expand-transition>
 
 
-      <!-- Toolbar -->
-      <toolbar
-        class="mb-2"
-        :loading="_loading"
-        :search.sync="search"
-        :settings.sync="settings"
-        @reload="_getFavorites">
-      </toolbar>
+    <!-- Toolbar -->
+    <toolbar
+      class="mb-2"
+      :loading="_loading"
+      :search.sync="search"
+      :settings.sync="settings"
+      @reload="_getFavorites">
+    </toolbar>
 
 
-      <!-- Favorites loader -->
-      <!-- Favorites View -->
-      <loader v-if="_loading" class="my-2"/>
-      <component v-else v-bind="{releases}" class="my-2" :is="view" @toRelease="toRelease"/>
+    <!-- Favorites loader -->
+    <!-- Favorites View -->
+    <loader v-if="_loading" class="my-2"/>
+    <component v-else v-bind="{releases}" class="my-2" :is="view" @toRelease="toRelease"/>
 
-    </template>
   </v-layout>
+
+  <!-- Authorization -->
+  <authorization v-else/>
 </template>
 
 <script>
@@ -56,6 +46,7 @@
   import Loader from './components/loader'
   import Toolbar from './components/toolbar'
   import Settings from './components/settings'
+  import Authorization from './components/authorization'
 
   import Fuse from "fuse.js";
   import {toLogin, toRelease} from "@utils/router/views";
@@ -67,7 +58,8 @@
     components: {
       Loader,
       Toolbar,
-      Settings
+      Settings,
+      Authorization
     },
     data() {
       return {

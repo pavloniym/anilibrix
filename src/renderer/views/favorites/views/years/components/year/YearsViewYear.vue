@@ -14,20 +14,17 @@
     <v-card-subtitle v-text="subtitle" class="pb-0"/>
     <v-card-subtitle v-text="genres" class="pt-0"/>
 
-
     <!-- Releases -->
-    <v-expand-transition mode="out-in">
-      <v-row v-if="!collapsed" dense>
-        <template v-for="release in releases">
-          <v-col cols="3" lg="2" :key="release.id">
-            <release
-              v-bind="{release}"
-              @click="$emit('toRelease', release)">
-            </release>
-          </v-col>
-        </template>
-      </v-row>
-    </v-expand-transition>
+    <v-row v-if="!collapsed" dense>
+      <template v-for="release in releases">
+        <v-col cols="3" lg="2" :key="release.id">
+          <release
+            v-bind="{release}"
+            @click="$emit('toRelease', release)">
+          </release>
+        </v-col>
+      </template>
+    </v-row>
 
   </v-card>
 </template>

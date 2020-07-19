@@ -1,7 +1,6 @@
 import store from '@store'
 import {meta} from '@package'
 import {Menu, shell} from 'electron'
-import {APP_NOTIFICATION} from "@main/handlers/app/appHandlers";
 
 export const aboutTemplate = [
   {
@@ -47,7 +46,6 @@ export default class AppMenu {
     this._menu = null;
     this._mainWindow = null;
     this._torrentWindow = null;
-    this._chromecastWindow = null;
   }
 
 
@@ -72,13 +70,12 @@ export default class AppMenu {
    *
    * @param main
    * @param torrent
-   * @param chromecast
    * @return {AppMenu}
    */
-  setWindows(main = null, torrent = null, chromecast = null) {
+  setWindows(main = null, torrent = null) {
+
     this._mainWindow = main;
     this._torrentWindow = torrent;
-    this._chromecastWindow = chromecast;
 
     return this;
 
@@ -113,15 +110,8 @@ export default class AppMenu {
             type: 'separator'
           },
           {
-            label: 'Показать тестовое уведомление',
-            click: () => this._mainWindow.sendToWindow(APP_NOTIFICATION, store.state.releases.data[0])
-          },
-          {
             label: 'Добавить уведомление в хранилище',
             click: () => store.dispatch('notifications/setRelease', store.state.releases.data[0])
-          },
-          {
-            type: 'separator'
           },
           {
             label: 'Показать данные хранилища в консоли',
@@ -139,8 +129,6 @@ export default class AppMenu {
       {
         label: 'Окно',
         submenu: [
-          {role: 'undo'},
-          {role: 'redo'},
           {role: 'cut'},
           {role: 'copy'},
           {role: 'paste'},

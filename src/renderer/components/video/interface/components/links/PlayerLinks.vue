@@ -113,7 +113,7 @@
        * @return {string}
        */
       src() {
-        return this.$__get(this.release, 'poster.image');
+        return this.$__get(this.release, 'poster');
       },
 
       /**

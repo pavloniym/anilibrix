@@ -15,6 +15,13 @@
 <script>
 
   import PlayerHandler from './../../components/handler'
+  import {
+    catchTorrentClear,
+    catchTorrentError,
+    catchTorrentServer,
+    sendTorrentDestroy,
+    sendTorrentStart
+  } from "@main/handlers/torrents/torrentsHandler";
 
   const props = {
     time: {
@@ -70,11 +77,11 @@
           if (torrentId) {
 
             // Send event to start server with provided torrent id
-            this.$electron.ipcRenderer.send('torrent:start', {torrentId, fileIndex});
+            sendTorrentStart(torrentId, fileIndex);
 
             // Listen event with torrent server data
             // Resolve when event is caught
-            this.$electron.ipcRenderer.on(`torrent:server`, (e, server) => {
+            catchTorrentServer(server => {
               if (server.torrentId === torrentId) {
                 resolve(`${server.url}/${fileIndex}/${encodeURIComponent(payload.file.name)}`);
               }
@@ -138,12 +145,13 @@
       destroyPayload({source}) {
         return new Promise(resolve => {
 
-          this.$electron.ipcRenderer.send('torrent:destroy', {torrentId: this._getSourceTorrentId(source)});
-          this.$electron.ipcRenderer.on('torrent:clear', (e, {torrentId} = {}) => {
+
+          sendTorrentDestroy({torrentId: this._getSourceTorrentId(source)});
+          catchTorrentClear(({torrentId}) => {
             if (torrentId === this._getSourceTorrentId(source)) {
               resolve();
             }
-          })
+          });
         });
       },
 
@@ -163,14 +171,11 @@
 
 
     created() {
-
-      // Set torrent error handler
-      this.$electron.ipcRenderer.on('torrent:error', (e, {torrentId, message, error} = {}) => {
-          if (torrentId === this._getSourceTorrentId(this.source)) {
-            this.$emit('error', {torrentId, message, error})
-          }
+      catchTorrentError(({torrentId, message, error}) => {
+        if (torrentId === this._getSourceTorrentId(this.source)) {
+          this.$emit('error', {torrentId, message, error})
         }
-      )
+      });
     }
 
   }

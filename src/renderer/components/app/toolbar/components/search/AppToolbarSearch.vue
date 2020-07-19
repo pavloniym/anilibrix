@@ -14,11 +14,14 @@
     placeholder="Поиск релиза ..."
     :append-icon="null"
     :search-input.sync="search"
-    @focus="_setSearching(true)"
     @blur="_setSearching(false)"
+    @focus="_setSearching(true)"
     @input="toRelease">
 
     <template v-slot:item="{item}">
+      <v-list-item-avatar>
+        <v-img :src="item.poster" />
+      </v-list-item-avatar>
       <v-list-item-content :style="{maxWidth: $refs.search.$el.clientWidth + 'px'}">
         <v-list-item-title v-text="item.names.ru"/>
         <v-list-item-subtitle v-text="item.names.original"/>
@@ -31,6 +34,7 @@
 <script>
 
   import __debounce from 'lodash/debounce'
+  import {toRelease} from "@utils/router/views";
   import {mapState, mapActions} from 'vuex';
 
   export default {
@@ -79,16 +83,9 @@
         if (release) {
 
           // Reset input
-          this.$refs.search.setValue(undefined);
-
           // Go to release page
-          this.$router.push({
-            name: 'release',
-            params: {
-              releaseId: release.id,
-              releaseName: release.names.original,
-            }
-          });
+          this.$refs.search.setValue(undefined);
+          toRelease(release);
 
           // Reset items
           this.items = [];
@@ -108,9 +105,11 @@
             // Get releases
             this.getReleases(search);
 
-            // Check if yandex-metrika is available
-            // Hit yandex-metrika event
-            if(this.$metrika) this.$metrika.hit(`/search?query=${search}`);
+            // Check if metrics is available
+            // Hit metrics event
+            if(this.$metrika) {
+              this.$metrika.hit(`/search?query=${search}`);
+            }
 
           } else {
 

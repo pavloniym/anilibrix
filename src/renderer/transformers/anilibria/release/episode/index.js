@@ -1,3 +1,0 @@
-import AnilibriaReleaseEpisodeTransformer from './AnilibriaReleaseEpisodeTransformer'
-
-export default AnilibriaReleaseEpisodeTransformer

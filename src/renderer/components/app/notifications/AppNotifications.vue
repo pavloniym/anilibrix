@@ -1,9 +1,13 @@
 <script>
 
+  // Utils
   import {meta} from '@package'
   import {toVideo} from "@utils/router/views";
   import {mapState} from 'vuex'
-  import {handleAppNotificationEvent, sendAppDockNumberEvent} from "@main/handlers/app/appHandlers";
+
+  // Handlers
+  import {sendAppDockNumberEvent} from "@main/handlers/app/appHandlers";
+  import {catchReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
 
   export default {
     render: () => null,
@@ -25,7 +29,7 @@
 
 
     created() {
-      handleAppNotificationEvent((release => {
+      catchReleaseNotification((release => {
 
         // Check if release is set
         // Check if system notifications is enabled

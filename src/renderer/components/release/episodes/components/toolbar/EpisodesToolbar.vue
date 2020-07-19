@@ -2,20 +2,20 @@
   <v-layout align-center>
 
     <!-- Search -->
-    <toolbar-search v-bind="{search}" @update:search="$emit('update:search', $event)"/>
+    <search v-bind="{search}" @update:search="$emit('update:search', $event)"/>
 
     <!-- Sort -->
-    <toolbar-sort class="mx-1"/>
-    <toolbar-actions v-bind="{release, container}"/>
+    <sort class="mx-2"/>
+    <actions v-bind="{release, container}"/>
 
   </v-layout>
 </template>
 
 <script>
 
-  import ToolbarSort from './components/sort'
-  import ToolbarSearch from './components/search'
-  import ToolbarActions from './components/actions'
+  import Sort from './components/sort'
+  import Search from './components/search'
+  import Actions from './components/actions'
 
   const props = {
     search: {
@@ -35,9 +35,9 @@
   export default {
     props,
     components: {
-      ToolbarSort,
-      ToolbarSearch,
-      ToolbarActions
+      Sort,
+      Search,
+      Actions
     },
   }
 </script>

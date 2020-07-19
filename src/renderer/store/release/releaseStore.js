@@ -1,14 +1,23 @@
-import AnilibriaProxy from '@proxies/anilibria'
-import AnilibriaReleaseTransformer from '@transformers/anilibria/release'
+// Proxy
+import ReleaseProxy from "@proxies/release";
 
+// Transformers
+import ReleaseTransformer from '@transformers/release'
+import EpisodesTransformer from "@transformers/episode";
+
+// Utils
 import axios from "axios";
-import {Main} from '@main/utils/windows'
 
-let REQUEST = null;
+// Handlers
+import {showAppError} from "@main/handlers/notifications/notificationsHandler";
 
+// Mutations
 const SET_RELEASE_DATA = 'SET_RELEASE_DATA';
 const SET_RELEASE_LOADING = 'SET_RELEASE_LOADING';
-const SET_RELEASE_POSTER_IMAGE = 'SET_RELEASE_POSTER_IMAGE';
+
+// Requests
+let REQUEST = null;
+
 
 export default {
   namespaced: true,
@@ -38,15 +47,6 @@ export default {
      */
     [SET_RELEASE_LOADING]: (s, loading) => s.loading = loading,
 
-    /**
-     * Set release poster image
-     *
-     * @param s
-     * @param image
-     * @return {*}
-     */
-    [SET_RELEASE_POSTER_IMAGE]: (s, image) => s.data.poster.image = image,
-
   },
 
   actions: {
@@ -59,10 +59,10 @@ export default {
      * @param commit
      * @param dispatch
      * @param state
-     * @param releaseId
+     * @param release_id
      * @return {Promise<unknown>}
      */
-    getRelease: async ({commit, dispatch, state}, releaseId) => {
+    getRelease: async ({commit, dispatch, state}, release_id) => {
 
       // Cancel previous request if it was stored
       if (REQUEST !== null) REQUEST.cancel();
@@ -78,19 +78,24 @@ export default {
       try {
 
         // Get release data
-        const data = await new AnilibriaProxy().getRelease(releaseId, {cancelToken: REQUEST.token});
-        const release = await new AnilibriaReleaseTransformer().fetchItem(data);
-        const image = await new AnilibriaProxy().getImage({src: release.poster.path});
+        const data = await new ReleaseProxy().getRelease(release_id, {cancelToken: REQUEST.token});
+        const release = await new ReleaseTransformer().fetchItem(data);
+
+        // Get release poster path
+        // Load release episodes
+        release.poster = new ReleaseProxy().getReleasePosterPath(release.poster);
+        release.episodes = await new EpisodesTransformer().fetchItem(release.episodes);
 
         // Save release data
         commit(SET_RELEASE_DATA, release);
-        commit(SET_RELEASE_POSTER_IMAGE, image);
 
       } catch (error) {
         if (!axios.isCancel(error)) {
 
-          Main.sendToWindow('app:error', 'Произошла ошибка при загрузке релиза');
-          Main.sendToWindow('app:error', error);
+          // Show app error
+          // Throw error
+          showAppError('Произошла ошибка при загрузке релиза');
+          throw error;
 
         }
       } finally {

@@ -1,77 +1,78 @@
 <template>
-  <v-fade-transition>
+  <div>
 
     <!-- Login -->
-    <v-tooltip v-if="!_isAuthorized" left key="login">
-      <template v-slot:activator="{on}">
-        <v-btn v-on="on" icon @click="toLogin">
-          <v-icon>mdi-account</v-icon>
-        </v-btn>
-      </template>
-      <span>Авторизация</span>
-    </v-tooltip>
+    <!-- Tooltip -->
+    <template v-if="!_isAuthorized">
+      <v-btn icon id="toolbar__login" @click="toLogin">
+        <v-icon>mdi-account</v-icon>
+      </v-btn>
+      <v-tooltip left key="login" activator="#toolbar__login">Авторизация</v-tooltip>
+    </template>
+
 
     <!-- Profile -->
-    <v-menu
-      v-else
-      v-model="menu"
-      bottom
-      key="profile"
-      min-width="100"
-      nudge-left="70"
-      nudge-bottom="40">
+    <!-- Menu -->
+    <template v-else>
 
-      <template v-slot:activator="{ on }">
-        <v-btn v-on="on" icon>
-          <v-fade-transition mode="out-in">
-            <v-icon v-if="menu" key="expanded">mdi-account</v-icon>
-            <v-avatar size="28" v-else>
+      <v-btn icon id="toolbar__profile">
+        <v-icon v-if="menu" key="expanded">mdi-account</v-icon>
+        <v-avatar size="28" v-else>
+          <v-img :src="_profile.avatar"/>
+        </v-avatar>
+      </v-btn>
+
+      <v-menu
+        v-model="menu"
+        bottom
+        key="profile"
+        activator="#toolbar__profile"
+        min-width="100"
+        nudge-left="70"
+        nudge-bottom="40">
+
+        <!-- User -->
+        <v-list dense>
+          <v-list-item>
+            <v-list-item-avatar>
               <v-img :src="_profile.avatar"/>
-            </v-avatar>
-          </v-fade-transition>
-        </v-btn>
-      </template>
-
-      <!-- User -->
-      <v-list dense>
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-img :src="_profile.avatar"/>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title v-text="_profile.login"/>
-            <v-list-item-subtitle>ID: {{_profile.id}}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider/>
-
-        <!-- Profile statistics -->
-        <template v-for="(item, k) in statistics">
-          <v-list-item :key="k">
+            </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-subtitle v-text="item.title"/>
-              <v-list-item-title v-text="item.value" class="font-weight-bold"/>
+              <v-list-item-title v-text="_profile.login"/>
+              <v-list-item-subtitle>ID: {{_profile.id}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-          <v-divider :key="`d:${k}`"/>
-        </template>
+          <v-divider/>
+
+          <!-- Profile statistics -->
+          <template v-for="(item, k) in statistics">
+            <v-list-item :key="k">
+              <v-list-item-content>
+                <v-list-item-subtitle v-text="item.title"/>
+                <v-list-item-title v-text="item.value" class="font-weight-bold"/>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider :key="`d:${k}`"/>
+          </template>
 
 
-        <!-- Logout -->
-        <v-list-item @click="logout">
-          <v-list-item-subtitle>Выход</v-list-item-subtitle>
-        </v-list-item>
-      </v-list>
+          <!-- Logout -->
+          <v-list-item @click="logout">
+            <v-list-item-subtitle>Выход</v-list-item-subtitle>
+          </v-list-item>
+        </v-list>
 
-    </v-menu>
+      </v-menu>
+    </template>
 
-  </v-fade-transition>
+  </div>
 </template>
 
 <script>
 
-  import {mapGetters, mapState} from 'vuex'
   import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
+  import {mapGetters, mapState} from 'vuex'
+  import {toLogin} from "@utils/router/views";
 
   export default {
     data() {
@@ -116,7 +117,7 @@
        * @return {number}
        */
       hours() {
-        const seconds =  Object.values(this._watch || {})
+        const seconds = Object.values(this._watch || {})
           .reduce((storage, episode) => storage + (episode.time || 0), 0);
 
         return Math.floor(seconds / 60 / 60);
@@ -157,29 +158,19 @@
        *
        * @return {void}
        */
-      toLogin() {
-        if (this.$route.name !== 'account.login') {
-          this.$router.push({name: 'account.login'})
-        }
-      },
+      toLogin,
 
 
       /**
        * Logout
+       * Ignore error
        *
        * @return {Promise<void>}
        */
       async logout() {
         try {
 
-          // Make logout request
-          this.loading = true;
           await this.$store.dispatchPromise('app/account/logout');
-
-        } catch (error) {
-
-          // Show error
-          this.$toasted.error('Произошла ошибка при деавторизации пользователя');
 
         } finally {
 

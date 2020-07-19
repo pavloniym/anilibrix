@@ -12,8 +12,10 @@
 
 <script>
 
-  import {mapState} from 'vuex'
+  // Utils
+  import {meta} from '@package'
 
+  // Raw
   import preloadScript from '!raw-loader!./utils/preload'
   import darkThemeStyle from '!raw-loader!./themes/dark.css'
 
@@ -36,7 +38,16 @@
       }
     },
     computed: {
-      ...mapState('app/settings/connection', {_host: s => s.host}),
+
+
+      /**
+       * Get anilibria host
+       *
+       * @return {string}
+       */
+      anilibria() {
+        return meta.links.anilibria;
+      },
 
 
       /**
@@ -49,7 +60,7 @@
           src: this.src,
           partition: "release:comments",
           allowpopups: true,
-          httpreferrer: this._host,
+          httpreferrer: this.anilibria,
           disablewebsecurity: true,
         }
       },
@@ -62,7 +73,7 @@
       src() {
 
         const code = this.$__get(this.release, 'code');
-        const url = `${this._host}/release/${code}.html`;
+        const url = `${this.anilibria}/release/${code}.html`;
         const appId = process.env.VK_APP_ID;
 
         return `https://vk.com/widget_comments.php?app=${appId}&url=${url}&limit=10`;
@@ -121,7 +132,6 @@
 <style lang="scss">
 
   .comments {
-    //width: 100vw;
     height: 100vh;
     position: absolute;
     top: -999999px;

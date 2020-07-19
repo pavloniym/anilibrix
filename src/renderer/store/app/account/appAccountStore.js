@@ -1,6 +1,12 @@
+// Proxy
+import AccountProxy from "@proxies/account";
+
+// Utils
 import __get from 'lodash/get'
 import {v4 as uuid} from 'uuid'
-import AnilibriaProxy from "@proxies/anilibria";
+
+// Handlers
+import {showAppError} from "@main/handlers/notifications/notificationsHandler";
 
 const SET_USER_ID = 'SET_USER_ID';
 const SET_SESSION = 'SET_SESSION';
@@ -69,6 +75,100 @@ export default {
 
   actions: {
 
+
+    /**
+     * Try to login with provided credentials
+     *
+     * @param commit
+     * @param dispatch
+     * @param login
+     * @param password
+     * @return {Promise<void>}
+     */
+    login: async ({commit, dispatch}, {login, password}) => {
+      try {
+
+        // Reset session and profile
+        await dispatch('setSession', null);
+        await dispatch('setProfile', null);
+
+        // Try to login with provided credentials
+        return await new AccountProxy().login({login, password});
+
+      } catch (error) {
+
+        // Show app error
+        // Throw error
+        showAppError(error);
+        throw error;
+
+      }
+    },
+
+
+    /**
+     * Logout user
+     *
+     * @param dispatch
+     * @return {Promise<void>}
+     */
+    logout: async ({dispatch}) => {
+      try {
+
+        await new AccountProxy().logout();
+
+      } catch (error) {
+
+        // Show app error
+        // Throw error
+        // showAppError('Произошла ошибка при деавторизации пользователя');
+        throw error;
+
+      } finally {
+
+        // Clear session
+        // Clear profile data
+        // Even if logout error
+        // Reset session and profile
+        await dispatch('setSession', null);
+        await dispatch('setProfile', null);
+
+      }
+    },
+
+
+    /**
+     * Get profile data
+     *
+     * @return {Promise<*>}
+     */
+    getProfile: async ({dispatch}) => {
+      try {
+
+        // Create request to get profile data
+        const profile = await new AccountProxy().getProfile();
+
+        // Get profile data from response
+        // Get profile avatar
+        const id = __get(profile, 'id');
+        const login = __get(profile, 'login');
+        const avatar = new AccountProxy().getAvatarPath(__get(profile, 'avatar'));
+
+        // Set profile data
+        await dispatch('setProfile', {id, login, avatar});
+
+      } catch (error) {
+
+        // Reset session and profile on error
+        // Reset session and profile
+        await dispatch('setSession', null);
+        await dispatch('setProfile', null);
+
+        // Throw error
+        throw error;
+      }
+    },
+
     /**
      * Set account id
      * Generate random uuid if not exists
@@ -78,9 +178,7 @@ export default {
      * @param uuid
      */
     setUserId: ({commit, state}) => {
-      if (state.userId === null) {
-        commit(SET_USER_ID, uuid());
-      }
+      if (state.userId === null) commit(SET_USER_ID, uuid());
     },
 
 
@@ -93,6 +191,7 @@ export default {
      */
     setSession: ({commit}, session = null) => commit(SET_SESSION, session || null),
 
+
     /**
      * Set profile data
      *
@@ -100,80 +199,7 @@ export default {
      * @param profile
      * @return {*}
      */
-    setProfile: ({commit}, profile = null) => commit(SET_PROFILE, profile || {}),
-
-
-    /**
-     * Authorize with login and password
-     * @param commit
-     * @param login
-     * @param password
-     * @return {Promise<void>}
-     */
-    authorizeWithLoginAndPassword: async ({commit}, {login, password}) => {
-      return await new AnilibriaProxy().login({login, password});
-    },
-
-
-    /**
-     * Get profile data
-     *
-     * @return {Promise<*>}
-     */
-    getProfile: async ({commit}) => {
-      try {
-
-        // Create request to get profile data
-        const profile = await new AnilibriaProxy().getProfile();
-
-        // Get profile data from response
-        // Get profile avatar
-        const id = __get(profile, 'id');
-        const login = __get(profile, 'login');
-        const avatar = await new AnilibriaProxy().getImage({src: __get(profile, 'avatar')});
-
-        // Set profile data
-        commit(SET_PROFILE, {id, login, avatar});
-
-      } catch (error) {
-
-        // Reset session and profile on error
-        commit(SET_SESSION, null);
-        commit(SET_PROFILE, null);
-
-        // Throw error
-        throw error;
-      }
-    },
-
-
-    /**
-     * Logout user
-     *
-     * @param commit
-     * @return {Promise<void>}
-     */
-    logout: async ({commit}) => {
-      try {
-
-        // Make logout request
-        await new AnilibriaProxy().logout();
-
-      } catch (error) {
-
-        // Throw error
-        throw error;
-
-      } finally {
-
-        // Clear session
-        // Clear profile data
-        // Even if logout error
-        commit(SET_SESSION, null);
-        commit(SET_PROFILE, null);
-
-      }
-    }
+    setProfile: ({commit}, profile = null) => commit(SET_PROFILE, profile || {})
 
   }
 }

@@ -1,9 +1,18 @@
-import AnilibriaProxy from "@proxies/anilibria";
-import AnilibriaReleaseTransformer from "@transformers/anilibria/release";
+// Proxy
+import CatalogProxy from "@proxies/catalog";
+import ReleaseProxy from "@proxies/release";
 
-import {Main} from '@main/utils/windows'
+// Transformer
+import CatalogTransformer from "@transformers/catalog";
+
+// Utils
 import __capitalize from 'lodash/capitalize'
 
+// Handlers
+import {showAppError} from "@main/handlers/notifications/notificationsHandler";
+
+
+// Mutations
 const SET_INITIALIZED = 'SET_INITIALIZED';
 const SET_FILTER_DATA = 'SET_FILTER_DATA';
 const SET_FILTER_VALUE = 'SET_FILTER_VALUE';
@@ -139,15 +148,6 @@ export default {
   actions: {
 
     /**
-     * Clear catalog releases
-     *
-     * @param commit
-     * @return {*}
-     */
-    clearCatalogReleases: ({commit}) => commit(CLEAR_CATALOG_RELEASES),
-
-
-    /**
      * Get catalog items
      *
      * @param commit
@@ -170,29 +170,27 @@ export default {
 
         // Get items from server
         // Transform items
-        const {items} = await new AnilibriaProxy().getCatalogItems({sort, genres, years, page, perPage});
-        const releases = await new AnilibriaReleaseTransformer().fetchCollection(items);
+        const {items} = await new CatalogProxy().getCatalogReleases({sort, genres, years, page, perPage});
+        const releases = new CatalogTransformer().fetchCollection(items);
 
-        // Collect all poster images
-        await Promise.allSettled(
-          releases.map(async release => {
-            release.poster.image = await new AnilibriaProxy().getImage({src: release.poster.path});
-          })
-        );
+        // Get processed releases
+        // Get poster path
+        const processedReleases = releases
+          .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}));
 
         // Push catalog releases
-        commit(SET_CATALOG_RELEASES, releases);
-
         // Set updated pagination data
-        commit(SET_CATALOG_PAGINATION, {page, lastItems: items ? items.length : 0});
+        commit(SET_CATALOG_RELEASES, processedReleases);
+        commit(SET_CATALOG_PAGINATION, {page, lastItems: processedReleases ? processedReleases.length : 0});
 
       } catch (error) {
 
-        Main.sendToWindow('app:error', 'Произошла ошибка при загрузке релизов');
-        Main.sendToWindow('app:error', error);
+        // Show app error
+        // Throw error
+        showAppError('Произошла ошибка при загрузке релизов');
+        throw error;
 
       } finally {
-
         commit(SET_CATALOG_LOADING, false);
 
       }
@@ -206,25 +204,24 @@ export default {
      * @return {Promise<void>}
      */
     getCatalogGenresFilter: async ({commit}) => {
-
       const filter = 'genres';
-
       try {
 
         commit(SET_FILTER_LOADING, {filter, loading: true});
 
         // Get data
         // Set filter data
-        const data = (await new AnilibriaProxy().getCatalogGenres()).map(genre => __capitalize(genre));
+        const data = (await new CatalogProxy().getCatalogGenres()).map(genre => __capitalize(genre));
         commit(SET_FILTER_DATA, {filter, data});
 
       } catch (error) {
 
-        Main.sendToWindow('app:error', 'Произошла ошибка при загрузке фильтров по жанрам');
-        Main.sendToWindow('app:error', error);
+        // Show app error
+        // Throw error
+        showAppError('Произошла ошибка при загрузке фильтров по жанрам');
+        throw error;
 
       } finally {
-
         commit(SET_FILTER_LOADING, {filter, loading: false});
 
       }
@@ -238,25 +235,37 @@ export default {
      * @return {Promise<void>}
      */
     getCatalogYearsFilter: async ({commit}) => {
-
       const filter = 'years';
-
       try {
 
         commit(SET_FILTER_LOADING, {filter, loading: true});
-        commit(SET_FILTER_DATA, {filter, data: await new AnilibriaProxy().getCatalogYears()});
+
+        // Get data
+        // Set filter data
+        const data = await new CatalogProxy().getCatalogYears();
+        commit(SET_FILTER_DATA, {filter, data});
 
       } catch (error) {
 
-        Main.sendToWindow('app:error', 'Произошла ошибка при загрузке фильтров по годам');
-        Main.sendToWindow('app:error', error);
+        // Show app error
+        // Throw error
+        showAppError('Произошла ошибка при загрузке фильтров по годам');
+        throw error;
 
       } finally {
-
         commit(SET_FILTER_LOADING, {filter, loading: false});
 
       }
     },
+
+
+    /**
+     * Clear catalog releases
+     *
+     * @param commit
+     * @return {*}
+     */
+    clearCatalogReleases: ({commit}) => commit(CLEAR_CATALOG_RELEASES),
 
 
     /**
