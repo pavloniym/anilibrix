@@ -45,6 +45,7 @@
 
   import prettyBytes from 'pretty-bytes'
   import {AppPlatformMixin} from '@mixins/app'
+  import {catchTorrentDownload} from "@main/handlers/torrents/torrentsHandler";
 
   const props = {
     source: {
@@ -155,7 +156,7 @@
     },
 
     created() {
-      this.$electron.ipcRenderer.on('torrent:download', (e, data) => {
+      catchTorrentDownload(data => {
         if (this.torrent && this.torrent.id === data.torrentId) {
 
           // Set download speed
@@ -169,7 +170,7 @@
             this.progress = file.progress;
           }
         }
-      })
+      });
     }
 
   }

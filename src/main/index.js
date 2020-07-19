@@ -1,11 +1,11 @@
 // Main process
 import path from 'path'
+import {app} from 'electron'
 import {meta} from '@package'
 import sentry from './utils/sentry'
-import {app, ipcMain as ipc} from 'electron'
 
 // Store
-import store, {setUserId, getStore} from '@store'
+import {setUserId, getStore} from '@store'
 
 // Windows
 import {Main, Torrent} from './utils/windows'
@@ -21,29 +21,17 @@ import {
   catchAppDockNumberEvent
 } from '@main/handlers/app/appHandlers'
 
+// Torrent Handlers
+import {broadcastTorrentEvents} from "@main/handlers/torrents/torrentsHandler";
+
 // Import tray and menu
 import Tray from './utils/tray'
 import Menu from './utils/menu'
-import {catchReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
+
 
 // Create tray and menu controller
 const trayController = new Tray();
 const menuController = new Menu();
-
-
-// Communications between windows
-const communications = [
-
-  // Torrent Channels
-  {channel: 'torrent:clear', window: () => Main},
-  {channel: 'torrent:error', window: () => Main},
-  {channel: 'torrent:start', window: () => Torrent},
-  {channel: 'torrent:server', window: () => Main},
-  {channel: 'torrent:destroy', window: () => Torrent},
-  {channel: 'torrent:download', window: () => Main},
-
-];
-
 
 /**
  * Set `__static` path to static files in production
@@ -53,9 +41,13 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\'); // eslint-disable-line
 }
 
+// Add command lines arguments
 app.commandLine.appendSwitch('disable-site-isolation-trials');
 
+// Close app on all windows closed (relevant for mac users)
 app.on('window-all-closed', () => app.quit());
+
+// App ready handler
 app.on('ready', async () => {
 
   // Set user id
@@ -72,23 +64,13 @@ app.on('ready', async () => {
   Main.getWindow().on('close', () => app.quit());
 
   // Create menu
-  menuController.setWindows(Main, Torrent).init();
-
   // Create tray icon
-  // Set data folder
+  menuController.setWindows(Main, Torrent).init();
   trayController.createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')}).setTooltip(meta.name);
 
-
-  // Init windows communications
-  communications.forEach(communication => {
-    ipc.on(communication.channel, (e, payload) =>
-      communication.window().sendToWindow(communication.channel, payload)
-    )
-  });
-
-
   appHandlers(); // App handlers
-  downloadHandlers(); // Download handlers
+  torrentHandlers(); // Torrent handler
+  //downloadHandlers(); // Download handlers
 
 });
 
@@ -104,6 +86,16 @@ const appHandlers = () => {
   catchAppDockNumberEvent(); // app dock number event
   catchAppDevtoolsMainEvent(); // devtools main
   catchAppDevtoolsTorrentEvent(); //devtools torrent
+};
+
+
+/**
+ * Torrents handlers
+ *
+ * @return {void}
+ */
+const torrentHandlers = () => {
+  broadcastTorrentEvents(); // broadcast all torrent events
 };
 
 

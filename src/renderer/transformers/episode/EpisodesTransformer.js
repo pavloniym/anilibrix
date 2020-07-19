@@ -9,7 +9,7 @@ import store from '@store'
 import __camelCase from 'lodash/camelCase'
 
 // Handlers
-import {catchParsedTorrentData, sendTorrentDataToParse} from "@main/handlers/torrents/torrentsHandler";
+import {catchTorrentParsedData, sendTorrentParse} from "@main/handlers/torrents/torrentsHandler";
 
 
 export default class EpisodesTransformer extends BaseTransformer {
@@ -198,8 +198,8 @@ export default class EpisodesTransformer extends BaseTransformer {
 
                 // Send torrent for parsing data
                 // Catch torrent for parsing
-                sendTorrentDataToParse(torrent, file.data);
-                catchParsedTorrentData(torrent, data => resolve({torrent, data}));
+                sendTorrentParse(torrent.id, file.data);
+                catchTorrentParsedData(torrent.id, data => resolve({torrent, data}));
 
               } else resolve(null);
 

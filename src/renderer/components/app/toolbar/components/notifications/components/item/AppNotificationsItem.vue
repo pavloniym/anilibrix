@@ -9,7 +9,7 @@
     <!-- Content -->
     <v-list-item-content>
       <v-list-item-title v-text="name"/>
-      <v-list-item-subtitle>Вышел {{episodeNumber}} серия</v-list-item-subtitle>
+      <v-list-item-subtitle>Вышла {{episodeNumber}} серия</v-list-item-subtitle>
       <v-list-item-subtitle v-text="datetime" class="grey--text text--darken-2"/>
     </v-list-item-content>
 

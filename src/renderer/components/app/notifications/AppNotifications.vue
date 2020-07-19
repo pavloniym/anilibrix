@@ -31,8 +31,6 @@
     created() {
       catchReleaseNotification((release => {
 
-        console.log(release);
-
         // Check if release is set
         // Check if system notifications is enabled
         if (release && this._notifications === true) {

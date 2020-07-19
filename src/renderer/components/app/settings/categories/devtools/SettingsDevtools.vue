@@ -31,7 +31,6 @@
   import {mapState, mapActions} from 'vuex'
 
   // Handlers
-  import {sendReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
   import {sendAppDevtoolsMainEvent, sendAppDevtoolsTorrentEvent,} from "@main/handlers/app/appHandlers";
 
   export default {
@@ -52,10 +51,6 @@
           {
             title: 'Консоль торрент-сервера',
             action: sendAppDevtoolsTorrentEvent,
-          },
-          {
-            title: 'Показать уведомление',
-            action: () => sendReleaseNotification(this._releases[0])
           },
           {
             title: 'Добавить уведомление в хранилище',
