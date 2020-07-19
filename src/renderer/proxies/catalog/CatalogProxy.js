@@ -11,7 +11,7 @@ export default class CatalogProxy extends BaseProxy {
   async getCatalogGenres() {
 
     const data = this.getFormDataObject({query: 'genres'});
-    const params = {data, headers: data.getHeaders()};
+    const params = {data};
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
@@ -26,7 +26,7 @@ export default class CatalogProxy extends BaseProxy {
   async getCatalogYears() {
 
     const data = this.getFormDataObject({query: 'years'});
-    const params = {data, headers: data.getHeaders()};
+    const params = {data};
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
@@ -51,7 +51,7 @@ export default class CatalogProxy extends BaseProxy {
       query: 'catalog', xpage: 'catalog', search: {year: (years || []).join(','), genre: (genres || []).join(',')}
     });
 
-    const params = {data, headers: data.getHeaders(), ...parameters};
+    const params = {data, ...parameters};
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);

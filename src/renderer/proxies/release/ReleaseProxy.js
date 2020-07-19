@@ -11,7 +11,7 @@ export default class ReleaseProxy extends BaseProxy {
   async getReleases(parameters = {}) {
 
     const data = this.getFormDataObject({query: 'list', perPage: 14});
-    const params = {data, headers: data.getHeaders(), ...parameters};
+    const params = {data, ...parameters};
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
@@ -28,7 +28,7 @@ export default class ReleaseProxy extends BaseProxy {
   async getRelease(release_id, parameters = {}) {
 
     const data = this.getFormDataObject({query: 'release', id: release_id});
-    const params = {data, headers: data.getHeaders(), ...parameters};
+    const params = {data, ...parameters};
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
@@ -45,7 +45,7 @@ export default class ReleaseProxy extends BaseProxy {
   async searchReleases(search_query, parameters = {}) {
 
     const data = this.getFormDataObject({query: 'search', search: search_query});
-    const params = {data, headers: data.getHeaders(), ...parameters};
+    const params = {data, ...parameters};
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
@@ -60,9 +60,9 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {Promise<unknown>}
    */
   async getReleaseTorrent(url, parameters = {}) {
-    if (url) {
-      return await this.submit('GET', this.getStaticEndpoint() + url, {...parameters, responseType: 'arraybuffer'});
-    } else return null;
+    return url
+      ? await this.submit('GET', this.getStaticEndpoint() + url, {...parameters, responseType: 'arraybuffer'})
+      : null;
   }
 
 
@@ -73,7 +73,9 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {string|null}
    */
   getReleasePosterPath(src) {
-    return src ? this.getStaticEndpoint() + src : null;
+    return src
+      ? this.getStaticEndpoint() + src
+      : null;
   }
 
 }

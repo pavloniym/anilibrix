@@ -29,6 +29,7 @@
 
 <script>
 
+  // Components
   import AppLoader from '@components/app/loader'
   import AppErrors from '@components/app/errors'
   import AppToolBar from "@components/app/toolbar";
@@ -38,6 +39,7 @@
   import AppBaseLayout from '@layouts/base'
   import AppNotifications from "@components/app/notifications";
 
+  // Utils
   import {mapState, mapActions} from 'vuex'
 
   export default {

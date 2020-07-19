@@ -11178,6 +11178,11 @@ vue-clamp@^0.2.2:
   dependencies:
     resize-detector "^0.1.10"
 
+vue-cookies@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/vue-cookies/-/vue-cookies-1.7.2.tgz#805bd307f7015c2325cae1326730d7f914b14dcf"
+  integrity sha512-jiliU1Wm6bc3dOf8XxxLvMTFuEG4rITFEHqDeug5o78DNtH0/w0eQFzKODBxpXinr6b68894emv5LzJuN9mjHw==
+
 vue-electron@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/vue-electron/-/vue-electron-1.0.6.tgz#e798e03180b8933539defe31f92e53b9242b9406"

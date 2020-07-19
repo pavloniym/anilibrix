@@ -51,8 +51,7 @@
        */
       resetCache() {
         this.loading = true;
-        this.$store
-          .dispatchPromise('RESET_STORE')
+        this.$store.dispatch('RESET_STORE')
           .then(() => this.$electron.remote.getCurrentWindow().reload())
           .finally(() => this.loading = false)
       }

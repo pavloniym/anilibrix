@@ -57,6 +57,7 @@
 
   // Utils
   import {required} from 'vuelidate/lib/validators'
+  import {mapActions} from 'vuex'
   import {BackViewMixin} from '@mixins/views'
 
   export default {
@@ -79,6 +80,12 @@
     },
 
     methods: {
+      ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
+      ...mapActions('app/account', {
+        _login: 'login',
+        _setSession: 'setSession',
+        _getProfile: 'getProfile',
+      }),
 
       /**
        * Authorize
@@ -91,17 +98,13 @@
             this.loading = true;
 
             // Make login request with provided credentials
-            // Save account session
-            const payload = {login: this.login, password: this.password};
-            const session = await this.$store.dispatchPromise('app/account/login', payload);
-            await this.$store.dispatchPromise('app/account/setSession', session);
-
             // Get profile data
-            await this.$store.dispatchPromise('app/account/getProfile');
+            await this._login({login: this.login, password: this.password});
+            await this._getProfile();
             await this.toBack();
 
             // Get user favorites
-            this.$store.dispatchPromise('favorites/getFavorites');
+            this._getFavorites();
 
           } finally {
             this.loading = false;

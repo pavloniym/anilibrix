@@ -20,7 +20,7 @@
 
     <template v-slot:item="{item}">
       <v-list-item-avatar>
-        <v-img :src="item.poster" />
+        <v-img :src="item.poster"/>
       </v-list-item-avatar>
       <v-list-item-content :style="{maxWidth: $refs.search.$el.clientWidth + 'px'}">
         <v-list-item-title v-text="item.names.ru"/>
@@ -53,6 +53,7 @@
 
     methods: {
       ...mapActions('app', {_setSearching: 'setSearching'}),
+      ...mapActions('releases', {_searchReleases: 'searchReleases'}),
 
 
       /**
@@ -60,12 +61,12 @@
        *
        * @param searchQuery
        */
-      getReleases: __debounce(async function(searchQuery) {
+      getReleases: __debounce(async function (search_query) {
 
         // Set loading state
         // Get releases from server
         this.loading = true;
-        this.items = await this.$store.dispatchPromise('releases/searchReleases', searchQuery);
+        this.items = await this._searchReleases(search_query);
 
         // Reset loading
         this.loading = false;
@@ -107,7 +108,7 @@
 
             // Check if metrics is available
             // Hit metrics event
-            if(this.$metrika) {
+            if (this.$metrika) {
               this.$metrika.hit(`/search?query=${search}`);
             }
 

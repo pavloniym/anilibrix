@@ -129,7 +129,7 @@
         // Sort by title if sort type is 'title'
         // Sort by release update datetime if sort type is 'updates'
         if (sort === 'title') releases = releases.sort((a, b) => a.names.ru.localeCompare(b.names.ru));
-        if (sort === 'updates') releases = releases.sort((a, b) => b.datetime.system - a.datetime.system);
+        if (sort === 'updates') releases = releases.sort((a, b) => b.datetime && a.datetime ? b.datetime.system - a.datetime.system : 0);
 
         // Check search string
         // Apply search if search is provided

@@ -4,9 +4,7 @@ import Storage from 'electron-store'
 
 import __merge from 'lodash/merge'
 import {getInitialState} from '@utils/store/state'
-import createPromiseAction from '@plugins/vuex-promise-action'
 import createPersistedState from 'vuex-persistedstate'
-import {createSharedMutations} from 'vuex-electron'
 import {getItem, setItem, removeItem} from '@utils/store/storage'
 
 import app from './app'
@@ -38,7 +36,6 @@ const storage = new Storage({name: 'anilibrix'});
 const store = new Vuex.Store({
   modules,
   plugins: [
-    createPromiseAction(),
     createPersistedState({
       key: 'anilibrix',
       paths: [
@@ -53,7 +50,6 @@ const store = new Vuex.Store({
         removeItem: removeItem(storage),
       },
     }),
-    createSharedMutations()
   ],
   strict: debug,
   mutations: {

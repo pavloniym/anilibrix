@@ -19,8 +19,6 @@ Axios.defaults.withCredentials = true;
 const axios = Axios.create();
 
 
-
-
 /**
  * Error handler function
  *
@@ -28,9 +26,6 @@ const axios = Axios.create();
  * @return {Promise<never>}
  */
 const responseErrorHandler = async error => {
-
-  console.log(error);
-
   if (error && error.response) {
 
     // If server responded with not authorized:

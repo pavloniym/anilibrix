@@ -23,7 +23,7 @@
   import Comments from '@components/release/comments'
 
   import {toVideo} from "@utils/router/views";
-  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   const props = {
     releaseId: {
@@ -103,6 +103,10 @@
 
     },
 
+    methods: {
+      ...mapActions('release', {_getRelease: 'getRelease'}),
+    },
+
 
     watch: {
 
@@ -113,9 +117,12 @@
           // Update if release data changed
           if (this._release === null || this._release.id !== parseInt(releaseId)) {
 
+            // Start loading
             // Get release data
             this.loading = true;
-            await this.$store.dispatchPromise('release/getRelease', releaseId);
+            await this._getRelease(releaseId);
+
+            // Reset loading state
             this.loading = false;
 
           }

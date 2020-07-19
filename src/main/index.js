@@ -27,6 +27,7 @@ import {broadcastTorrentEvents} from "@main/handlers/torrents/torrentsHandler";
 // Import tray and menu
 import Tray from './utils/tray'
 import Menu from './utils/menu'
+import {version} from "../../package";
 
 
 // Create tray and menu controller
@@ -57,11 +58,16 @@ app.on('ready', async () => {
   sentry({store: getStore(), source: 'main'});
 
   // Create windows
-  Main.createWindow({title: meta.name}).loadUrl();
-  Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
-
+  // Create main window
+  // Set user agent
   // Main window close event
+  Main.createWindow({title: meta.name}).loadUrl();
+  Main.getWindow().webContents.userAgent = `${meta.name}/${version}`;
   Main.getWindow().on('close', () => app.quit());
+
+  // Create torrent window
+  Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
+  Torrent.getWindow().webContents.userAgent = `${meta.name}/${version}`;
 
   // Create menu
   // Create tray icon

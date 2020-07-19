@@ -70,9 +70,9 @@
 
 <script>
 
-  import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
-  import {mapGetters, mapState} from 'vuex'
   import {toLogin} from "@utils/router/views";
+  import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
+  import {mapGetters, mapState, mapActions} from 'vuex'
 
   export default {
     data() {
@@ -151,6 +151,10 @@
 
 
     methods: {
+      ...mapActions('app/account', {
+        _logout: 'logout',
+        _getProfile: 'getProfile'
+      }),
 
       /**
        * Push to login screen
@@ -170,7 +174,7 @@
       async logout() {
         try {
 
-          await this.$store.dispatchPromise('app/account/logout');
+          await this._logout();
 
         } finally {
 
@@ -190,7 +194,7 @@
         try {
 
           this.loading = true;
-          await this.$store.dispatchPromise('app/account/getProfile');
+          await this._getProfile();
 
         } catch (e) {
 

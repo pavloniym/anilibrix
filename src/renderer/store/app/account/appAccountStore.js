@@ -16,7 +16,6 @@ export default {
   namespaced: true,
   state: {
     userId: null,
-    session: null,
     profile: {
       id: null,
       login: null,
@@ -32,7 +31,7 @@ export default {
      * @param s
      * @return {boolean}
      */
-    isAuthorized: s => !!(s.session !== null && s.profile.id !== null),
+    isAuthorized: s => s.profile.id !== null,
 
   },
 
