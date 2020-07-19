@@ -19,7 +19,9 @@ jobs:
       VK_APP_ID: ${{ secrets.VK_APP_ID }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
+      API_ENDPOINT_URL: ${{ secrets.API_ENDPOINT_URL }}
       YANDEX_TRACKING_ID: ${{ secrets.YANDEX_TRACKING_ID }}
+      STATIC_ENDPOINT_URL: ${{ secrets.STATIC_ENDPOINT_URL }}
       ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
 
     steps:
