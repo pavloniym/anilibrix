@@ -55,6 +55,7 @@
     top: 40px;
     padding: 15px 5% 30px 5%;
     position: absolute;
+    overflow-x: hidden;
     overflow-y: overlay;
     width: 100%;
     height: calc(100vh - 40px);
