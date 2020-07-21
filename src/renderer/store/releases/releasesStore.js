@@ -10,7 +10,7 @@ import EpisodesTransformer from "@transformers/episode";
 import axios from 'axios'
 
 // Handlers
-import {showAppError, sendReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
+import {emitAppError, emitReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
 
 // Mutations
 const SET_INDEX = 'SET_INDEX';
@@ -163,7 +163,7 @@ export default {
             if (previousRelease === null) {
 
               // Send notification event to main window
-              sendReleaseNotification(release);
+              emitReleaseNotification(release);
 
               // Send release to notifications store
               dispatch('notifications/setRelease', release, {root: true})
@@ -184,7 +184,7 @@ export default {
 
           // Show error
           // Throw error
-          //showAppError('Произошла ошибка при загрузке релизов');
+          emitAppError('Произошла ошибка при загрузке релизов');
           throw error;
 
         }
@@ -225,7 +225,7 @@ export default {
 
           // Show app error
           // Return empty array
-          showAppError('Произошла ошибка при поиске релизов');
+          emitAppError('Произошла ошибка при поиске релизов');
           return [];
 
         }

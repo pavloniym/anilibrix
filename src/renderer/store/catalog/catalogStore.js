@@ -9,7 +9,7 @@ import CatalogTransformer from "@transformers/catalog";
 import __capitalize from 'lodash/capitalize'
 
 // Handlers
-import {showAppError} from "@main/handlers/notifications/notificationsHandler";
+import {emitAppError} from "@main/handlers/notifications/notificationsHandler";
 
 
 // Mutations
@@ -187,7 +187,7 @@ export default {
 
         // Show app error
         // Throw error
-        showAppError('Произошла ошибка при загрузке релизов');
+        emitAppError('Произошла ошибка при загрузке релизов');
         throw error;
 
       } finally {
@@ -218,7 +218,7 @@ export default {
 
         // Show app error
         // Throw error
-        showAppError('Произошла ошибка при загрузке фильтров по жанрам');
+        emitAppError('Произошла ошибка при загрузке фильтров по жанрам');
         throw error;
 
       } finally {
@@ -249,7 +249,7 @@ export default {
 
         // Show app error
         // Throw error
-        showAppError('Произошла ошибка при загрузке фильтров по годам');
+        emitAppError('Произошла ошибка при загрузке фильтров по годам');
         throw error;
 
       } finally {

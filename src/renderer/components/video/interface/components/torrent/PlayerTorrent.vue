@@ -45,7 +45,7 @@
 
   import prettyBytes from 'pretty-bytes'
   import {AppPlatformMixin} from '@mixins/app'
-  import {catchTorrentDownload} from "@main/handlers/torrents/torrentsHandler";
+  import {handleTorrentDownload} from "@main/handlers/torrents/torrentsHandler";
 
   const props = {
     source: {
@@ -62,10 +62,14 @@
     },
     data() {
       return {
+        file: {
+          name: null,
+          length: null,
+          progress: null
+        },
         speed: 0,
         seeding: 0,
         visible: false,
-        progress: 0,
       }
     },
 
@@ -78,16 +82,6 @@
        */
       torrent() {
         return this.$__get(this.source, 'payload.torrent');
-      },
-
-
-      /**
-       * Get torrent file data
-       *
-       * @return {*}
-       */
-      file() {
-        return this.$__get(this.source, 'payload.file')
       },
 
 
@@ -117,12 +111,12 @@
           },
           {
             title: 'Воспроизводимый файл',
-            value: this.$__get(this.file, 'name'),
+            value: this.file.name,
             classes: ['white-space--pre-wrap']
           },
           {
             title: 'Размер файла',
-            value: prettyBytes(this.$__get(this.file, 'length')),
+            value: prettyBytes(this.file.length || 0),
           },
           {
             title: 'Скорость загрузки',
@@ -134,7 +128,7 @@
           },
           {
             title: 'Прогресс',
-            value: `${(this.progress * 100).toFixed(2)}%`,
+            value: `${((this.file.progress || 0) * 100).toFixed(2)}%`,
           }
         ].filter(item => item.value !== null)
       }
@@ -150,25 +144,23 @@
        */
       show() {
         this.visible = true
-      },
-
+      }
 
     },
 
     created() {
-      catchTorrentDownload(data => {
-        if (this.torrent && this.torrent.id === data.torrentId) {
+      handleTorrentDownload(data => {
+        if (this.torrent && this.torrent.id === data.torrent_id) {
 
           // Set download speed
           this.speed = data.speed || 0;
           this.seeding = data.seeding || 0;
 
-          // Find current file
-          // Set it's progress
-          const file = (data.files || []).find(file => file.name === this.file.name);
-          if (file) {
-            this.progress = file.progress;
-          }
+          // Set file data
+          this.file.name = data.name;
+          this.file.length = data.length;
+          this.file.progress = data.progress;
+
         }
       });
     }

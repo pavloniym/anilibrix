@@ -9,11 +9,17 @@ import store from '@store'
 import __camelCase from 'lodash/camelCase'
 
 // Handlers
-import {catchTorrentParsedData, sendTorrentParse} from "@main/handlers/torrents/torrentsHandler";
+import {handleTorrentParsed, emitTorrentParsing} from "@main/handlers/torrents/torrentsHandler";
 
 
 export default class EpisodesTransformer extends BaseTransformer {
 
+  /**
+   * EpisodesTransformer constructor
+   *
+   * @param cancelToken
+   * @param skipTorrents
+   */
   constructor({cancelToken = null, skipTorrents = false} = {}) {
     super();
     this.cancelToken = cancelToken;
@@ -176,7 +182,11 @@ export default class EpisodesTransformer extends BaseTransformer {
    * @param torrents
    */
   async _getTorrents(torrents = []) {
-    if (this.skipTorrents === false && this.get(store, 'state.app.settings.player.torrents.process') === true) {
+
+    const torrents_are_skipping = this.skipTorrents === true;
+    const torrents_processing_is_enabled = this.get(store, 'state.app.settings.player.torrents.process') === true;
+
+    if (!torrents_are_skipping && torrents_processing_is_enabled) {
 
       // Filter torrents
       // Exclude HEVC torrents (no codec available)
@@ -198,8 +208,8 @@ export default class EpisodesTransformer extends BaseTransformer {
 
                 // Send torrent for parsing data
                 // Catch torrent for parsing
-                sendTorrentParse(torrent.id, file.data);
-                catchTorrentParsedData(torrent.id, data => resolve({torrent, data}));
+                emitTorrentParsing(torrent.id, file.data);
+                handleTorrentParsed(({torrent_id, data}) => torrent.id === torrent_id ? resolve({torrent, data}) : null);
 
               } else resolve(null);
 

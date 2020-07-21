@@ -18,12 +18,15 @@ import {getStore} from '@store'
 
 
 // Torrent handlers
+import {handleTorrentStart, handleTorrentDestroy, handleTorrentParsing} from "@main/handlers/torrents/torrentsHandler";
 import {
-  catchTorrentDestroy,
-  catchTorrentParse,
-  catchTorrentStart, sendTorrentClear, sendTorrentDownload, sendTorrentError,
-  sendTorrentParsedData, sendTorrentServer
+  emitTorrentClear,
+  emitTorrentError,
+  emitTorrentParsed,
+  emitTorrentServer,
+  emitTorrentDownload
 } from "@main/handlers/torrents/torrentsHandler";
+
 
 // Utils
 import {parse, stringify} from 'flatted'
@@ -55,25 +58,27 @@ const torrentPath = path.join(remote.app.getPath('temp'), app.build.appId);
  * @param torrent_id
  * @param blob
  */
-const parseTorrent = ({torrent_id, blob} = {}) => {
+const parseTorrent = ({torrent_id, blob = null} = {}) => {
   try {
 
     let data = null;
 
+    // If blob is provided -> try to create buffer with torrent file
     if (blob !== null) {
 
-      // If blob is provided -> try to create buffer with torrent file
       // Try to parse torrent
       data = parseTorrentData(new Buffer(blob));
 
       // Save torrent data to store
-      // Show console
       store.collection[torrent_id] = data;
+
+      // Show console
       console.log('Parse Torrent', {torrent: parse(stringify(data))});
+
     }
 
     // Send result to main process
-    sendTorrentParsedData(torrent_id, data);
+    emitTorrentParsed(torrent_id, data);
 
   } catch (error) {
     _sendError({torrentId: torrent_id, message: 'Произошла ошибка при парсинге торрент-файла', error});
@@ -86,22 +91,22 @@ const parseTorrent = ({torrent_id, blob} = {}) => {
  *
  * @param torrentSource
  */
-const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
+const startTorrent = ({torrent_id, file_index = 0} = {}) => {
 
   // Show in console
-  console.log('Start Torrent', {torrentId, fileIndex});
+  console.log('Start Torrent', {torrent_id, file_index});
 
-  if (torrentClient && store.collection[torrentId]) {
+  if (torrentClient && store.collection[torrent_id]) {
 
     // Destroy torrent if it already added
-    if (store.torrents[torrentId]) store.torrents[torrentId].destroy();
+    if (store.torrents[torrent_id]) store.torrents[torrent_id].destroy();
 
     // Add torrent
-    torrentClient.add(store.collection[torrentId], {path: torrentPath}, async torrent => {
+    torrentClient.add(store.collection[torrent_id], {path: torrentPath}, async torrent => {
       try {
 
         // Get file with provided file index
-        const file = torrent.files[fileIndex];
+        const file = torrent.files[file_index];
 
         // Deselect all files initial download
         torrent.files.forEach(file => file.deselect());
@@ -112,36 +117,23 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
         if (!file) throw 'Файл с таким порядковым номером не обнаружен';
 
         // Save torrent instance to store
-        store.torrents[torrentId] = torrent;
+        store.torrents[torrent_id] = torrent;
 
         // Start http server for this torrent's instance
-        const result = await _startServer({torrentId, torrent});
+        const server = await _startServer({torrent_id, torrent});
 
         // Send event with server
-        sendTorrentServer({...result, torrentId});
+        emitTorrentServer({...server, torrent_id});
 
         //Send torrent download data
-        if (store.handlers[torrentId]) clearInterval(store.handlers[torrentId]);
-        store.handlers[torrentId] = setInterval(() => {
+        if (store.handlers[torrent_id]) clearInterval(store.handlers[torrent_id]);
+        store.handlers[torrent_id] = setInterval(() => {
 
-          // Send message to another window
-          sendTorrentDownload({
-            torrentId,
-            speed: torrent.downloadSpeed,
-            seeding: torrent.uploadSpeed,
-            files: (torrent.files || []).map(file => {
-              return {
-                name: file.name,
-                progress: file.progress,
-                downloaded: file.downloaded,
-              }
-            })
-          });
 
-          // Show in console
-          console.log('Torrent Download:', {
-            torrentId,
-            fileIndex,
+          // Create loading payload
+          const payload = {
+            torrent_id,
+            file_index,
             name: file.name,
             path: file.path,
             speed: torrent.downloadSpeed,
@@ -149,20 +141,23 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
             seeding: torrent.uploadSpeed,
             progress: file.progress,
             downloaded: file.downloaded,
-          });
+          };
+
+          // Send message to another window
+          // Show in console
+          emitTorrentDownload(payload);
+          console.log('Torrent Download:', payload);
 
         }, 2000);
 
-
       } catch (error) {
-        _sendError({torrentId, message: 'Произошла ошибка при инициализации торрент-файла', error});
+        _sendError({torrent_id, message: 'Произошла ошибка при инициализации торрент-файла', error});
       }
+
     });
 
   } else {
-
-    _sendError({torrentId, message: 'Торрент не найден'})
-
+    _sendError({torrent_id, message: 'Торрент не найден'})
   }
 };
 
@@ -174,54 +169,53 @@ const startTorrent = ({torrentId, fileIndex = 0} = {}) => {
  *
  * @return Promise
  */
-const destroyTorrent = ({torrentId}) => {
+const destroyTorrent = ({torrent_id}) => {
   try {
 
 
     // Stop server
-    if (store.servers[torrentId]) {
+    if (store.servers[torrent_id]) {
 
       // Show in console
-      console.log('Destroy Server', {torrentId, server: parse(stringify(store.servers[torrentId]))});
+      console.log('Destroy Server', {torrent_id, server: parse(stringify(store.servers[torrent_id]))});
 
       // Stop and destroy server
-      store.servers[torrentId].close();
-      store.servers[torrentId] = null;
+      store.servers[torrent_id].close();
+      store.servers[torrent_id] = null;
 
     }
 
     // Destroy handler
-    if (store.handlers[torrentId]) {
-      clearInterval(store.handlers[torrentId]);
+    if (store.handlers[torrent_id]) {
+      clearInterval(store.handlers[torrent_id]);
     }
 
     // Destroy torrent
-    if (store.torrents[torrentId]) {
+    if (store.torrents[torrent_id]) {
 
       // Torrent files path
-      const path = store.torrents[torrentId].path;
+      const path = store.torrents[torrent_id].path;
 
       // Remove files from fs
       rimraf(path, () => {
 
         // Show in console
-        console.log('Destroy Torrent', {torrentId, path});
+        console.log('Destroy Torrent', {torrent_id, path});
 
         // Destroy torrent
         // Clear storage
-        store.torrents[torrentId].destroy();
-        store.torrents[torrentId] = null;
+        store.torrents[torrent_id].destroy();
+        store.torrents[torrent_id] = null;
 
         // Remove files from torrent
         // Send clear event
-        sendTorrentClear({torrentId});
+        emitTorrentClear({torrent_id});
+
       });
     }
 
   } catch (error) {
-
-    _sendError({torrentId, message: 'Произошла ошибка при остановке и уничтожении торрент-файла', error});
-
+    _sendError({torrent_id, message: 'Произошла ошибка при остановке и уничтожении торрент-файла', error});
   }
 };
 
@@ -231,7 +225,7 @@ const destroyTorrent = ({torrentId}) => {
  *
  * @param instance
  */
-const _startServer = ({torrentId, torrent}) => {
+const _startServer = ({torrent_id, torrent}) => {
   return new Promise((resolve, reject) => {
 
     try {
@@ -240,7 +234,7 @@ const _startServer = ({torrentId, torrent}) => {
       const server = torrent.createServer();
 
       // Save server instance to store
-      store.servers[torrentId] = server;
+      store.servers[torrent_id] = server;
 
       // Start server
       server.listen(0, () => {
@@ -249,10 +243,10 @@ const _startServer = ({torrentId, torrent}) => {
         const url = `http://localhost:${server.address().port}`;
 
         // Show in console
-        console.log('Start Server', {torrentId, server: parse(stringify(server)), url});
+        console.log('Start Server', {torrent_id, server: parse(stringify(server)), url});
 
         // Resolve url
-        resolve({url, server, torrentId});
+        resolve({url, server});
       })
 
     } catch (error) {
@@ -265,23 +259,26 @@ const _startServer = ({torrentId, torrent}) => {
 /**
  * Send torrent error
  *
- * @param torrentId
+ * @param torrent_id
  * @param message
  * @param error
  * @private
  */
-const _sendError = ({torrentId, message = null, error = null} = {}) => {
+const _sendError = ({torrent_id, message = null, error = null} = {}) => {
 
   // Show in console
+  console.log('Torrent Error', {torrent_id, error, message});
+
   // Send error message
-  console.log('Torrent Error', {torrentId, error, message});
-  sendTorrentError({torrentId, error, message});
+  emitTorrentError({torrent_id, error, message});
 
 };
 
 
+// Initialize torrent handlers
+// Catch and handle torrent events
 (() => {
-  catchTorrentParse(payload => parseTorrent(payload));
-  catchTorrentStart(payload => startTorrent(payload));
-  catchTorrentDestroy(payload => destroyTorrent(payload));
+  handleTorrentStart(payload => startTorrent(payload));
+  handleTorrentParsing(payload => parseTorrent(payload));
+  handleTorrentDestroy(payload => destroyTorrent(payload));
 })();

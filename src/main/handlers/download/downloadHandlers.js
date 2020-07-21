@@ -1,164 +1,89 @@
-import {download} from "electron-dl";
+import {Main} from "@main/utils/windows";
 import {v4 as uuid} from "uuid";
-import {ipcRenderer, ipcMain, shell} from 'electron'
+import {ipcRenderer, ipcMain, shell, app} from 'electron'
 
-const DOWNLOAD_INIT = 'app:download:init';
-const DOWNLOAD_OPEN = 'app:download:open';
-const DOWNLOAD_CANCEL = 'app:download:cancel';
-const DOWNLOAD_STARTED = 'app:download:started';
-const DOWNLOAD_PROGRESS = 'app:download:progress';
+export const DOWNLOAD_INIT = 'app:download:init';
+
+export const DOWNLOAD_OPEN = 'app:download:open';
+export const DOWNLOAD_CANCEL = 'app:download:cancel';
+export const DOWNLOAD_STARTED = 'app:download:started';
+export const DOWNLOAD_PROGRESS = 'app:download:progress';
+
+// Download storage
+export const storage = {};
 
 
 /**
- * Download init function
- * From rendered process
+ * Broadcast download handlers
+ *
+ */
+export const broadcastDownloadHandlers = () => {
+
+  const communications = [
+    {channel: DOWNLOAD_INIT, callback: handleDownloadFile},
+  ];
+
+  communications.forEach(communication => {
+    ipcMain.on(communication.channel, (e, payload) => communication.callback(payload))
+  });
+
+};
+
+
+/**
+ * Emit download file
  *
  * @param url
  * @param source
  * @param release
  * @param episode
  */
-const initDownload = (url, source, release, episode) => {
+export const emitDownloadFile = ({url, source, release, episode} = {}) => {
   ipcRenderer.send(DOWNLOAD_INIT, {url, source, release, episode});
 };
 
 
 /**
- * Start download file
- * From main process
+ * Handle download file
  *
- * @param storage
- * @param MainWindow
- */
-const startingDownload = (storage, MainWindow) => {
-  ipcMain.on(DOWNLOAD_INIT, async (e, {url, source, release, episode}) => {
-
-    // Create id
-    const id = uuid();
-
-    // Run download
-    // Save file item emitter after promise resolve
-    storage[id] = await download(MainWindow.getWindow(), url, {
-      saveAs: true,
-      onStarted: item => _onDownloadStarted(id, item, source, release, episode, MainWindow, storage),
-      onProgress: progress => _onProgress(id, progress, MainWindow),
-    });
-  });
-};
-
-
-/**
- * Cancel download
- *
- * @param storage
- */
-const cancelingDownload = (storage) => {
-  ipcMain.on(DOWNLOAD_CANCEL, (e, id) => {
-    if (storage[id]) {
-
-      // Cancel download
-      // Remove from storage
-      storage[id].cancel();
-      delete storage[id];
-    }
-  });
-};
-
-
-/**
- * Started download event
- *
- * @param callback
- */
-const startedDownload = (callback) => {
-  ipcRenderer.on(DOWNLOAD_STARTED, (e, {id, release, episode, source}) =>
-    callback({id, release, episode, source, progress: null})
-  );
-};
-
-
-/**
- * On download progress event
- *
- * @param callback
- */
-const progressDownload = (callback) => ipcRenderer.on(DOWNLOAD_PROGRESS, (e, {id, progress}) => callback({
-  id,
-  progress
-}));
-
-
-/**
- * Send cancel download event to main process
- *
- * @param id
- */
-const cancelDownload = (id) => ipcRenderer.send(DOWNLOAD_CANCEL, id);
-
-
-/**
- * Send open download file event to main process
- *
- * @param id
- */
-const openDownload = (id) => ipcRenderer.send(DOWNLOAD_OPEN, id);
-
-
-/**
- * Opening download
- *
- * @param storage
- */
-const openingDownload = (storage) => {
-  ipcMain.on(DOWNLOAD_OPEN, (e, id) => {
-    if (storage[id]) {
-      shell.openItem(storage[id].savePath);
-    }
-  })
-};
-
-
-/**
- * On downloaded started callback
- *
- * @param id
- * @param item
+ * @param url
  * @param source
  * @param release
  * @param episode
- * @param MainWindow
- * @param storage
- * @private
+ * @return {Promise<void>}
  */
-const _onDownloadStarted = (id, item, source, release, episode, MainWindow, storage) => {
+export const handleDownloadFile = async ({url, source, release, episode}) => {
 
-  // Send to window
-  // Save to storage
-  MainWindow.sendToWindow(DOWNLOAD_STARTED, {id, source, release, episode});
-  storage[id] = item;
+  // Create id
+  const id = uuid();
+
+  // Run download
+  // Save file item emitter after promise resolve
+  DownloadManager.download({
+    url,
+    onProgress: progress => Main.sendToWindow(DOWNLOAD_PROGRESS, {...progress, id, source, release, episode})
+  });
+
+  /*storage[id] = await download(Main.getWindow(), url, {
+    saveAs: true,
+    showBadge: false,
+    onStarted: item => Main.sendToWindow(DOWNLOAD_STARTED, {id, item, source, release, episode}),
+    onProgress: progress => Main.sendToWindow(DOWNLOAD_PROGRESS, {...progress, id}),
+  });*/
 
 };
 
+/**
+ * Handle download started event
+ *
+ * @param callback
+ */
+export const handleDownloadStarted = (callback) => ipcRenderer.on(DOWNLOAD_STARTED, (e, payload) => callback(payload));
+
 
 /**
- * On progress callback
+ * Handle download progress event
  *
- * @param id
- * @param progress
- * @param MainWindow
- * @return {*}
- * @private
+ * @param callback
  */
-const _onProgress = (id, progress, MainWindow) => MainWindow.sendToWindow(DOWNLOAD_PROGRESS, {id, progress});
-
-
-export {
-  initDownload,
-  openDownload,
-  cancelDownload,
-  startedDownload,
-  openingDownload,
-  startingDownload,
-  progressDownload,
-  cancelingDownload,
-}
+export const handleDownloadProgress = (callback) => ipcRenderer.on(DOWNLOAD_PROGRESS, (e, payload) => callback(payload));

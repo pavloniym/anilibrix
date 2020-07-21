@@ -7,8 +7,8 @@
 
     <v-menu
       v-model="visible"
+      top
       left
-      bottom
       close-on-click
       ref="menu"
       :attach="container"
@@ -38,6 +38,10 @@
 <script>
 
   import {mapActions} from 'vuex'
+  import {v4 as uuid} from "uuid";
+  import {Main} from "@main/utils/windows";
+  import {DOWNLOAD_PROGRESS} from "@main/handlers/download/downloadHandlers";
+//  import {emitDownloadFile} from "@main/handlers/download/downloadHandlers";
 
   const props = {
     release: {
@@ -77,6 +81,24 @@
             title: 'Снять отметку о просмотре',
             action: this.removeWatched,
             visible: true,
+          },
+          {
+            icon: 'mdi-download',
+            title: 'Скачать эпизод в 1080p',
+            action: () => this.downloadSourceFile('fhd'),
+            visible: this.checkSourceFile('fhd'),
+          },
+          {
+            icon: 'mdi-download',
+            title: 'Скачать эпизод в 720p',
+            action: () => this.downloadSourceFile('hd'),
+            visible: this.checkSourceFile('hd'),
+          },
+          {
+            icon: 'mdi-download',
+            title: 'Скачать эпизод в 480p',
+            action: () => this.downloadSourceFile('sd'),
+            visible: this.checkSourceFile('sd'),
           }
         ].filter(item => item.visible)
       }
@@ -128,6 +150,56 @@
 
         // Deactivate menu
         this.visible = false;
+      },
+
+
+      /**
+       * Get source file with provided alias
+       *
+       * @return {string|null}
+       */
+      getSourceFile(alias) {
+        const sources = this.$__get(this.episode, 'sources') || [];
+        const source = sources.find(source => source.alias === alias);
+
+        return this.$__get(source, 'payload.file') || null;
+      },
+
+
+      /**
+       * Check source file
+       *
+       * @param alias
+       * @return {*|null|boolean}
+       */
+      checkSourceFile(alias) {
+
+        const file = this.getSourceFile(alias);
+        return file && file.length > 0;
+
+      },
+
+
+      /**
+       * Download source file
+       *
+       * @param alias
+       */
+      downloadSourceFile(alias) {
+
+        const id = uuid();
+        const url = this.getSourceFile(alias);
+        const sources = this.$__get(this.episode, 'sources') || [];
+        const source = sources.find(source => source.alias === alias);
+
+        const payload = {id, url, source, release: this.release, episode: this.episode};
+
+        // Emit download file event
+        this.$electron.remote.require("electron-download-manager").download({
+          url,
+          //onProgress: progress => Main.sendToWindow(DOWNLOAD_PROGRESS, {...progress, id, source, release, episode})
+        });
+
       }
 
 

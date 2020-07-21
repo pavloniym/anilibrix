@@ -10,19 +10,17 @@ import {setUserId, getStore} from '@store'
 // Windows
 import {Main, Torrent} from './utils/windows'
 
-// Download handlers
-import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
-
 // App Handlers
-import {
-  catchAppAboutEvent,
-  catchAppDevtoolsMainEvent,
-  catchAppDevtoolsTorrentEvent,
-  catchAppDockNumberEvent
-} from '@main/handlers/app/appHandlers'
-
 // Torrent Handlers
+// Download Handlers
+// Notifications Handlers
+import {broadcastAppHandlers} from '@main/handlers/app/appHandlers'
 import {broadcastTorrentEvents} from "@main/handlers/torrents/torrentsHandler";
+import {broadcastDownloadHandlers} from "@main/handlers/download/downloadHandlers";
+import {broadcastNotificationsEvents} from "@main/handlers/notifications/notificationsHandler";
+
+// Download manager
+const DownloadManager = require("electron-download-manager");
 
 // Import tray and menu
 import Tray from './utils/tray'
@@ -33,6 +31,7 @@ import {version} from "../../package";
 // Create tray and menu controller
 const trayController = new Tray();
 const menuController = new Menu();
+
 
 /**
  * Set `__static` path to static files in production
@@ -73,6 +72,7 @@ app.on('ready', async () => {
   Main.getWindow().on('close', () => app.quit());
 
   // Create torrent window
+  // Set user agent
   Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
   Torrent.getWindow().webContents.userAgent = `${meta.name}/${version}`;
 
@@ -81,43 +81,28 @@ app.on('ready', async () => {
   menuController.setWindows(Main, Torrent).init();
   trayController.createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')}).setTooltip(meta.name);
 
-  appHandlers(); // App handlers
-  torrentHandlers(); // Torrent handler
-  //downloadHandlers(); // Download handlers
+  // Register download manager
+  // Make downloads folder
+  const downloadFolder = path.join(app.getPath('downloads'), meta.name);
+  DownloadManager.register({downloadFolder});
+
+  // Broadcast all handlers
+  // Used for windows communications
+  broadcastAppHandlers();
+  broadcastTorrentEvents();
+  broadcastDownloadHandlers();
+  broadcastNotificationsEvents();
 
 });
 
 
-/**
- * App handlers
- * Show about handlers
- *
- * @return {void}
- */
-const appHandlers = () => {
-  catchAppAboutEvent(); // about dialog
-  catchAppDockNumberEvent(); // app dock number event
-  catchAppDevtoolsMainEvent(); // devtools main
-  catchAppDevtoolsTorrentEvent(); //devtools torrent
-};
-
-
-/**
- * Torrents handlers
- *
- * @return {void}
- */
-const torrentHandlers = () => {
-  broadcastTorrentEvents(); // broadcast all torrent events
-};
-
-
-/**
+/*
+/!**
  * Download handlers
  * Start download, cancel and open file
  *
  * @return {void}
- */
+ *!/
 const downloadHandlers = () => {
 
   // Create storage
@@ -127,4 +112,4 @@ const downloadHandlers = () => {
   startingDownload(storage, Main); // Start download
   cancelingDownload(storage); // Cancel download
   openingDownload(storage); // Open downloaded file
-};
+};*/

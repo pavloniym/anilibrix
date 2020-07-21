@@ -8,7 +8,7 @@ import EpisodesTransformer from "@transformers/episode";
 
 // Utils
 import axios from "axios";
-import {showAppError} from "@main/handlers/notifications/notificationsHandler";
+import {emitAppError} from "@main/handlers/notifications/notificationsHandler";
 
 
 
@@ -202,7 +202,7 @@ export default {
 
             // Show error
             // Throw error
-            showAppError('Произошла ошибка при загрузке избранных релизов');
+            emitAppError('Произошла ошибка при загрузке избранных релизов');
             throw error;
 
           }
@@ -249,7 +249,7 @@ export default {
 
             // Show app error
             // Throw error
-            showAppError(error);
+            emitAppError(error);
             throw error;
 
           }
@@ -291,7 +291,7 @@ export default {
 
             // Show app error
             // Throw error
-            showAppError(error);
+            emitAppError(error);
             throw error;
 
           }

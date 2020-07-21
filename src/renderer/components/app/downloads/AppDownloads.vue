@@ -5,46 +5,9 @@
 
         <v-slide-group show-arrows :style="{width: 'calc(100% - 40px)'}">
           <v-divider vertical/>
-          <v-slide-item v-for="file in files" :key="n" v-slot:default>
-            <v-layout :key="file.id" :style="{maxWidth: '240px'}">
-              <v-list-item @click="openFile(file)">
-
-                <!-- Avatar -->
-                <v-progress-circular
-                  size="46"
-                  class="mr-4"
-                  :value="file.progress && file.progress.percent ? file.progress.percent * 100 : 0">
-                  <v-layout justify-center align-center>
-                    <v-list-item-avatar size="40" class="ma-0">
-                      <v-img :src="file.release.poster.image"/>
-                    </v-list-item-avatar>
-                  </v-layout>
-                </v-progress-circular>
-
-
-                <!-- Content -->
-                <!-- Title -->
-                <!-- Episode -->
-                <v-list-item-content>
-                  <v-list-item-title
-                    v-text="file.release.names.ru"
-                    class="caption font-weight-bold"
-                    :style="{lineHeight: 1}">
-                  </v-list-item-title>
-                  <v-list-item-subtitle
-                    v-text="`Эпизод: ${file.episode.id} • ${file.source.label}p`"
-                    class="caption"
-                    :style="{lineHeight: 1}">
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-action>
-                  <v-btn icon small color="grey" @click="cancelFileDownload(file)">
-                    <v-icon small>mdi-close</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-
-              </v-list-item>
+          <v-slide-item v-for="file in files" v-slot:default>
+            <v-layout :key="file.id" :style="{maxWidth: '300px', width: '300px'}">
+              <download-file v-bind="{file}"/>
               <v-divider vertical/>
             </v-layout>
           </v-slide-item>
@@ -64,14 +27,17 @@
 
 <script>
 
-  import {
-    openDownload,
-    cancelDownload,
-    startedDownload,
-    progressDownload,
-  } from "@main/handlers/download/downloadHandlers";
+  // Components
+  import DownloadFile from './components/file'
+
+  // Handlers
+  import {handleDownloadProgress} from "@main/handlers/download/downloadHandlers";
+
 
   export default {
+    components: {
+      DownloadFile
+    },
     data() {
       return {
         files: [],
@@ -101,12 +67,12 @@
 
         // Send cancel event
         // Remove from store
-        cancelDownload(id);
+        // cancelDownload(id);
         this.files.splice(this.files.findIndex(file => file.id === id), 1);
 
         // If now files left -> close bar
         if (this.files.length === 0) {
-          this.closeDownloadedBar();
+          // this.closeDownloadedBar();
         }
 
       },
@@ -120,7 +86,7 @@
        */
       openFile({id, progress}) {
         if (progress.percent >= 1) {
-          openDownload(id);
+          // openDownload(id);
         }
       }
 
@@ -129,21 +95,19 @@
 
     created() {
 
-      // Started download
-      // Get new downloaded item
-      startedDownload(({id, release, episode, source, progress}) => {
-        this.is_visible = true;
-        this.files.push({id, release, episode, source, progress});
-      });
+      // Handle download progress
+      // Set file progress
+      handleDownloadProgress(({id, release, episode, source, percent}) => {
 
-      // Get file progress
-      // Set current progress for related file
-      progressDownload(({id, progress}) => {
-        const file = this.files.find(file => file.id === id);
-        if (file) {
-          file.progress = progress;
-        }
-      })
+        // Show download bar
+        this.is_visible = true;
+
+        // Check if file is not already added
+        // If not exists -> add to file storage
+        const file = this.files.find(item => item.id === id);
+        if (!file) this.files.push({id, release, episode, source, progress: percent * 100});
+        if (file) file.progress = percent * 100;
+      });
     }
 
   }

@@ -31,7 +31,7 @@
   import {mapState, mapActions} from 'vuex'
 
   // Handlers
-  import {sendAppDevtoolsMainEvent, sendAppDevtoolsTorrentEvent,} from "@main/handlers/app/appHandlers";
+  import {emitAppDevtoolsMain, emitAppDevtoolsTorrent,} from "@main/handlers/app/appHandlers";
 
   export default {
     computed: {
@@ -46,11 +46,11 @@
         return [
           {
             title: 'Консоль приложения',
-            action: sendAppDevtoolsMainEvent,
+            action: emitAppDevtoolsMain,
           },
           {
             title: 'Консоль торрент-сервера',
-            action: sendAppDevtoolsTorrentEvent,
+            action: emitAppDevtoolsTorrent,
           },
           {
             title: 'Добавить уведомление в хранилище',

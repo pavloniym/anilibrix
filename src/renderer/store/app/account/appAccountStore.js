@@ -6,7 +6,7 @@ import __get from 'lodash/get'
 import {v4 as uuid} from 'uuid'
 
 // Handlers
-import {showAppError} from "@main/handlers/notifications/notificationsHandler";
+import {emitAppError} from "@main/handlers/notifications/notificationsHandler";
 
 const SET_USER_ID = 'SET_USER_ID';
 const SET_SESSION = 'SET_SESSION';
@@ -98,7 +98,7 @@ export default {
 
         // Show app error
         // Throw error
-        showAppError(error);
+        emitAppError(error);
         throw error;
 
       }

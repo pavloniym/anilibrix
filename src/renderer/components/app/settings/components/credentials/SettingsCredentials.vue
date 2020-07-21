@@ -19,7 +19,7 @@
 
   import app from '@/../package'
   import {mapActions} from 'vuex'
-  import {sendAppAboutEvent} from "@main/handlers/app/appHandlers";
+  import {emitAppAbout} from "@main/handlers/app/appHandlers";
 
   export default {
     computed: {
@@ -63,7 +63,7 @@
        *
        * @return void
        */
-      sendAppAboutEvent,
+      sendAppAboutEvent: emitAppAbout,
 
 
       /**

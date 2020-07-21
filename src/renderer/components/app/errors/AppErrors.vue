@@ -1,11 +1,11 @@
 <script>
 
+  import {handleAppError} from "@main/handlers/notifications/notificationsHandler";
+
   export default {
     render: () => null,
     created() {
-      this.$electron.ipcRenderer.on('app:error', (e, error) =>
-        this.$toasted.show(error, {type: 'error'})
-      )
+      handleAppError(error => this.$toasted.show(error, {type: 'error'}));
     }
 
   }

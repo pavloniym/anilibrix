@@ -9,7 +9,7 @@ import EpisodesTransformer from "@transformers/episode";
 import axios from "axios";
 
 // Handlers
-import {showAppError} from "@main/handlers/notifications/notificationsHandler";
+import {emitAppError} from "@main/handlers/notifications/notificationsHandler";
 
 // Mutations
 const SET_RELEASE_DATA = 'SET_RELEASE_DATA';
@@ -94,7 +94,7 @@ export default {
 
           // Show app error
           // Throw error
-          showAppError('Произошла ошибка при загрузке релиза');
+          emitAppError('Произошла ошибка при загрузке релиза');
           throw error;
 
         }

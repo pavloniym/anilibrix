@@ -6,8 +6,8 @@
   import {mapState} from 'vuex'
 
   // Handlers
-  import {sendAppDockNumberEvent} from "@main/handlers/app/appHandlers";
-  import {catchReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
+  import {emitAppDockNumber} from "@main/handlers/app/appHandlers";
+  import {handleReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
 
   export default {
     render: () => null,
@@ -29,7 +29,7 @@
 
 
     created() {
-      catchReleaseNotification((release => {
+      handleReleaseNotification((release => {
 
         // Check if release is set
         // Check if system notifications is enabled
@@ -38,8 +38,9 @@
           // Show notification
           const episode = release.episodes[0];
           const title = episode ? episode.title : null;
-          const poster = release.poster.image;
+
           const name = release.names.ru;
+          const poster = release.poster;
 
           if (title && name) {
 
@@ -61,7 +62,7 @@
       unseen: {
         immediate: true,
         handler(unseen) {
-          sendAppDockNumberEvent(unseen);
+          emitAppDockNumber(unseen);
         }
       }
     }
