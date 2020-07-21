@@ -38,10 +38,7 @@
 <script>
 
   import {mapActions} from 'vuex'
-  import {v4 as uuid} from "uuid";
-  import {Main} from "@main/utils/windows";
-  import {DOWNLOAD_PROGRESS} from "@main/handlers/download/downloadHandlers";
-//  import {emitDownloadFile} from "@main/handlers/download/downloadHandlers";
+  import {emitDownloadFile} from "@main/handlers/download/downloadHandlers";
 
   const props = {
     release: {
@@ -187,21 +184,15 @@
        */
       downloadSourceFile(alias) {
 
-        const id = uuid();
         const url = this.getSourceFile(alias);
         const sources = this.$__get(this.episode, 'sources') || [];
         const source = sources.find(source => source.alias === alias);
-
-        const payload = {id, url, source, release: this.release, episode: this.episode};
+        const payload = {url, source, release: this.release, episode: this.episode};
 
         // Emit download file event
-        this.$electron.remote.require("electron-download-manager").download({
-          url,
-          //onProgress: progress => Main.sendToWindow(DOWNLOAD_PROGRESS, {...progress, id, source, release, episode})
-        });
+        emitDownloadFile(payload);
 
       }
-
 
     }
   }

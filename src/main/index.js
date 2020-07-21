@@ -19,9 +19,6 @@ import {broadcastTorrentEvents} from "@main/handlers/torrents/torrentsHandler";
 import {broadcastDownloadHandlers} from "@main/handlers/download/downloadHandlers";
 import {broadcastNotificationsEvents} from "@main/handlers/notifications/notificationsHandler";
 
-// Download manager
-const DownloadManager = require("electron-download-manager");
-
 // Import tray and menu
 import Tray from './utils/tray'
 import Menu from './utils/menu'
@@ -80,11 +77,6 @@ app.on('ready', async () => {
   // Create tray icon
   menuController.setWindows(Main, Torrent).init();
   trayController.createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')}).setTooltip(meta.name);
-
-  // Register download manager
-  // Make downloads folder
-  const downloadFolder = path.join(app.getPath('downloads'), meta.name);
-  DownloadManager.register({downloadFolder});
 
   // Broadcast all handlers
   // Used for windows communications

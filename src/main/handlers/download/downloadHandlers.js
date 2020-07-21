@@ -1,4 +1,5 @@
 import {Main} from "@main/utils/windows";
+import {download} from 'electron-dl';
 import {v4 as uuid} from "uuid";
 import {ipcRenderer, ipcMain, shell, app} from 'electron'
 
@@ -11,6 +12,7 @@ export const DOWNLOAD_PROGRESS = 'app:download:progress';
 
 // Download storage
 export const storage = {};
+export const progress = {};
 
 
 /**
@@ -59,17 +61,23 @@ export const handleDownloadFile = async ({url, source, release, episode}) => {
 
   // Run download
   // Save file item emitter after promise resolve
-  DownloadManager.download({
-    url,
-    onProgress: progress => Main.sendToWindow(DOWNLOAD_PROGRESS, {...progress, id, source, release, episode})
-  });
-
-  /*storage[id] = await download(Main.getWindow(), url, {
+  storage[id] = await download(Main.getWindow(), url, {
     saveAs: true,
     showBadge: false,
     onStarted: item => Main.sendToWindow(DOWNLOAD_STARTED, {id, item, source, release, episode}),
-    onProgress: progress => Main.sendToWindow(DOWNLOAD_PROGRESS, {...progress, id}),
-  });*/
+    onProgress: data => {
+
+      // Check if previous progress for this file is smaller
+      if (!progress[id] || progress[id] < data.percent) {
+
+        // Set percentage
+        progress[id] = data.percent;
+
+        // Send progress
+        Main.sendToWindow(DOWNLOAD_PROGRESS, {...data, id})
+      }
+    },
+  });
 
 };
 

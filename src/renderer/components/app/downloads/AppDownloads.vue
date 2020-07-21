@@ -31,7 +31,7 @@
   import DownloadFile from './components/file'
 
   // Handlers
-  import {handleDownloadProgress} from "@main/handlers/download/downloadHandlers";
+  import {handleDownloadProgress, handleDownloadStarted} from "@main/handlers/download/downloadHandlers";
 
 
   export default {
@@ -94,10 +94,8 @@
 
 
     created() {
-
-      // Handle download progress
-      // Set file progress
-      handleDownloadProgress(({id, release, episode, source, percent}) => {
+      // Handle download started
+      handleDownloadStarted(({id, release, episode, source}) => {
 
         // Show download bar
         this.is_visible = true;
@@ -105,7 +103,15 @@
         // Check if file is not already added
         // If not exists -> add to file storage
         const file = this.files.find(item => item.id === id);
-        if (!file) this.files.push({id, release, episode, source, progress: percent * 100});
+        if (!file) this.files.push({id, release, episode, source, progress: 0});
+
+      });
+
+
+      // Handle download progress
+      // Set file progress
+      handleDownloadProgress(({id, percent}) => {
+        const file = this.files.find(item => item.id === id);
         if (file) file.progress = percent * 100;
       });
     }
