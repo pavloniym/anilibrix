@@ -129,6 +129,7 @@
     "vue-electron": "^1.0.6",
     "vue-meta": "^2.3.4",
     "vue-router": "^3.0.1",
+    "vue-router-back-button": "^1.2.3",
     "vue-script2": "^2.1.0",
     "vue-toasted": "^1.1.27",
     "vue-yandex-metrika": "^1.8.3",

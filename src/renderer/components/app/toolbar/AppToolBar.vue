@@ -2,6 +2,18 @@
   <v-fade-transition appear>
     <v-app-bar v-if="!hideToolbar" flat color="transparent" class="toolbar shrink">
 
+      <!-- Back button -->
+      <!-- No idea how to make it nice in design -->
+      <!--<v-btn
+        class="mr-1"
+        width="44"
+        height="38"
+        min-width="auto"
+        :disabled="!$routerHistory.hasPrevious()"
+        @click="$router.push($routerHistory.previous())" >
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>-->
+
 
       <!-- Releases -->
       <v-btn small text exact class="mr-1" height="38" :to="{name: 'releases'}">

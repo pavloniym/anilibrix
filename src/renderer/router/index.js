@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import RouterBackButton from 'vue-router-back-button'
 
 import ads from './ads'
 import blank from './blank'
@@ -32,5 +33,12 @@ const router = new Router({
     favorites,
   )
 });
+
+
+// Add router back button plugin
+// Needed to control router history
+// https://github.com/MaximVanhove/vue-router-back-button
+Vue.use(RouterBackButton, {router});
+
 
 export default router;
