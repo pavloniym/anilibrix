@@ -7,14 +7,10 @@
 
     <!-- Content -->
     <v-fade-transition mode="out-in" appear>
-      <app-loader v-if="loading"/>
-      <template v-else>
-        <v-fade-transition mode="out-in" appear>
-          <component :is="layout">
-            <router-view :key="$route.name"/>
-          </component>
-        </v-fade-transition>
-      </template>
+      <app-loader v-if="loading" key="loader"/>
+      <component v-else :is="layout" :key="$route.name">
+        <router-view :key="$route.name"/>
+      </component>
     </v-fade-transition>
 
     <!-- Errors -->

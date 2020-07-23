@@ -1,29 +1,27 @@
 <template>
   <video-layout :hide-cursor="cursor_is_hidden">
-    <v-layout fill-height>
-      <v-fade-transition mode="out-in" appear>
-        <component
-          v-if="is_mounted"
-          v-bind="{sources, source}"
-          :is="component"
-          :key="`video:${key}`"
-          :time.sync="time"
-          :duration.sync="duration"
-          @error="toBlank">
+    <v-fade-transition mode="out-in" appear>
+      <component
+        v-if="is_mounted"
+        v-bind="{sources, source}"
+        :is="component"
+        :key="`video:${key}`"
+        :time.sync="time"
+        :duration.sync="duration"
+        @error="toBlank">
 
-          <template v-slot="{player}">
-            <player-interface
-              v-bind="{player, source, release, episode}"
-              :key="`interface:${key}`"
-              @set:source="setSource"
-              @show:cursor="cursor_is_hidden = false"
-              @hide:cursor="cursor_is_hidden = true">
-            </player-interface>
-          </template>
+        <template v-slot="{player}">
+          <player-interface
+            v-bind="{player, source, release, episode}"
+            :key="`interface:${key}`"
+            @set:source="setSource"
+            @show:cursor="cursor_is_hidden = false"
+            @hide:cursor="cursor_is_hidden = true">
+          </player-interface>
+        </template>
 
-        </component>
-      </v-fade-transition>
-    </v-layout>
+      </component>
+    </v-fade-transition>
   </video-layout>
 </template>
 
@@ -33,8 +31,8 @@
   import PlayerInterface from '@components/video/interface'
   import {ServerHandler, TorrentHandler} from '@components/video/player/types'
 
-  import {mapState, mapActions} from 'vuex'
   import {toBlank} from "@utils/router/views";
+  import {mapState, mapActions} from 'vuex'
 
   const props = {
     release: {
@@ -74,6 +72,7 @@
     },
     computed: {
       ...mapState('app/settings/player', {_quality: s => s.quality}),
+
 
       /**
        * Get title
@@ -165,6 +164,18 @@
 
 
       /**
+       * Get active playback data
+       *
+       * @return {*}
+       */
+      playback() {
+        return {
+          release: this.release,
+          episode: this.episode,
+        }
+      },
+
+      /**
        * Get watch part
        *
        * @return {number}
@@ -189,6 +200,7 @@
         return toBlank(message, referer)
       },
 
+
       /**
        * Get watch data from store
        *
@@ -208,22 +220,15 @@
 
       /**
        * Set episode watch data
+       * Calculate percentage and current playing time
        *
-       * @return
        */
-      setWatchedEpisode() {
-
-        // Get watching data
-        const time = this.time;
-        const release = this.release;
-        const episode = this.episode;
-        const percentage = this.percentage;
-
+      setWatchedEpisode({time, release, episode, duration, percentage} = {}) {
         if (release && episode) {
 
           // Set correct time (fix last episode seconds)
           // Set correct percentage
-          const watched_time = time >= this.duration ? this.duration - 5 : (time || 0);
+          const watched_time = time >= duration ? duration - 5 : (time || 0);
           const watched_percentage = percentage > 100 ? 100 : (percentage || 0);
 
           const release_id = release.id;
@@ -248,29 +253,6 @@
       }
     },
 
-
-    async mounted() {
-      if (this.release && this.episode) {
-
-        // Get watch data
-        const release = this.release;
-        const episode = this.episode;
-        const payload = {release, episode};
-        const watched_episode = await this.getWatchedEpisode(payload);
-        const watched_time = this.$__get(watched_episode, 'time');
-
-        // Set last watch time
-        // Check if not from start
-        this.time = watched_time && this.fromStart === false ? watched_time : 0;
-        this.is_mounted = true;
-      }
-    },
-
-    beforeDestroy() {
-      this.setWatchedEpisode();
-    },
-
-
     watch: {
 
       source: {
@@ -294,10 +276,67 @@
       part: {
         handler() {
 
-          // Set watch data then playing part is updated
-          this.setWatchedEpisode();
+          // Update watched data for playing episode on each part
+          // Prepare watched data
+          const payload = {
+            time: this.time,
+            release: this.release,
+            episode: this.episode,
+            duration: this.duration,
+            percentage: this.percentage,
+          };
+
+          // Set watched data
+          this.setWatchedEpisode(payload);
         }
       },
+
+
+      playback: {
+        immediate: true,
+        async handler({release, episode}, previous) {
+
+
+          // If previous playback exists
+          // Should set watch data for previous episode
+          // Prepare payload data for previous episode
+          // Get time, duration, percentage because they are not updated yet
+          if (previous) {
+
+            const payload = {
+              time: this.time,
+              release: previous.release || null,
+              episode: previous.episode || null,
+              duration: this.duration,
+              percentage: this.percentage,
+            };
+
+            // Set watched data for episode
+            this.setWatchedEpisode(payload);
+          }
+
+
+          // Process updated playback
+          // Try to restore previous watched time or play from start
+          if (release && episode) {
+
+            // Reset mounted state on playback change
+            this.is_mounted = false;
+
+            // Get watch data
+            const payload = {release, episode};
+            const watched_episode = await this.getWatchedEpisode(payload);
+            const watched_time = this.$__get(watched_episode, 'time');
+
+            // Set last watch time
+            // Check if not from start
+            this.time = watched_time && this.fromStart === false ? watched_time : 0;
+            this.is_mounted = true;
+          }
+
+
+        }
+      }
 
     }
 

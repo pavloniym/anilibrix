@@ -21,7 +21,7 @@
           width="80"
           height="80"
           :style="{backgroundColor: '#ffffff45'}"
-          @click="toVideo(release, next)">
+          @click="toVideo">
           <v-icon large>mdi-skip-next</v-icon>
         </v-btn>
       </v-progress-circular>
@@ -120,10 +120,13 @@
 
       /**
        * Go to next episode
+       * Play from start of episode
        *
        * @return void
        */
-      toVideo,
+      toVideo() {
+        toVideo(this.release, this.next, {fromStart: true})
+      },
 
       /**
        * Start autoplay
@@ -136,7 +139,7 @@
           this.value = 0;
           this.visible = true;
 
-          this.timer = setTimeout(() => this.toVideo(this.release, this.next), 3000);
+          this.timer = setTimeout(() => this.toVideo(), 3000);
           this.interval = setInterval(() => this.value = this.value + 20, 500);
 
         }
