@@ -3,6 +3,7 @@ import BaseProxy from "@proxies/BaseProxy";
 
 // Utils
 import __get from "lodash/get";
+import firestore from '@plugins/firebase'
 
 export default class AccountProxy extends BaseProxy {
 
@@ -15,7 +16,6 @@ export default class AccountProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async login({login, password}) {
-
     const data = this.getFormDataObject({mail: login, passwd: password});
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/login.php', {data});
     const status = __get(response, 'data.err');
@@ -44,7 +44,6 @@ export default class AccountProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async getProfile() {
-
     const data = this.getFormDataObject({query: 'user'});
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', {data});
 
@@ -64,5 +63,18 @@ export default class AccountProxy extends BaseProxy {
       : null;
   }
 
+
+
+  async getCloudStoreData({profileId = null} = {}) {
+    if (profileId !== null) {
+
+      const collection = await firestore
+        .collection(`store/${profileId}`)
+        .get();
+
+      return collection.docs.map(doc => ({_id: doc.id, ...doc.data()}));
+    }
+
+  }
 
 }

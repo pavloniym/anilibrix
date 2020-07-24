@@ -24,6 +24,7 @@ import Tray from './utils/tray'
 import Menu from './utils/menu'
 import {version} from "../../package";
 
+//const { autoUpdater } = require("electron-updater");
 
 // Create tray and menu controller
 const trayController = new Tray();
@@ -85,23 +86,7 @@ app.on('ready', async () => {
   broadcastDownloadHandlers();
   broadcastNotificationsEvents();
 
+
+  //await autoUpdater.checkForUpdatesAndNotify();
+
 });
-
-
-/*
-/!**
- * Download handlers
- * Start download, cancel and open file
- *
- * @return {void}
- *!/
-const downloadHandlers = () => {
-
-  // Create storage
-  const storage = {};
-
-  // Handlers
-  startingDownload(storage, Main); // Start download
-  cancelingDownload(storage); // Cancel download
-  openingDownload(storage); // Open downloaded file
-};*/
