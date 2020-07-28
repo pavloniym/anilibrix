@@ -1,29 +1,44 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Router from 'vue-router'
+import RouterBackButton from 'vue-router-back-button'
 
-Vue.use(VueRouter)
+import ads from './ads'
+import blank from './blank'
+import video from './video'
+import release from './release'
+import catalog from './catalog'
+import account from './account'
+import releases from './releases'
+import favorites from './favorites'
 
-  const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
+Vue.use(Router);
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
-})
+// Suppress router push errors
+// Overwrite native push function
+const push = Router.prototype.push;
+Router.prototype.push = function (location) {
+  push.call(this, location).catch(() => null);
+};
 
-export default router
+
+const router = new Router({
+  routes: [].concat(
+    ads,
+    blank,
+    video,
+    release,
+    catalog,
+    account,
+    releases,
+    favorites,
+  )
+});
+
+
+// Add router back button plugin
+// Needed to control router history
+// https://github.com/MaximVanhove/vue-router-back-button
+Vue.use(RouterBackButton, {router});
+
+
+export default router;

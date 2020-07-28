@@ -1,0 +1,97 @@
+:root {
+  --link-color: #bd636c !important;
+}
+
+
+html, body {
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+.wcomments_page{
+  width: 100% !important;
+}
+
+.wcomments_head {
+  background: #1E1E1E !important;
+}
+
+.wcomments_form {
+  background: #313131 !important;
+  margin-bottom: 14px !important;
+  border: 0 !important;
+}
+
+#post_field {
+  background: transparent !important;
+  border-color: #1E1E1E !important;
+  color: white !important;
+}
+
+div#wcomments_export {
+  color: #868686 !important;
+}
+
+#page_wrap {
+  background: transparent !important;
+}
+
+.wall_post_text, .wall_reply_text {
+  color: #bdbdbd !important;
+}
+
+.reply_fakebox {
+  background: #121212 !important;
+  border-color: #404040 !important;
+}
+
+.reply_fakebox_wrap {
+  background: transparent !important;
+}
+
+.page_block {
+  background: #2f2f2f !important;
+  box-shadow: none !important;
+}
+
+.reply_highlighted {
+  background: #2f2f2f !important;
+}
+
+.post {
+  line-height: 20px !important;
+}
+
+.wr_header, ._wcomments_more {
+  background: #2f2f2f !important;
+  color: #a9a6a6 !important;
+}
+
+#send_post {
+  background: #191919 !important;
+}
+
+.addpost_button {
+  background: #333333 !important;
+}
+
+.reply_box {
+  background: #23232366 !important;
+  border: 0 !important;
+}
+
+.reply_form {
+  background-color: transparent !important;
+  border-color: #1E1E1E !important;
+  color: white !important;
+}
+
+.reply_field {
+  color: white !important;
+  background: transparent !important;
+  border-color: #636262 !important;
+}
+
+.submit_post {
+  background: transparent !important;
+}

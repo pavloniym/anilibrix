@@ -1,0 +1,312 @@
+// Proxy
+import AnilibriaReleaseProxy from "@proxies/release";
+
+// Transformer
+import BaseTransformer from "@transformers/BaseTransformer";
+
+// Utils
+import store from '@store'
+import __camelCase from 'lodash/camelCase'
+
+// Handlers
+// import {handleTorrentParsed, emitTorrentParsing} from "@main/handlers/torrents/torrentsHandler";
+
+
+export default class EpisodesTransformer extends BaseTransformer {
+
+  /**
+   * EpisodesTransformer constructor
+   *
+   * @param cancelToken
+   * @param skipTorrents
+   */
+  constructor({cancelToken = null, skipTorrents = false} = {}) {
+    super();
+    this.cancelToken = cancelToken;
+    this.skipTorrents = skipTorrents;
+  }
+
+
+  /**
+   * Make fetch item async/await
+   *
+   * @param hosts
+   * @param playlist
+   * @param torrents
+   * @return {Promise<*>}
+   */
+  async fetchItem({hosts, playlist, torrents}) {
+    return await this.fetch({hosts, playlist, torrents});
+  }
+
+
+  /**
+   * Transform episodes data
+   *
+   * @returns Promise
+   * @param hosts
+   * @param playlist
+   * @param torrents
+   */
+  async fetch({hosts, playlist, torrents}) {
+    const episodes = {};
+
+    // Parse playlist
+    // Parse upscale
+    // Parse torrents
+    //this._parseUpscale(playlist, episodes);
+    this._parsePlaylist(playlist || [], episodes, hosts);
+    this._parseTorrents(await this._getTorrents(torrents || []), episodes);
+
+    // Filter all sources without payload
+    // Reverse to descending order
+    return Object
+      .values(episodes)
+      .map(episode => ({...episode, sources: episode.sources.filter(source => source.payload !== null)}))
+      .filter(episode => episode.sources && episode.sources.length > 0)
+      .reverse();
+  }
+
+
+  /**
+   * Create episode entity
+   *
+   * @param number
+   * @param episodes
+   */
+  _createEpisode(number, episodes) {
+    if (episodes.hasOwnProperty(number) === false) {
+      episodes[number] = {id: null, title: null, sources: []}
+    }
+  }
+
+  /**
+   * Create episode source
+   *
+   * @param type
+   * @param label
+   * @param alias
+   * @param payload
+   * @return {{payload: *, alias: *, label: *, type: *}}
+   */
+  _createSource(type, label, alias, payload) {
+    return {type, label, alias, payload}
+  }
+
+  /**
+   * Parse playlist
+   *
+   * @param playlist
+   * @param episodes
+   * @param hosts
+   * @private
+   */
+  _parsePlaylist(playlist, episodes, hosts) {
+
+    // Parse server playlists
+    playlist.forEach(item => {
+
+      // Get episode number
+      // It is same as id in anilibria API
+      const episode = this.get(item, 'id');
+
+      // Create episode if it not exists
+      this._createEpisode(episode, episodes);
+
+      /**
+       * Get payload
+       *
+       * @param playlistKey
+       * @param fileKey
+       * @return {{file: *, playlist: *}}
+       */
+      const getPayload = (playlistKey = null, fileKey = null) => {
+
+        // Get playlist full url
+        // Or return null if host or path is not valid
+        const playlist_host = this.get(hosts, 'hls') || null;
+        const playlist_path = this.get(item, playlistKey) || null;
+        const playlist = playlist_host && playlist_path ? `https://${playlist_host}/${playlist_path}` : null;
+
+        // Get file full url
+        // Or return null if host or path is not valid
+        const file_host = this.get(hosts, 'mp4') || null;
+        const file_path = this.get(item, fileKey) || null;
+        const file = file_host && file_path ? `https://${file_host}/${file_path}` : null;
+
+        return {file, playlist}
+      };
+
+
+      // Get sources fhd, hd, sd source
+      const fhdSource = this._createSource('server', '1080', 'fhd', getPayload('hls.fhd'));
+      const hdSource = this._createSource('server', '720', 'hd', getPayload('hls.hd', 'mp4.download.hd'));
+      const sdSource = this._createSource('server', '480', 'sd', getPayload('hls.sd', 'mp4.download.sd'));
+
+      // Set episode data
+      episodes[episode].id = episode;
+      episodes[episode].title = `Эпизод ${episode}`;
+
+      // Push sources
+      if (fhdSource.payload.playlist) episodes[episode].sources.push(fhdSource);
+      if (hdSource.payload.playlist) episodes[episode].sources.push(hdSource);
+      if (sdSource.payload.playlist) episodes[episode].sources.push(sdSource);
+
+    });
+  }
+
+  /**
+   * Parse upscale
+   *
+   * @param playlist
+   * @param episodes
+   * @private
+   */
+  _parseUpscale(playlist, episodes) {
+    if (this.get(store, 'state.app.settings.player.upscale.process') === true) {
+      playlist.forEach(item => {
+
+        // Get episode number
+        // It is same as id in anilibria API
+        // Get upscale payload
+        const episode = this.get(item, 'id');
+        const upscalePayload = {url: this.get(item, 'fullhd'), scale: 1};
+
+        episodes[episode].sources.push(this._createSource('upscale', '4096', '4k', {...upscalePayload, scale: 2}));
+        episodes[episode].sources.push(this._createSource('upscale', '2048', '2k', {...upscalePayload, scale: 1}));
+
+      });
+    }
+  }
+
+
+  /**
+   * Get torrents data
+   * Check if torrents should be processed
+   *
+   * @return {array}
+   * @private
+   * @param torrents
+   */
+  async _getTorrents(torrents = []) {
+
+    const torrents_are_skipping = this.skipTorrents === true;
+    const torrents_processing_is_enabled = this.get(store, 'state.app.settings.player.torrents.process') === true;
+
+    if (0 && !torrents_are_skipping && torrents_processing_is_enabled) {
+
+      // Filter torrents
+      // Exclude HEVC torrents (no codec available)
+      const filteredTorrents = torrents
+        .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false);
+
+
+      // Try to parse all torrents data
+      return (await Promise
+        .allSettled(
+          filteredTorrents.map(torrent => new Promise(async resolve => {
+
+              // Get blob torrent file from server
+              const file = await new AnilibriaReleaseProxy().getReleaseTorrent(torrent.url, {cancelToken: this.cancelToken});
+
+              // Check file data is available
+              // Resolve empty if null
+              if (file && file.data) {
+
+                // Send torrent for parsing data
+                // Catch torrent for parsing
+                // emitTorrentParsing(torrent.id, file.data);
+                // handleTorrentParsed(({torrent_id, data}) => torrent.id === torrent_id ? resolve({torrent, data}) : null);
+
+              } else resolve(null);
+
+            })
+          )
+        ))
+        .filter(response => response.status === 'fulfilled')
+        .map(response => response.value)
+        .filter(torrent => torrent);
+    }
+
+    return [];
+  }
+
+
+  /**
+   * Parse torrents
+   *
+   * @param torrents
+   * @param episodes
+   * @private
+   */
+  _parseTorrents(torrents, episodes) {
+    torrents.forEach(torrent => {
+
+      const type = 'torrent';
+      const label = this.get(torrent, 'torrent.quality') || null;
+      const alias = label ? __camelCase(label) : null;
+      const files = this.get(torrent, 'data.files') || [];
+
+      files.forEach((file, k) => {
+
+        // Parse episode from torrent filename
+        let episode = this._parseEpisodeFromTorrentFilename(this.get(file, 'name'));
+
+        if (episode !== null || files.length === 1) {
+
+          // If there is only one file in torrent
+          // And if can't parse episode number -> make it as first (1) episode
+          // This is a little bit hack
+          if (files.length === 1) episode = 1;
+
+          // Create episode if it not exists
+          this._createEpisode(episode, episodes);
+
+          // Set episode data
+          episodes[episode].id = episode;
+          episodes[episode].title = episodes[episode].title || `Серия ${episode}`;
+          episodes[episode].sources.push(
+            this._createSource(
+              type, label, alias,
+              {
+                torrent: {
+                  id: this.get(torrent, 'torrent.id'),
+                  name: this.get(torrent, 'data.name'),
+                  peers: torrent.numPeers,
+                  seeders: this.get(torrent, 'torrent.seeders'),
+                  datetime: this.get(torrent, 'data.created'),
+                  leechers: this.get(torrent, 'torrent.leechers'),
+                },
+                file: {
+                  name: this.get(file, 'name'),
+                  path: this.get(file, 'path'),
+                  index: k,
+                  length: this.get(file, 'length'),
+                },
+              }
+            )
+          );
+        }
+      })
+    });
+  }
+
+  /**
+   * Parse episode from torrent filename
+   *
+   * @param filename
+   * @return {null|*}
+   * @private
+   */
+  _parseEpisodeFromTorrentFilename(filename) {
+    if (filename && typeof filename === 'string') {
+
+      const episode = this.get(filename.match(/_\[(\d+)\]_/), [1]) || null;
+      return episode !== null ? parseFloat(episode) : null;
+
+    }
+
+    return null;
+  }
+
+}

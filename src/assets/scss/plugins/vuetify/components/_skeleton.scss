@@ -1,0 +1,30 @@
+.v-skeleton-loader {
+
+  &__button {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 36px;
+    min-width: 64px;
+  }
+
+  &__heading {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 24px;
+    min-width: 45%;
+  }
+
+  &__image {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 200px;
+  }
+
+  &__avatar {
+    height: 100%;
+    width: 100%;
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+}

@@ -1,32 +1,142 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+
+    <!-- System Bar -->
+    <app-system-bar/>
+    <app-settings/>
+
+    <!-- Content -->
+    <v-fade-transition mode="out-in" appear>
+      <app-loader v-if="loading" key="loader"/>
+      <component v-else :is="layout" :key="$route.name">
+        <router-view :key="$route.name"/>
+      </component>
+    </v-fade-transition>
+
+    <!-- Errors -->
+    <!-- Downloads -->
+    <!-- Notifications -->
+    <app-errors/>
+    <!--<app-downloads/>-->
+    <app-notifications/>
+
+  </v-app>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
 
-#nav {
-  padding: 30px;
+  // Components
+  import AppLoader from '@components/app/loader'
+  import AppErrors from '@components/app/errors'
+  import AppToolBar from "@components/app/toolbar";
+  import AppSettings from "@components/app/settings";
+  import AppSystemBar from '@components/app/systembar'
+  import AppDownloads from "@components/app/downloads";
+  import AppBaseLayout from '@layouts/base'
+  import AppNotifications from "@components/app/notifications";
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+  // Utils
+  import {mapState, mapActions} from 'vuex'
 
-    &.router-link-exact-active {
-      color: #42b983;
+  export default {
+    name: 'AniLibrix',
+    components: {
+      AppLoader,
+      AppErrors,
+      AppToolBar,
+      AppSettings,
+      AppSystemBar,
+      AppDownloads,
+      AppBaseLayout,
+      AppNotifications,
+    },
+    data() {
+      return {
+        loading: false,
+        update_handler: null
+      }
+    },
+
+
+    computed: {
+      ...mapState('app/settings/system', {
+        _updates_enabled: s => s.updates.enabled,
+        _updates_timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
+      }),
+
+      /**
+       * Get route layout
+       *
+       * @return {{}}
+       */
+      layout() {
+        return this.$__get(this.$route, 'meta.layout.is', AppBaseLayout);
+      }
+
+    },
+
+
+    methods: {
+      ...mapActions('releases', {_getReleases: 'getReleases'}),
+      ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
+
+
+      /**
+       * Toggle releases updates
+       *
+       * @return void
+       */
+      toggleUpdates() {
+
+        // Clear update interval
+        if (this.update_handler) clearInterval(this.update_handler);
+
+        // If updated are enabled -> set interval for auto updates
+        if (this._updates_enabled === true) {
+          this.update_handler = setInterval(() => {
+
+            this._getReleases();
+            this._getFavorites();
+
+          }, this._updates_timeout);
+        }
+      }
+
+    },
+
+    created() {
+
+      // Initial loading
+      this.loading = true;
+      setTimeout(() => this.loading = false, 1000);
+
+      // Get releases
+      // Get favorites
+      this._getReleases();
+      this._getFavorites();
+
+
+      console.log(process.env.IS_WEB);
+      
+    },
+
+
+    watch: {
+
+      _updates: {
+        immediate: true,
+        handler() {
+          this.toggleUpdates();
+        }
+      },
+
+      _timeout: {
+        handler() {
+          this.toggleUpdates();
+        }
+      }
+
     }
+
   }
-}
-</style>
+</script>
