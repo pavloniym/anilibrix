@@ -1,26 +1,20 @@
 {
-  "name": "test",
-  "version": "0.1.0",
+  "name": "anilibrix",
+  "version": "1.3.15",
+  "author": "AniLibria",
+  "description": "AniLibrix - AniLibria desktop app",
+  "license": null,
   "private": true,
   "scripts": {
-    "web:serve": "vue-cli-service serve",
+    "desktop:build": "vue-cli-service electron:build",
+    "desktop:build:skip": "vue-cli-service electron:build --skipBundle",
+    "desktop:serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps",
     "web:build": "vue-cli-service build",
-    "desktop:serve": "node ./desktop/.webpack/dev-runner.js",
-    "desktop:build": "node ./desktop/.webpack/build.js",
-    "desktop:release": "yarn build && electron-builder -wml -c.compression=store",
-    "desktop:release:mac": "yarn build && electron-builder -m -c.compression=store",
-    "desktop:release:win": "yarn build && electron-builder -w -c.compression=store",
-    "desktop:release:lin": "yarn build && electron-builder -l -c.compression=store"
+    "web:serve": "vue-cli-service serve"
   },
-  "meta": {
-    "name": "AniLibrix",
-    "links": {
-      "github": "https://github.com/anilibria",
-      "donate": "https://www.anilibria.tv/pages/donate.php",
-      "telegram": "tg://resolve?domain=anilibrix",
-      "anilibria": "https://anilibria.tv"
-    }
-  },
+  "main": "background.js",
   "dependencies": {
     "@mdi/font": "^4.8.95",
     "@sentry/browser": "^5.15.5",
@@ -63,14 +57,27 @@
     "babel-eslint": "^10.1.0",
     "deepmerge": "^4.2.2",
     "dotenv-webpack": "^2.0.0",
+    "electron": "^9.0.0",
+    "electron-devtools-installer": "^3.1.0",
+    "electron-icon-builder": "^1.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "fibers": "^5.0.0",
     "raw-loader": "^4.0.1",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
+    "vue-cli-plugin-electron-builder": "~2.0.0-rc.4",
     "vue-cli-plugin-vuetify": "^2.0.7",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.6.0"
+  },
+  "meta": {
+    "name": "AniLibrix",
+    "links": {
+      "github": "https://github.com/anilibria",
+      "donate": "https://www.anilibria.tv/pages/donate.php",
+      "telegram": "tg://resolve?domain=anilibrix",
+      "anilibria": "https://anilibria.tv"
+    }
   }
 }

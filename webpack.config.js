@@ -27,7 +27,10 @@ module.exports = {
 
     // Set IS WEB process env variable
     // This is relevant only to web build (via default vue-cli webpack settings)
-    new webpack.DefinePlugin({'process.env.IS_WEB': 'true'})
+    new webpack.DefinePlugin({
+      'process.env.IS_WEB': 'true',
+      'process.env.IS_DESKTOP': 'false',
+    })
 
   ],
   resolve: {
