@@ -1,10 +1,8 @@
 <template>
   <v-card
     class="black"
-    width="14.5vw"
-    height="34.5vh"
-    min-width="175"
-    min-height="250"
+    width="175"
+    height="250"
     :class="{primary: active}"
     @click="$emit('click')"
     @dblclick="$emit('dblclick')">

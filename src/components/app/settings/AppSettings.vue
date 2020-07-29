@@ -8,11 +8,8 @@
     width="400"
     class="settings">
 
-    <!-- System bar offset -->
-    <system-bar-placeholder fixed/>
-
     <!-- Header -->
-    <v-toolbar flat class="shrink" color="#363636" :class="{'mt-9': !this.isMacOnFullscreen}">
+    <v-toolbar flat class="shrink" color="#363636">
       <v-toolbar-title class="body-1">Настройки приложения</v-toolbar-title>
     </v-toolbar>
     <v-divider/>
@@ -46,11 +43,11 @@
 
   import SystemBarPlaceholder from './../systembar/placeholder'
 
-  import {AppPlatformMixin} from '@mixins/app'
+  import {PlatformMixin} from '@mixins/app'
   import {mapState, mapActions} from 'vuex'
 
   export default {
-    mixins: [AppPlatformMixin],
+    mixins: [PlatformMixin],
     components: {
       Credentials,
       SystemBarPlaceholder
@@ -107,13 +104,11 @@
 <style lang="scss" scoped>
 
   .settings {
-
     ::v-deep {
       .v-navigation-drawer__content {
         overflow-y: scroll;
       }
     }
-
 
     ::-webkit-scrollbar-thumb {
       background-color: black;

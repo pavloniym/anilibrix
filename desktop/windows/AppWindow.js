@@ -29,8 +29,9 @@ export default class AppWindow extends BaseWindow {
         webviewTag: true,
         webSecurity: false,
         nodeIntegration: true,
+        enableRemoteModule: true,
         experimentalFeatures: true,
-        allowRunningInsecureContent: true,
+        allowRunningInsecureContent: true
       },
       backgroundColor: '#121212',
     }

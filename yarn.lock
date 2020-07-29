@@ -10745,6 +10745,11 @@ vue-cli-plugin-vuetify@^2.0.7:
     semver "^7.1.2"
     shelljs "^0.8.3"
 
+vue-electron@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/vue-electron/-/vue-electron-1.0.6.tgz#e798e03180b8933539defe31f92e53b9242b9406"
+  integrity sha1-55jgMYC4kzU53v4x+S5TuSQrlAY=
+
 vue-eslint-parser@^7.0.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-7.1.0.tgz#9cdbcc823e656b087507a1911732b867ac101e83"

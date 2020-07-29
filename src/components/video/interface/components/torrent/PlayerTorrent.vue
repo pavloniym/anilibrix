@@ -44,7 +44,7 @@
   import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
 
   import prettyBytes from 'pretty-bytes'
-  import {AppPlatformMixin} from '@mixins/app'
+  import {PlatformMixin} from '@mixins/app'
   // import {handleTorrentDownload} from "@main/handlers/torrents/torrentsHandler";
 
   const props = {
@@ -56,7 +56,7 @@
 
   export default {
     props,
-    mixins: [AppPlatformMixin],
+    mixins: [PlatformMixin],
     components: {
       AppSystemBarPlaceholder
     },

@@ -58,11 +58,13 @@
   // Utils
   import {required} from 'vuelidate/lib/validators'
   import {mapActions} from 'vuex'
-  import {BackViewMixin} from '@mixins/views'
+
+  // Mixins
+  import {BackRouteMixin} from "@mixins/routes";
 
   export default {
     name: "Account.Login.View",
-    mixins: [BackViewMixin],
+    mixins: [BackRouteMixin],
     data() {
       return {
         tab: 0,

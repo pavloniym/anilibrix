@@ -1,9 +1,8 @@
 <template>
   <v-layout
-    v-if="is_desktop"
+    v-if="this.isDesktop && !this.isOnFullscreen"
     align-center
     class="black system-bar white--text px-2"
-    :class="{'is-mac--fullscreen': this.isMacOnFullscreen}"
     @dblclick="maximizeApp">
 
     <template v-if="!this.isMac">
@@ -21,13 +20,13 @@
 <script>
 
   // Mixins
-  import PlatformMixin from '@mixins/platform/platformMixin'
-  import {AppPlatformMixin} from '@mixins/app'
+  import {PlatformMixin, DeviceMixin} from '@mixins/app'
+  import {runOnDesktop} from "@utils/device/deviceResolver";
 
   export default {
     mixins: [
-      PlatformMixin,
-      AppPlatformMixin
+      DeviceMixin,
+      PlatformMixin
     ],
     computed: {
 
@@ -67,7 +66,7 @@
        * @return void
        */
       closeApp() {
-        // this.$electron.remote.app.quit();
+        runOnDesktop(this.$electron.remote.app.quit)
       },
 
       /**
@@ -76,7 +75,7 @@
        * @return void
        */
       minimizeApp() {
-        // this.$electron.remote.getCurrentWindow().minimize();
+        runOnDesktop(this.$electron.remote.getCurrentWindow().minimize)
       },
 
 
@@ -86,15 +85,10 @@
        * @return void
        */
       maximizeApp() {
-
-        /*
-        const window = this.$electron.remote.getCurrentWindow();
-
-        window.isMaximized()
-          ? window.unmaximize()
-          : window.maximize();
-
-         */
+        runOnDesktop(() => {
+          const window = this.$electron.remote.getCurrentWindow();
+          window.isMaximized() ? window.unmaximize() : window.maximize();
+        })
       }
     }
 

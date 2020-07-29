@@ -22,7 +22,7 @@
 <script>
 
   import humanTime from "@utils/strings/human-time";
-  import {AppKeyboardHandlerMixin} from '@mixins/app'
+  import {KeyboardHandlerMixin} from "@mixins/handlers";
 
   const props = {
     player: {
@@ -33,7 +33,7 @@
 
   export default {
     props,
-    mixins: [AppKeyboardHandlerMixin],
+    mixins: [KeyboardHandlerMixin],
     data() {
       return {
         time: 0,

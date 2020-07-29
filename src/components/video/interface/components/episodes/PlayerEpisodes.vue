@@ -29,7 +29,7 @@
   import Episodes from '@components/release/episodes'
   import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
 
-  import {AppPlatformMixin} from '@mixins/app'
+  import {PlatformMixin} from '@mixins/app'
   import {toVideo} from "@utils/router/views";
 
   const props = {
@@ -45,7 +45,7 @@
 
   export default {
     props,
-    mixins: [AppPlatformMixin],
+    mixins: [PlatformMixin],
     components: {
       Episodes,
       AppSystemBarPlaceholder

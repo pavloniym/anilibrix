@@ -1,6 +1,6 @@
 <script>
 
-  import {AppKeyboardHandlerMixin} from '@mixins/app'
+  import {KeyboardHandlerMixin} from "@mixins/handlers";
 
   const props = {
     player: {
@@ -11,7 +11,7 @@
 
   export default {
     props,
-    mixins: [AppKeyboardHandlerMixin],
+    mixins: [KeyboardHandlerMixin],
     render: () => null,
     methods: {
 

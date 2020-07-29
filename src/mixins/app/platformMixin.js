@@ -1,3 +1,5 @@
+import {runOnDesktop} from "@utils/device/deviceResolver";
+
 export default {
 
   data() {
@@ -18,12 +20,14 @@ export default {
       return !!this.is_fullscreen;
     },
 
+
     /**
      * Check if mac os
      *
      * @return {boolean}
      */
     isMac() {
+      //return process.platform !== "darwin";
       return process.platform === "darwin";
     },
 
@@ -34,19 +38,9 @@ export default {
      * @return {boolean}
      */
     isWindows() {
+      //return process.platform !== "win32";
       return process.platform === "win32";
     },
-
-
-    /**
-     * Is mac and on fullscreen
-     *
-     * @return {boolean}
-     */
-    isMacOnFullscreen() {
-      return !!(this.isMac && this.isOnFullscreen);
-    }
-
 
   },
 
@@ -59,7 +53,9 @@ export default {
      * @return void
      */
     setFullscreenState() {
-      this.is_fullscreen = null //this.$electron.remote.getCurrentWindow().isFullScreen();
+      runOnDesktop(() => {
+        this.is_fullscreen = this.$electron.remote.getCurrentWindow().isFullScreen();
+      })
     }
 
   },
@@ -68,20 +64,21 @@ export default {
   created() {
 
     // Check if window is fullscreen
+    // Set fullscreen events (on desktop builds)
     this.setFullscreenState();
+    runOnDesktop(() => {
+      this.$electron.remote.getCurrentWindow().on('enter-full-screen', this.setFullscreenState);
+      this.$electron.remote.getCurrentWindow().on('leave-full-screen', this.setFullscreenState);
+    })
 
-    // Set fullscreen events
-  //  this.$electron.remote.getCurrentWindow().on('enter-full-screen', this.setFullscreenState);
-    // this.$electron.remote.getCurrentWindow().on('leave-full-screen', this.setFullscreenState);
   },
 
 
   beforeDestroy() {
-
-    // Remove fullscreen events
-   // this.$electron.remote.getCurrentWindow().off('enter-full-screen', this.setFullscreenState);
-   // this.$electron.remote.getCurrentWindow().off('leave-full-screen', this.setFullscreenState);
-
+    runOnDesktop(() => {
+      this.$electron.remote.getCurrentWindow().off('enter-full-screen', this.setFullscreenState);
+      this.$electron.remote.getCurrentWindow().off('leave-full-screen', this.setFullscreenState);
+    })
   }
 
 }

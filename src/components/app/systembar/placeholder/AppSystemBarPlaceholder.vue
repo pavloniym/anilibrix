@@ -4,7 +4,7 @@
 
 <script>
 
-  import {AppPlatformMixin} from '@mixins/app'
+  import {PlatformMixin} from '@mixins/app'
 
   const props = {
     fixed: {
@@ -15,7 +15,7 @@
 
   export default {
     props,
-    mixins: [AppPlatformMixin],
+    mixins: [PlatformMixin],
     computed: {
 
       /**
@@ -24,7 +24,11 @@
        * @return {boolean}
        */
       isVisible() {
-        return !!(this.isWindows || (this.isMac && !this.isOnFullscreen));
+
+        const is_windows = this.isWindows;
+        const is_mac_not_fullscreen = this.isMac && !this.isOnFullscreen;
+
+        return is_windows || is_mac_not_fullscreen;
       }
     }
 

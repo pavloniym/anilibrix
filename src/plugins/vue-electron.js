@@ -1,4 +1,7 @@
 import Vue from 'vue'
 
-if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
+// Use vue-electron lib only on desktop builds
+if (process.env.IS_DESKTOP) {
+  Vue.use(require('vue-electron'));
+}
 

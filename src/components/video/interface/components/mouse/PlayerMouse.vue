@@ -1,7 +1,6 @@
 <script>
 
-
-  import {AppMouseHandlerMixin} from '@mixins/app'
+  import {MouseHandlerMixin} from "@mixins/handlers";
 
   const props = {
     player: {
@@ -12,7 +11,7 @@
 
   export default {
     props,
-    mixins: [AppMouseHandlerMixin],
+    mixins: [MouseHandlerMixin],
     render: () => null,
     methods: {
 

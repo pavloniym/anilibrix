@@ -89,19 +89,30 @@
           // Pause player
           player.pause();
 
-          // Create hls and attach media element
-          this.hls = new Hls({startPosition: this.time || 0});
-          this.hls.attachMedia(player.media);
+          console.log('hereeeee');
 
-          // When hls instance attached -> load source payload
-          this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+          if (Hls.isSupported()) {
 
-            // Load source payload
-            // If play should play -> play source automatically
-            this.hls.loadSource(payload);
-            player.play();
+            console.log('supported', {player});
 
-          });
+            // Create hls and attach media element
+            this.hls = new Hls({startPosition: this.time || 0});
+            this.hls.attachMedia(player.media);
+
+            // When hls instance attached -> load source payload
+            this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+
+              // Load source payload
+              // If play should play -> play source automatically
+              this.hls.loadSource(payload);
+              player.play();
+
+            });
+          } else  {
+
+            console.log('fffffffffuck');
+
+          }
         }
       },
 

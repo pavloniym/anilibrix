@@ -22,19 +22,23 @@
 
 <script>
 
+  // Components
   import Error from './components/error'
   import Slider from './components/slider'
   import Release from './components/release'
   import Actions from './components/actions'
 
+  // Utils
   import {toRelease, toVideo} from "@utils/router/views";
   import {mapState, mapActions} from 'vuex'
-  import {AppKeyboardHandlerMixin} from '@mixins/app'
+
+  // Mixins
+  import {KeyboardHandlerMixin} from "@mixins/handlers";
 
   export default {
     name: 'Releases.View',
     meta: {title: 'Последние релизы'},
-    mixins: [AppKeyboardHandlerMixin],
+    mixins: [KeyboardHandlerMixin],
     components: {
       Error,
       Slider,

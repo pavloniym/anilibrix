@@ -1,9 +1,7 @@
-import AppPlatformMixin from './appPlatformMixin'
-import AppMouseHandlerMixin from './appMouseHandlerMixin'
-import AppKeyboardHandlerMixin from './appKeyboardHandlerMixin'
+import DeviceMixin from './deviceMixin'
+import PlatformMixin from './platformMixin'
 
 export {
-  AppPlatformMixin,
-  AppMouseHandlerMixin,
-  AppKeyboardHandlerMixin
+  DeviceMixin,
+  PlatformMixin,
 }

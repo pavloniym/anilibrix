@@ -35,14 +35,14 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      '@': resolve('src'),
+      '@': resolve('./src'),
       '@store': resolve('src/store'),
       '@views': resolve('src/views'),
       '@utils': resolve('src/utils'),
       '@mixins': resolve('src/mixins'),
       '@router': resolve('src/router'),
       '@assets': resolve('src/assets'),
-      '@package': resolve('package.json'),
+      '@package': resolve('./package.json'),
       '@plugins': resolve('src/plugins'),
       '@layouts': resolve('src/layouts'),
       '@proxies': resolve('src/proxies'),

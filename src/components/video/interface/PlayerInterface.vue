@@ -76,7 +76,7 @@
   import PlayerBuffering from './components/buffering'
 
   import screenfull from "screenfull";
-  import {AppMouseHandlerMixin, AppKeyboardHandlerMixin} from '@mixins/app'
+  import {KeyboardHandlerMixin, MouseHandlerMixin} from "@mixins/handlers";
 
   const props = {
     player: {
@@ -101,8 +101,8 @@
   export default {
     props,
     mixins: [
-      AppMouseHandlerMixin,
-      AppKeyboardHandlerMixin,
+      MouseHandlerMixin,
+      KeyboardHandlerMixin,
     ],
     components: {
       PlayerPlay,

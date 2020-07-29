@@ -16,11 +16,10 @@ import '@plugins/lodash'
 import '@plugins/vue-meta'
 import '@plugins/vuelidate'
 import '@plugins/vue-toasted'
-// import '@plugins/vue-electron'
+import '@plugins/vue-electron'
 
 // Import styles
 import '@assets/scss/style.scss'
-
 
 // Import entry component
 import App from './App'

@@ -114,10 +114,6 @@
       // Get favorites
       this._getReleases();
       this._getFavorites();
-
-
-      console.log(process.env.IS_WEB);
-      
     },
 
 

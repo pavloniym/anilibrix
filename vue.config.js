@@ -7,10 +7,6 @@ module.exports = {
   pwa: pwaConfig,
   lintOnSave: false,
   configureWebpack: {
-    stats: {
-      warnings: false,
-      errors: false
-    },
     resolve: webpackConfig.resolve,
     plugins: webpackConfig.plugins,
   },
