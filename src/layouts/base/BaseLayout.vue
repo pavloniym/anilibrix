@@ -8,7 +8,8 @@
 
     <!-- App Toolbar -->
     <!-- Content -->
-    <app-tool-bar/>
+    <app-tool-bar v-if="!isMobile"/>
+    <bottom-navigation v-else />
     <slot/>
 
   </v-layout>
@@ -18,18 +19,21 @@
 
   // Components
   import AppToolBar from "@components/app/toolbar";
+  import BottomNavigation from '@components/app/mobile/navigation'
 
   // Mixins
-  import {DeviceMixin, PlatformMixin} from "@mixins/app";
+  import {DeviceMixin, PlatformMixin, MobileMixin} from "@mixins/app";
 
   export default {
     name: "Layout.Base",
     mixins: [
       DeviceMixin,
+      MobileMixin,
       PlatformMixin
     ],
     components: {
-      AppToolBar
+      AppToolBar,
+      BottomNavigation
     },
     computed: {
 
@@ -73,7 +77,7 @@
     &.isWeb {
       top: 0;
       height: 100%;
-      padding-top: 0;
+      padding-top: 12px;
     }
   }
 

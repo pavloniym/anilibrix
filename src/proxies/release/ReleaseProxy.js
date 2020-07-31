@@ -8,7 +8,7 @@ export default class ReleaseProxy extends BaseProxy {
    *
    * @return {Promise}
    */
-  async getReleases(parameters = {}) {
+ /* async getReleases(configuration = {}) {
 
     // Create params object
     const params = {
@@ -19,8 +19,18 @@ export default class ReleaseProxy extends BaseProxy {
 
     // Create request
     // Get response data
-    const response = await this.submit('GET', this.getApiEndpoint() + '/getUpdates', {params, ...parameters});
+    const response = await this.submit('GET', this.getApiEndpoint() + '/getUpdates', {params, ...configuration});
     return response.data;
+  }*/
+
+
+  async getReleases(configuration = {}) {
+
+    const data = this.getFormDataObject({query: 'list', perPage: 14});
+    const params = {data, ...configuration};
+    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+
+    return this.handleResponse(response.data);
   }
 
 
@@ -28,16 +38,23 @@ export default class ReleaseProxy extends BaseProxy {
    * Get release with provided id
    *
    * @param release_id
-   * @param parameters
+   * @param configuration
    * @return {Promise<unknown>}
    */
-  async getRelease(release_id, parameters = {}) {
+  async getRelease(release_id, configuration = {}) {
 
-    const data = this.getFormDataObject({query: 'release', id: release_id});
-    const params = {data, ...parameters};
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+    // Create params object
+    const params = {
+      id: release_id,
+      playlist_type: 'array',
+      description_type: 'no_view_order'
+    };
 
-    return this.handleResponse(response.data);
+
+    // Create request
+    // Get response data
+    const response = await this.submit('GET', this.getApiEndpoint() + '/getTitle', {params, ...configuration});
+    return response.data;
   }
 
 

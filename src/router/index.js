@@ -3,11 +3,11 @@ import Router from 'vue-router'
 import RouterBackButton from 'vue-router-back-button'
 
 import ads from './ads'
+import app from './app'
 import blank from './blank'
 import video from './video'
 import release from './release'
 import catalog from './catalog'
-import account from './account'
 import releases from './releases'
 import favorites from './favorites'
 
@@ -24,11 +24,11 @@ Router.prototype.push = function (location) {
 const router = new Router({
   routes: [].concat(
     ads,
+    app,
     blank,
     video,
     release,
     catalog,
-    account,
     releases,
     favorites,
   )

@@ -9,8 +9,9 @@ import EpisodesTransformer from "@transformers/episode";
 // Utils
 import axios from 'axios'
 
-// Handlers
-// import {emitAppError, emitReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
+// Events
+import {sendError} from "@/events/errors/errorsEvents";
+
 
 // Mutations
 const SET_INDEX = 'SET_INDEX';
@@ -184,7 +185,7 @@ export default {
 
           // Show error
           // Throw error
-          //  emitAppError('Произошла ошибка при загрузке релизов');
+          sendError('Произошла ошибка при загрузке релизов');
           throw error;
 
         }

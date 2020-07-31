@@ -17,6 +17,7 @@ import '@plugins/vue-meta'
 import '@plugins/vuelidate'
 import '@plugins/vue-toasted'
 import '@plugins/vue-electron'
+import '@plugins/vue-event-bus'
 
 // Import styles
 import '@assets/scss/style.scss'

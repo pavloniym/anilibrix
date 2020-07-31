@@ -1,36 +1,36 @@
 <template>
   <v-card flat color="transparent">
-    <loader v-if="loading"/>
-    <v-layout v-else column>
+      <loader v-if="loading"/>
+      <v-layout v-else column>
 
-      <!-- Avatar + Release main data -->
-      <v-layout align-center class="my-4">
+        <!-- Avatar + Release main data -->
+        <v-layout align-center class="my-4">
 
-        <!-- Poster -->
-        <v-avatar size="220" class="mx-4">
-          <v-img :src="poster" aspect-ratio="1"/>
-        </v-avatar>
+          <!-- Poster -->
+          <v-avatar size="220" class="mx-4">
+            <v-img :src="poster" aspect-ratio="1"/>
+          </v-avatar>
 
-        <!-- Title -->
-        <!-- Original Name + Genres -->
-        <!-- Meta -->
-        <div>
-          <v-card-title v-text="title" class="display-1 mb-2 font-weight-black" :style="{wordBreak: 'break-word'}"/>
-          <v-card-subtitle v-text="original" class="pb-0"/>
-          <v-card-subtitle v-text="genres" class="pt-0"/>
-          <v-card-text class="mb-1">
-            <favorite v-bind="{release}" color="grey darken-3"/>
-            <v-chip v-if="year" v-text="year" label color="grey darken-3" :style="{height: '36px'}"/>
-            <v-chip v-if="type" v-text="type" label color="grey darken-3" :style="{height: '36px'}"/>
-          </v-card-text>
-        </div>
+          <!-- Title -->
+          <!-- Original Name + Genres -->
+          <!-- Meta -->
+          <div>
+            <v-card-title v-text="title" class="display-1 mb-2 font-weight-black" :style="{wordBreak: 'break-word'}"/>
+            <v-card-subtitle v-text="original" class="pb-0"/>
+            <v-card-subtitle v-text="genres" class="pt-0"/>
+            <v-card-text class="mb-1">
+              <favorite v-bind="{release}" color="grey darken-3"/>
+              <v-chip v-if="year" v-text="year" label color="grey darken-3" :style="{height: '36px'}"/>
+              <v-chip v-if="type" v-text="type" label color="grey darken-3" :style="{height: '36px'}"/>
+            </v-card-text>
+          </div>
+
+        </v-layout>
+
+        <!-- Description -->
+        <v-card-text v-text="description" class="white--text"/>
 
       </v-layout>
-
-      <!-- Description -->
-      <v-card-text v-text="description" class="white--text"/>
-
-    </v-layout>
   </v-card>
 </template>
 

@@ -5,7 +5,7 @@
     <card v-bind="{loading}" class="mb-2" :release="_release"/>
 
     <!-- Release Tabs -->
-    <v-tabs v-if="!loading" v-model="tab" class="shrink mb-4" background-color="transparent">
+    <v-tabs v-if="!loading" v-model="tab" class="shrink mb-6" background-color="transparent">
       <v-tab>Эпизоды</v-tab>
       <v-tab>Комментарии</v-tab>
     </v-tabs>

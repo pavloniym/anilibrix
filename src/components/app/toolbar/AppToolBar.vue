@@ -35,6 +35,7 @@
 
 <script>
 
+  // Components
   import Update from './components/update'
   import Search from './components/search'
   import Account from './components/account'
