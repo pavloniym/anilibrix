@@ -8,7 +8,7 @@ export default class ReleaseProxy extends BaseProxy {
    *
    * @return {Promise}
    */
- /* async getReleases(configuration = {}) {
+  async getReleases(configuration = {}) {
 
     // Create params object
     const params = {
@@ -21,16 +21,6 @@ export default class ReleaseProxy extends BaseProxy {
     // Get response data
     const response = await this.submit('GET', this.getApiEndpoint() + '/getUpdates', {params, ...configuration});
     return response.data;
-  }*/
-
-
-  async getReleases(configuration = {}) {
-
-    const data = this.getFormDataObject({query: 'list', perPage: 14});
-    const params = {data, ...configuration};
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
-
-    return this.handleResponse(response.data);
   }
 
 
@@ -49,7 +39,6 @@ export default class ReleaseProxy extends BaseProxy {
       playlist_type: 'array',
       description_type: 'no_view_order'
     };
-
 
     // Create request
     // Get response data
@@ -96,9 +85,7 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {string|null}
    */
   getReleasePosterPath(src) {
-    return src
-      ? this.getStaticEndpoint() + src
-      : null;
+    return src ? this.getStaticEndpoint() + src : null;
   }
 
 }

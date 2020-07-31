@@ -7,10 +7,10 @@ export default {
     /**
      * Check if app is in mobile mode
      *
-     * @return {*}
+     * @return {boolean}
      */
     isMobile() {
-      return this.$vuetify.breakpoint.mobile && this.isWeb;
+      return this.$vuetify.breakpoint.smAndDown && this.isWeb;
     }
 
   }

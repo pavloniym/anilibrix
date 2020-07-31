@@ -11,19 +11,30 @@
     </v-tabs>
 
     <!-- Release Components -->
-    <component v-if="component" v-on="component.events" v-bind="component.props" :is="component.is"/>
+    <component
+      v-if="component"
+      v-on="component.events"
+      v-bind="component.props"
+      :is="component.is"
+      :class="{'pb-8' : isMobile}">
+    </component>
 
   </v-layout>
 </template>
 
 <script>
 
+  // Components
   import Card from '@components/release/card'
   import Episodes from '@components/release/episodes'
   import Comments from '@components/release/comments'
 
+  // Routes
   import {toVideo} from "@utils/router/views";
+
+  // Utils
   import {mapState, mapActions} from 'vuex'
+  import {MobileMixin} from "@mixins/app";
 
   const props = {
     releaseId: {
@@ -42,6 +53,9 @@
     meta() {
       return {title: `Релиз [${this.releaseId}]: ${this.releaseName}`}
     },
+    mixins: [
+      MobileMixin
+    ],
     components: {
       Card,
       Episodes,

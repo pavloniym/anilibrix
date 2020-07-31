@@ -12,12 +12,11 @@
 import Axios from 'axios'
 import store from '@store'
 
-// Set cookies
-Axios.defaults.withCredentials = false;
-
 // Create axios
 const axios = Axios.create();
 
+// Set cookies
+axios.defaults.withCredentials = false;
 
 /**
  * Error handler function
@@ -43,6 +42,5 @@ const responseErrorHandler = async error => {
 
 // Add request && response interceptors
 axios.interceptors.response.use(request => request, responseErrorHandler);
-
 
 export default axios;

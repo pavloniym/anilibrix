@@ -4,12 +4,12 @@
     fill-height
     id="container"
     class="base-layout"
-    :class="{isOnBlack, isWeb}">
+    :class="{isOnBlack, isWeb, isMobile}">
 
     <!-- App Toolbar -->
     <!-- Content -->
     <app-tool-bar v-if="!isMobile"/>
-    <bottom-navigation v-else />
+    <bottom-navigation v-else/>
     <slot/>
 
   </v-layout>
@@ -76,8 +76,14 @@
 
     &.isWeb {
       top: 0;
+      bottom: 0;
       height: 100%;
       padding-top: 12px;
+    }
+
+    &.isMobile {
+      height: auto;
+      bottom: 80px;
     }
   }
 
