@@ -61,7 +61,7 @@
   import Favorite from './../favorite'
 
   // Mixins
-  import {MobileMixin} from "@mixins/app";
+  import {DeviceMixin} from "@mixins/app";
 
   const props = {
     loading: {
@@ -77,7 +77,7 @@
   export default {
     props,
     mixins: [
-      MobileMixin
+      DeviceMixin
     ],
     components: {
       Loader,

@@ -26,6 +26,7 @@
 <script>
 
   // Routes
+  import {SEARCH_ROUTE_NAME} from "@router/search/searchRoutes";
   import {CATALOG_ROUTE_NAME} from "@router/catalog/catalogRoutes";
   import {RELEASES_ROUTE_NAME} from "@router/releases/releasesRoutes";
   import {FAVORITES_ROUTE_NAME} from "@router/favorites/favoritesRoutes";
@@ -51,7 +52,7 @@
             title: 'Избранное'
           },
           {
-            to: null,
+            to: {name: SEARCH_ROUTE_NAME},
             icon: 'mdi-magnify',
             title: 'Поиск'
           },

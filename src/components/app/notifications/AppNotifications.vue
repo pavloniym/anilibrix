@@ -13,7 +13,7 @@
     render: () => null,
     computed: {
       ...mapState('notifications', {_items: s => s.items}),
-      ...mapState('app/settings/system', {_notifications: s => s.notifications.system}),
+      //...mapState('app/settings/system', {_notifications: s => s.notifications.system}),
 
 
       /**

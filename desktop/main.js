@@ -11,6 +11,9 @@ import AppWindow from "./windows/AppWindow";
 import {meta, version} from './../package'
 import devtoolsInstaller from "./utils/devtools/devtoolsInstaller";
 
+// Resolvers
+import AppResolver from "./resolvers/app";
+
 // Check if in development mode
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -43,8 +46,11 @@ app.on('ready', async () => {
   // Process app window close event
   AppWindowInstance.createWindow({title: meta.name}).loadURL('', 'index.html');
   AppWindowInstance.getWindow().webContents.userAgent = `${meta.name}/${version}`;
-  AppWindowInstance.getWindow().on('close', () => app.quit())
+  AppWindowInstance.getWindow().on('close', () => app.quit());
 
+
+  // Resolvers
+  appResolvers();
 
   /* // Set user id
    await setUserId();
@@ -82,3 +88,15 @@ if (isDevelopment) {
     ? process.on('message', (data) => data === 'graceful-exit' ? app.quit() : null)
     : process.on('SIGTERM', () => app.quit())
 }
+
+
+/**
+ * App Resolvers
+ *
+ * @return {void}
+ */
+const appResolvers = () => {
+  AppResolver.showAbout();
+  //AppResolver.showAppDevtools(AppWindowInstance);
+  //AppResolver.showTorrentDevtools(AppWindowInstance);
+};

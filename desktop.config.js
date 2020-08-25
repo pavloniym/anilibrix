@@ -1,12 +1,20 @@
 module.exports = {
   electronBuilder: {
 
+    // Chain webpack config for electron main process only
+    chainWebpackMainProcess: (config) => {
+      /*config
+        .plugin('env')
+        .use(require.resolve('webpack/lib/EnvironmentPlugin'), [{'IS_WEB': false, 'IS_DESKTOP': true}]);*/
+    },
+
     // Chain webpack config for electron renderer process only
     chainWebpackRendererProcess: (config) => {
       config
         .plugin('env')
         .use(require.resolve('webpack/lib/EnvironmentPlugin'), [{'IS_WEB': false, 'IS_DESKTOP': true}]);
     },
+
 
     // If you need to use native modules such as fs or sqlite in the renderer process, you can enable nodeIntegration
     nodeIntegration: true,

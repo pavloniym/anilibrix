@@ -53,13 +53,13 @@
   import {mapActions} from 'vuex'
 
   // Mixins
-  import {MobileMixin} from "@mixins/app";
+  import {DeviceMixin} from "@mixins/app";
   import {BackRouteMixin} from "@mixins/routes";
 
   export default {
     name: "Account.Login.View",
     mixins: [
-      MobileMixin,
+      DeviceMixin,
       BackRouteMixin
     ],
     components: {

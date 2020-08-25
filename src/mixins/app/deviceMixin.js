@@ -1,3 +1,5 @@
+import {isDesktop, isWeb} from "@utils/device/deviceResolver";
+
 export default {
   computed: {
 
@@ -7,7 +9,7 @@ export default {
      * @return {boolean}
      */
     isWeb() {
-      return process.env.IS_WEB === true;
+      return isWeb();
     },
 
 
@@ -17,7 +19,17 @@ export default {
      * @return {boolean}
      */
     isDesktop() {
-      return process.env.IS_DESKTOP === true;
+      return isDesktop();
+    },
+
+
+    /**
+     * Check if app is in mobile mode
+     *
+     * @return {boolean}
+     */
+    isMobile() {
+      return this.$vuetify.breakpoint.smAndDown && isWeb();
     }
 
   }

@@ -1,122 +1,392 @@
 <template>
-  <v-navigation-drawer
-    v-model="drawer"
-    app
-    right
-    fixed
-    temporary
-    width="400"
-    class="settings">
+  <div>
+    <template v-for="(item, k) in settings">
 
-    <!-- Header -->
-    <v-toolbar flat class="shrink" color="#363636">
-      <v-toolbar-title class="body-1">Настройки приложения</v-toolbar-title>
-    </v-toolbar>
-    <v-divider/>
+      <!-- Settings Group Header  -->
+      <div class="pa-4 caption" :key="`group:${k}`" :class="item.class">
+        <div class="body-1 white--text">{{item.title}}</div>
+        <template v-for="(description, d) in item.description">
+          <div class="grey--text" :key="d">{{description}}</div>
+        </template>
+      </div>
 
+      <!-- Settings Fields -->
+      <template v-for="(field, f) in item.fields">
+        <v-divider v-if="field.divider" :key="`d:${k}:${f}`"/>
+        <component v-bind="field.props" :is="field.is" :key="`${k}:${f}`"/>
+      </template>
 
-    <!-- Categories -->
-    <component
-      v-for="(category, k) in categories"
-      class="mb-2"
-      :is="category"
-      :key="k">
-    </component>
-
-
-    <!-- Credentials -->
-    <credentials/>
-
-
-  </v-navigation-drawer>
+    </template>
+  </div>
 </template>
 
 <script>
 
-  import Credentials from './components/credentials'
-  import PlayerSettings from './categories/player'
+  // Components
+  import {Input, Switch, Action} from "./components/fields";
 
-  import SystemSettings from './categories/system'
-  import ActionsSettings from './categories/actions'
-  import DevtoolsSettings from './categories/devtools'
-  import AnilibriaSettings from './categories/app'
+  // Mixins
+  import {PlatformMixin, DeviceMixin} from '@mixins/app'
 
-  import SystemBarPlaceholder from './../systembar/placeholder'
+  // Utils
+  import {meta} from "@package";
+  import {runOnPlatform} from "@utils/device/deviceResolver";
 
-  import {PlatformMixin} from '@mixins/app'
-  import {mapState, mapActions} from 'vuex'
+  // Resolvers
+  import AppResolver from "../../../../desktop/resolvers/app";
 
   export default {
-    mixins: [PlatformMixin],
-    components: {
-      Credentials,
-      SystemBarPlaceholder
-    },
+    mixins: [PlatformMixin, DeviceMixin],
     computed: {
-      ...mapState('app', {_drawer: s => s.drawer}),
-      ...mapState('app/settings/system', {_devtools: s => s.devtools}),
 
       /**
-       * Get categories components
+       * Get all settings
        *
-       * @return Array
+       * @return {array}
        */
-      categories() {
+      settings() {
         return [
-          PlayerSettings,
-          SystemSettings,
-          ActionsSettings,
-          AnilibriaSettings,
-          this._devtools ? DevtoolsSettings : null
-        ].filter(category => category)
+
+          ...this.playerSettings,
+          ...this.appSettings,
+          ...this.adsSettings,
+          ...this.commandsSettings,
+          ...this.linksSettings,
+          ...this.devtoolsSettings,
+
+        ].filter(settings => settings.visible)
       },
 
-      drawer: {
 
-        /**
-         * Get drawer state
-         *
-         * @return boolean
-         */
-        get() {
-          return !!this._drawer;
-        },
+      /**
+       * Get player settings
+       *
+       * @return {array}
+       */
+      playerSettings() {
+        return [
+          {
+            title: 'Воспроизведение релизов',
+            visible: true,
+            description: [
+              'В данном разделе вы можете настроить возможность смотреть релизы, используя торренты, ' +
+              'а также другие настройки воспроизведения',
+            ],
+            fields: [
+              {
+                is: Switch,
+                props: {
+                  path: 'player.torrents.enabled',
+                  hint: [
+                    'Использование торрентов требует бОльшего времени подключения и парсинга, что может негативно ' +
+                    'сказаться на скорости загрузки данных по релизам, особенно — при использовании прокси-сервера'
+                  ],
+                  title: 'Торренты',
+                  subtitle: [
+                    'Вы можете подключить торренты, которые автоматически буду связаны с эпизодами релизов и доступны для просмотра.',
+                    'Торренты не требуют стороннего плеера или клиента и доступны онлайн, в меню выбора качества воспроизведения релиза.'
+                  ],
+                  label: 'Воспроизводить торренты'
+                }
+              },
+              {
+                is: Switch,
+                props: {
+                  path: 'player.autoplay.enabled',
+                  hint: ['После окончания эпизода плеер автоматически начнет воспроизведение следующего эпизода в релизе при его наличии'],
+                  label: 'Автовоспроизведение следующего эпизода',
+                  class: ['mt-2']
+                }
+              },
+              {
+                is: Switch,
+                props: {
+                  path: 'player.skip_opening.enabled',
+                  hint: [
+                    'В интерфейсе плеера появится дополнительная кнопка, которая перемотает плеер на указанное количество секунд',
+                    'Данная кнопка не гарантирует корректный пропуск опенинга'
+                  ],
+                  label: 'Кнопка пропуска опенинга',
+                  class: ['mt-2']
+                }
+              },
+              {
+                is: Input,
+                divider: true,
+                props: {
+                  min: 0,
+                  path: 'player.skip_opening.offset',
+                  type: 'number',
+                  title: 'Вы можете указать на сколько секунд пропускать опенинг',
+                  label: 'Количество секунд для пропуска опенинга',
+                  suffix: 'сек',
+                  handler: (value) => value && value > 0 ? parseInt(value) : 0
+                }
+              }
+            ]
+          }
+        ];
+      },
 
-        /**
-         * Set drawer state
-         *
-         * @param state
-         * @return void
-         */
-        set(state) {
-          this._setDrawer(state);
+
+      /**
+       * Get app settings
+       *
+       * @return {array}
+       */
+      appSettings() {
+        return [
+          {
+            class: ['mt-6'],
+            title: 'Приложение',
+            visible: true,
+            description: [
+              'В данном разделе вы можете настроить автоматическое обновление релизов, системные уведомления и ' +
+              'другие параметры приложения',
+            ],
+            fields: [
+              {
+                is: Switch,
+                props: {
+                  path: 'app.notifications.system',
+                  hint: [
+                    'Если при загрузке последних релизов приложение обнаружит обновленный релиз, то оно покажет ' +
+                    'системное уведомление о новом эпизоде'
+                  ],
+                  label: 'Показывать системные уведомления',
+                }
+              },
+              {
+                is: Switch,
+                props: {
+                  path: 'app.releases_updates.enabled',
+                  hint: ['Приложение будет в фоне обновлять последние релизы, даже если оно свернуто'],
+                  label: 'Автоматическое обновление релизов',
+                  class: ['mt-2']
+                }
+              },
+              {
+                is: Input,
+                divider: true,
+                props: {
+                  min: 1,
+                  path: 'app.releases_updates.timeout',
+                  type: 'number',
+                  title: 'Вы можете указать с какой периодичностью приложение будет обновлять релизы в фоновом режиме',
+                  label: 'Периодичность обновления релизов',
+                  suffix: 'мин',
+                  handler: (value) => value && value >= 1 ? parseInt(value) : 1
+                }
+              }
+            ]
+          }
+        ]
+      },
+
+
+      /**
+       * Get ads settings
+       *
+       * @return {array}
+       */
+      adsSettings() {
+        return [
+          {
+            class: ['mt-6'],
+            title: 'Реклама',
+            visible: true,
+            description: ['Настройка отображения рекламных вставок перед воспроизведением релизов'],
+            fields: [
+              {
+                is: Switch,
+                props: {
+                  path: 'ads.enabled',
+                  hint: [
+                    'Спасибо, что выбрали Анилибрию!',
+                    'Мы понимаем, что реклама никому не нравится, но это бесплатный способ поддержать проект.\n' +
+                    'Отключение рекламы - абсолютно бесплатно, но, если вы хотите поддержать нас, то оставьте рекламу включенной.\n' +
+                    'Обещаем, что не будем сильно навязчивыми (✿◠‿◠)'
+                  ],
+                  label: 'Показывать рекламу',
+                }
+              },
+              {
+                is: Switch,
+                props: {
+                  path: 'ads.maximum',
+                  hint: [
+                    'Максимальная поддержка проекта!',
+                    'Реклама будет показываться перед каждым просмотром любого эпизода'
+                  ],
+                  label: 'Показывать рекламу перед каждым эпизодом',
+                  class: ['mt-2']
+                }
+              },
+            ]
+          }
+        ]
+      },
+
+
+      /**
+       * Commands settings
+       *
+       * @return {array}
+       */
+      commandsSettings() {
+        return [
+          {
+            class: ['mt-6'],
+            title: 'Команды',
+            visible: true,
+            description: ['Некоторые полезные команды для управления приложением'],
+            fields: [
+              {
+                is: Action,
+                props: {
+                  label: 'Перезагрузить приложение',
+                  action: () => runOnPlatform(() => window.location.reload(), () => this.$electron.remote.getCurrentWindow().reload()),
+                  description: this.isDesktop ? this.shortcuts['reload'] : null,
+                },
+                visible: true,
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Свернуть приложение',
+                  action: () => runOnPlatform(() => window.location.reload(), () => this.$electron.remote.getCurrentWindow().minimize()),
+                  description: this.isDesktop ? this.shortcuts['minimize'] : null,
+                },
+                visible: this.isDesktop,
+                divider: true
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Закрыть приложение',
+                  action: () => runOnPlatform(() => window.close(), () => this.$electron.remote.getCurrentWindow().close()),
+                  description: this.isDesktop ? this.shortcuts['close'] : null,
+                },
+                visible: true,
+                divider: true
+              }
+            ].filter(field => field.visible)
+          }
+        ]
+      },
+
+
+      /**
+       * Links settings
+       *
+       * @return {array}
+       */
+      linksSettings() {
+        return [
+          {
+            class: ['mt-6'],
+            title: 'Ссылки',
+            visible: true,
+            description: ['Некоторые полезные ссылки'],
+            fields: [
+              {
+                is: Action,
+                props: {
+                  label: 'Анилибрия',
+                  action: () => runOnPlatform(() => window.open(meta.links.anilibria, '_blank'), () => this.$electron.shell.openExternal(meta.links.anilibria)),
+                  description: meta.links.anilibria,
+                },
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Поддержать проект',
+                  action: () => runOnPlatform(() => window.open(meta.links.donate, '_blank'), () => this.$electron.shell.openExternal(meta.links.donate)),
+                  description: 'Яндекс.Деньги, QIWI, PayPal',
+                },
+                divider: true
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Telegram-канал',
+                  action: () => runOnPlatform(() => window.open(meta.links.telegram, '_blank'), () => this.$electron.shell.openExternal(meta.links.telegram)),
+                  description: '@anilibrix',
+                },
+                divider: true
+              },
+            ]
+          }
+        ]
+      },
+
+
+      /**
+       * Devtools settings
+       *
+       * @return {array}
+       */
+      devtoolsSettings() {
+        return [
+          {
+            class: ['mt-6'],
+            title: 'Отладка',
+            description: ['Инструменты отладки и разработки'],
+            visible: this.$store.state.app.settings.app.devtools,
+            fields: [
+              {
+                is: Action,
+                props: {
+                  label: 'Консоль приложения',
+                  action: () => runOnPlatform(null, () => AppResolver.showAppDevtools()),
+                  description: 'devtools:app',
+                },
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Консоль торрент-сервера',
+                  action: () => runOnPlatform(null, () => AppResolver.showTorrentDevtools()),
+                  description: 'devtools:torrent',
+                },
+                divider: true,
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Добавить уведомление в хранилище',
+                  action: () => null,
+                },
+                divider: true,
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Показать данные хранилища в консоли',
+                  action: () => console.log(this.$store.state),
+                },
+                divider: true,
+              },
+            ]
+
+          }
+        ]
+      },
+
+      /**
+       * Get keyboard shortcuts
+       *
+       * @return {*}
+       */
+      shortcuts() {
+        return {
+          'close': this.isMac ? '⌘ + Q' : 'Alt + Q',
+          'reload': this.isMac ? '⌘ + ⇧ + R' : 'Ctrl + Shift + R',
+          'minimize': this.isMac ? '⌘ + M' : 'Ctrl + M',
         }
       }
 
-    },
-
-    methods: {
-      ...mapActions('app', {_setDrawer: 'setDrawer'}),
     }
 
   }
 </script>
-<style lang="scss" scoped>
-
-  .settings {
-    ::v-deep {
-      .v-navigation-drawer__content {
-        overflow-y: scroll;
-      }
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background-color: black;
-    }
-
-    ::-webkit-scrollbar {
-      background-color: transparent;
-    }
-  }
-
-</style>

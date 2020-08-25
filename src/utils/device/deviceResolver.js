@@ -1,10 +1,34 @@
 /**
+ * Is web build
+ *
+ * @return {boolean}
+ */
+export const isWeb = () => process.env.IS_WEB === true;
+
+
+/**
+ * Is desktop build
+ *
+ * @return {boolean}
+ */
+export const isDesktop = () => process.env.IS_DESKTOP === true;
+
+
+/**
+ * Check if app is in mobile mode
+ *
+ * @return {boolean}
+ */
+export const isMobile = () => this.$vuetify.breakpoint.smAndDown && isWeb();
+
+
+/**
  * Execute callback only on web
  *
  * @param callback
  */
 export const runOnWeb = (callback = null) => {
-  if (process.env.IS_WEB === true && callback) callback();
+  if (isWeb() && callback) callback();
 };
 
 
@@ -14,7 +38,7 @@ export const runOnWeb = (callback = null) => {
  * @param callback
  */
 export const runOnDesktop = (callback = null) => {
-  if (process.env.IS_DESKTOP === true && callback) callback();
+  if (isDesktop() && callback) callback();
 };
 
 
@@ -25,6 +49,6 @@ export const runOnDesktop = (callback = null) => {
  * @param desktopCallback
  */
 export const runOnPlatform = (webCallback = null, desktopCallback = null) => {
-  runOnWeb(webCallback);
-  runOnDesktop(desktopCallback);
+  if (isWeb()) runOnWeb(webCallback);
+  if (isDesktop()) runOnDesktop(desktopCallback);
 };

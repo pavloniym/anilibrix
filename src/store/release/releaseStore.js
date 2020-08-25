@@ -8,8 +8,8 @@ import EpisodesTransformer from "@transformers/episode";
 // Utils
 import axios from "axios";
 
-// Handlers
-// import {emitAppError} from "@main/handlers/notifications/notificationsHandler";
+// Events
+import {sendError} from "@/events/errors/errorsEvents";
 
 // Mutations
 const SET_RELEASE_DATA = 'SET_RELEASE_DATA';
@@ -57,12 +57,10 @@ export default {
      * Also get release poster
      *
      * @param commit
-     * @param dispatch
-     * @param state
      * @param release_id
      * @return {Promise<unknown>}
      */
-    getRelease: async ({commit, dispatch, state}, release_id) => {
+    getRelease: async ({commit}, release_id) => {
 
       // Cancel previous request if it was stored
       if (REQUEST !== null) REQUEST.cancel();
@@ -94,14 +92,12 @@ export default {
 
           // Show app error
           // Throw error
-          emitAppError('Произошла ошибка при загрузке релиза');
+          sendError('Произошла ошибка при загрузке релиза');
           throw error;
 
         }
       } finally {
-
         commit(SET_RELEASE_LOADING, false);
-
       }
     }
 

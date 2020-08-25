@@ -9,12 +9,8 @@ export default class CatalogProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async getCatalogGenres() {
-
-    const data = this.getFormDataObject({query: 'genres'});
-    const params = {data};
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
-
-    return this.handleResponse(response.data);
+    const response = await this.submit('GET', this.getApiEndpoint() + '/getGenres');
+    return response.data || [];
   }
 
 
@@ -24,12 +20,8 @@ export default class CatalogProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async getCatalogYears() {
-
-    const data = this.getFormDataObject({query: 'years'});
-    const params = {data};
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
-
-    return this.handleResponse(response.data);
+    const response = await this.submit('GET', this.getApiEndpoint() + '/getYears');
+    return response.data || [];
   }
 
 

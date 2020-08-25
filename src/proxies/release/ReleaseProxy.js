@@ -20,7 +20,7 @@ export default class ReleaseProxy extends BaseProxy {
     // Create request
     // Get response data
     const response = await this.submit('GET', this.getApiEndpoint() + '/getUpdates', {params, ...configuration});
-    return response.data;
+    return response.data || [];
   }
 
 
@@ -29,7 +29,7 @@ export default class ReleaseProxy extends BaseProxy {
    *
    * @param release_id
    * @param configuration
-   * @return {Promise<unknown>}
+   * @return {Promise}
    */
   async getRelease(release_id, configuration = {}) {
 
@@ -43,24 +43,26 @@ export default class ReleaseProxy extends BaseProxy {
     // Create request
     // Get response data
     const response = await this.submit('GET', this.getApiEndpoint() + '/getTitle', {params, ...configuration});
-    return response.data;
+    return response.data || null;
   }
 
 
   /**
    * Search releases by name
    *
-   * @param search_query
-   * @param parameters
-   * @return {Promise<unknown>}
+   * @param search
+   * @param configuration
+   * @return {Promise}
    */
-  async searchReleases(search_query, parameters = {}) {
+  async searchReleases(search, configuration = {}) {
 
-    const data = this.getFormDataObject({query: 'search', search: search_query});
-    const params = {data, ...parameters};
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+    // Create params object
+    const params = {search, limit: 10};
 
-    return this.handleResponse(response.data);
+    // Create request
+    // Get response data
+    const response = await this.submit('GET', this.getApiEndpoint() + '/searchTitles', {params, ...configuration});
+    return response.data || [];
   }
 
 

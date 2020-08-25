@@ -23,16 +23,6 @@ export default class BaseWindow {
 
 
   /**
-   * Get window url
-   *
-   * @return String|null
-   */
-  getWindowUrl() {
-    return null;
-  }
-
-
-  /**
    * Get window
    *
    * @return BrowserWindow|null

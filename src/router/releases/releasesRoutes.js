@@ -14,6 +14,9 @@ export default [
   {
     name: RELEASES_ROUTE_NAME,
     path: '/',
+    meta: {
+      toolbar: {title: 'Последние релизы'}
+    },
     component: () => import('@views/releases')
   }
 ]

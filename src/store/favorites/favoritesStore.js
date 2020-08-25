@@ -8,8 +8,9 @@ import EpisodesTransformer from "@transformers/episode";
 
 // Utils
 import axios from "axios";
-// import {emitAppError} from "@main/handlers/notifications/notificationsHandler";
 
+// Events
+import {sendError} from "@/events/errors/errorsEvents";
 
 
 // Mutations
@@ -23,8 +24,8 @@ const SET_SETTINGS_SHOW_SEEN = 'SET_SETTINGS_SHOW_SEEN';
 const SET_SETTINGS_YEARS_COLLAPSED = 'SET_SETTINGS_YEARS_COLLAPSED';
 
 // Requests
-let REQUEST_FOR_FAVORITES = null;
 let REQUESTS_FOR_CHANGES = {};
+let REQUEST_FOR_FAVORITES = null;
 
 export default {
   namespaced: true,
@@ -202,7 +203,7 @@ export default {
 
             // Show error
             // Throw error
-            emitAppError('Произошла ошибка при загрузке избранных релизов');
+            sendError('Произошла ошибка при загрузке избранных релизов');
             throw error;
 
           }
@@ -225,7 +226,7 @@ export default {
      * @param release
      * @return {Promise<void>}
      */
-    addToFavorites: async ({dispatch, getters, commit}, release) => {
+    addToFavorites: async ({getters, commit}, release) => {
       if (release && getters.isAuthorized) {
         try {
 
@@ -249,7 +250,7 @@ export default {
 
             // Show app error
             // Throw error
-            emitAppError(error);
+            sendError(error);
             throw error;
 
           }
@@ -267,7 +268,7 @@ export default {
      * @param release
      * @return {Promise<void>}
      */
-    removeFromFavorites: async ({dispatch, getters, commit}, release) => {
+    removeFromFavorites: async ({getters, commit}, release) => {
       if (release && getters.isAuthorized) {
         try {
 
@@ -291,7 +292,7 @@ export default {
 
             // Show app error
             // Throw error
-            emitAppError(error);
+            sendError(error);
             throw error;
 
           }
@@ -315,6 +316,7 @@ export default {
       if (year_index === -1) years.push(year);
 
       commit(SET_SETTINGS_YEARS_COLLAPSED, years);
+
     },
 
 

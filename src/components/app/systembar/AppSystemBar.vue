@@ -21,6 +21,8 @@
 
   // Mixins
   import {PlatformMixin, DeviceMixin} from '@mixins/app'
+
+  // Utils
   import {runOnDesktop} from "@utils/device/deviceResolver";
 
   export default {

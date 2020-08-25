@@ -72,10 +72,9 @@ export default {
      */
     setRelease: ({commit}, release) => {
 
+      // Add notification
+      // Push release to releases items
       if (release && release.episodes[0]) {
-
-        // Add notification
-        // Push release to releases items
         commit(PUSH_TO_RELEASES, {release, episode: release.episodes[0], is_seen: false, datetime: new Date()});
       }
 

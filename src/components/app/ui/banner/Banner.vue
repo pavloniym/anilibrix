@@ -35,7 +35,7 @@
 
 <script>
 
-  import {MobileMixin} from "@mixins/app";
+  import {DeviceMixin} from "@mixins/app";
 
   const props = {
     image: {
@@ -50,6 +50,6 @@
 
   export default {
     props,
-    mixins: [MobileMixin],
+    mixins: [DeviceMixin],
   }
 </script>

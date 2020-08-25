@@ -1,5 +1,5 @@
 <template>
-  <v-layout v-if="loading || _release" column>
+  <v-layout v-if="loading || _release" column :class="{'py-6': !isMobile}">
 
     <!-- Release Card -->
     <card v-bind="{loading}" class="mb-2" :release="_release"/>
@@ -16,7 +16,7 @@
       v-on="component.events"
       v-bind="component.props"
       :is="component.is"
-      :class="{'pb-8' : isMobile}">
+      :class="{'pb-6' : isMobile}">
     </component>
 
   </v-layout>
@@ -34,7 +34,9 @@
 
   // Utils
   import {mapState, mapActions} from 'vuex'
-  import {MobileMixin} from "@mixins/app";
+
+  // Mixin
+  import {DeviceMixin} from "@mixins/app";
 
   const props = {
     releaseId: {
@@ -54,7 +56,7 @@
       return {title: `Релиз [${this.releaseId}]: ${this.releaseName}`}
     },
     mixins: [
-      MobileMixin
+      DeviceMixin
     ],
     components: {
       Card,
@@ -121,12 +123,14 @@
       ...mapActions('release', {_getRelease: 'getRelease'}),
     },
 
-
     watch: {
 
       releaseId: {
         immediate: true,
         async handler(releaseId) {
+
+          // Scroll to top
+          document.getElementById('container').scrollTo(0, 0);
 
           // Update if release data changed
           if (this._release === null || this._release.id !== parseInt(releaseId)) {

@@ -12,8 +12,8 @@
     :value="_value"
     :items="_items"
     :loading="_loading"
+    :menu-props="{attach: '#container'}"
     @input="_setFilterValue({filter: 'genres', value: $event})">
-
   </v-autocomplete>
 </template>
 

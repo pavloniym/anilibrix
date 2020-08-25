@@ -6,10 +6,19 @@
     class="base-layout"
     :class="{isOnBlack, isWeb, isMobile}">
 
+    <!-- Mobile  -->
+    <template v-if="isMobile">
+      <mobile-toolbar />
+      <mobile-navigation/>
+    </template>
+
     <!-- App Toolbar -->
     <!-- Content -->
-    <app-tool-bar v-if="!isMobile"/>
-    <bottom-navigation v-else/>
+    <template v-else>
+      <app-tool-bar/>
+    </template>
+
+    <!-- Content -->
     <slot/>
 
   </v-layout>
@@ -19,21 +28,24 @@
 
   // Components
   import AppToolBar from "@components/app/toolbar";
-  import BottomNavigation from '@components/app/mobile/navigation'
+
+  // Mobile
+  import MobileToolbar from '@components/app/mobile/toolbar'
+  import MobileNavigation from '@components/app/mobile/navigation'
 
   // Mixins
-  import {DeviceMixin, PlatformMixin, MobileMixin} from "@mixins/app";
+  import {DeviceMixin, PlatformMixin} from "@mixins/app";
 
   export default {
     name: "Layout.Base",
     mixins: [
       DeviceMixin,
-      MobileMixin,
       PlatformMixin
     ],
     components: {
       AppToolBar,
-      BottomNavigation
+      MobileToolbar,
+      MobileNavigation
     },
     computed: {
 
@@ -78,10 +90,12 @@
       top: 0;
       bottom: 0;
       height: 100%;
-      padding-top: 12px;
+      padding-top: 18px;
+      padding-bottom: 18px;
     }
 
     &.isMobile {
+      top: 56px;
       height: auto;
       bottom: 80px;
     }

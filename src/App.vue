@@ -6,12 +6,11 @@
     <app-settings/>
 
     <!-- Content -->
-    <v-fade-transition mode="out-in" appear>
-      <app-loader v-if="loading" key="loader"/>
-      <component v-else :is="layout" :key="$route.name">
-        <router-view :key="$route.name"/>
-      </component>
-    </v-fade-transition>
+    <app-loader v-if="loading" key="loader"/>
+    <component v-else :is="layout">
+      <router-view :key="$route.name"/>
+    </component>
+
 
     <!-- Errors -->
     <!-- Downloads -->
@@ -59,10 +58,10 @@
 
 
     computed: {
-      ...mapState('app/settings/system', {
+      /*...mapState('app/settings/system', {
         _updates_enabled: s => s.updates.enabled,
         _updates_timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
-      }),
+      }),*/
 
       /**
        * Get route layout

@@ -14,10 +14,10 @@ export default class SearchTransformer extends BaseTransformer {
     return {
       id: this.get(release, 'id'),
       names: {
-        ru: this._stripHtml(this.get(release, 'names.0')),
-        original: this._stripHtml(this.get(release, 'names.1'))
+        ru: this._stripHtml(this.get(release, 'names.ru')),
+        original: this._stripHtml(this.get(release, 'names.en'))
       },
-      poster: this.get(release, 'poster'),
+      poster: this.get(release, 'poster.url'),
     }
   }
 

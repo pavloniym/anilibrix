@@ -2,7 +2,6 @@
 import ReleaseProxy from "@proxies/release";
 
 // Transformers
-import SearchTransformer from "@transformers/search";
 import ReleaseTransformer from '@transformers/release'
 import EpisodesTransformer from "@transformers/episode";
 
@@ -21,8 +20,7 @@ const SET_RELEASES_DATETIME = 'SET_RELEASES_DATETIME';
 const SET_RELEASES_HAS_ERROR = 'SET_RELEASES_HAS_ERROR';
 
 // Requests
-let REQUEST_FOR_SEARCH = null;
-let REQUEST_FOR_RELEASES = null;
+let REQUEST = null;
 
 export default {
   namespaced: true,
@@ -113,14 +111,14 @@ export default {
         commit(SET_RELEASES_HAS_ERROR, false);
 
         // Cancel previous request if it was stored
-        if (REQUEST_FOR_RELEASES) REQUEST_FOR_RELEASES.cancel();
+        if (REQUEST) REQUEST.cancel();
 
         // Create new request token if exists
-        REQUEST_FOR_RELEASES = axios.CancelToken.source();
+        REQUEST = axios.CancelToken.source();
 
         // Get releases from server
         // Transform releases
-        const data = await new ReleaseProxy().getReleases({cancelToken: REQUEST_FOR_RELEASES.token});
+        const data = await new ReleaseProxy().getReleases({cancelToken: REQUEST.token});
         const releases = new ReleaseTransformer().fetchCollection(data);
 
         // Filters releases without episodes
@@ -137,7 +135,7 @@ export default {
             filteredReleases
               .map(async release => ({
                 ...release,
-                episodes: await new EpisodesTransformer({cancelToken: REQUEST_FOR_RELEASES.token})
+                episodes: await new EpisodesTransformer({cancelToken: REQUEST.token})
                   .fetchItem(release.episodes)
               }))
           ))
@@ -178,6 +176,7 @@ export default {
         commit(SET_RELEASES_DATETIME, new Date());
 
       } catch (error) {
+
         if (!axios.isCancel(error)) {
 
           // Set release has error
@@ -189,48 +188,11 @@ export default {
           throw error;
 
         }
+
       } finally {
-
         commit(SET_RELEASES_LOADING, false);
-
-      }
-    },
-
-
-    /**
-     * Search releases
-     *
-     * @param context
-     * @param search_query
-     * @return {array}
-     */
-    searchReleases: async (context, search_query) => {
-      try {
-
-        // Cancel previous request if it was stored
-        // Create new request token if exists
-        if (REQUEST_FOR_SEARCH) REQUEST_FOR_SEARCH.cancel();
-        REQUEST_FOR_SEARCH = axios.CancelToken.source();
-
-        // Get releases
-        const response = await new ReleaseProxy().searchReleases(search_query, {cancelToken: REQUEST_FOR_SEARCH.token});
-
-        // Transform releases
-        // Get posters src
-        return new SearchTransformer()
-          .fetchCollection(response || [])
-          .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}))
-
-      } catch (error) {
-        if (!axios.isCancel(error)) {
-
-          // Show app error
-          // Return empty array
-          //   emitAppError('Произошла ошибка при поиске релизов');
-          return [];
-
-        }
       }
     }
+
   }
 }
