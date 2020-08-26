@@ -24,7 +24,7 @@
   import SearchTransformer from "@transformers/search";
 
   // Events
-  import {sendError} from "@/events/errors/errorsEvents";
+  import {sendError} from "@/events/error/errorsEvents";
 
   // Routes
   import {toRelease} from "@router/release/releaseRoutes";

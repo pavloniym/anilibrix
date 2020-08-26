@@ -8,9 +8,8 @@ import CatalogTransformer from "@transformers/catalog";
 // Utils
 import __capitalize from 'lodash/capitalize'
 
-// Events
-import {sendError} from "@/events/errors/errorsEvents";
-
+// Resolvers
+import ErrorResolver from "@@/utils/resolvers/error";
 
 // Mutations
 const SET_INITIALIZED = 'SET_INITIALIZED';
@@ -187,7 +186,7 @@ export default {
 
         // Show app error
         // Throw error
-        sendError('Произошла ошибка при загрузке релизов');
+        ErrorResolver.emitError('Произошла ошибка при загрузке релизов');
         throw error;
 
       } finally {
@@ -218,7 +217,7 @@ export default {
 
         // Show app error
         // Throw error
-        sendError('Произошла ошибка при загрузке фильтров по жанрам');
+        ErrorResolver.emitError('Произошла ошибка при загрузке фильтров по жанрам');
         throw error;
 
       } finally {
@@ -249,7 +248,7 @@ export default {
 
         // Show app error
         // Throw error
-        sendError('Произошла ошибка при загрузке фильтров по годам');
+        ErrorResolver.emitError('Произошла ошибка при загрузке фильтров по годам');
         throw error;
 
       } finally {

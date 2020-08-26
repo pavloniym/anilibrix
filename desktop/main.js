@@ -12,7 +12,7 @@ import {meta, version} from './../package'
 import devtoolsInstaller from "./utils/devtools/devtoolsInstaller";
 
 // Resolvers
-import AppResolver from "./resolvers/app";
+import AppResolver from "../utils/resolvers/app";
 
 // Check if in development mode
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -97,6 +97,6 @@ if (isDevelopment) {
  */
 const appResolvers = () => {
   AppResolver.showAbout();
-  //AppResolver.showAppDevtools(AppWindowInstance);
-  //AppResolver.showTorrentDevtools(AppWindowInstance);
+  AppResolver.showAppDevtools(AppWindowInstance);
+  AppResolver.showTorrentDevtools(AppWindowInstance);
 };

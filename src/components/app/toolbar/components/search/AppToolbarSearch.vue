@@ -46,8 +46,8 @@
   import SearchTransformer from "@transformers/search";
 
   // Events
-  import {sendError} from "@/events/errors/errorsEvents";
-  
+  import {sendError} from "@/events/error/errorsEvents";
+
 
   export default {
     request: null,

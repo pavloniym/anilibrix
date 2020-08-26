@@ -15,7 +15,7 @@
     <!-- Errors -->
     <!-- Downloads -->
     <!-- Notifications -->
-    <app-errors/>
+    <app-error/>
     <!--<app-downloads/>-->
     <app-notifications/>
 
@@ -25,8 +25,8 @@
 <script>
 
   // Components
+  import AppError from '@components/app/error'
   import AppLoader from '@components/app/loader'
-  import AppErrors from '@components/app/errors'
   import AppToolBar from "@components/app/toolbar";
   import AppSettings from "@components/app/settings";
   import AppSystemBar from '@components/app/systembar'
@@ -35,13 +35,13 @@
   import AppNotifications from "@components/app/notifications";
 
   // Utils
-  import {mapState, mapActions} from 'vuex'
+  import {mapActions} from 'vuex'
 
   export default {
     name: 'AniLibrix',
     components: {
+      AppError,
       AppLoader,
-      AppErrors,
       AppToolBar,
       AppSettings,
       AppSystemBar,

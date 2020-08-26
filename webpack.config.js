@@ -36,6 +36,7 @@ module.exports = {
   resolve: {
     alias: {
       '@': resolve('./src'),
+      '@@': resolve('.'),
       '@store': resolve('src/store'),
       '@views': resolve('src/views'),
       '@utils': resolve('src/utils'),

@@ -1,4 +1,4 @@
-import {isDesktop, isWeb} from "@utils/device/deviceResolver";
+import {isWeb, isDesktop} from "@@/utils/states/deviceStates";
 
 export default {
   computed: {

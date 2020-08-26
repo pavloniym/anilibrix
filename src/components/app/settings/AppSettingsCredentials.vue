@@ -14,7 +14,7 @@
 
       <!-- Devtools -->
       <!-- Only on desktop version -->
-      <v-layout v-if="isDesktop" class="with-divider">
+      <v-layout v-if="1 || isDesktop" class="with-divider">
         <a href="#" @click.prevent="showAbout">О приложении</a>
         <a href="#" @click.prevent="toggleDevtools">Инструменты отладки</a>
       </v-layout>
@@ -36,7 +36,7 @@
   import {mapActions} from "vuex";
 
   // Resolvers
-  import AppResolver from "../../../../desktop/resolvers/app";
+  import AppResolver from "@@/utils/resolvers/app";
 
   export default {
     mixins: [DeviceMixin],
@@ -49,7 +49,7 @@
        */
       app() {
         return {
-          build: new Date(document.lastModified).toLocaleString(),
+          build: Math.round(new Date(document.lastModified).getTime() / 1000),
           version: app.version,
         }
       },

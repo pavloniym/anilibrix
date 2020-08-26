@@ -1,4 +1,4 @@
-import ProcessResolver from "./../process";
+import {runInProcess} from "@@/utils/resolvers/system/processResolver";
 
 export const APP_ABOUT = 'app:about';
 export const APP_DEVTOOLS_MAIN = 'app:devtools:main';
@@ -12,7 +12,7 @@ export default class AppResolver {
    * @return {void}
    */
   static showAbout() {
-    ProcessResolver.run(
+    runInProcess(
       electron => electron.ipcMain.on(APP_ABOUT, () => electron.app.showAboutPanel()),
       electron => electron.ipcRenderer.send(APP_ABOUT),
     );
@@ -26,7 +26,7 @@ export default class AppResolver {
    * @return {void}
    */
   static showAppDevtools(AppWindow = null) {
-    ProcessResolver.run(
+    runInProcess(
       electron => electron.ipcMain.on(APP_DEVTOOLS_MAIN, () => AppWindow.showDevTools()),
       electron => electron.ipcRenderer.send(APP_DEVTOOLS_MAIN),
     );
@@ -39,7 +39,7 @@ export default class AppResolver {
    * @return {void}
    */
   static showTorrentDevtools(TorrentWindow = null) {
-    ProcessResolver.run(
+    runInProcess(
       electron => electron.ipcMain.on(APP_DEVTOOLS_TORRENT, () => TorrentWindow.showDevTools()),
       electron => electron.ipcRenderer.send(APP_DEVTOOLS_TORRENT),
     );

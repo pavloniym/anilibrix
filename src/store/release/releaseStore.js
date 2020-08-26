@@ -8,8 +8,8 @@ import EpisodesTransformer from "@transformers/episode";
 // Utils
 import axios from "axios";
 
-// Events
-import {sendError} from "@/events/errors/errorsEvents";
+// Resolvers
+import ErrorResolver from "@@/utils/resolvers/error";
 
 // Mutations
 const SET_RELEASE_DATA = 'SET_RELEASE_DATA';
@@ -92,7 +92,7 @@ export default {
 
           // Show app error
           // Throw error
-          sendError('Произошла ошибка при загрузке релиза');
+          ErrorResolver.emitError('Произошла ошибка при загрузке релиза');
           throw error;
 
         }

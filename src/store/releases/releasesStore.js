@@ -8,9 +8,8 @@ import EpisodesTransformer from "@transformers/episode";
 // Utils
 import axios from 'axios'
 
-// Events
-import {sendError} from "@/events/errors/errorsEvents";
-
+// Resolvers
+import ErrorResolver from "@@/utils/resolvers/error";
 
 // Mutations
 const SET_INDEX = 'SET_INDEX';
@@ -184,7 +183,7 @@ export default {
 
           // Show error
           // Throw error
-          sendError('Произошла ошибка при загрузке релизов');
+          ErrorResolver.emitError('Произошла ошибка при загрузке релизов');
           throw error;
 
         }

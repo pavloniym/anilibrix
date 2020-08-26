@@ -1,12 +1,10 @@
-import {runOnDesktop} from "@utils/device/deviceResolver";
-
 export default {
 
-  data() {
+ /* data() {
     return {
       is_fullscreen: false,
     }
-  },
+  },*/
 
 
   computed: {
@@ -16,9 +14,9 @@ export default {
      *
      * @return {boolean}
      */
-    isOnFullscreen() {
+    /*isOnFullscreen() {
       return !!this.is_fullscreen;
-    },
+    },*/
 
 
     /**
@@ -27,7 +25,6 @@ export default {
      * @return {boolean}
      */
     isMac() {
-      //return process.platform !== "darwin";
       return process.platform === "darwin";
     },
 
@@ -38,7 +35,6 @@ export default {
      * @return {boolean}
      */
     isWindows() {
-      //return process.platform !== "win32";
       return process.platform === "win32";
     },
 
@@ -52,11 +48,11 @@ export default {
      *
      * @return void
      */
-    setFullscreenState() {
+    /*setFullscreenState() {
       runOnDesktop(() => {
         this.is_fullscreen = this.$electron.remote.getCurrentWindow().isFullScreen();
       })
-    }
+    }*/
 
   },
 
@@ -65,20 +61,20 @@ export default {
 
     // Check if window is fullscreen
     // Set fullscreen events (on desktop builds)
-    this.setFullscreenState();
-    runOnDesktop(() => {
+   // this.setFullscreenState();
+    /*runOnDesktop(() => {
       this.$electron.remote.getCurrentWindow().on('enter-full-screen', this.setFullscreenState);
       this.$electron.remote.getCurrentWindow().on('leave-full-screen', this.setFullscreenState);
-    })
+    })*/
 
   },
 
 
   beforeDestroy() {
-    runOnDesktop(() => {
+    /*runOnDesktop(() => {
       this.$electron.remote.getCurrentWindow().off('enter-full-screen', this.setFullscreenState);
       this.$electron.remote.getCurrentWindow().off('leave-full-screen', this.setFullscreenState);
-    })
+    })*/
   }
 
 }

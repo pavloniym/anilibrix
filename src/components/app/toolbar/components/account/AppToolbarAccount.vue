@@ -70,7 +70,10 @@
 
 <script>
 
-  import {toLogin} from "@utils/router/views";
+  // Router
+  import {toLogin} from '@router/app/appRoutes'
+
+  // Utils
   import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
   import {mapGetters, mapState, mapActions} from 'vuex'
 
@@ -78,8 +81,8 @@
     data() {
       return {
         menu: false,
-        loading: false,
         handler: null,
+        loading: false,
       }
     },
     computed: {
@@ -151,18 +154,11 @@
 
 
     methods: {
+      ...{toLogin},
       ...mapActions('app/account', {
         _logout: 'logout',
         _getProfile: 'getProfile'
       }),
-
-      /**
-       * Push to login screen
-       * Check to avoid duplicate navigation error
-       *
-       * @return {void}
-       */
-      toLogin,
 
 
       /**
@@ -209,18 +205,17 @@
     async mounted() {
 
       // Get profile data
+      // Set profile data update interval
       await this.getProfile();
-
-      // Set profile data
-      this.handler = setInterval(() => this.getProfile(), 1000 * 60 * 60 * 2);
-
+      this.handler = setInterval(() => this.getProfile(), 1000 * 60 * 60 * 2); // every 2 hours
 
     },
 
     beforeDestroy() {
-      if (this.handler) {
-        clearInterval(this.handler);
-      }
+
+      // Clear profile update interval
+      if (this.handler) clearInterval(this.handler);
+
     }
   }
 

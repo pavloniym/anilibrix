@@ -69,14 +69,11 @@ export default class BaseWindow {
    * @param payload
    */
   sendToWindow(channel, payload) {
-    if (this.getWindow()) {
 
-      this.getWindow().webContents.send(channel, payload);
-
-      /*if (process.env.NODE_ENV === 'development') {
-        console.log({channel, payload})
-      }*/
-    }
+    // Send to window
+    // Log to console on dev
+    if (this.getWindow()) this.getWindow().webContents.send(channel, payload);
+    if (process.env.NODE_ENV === 'development') console.log({channel, payload});
 
     return this;
   }

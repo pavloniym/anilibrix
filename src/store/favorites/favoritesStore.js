@@ -9,8 +9,8 @@ import EpisodesTransformer from "@transformers/episode";
 // Utils
 import axios from "axios";
 
-// Events
-import {sendError} from "@/events/errors/errorsEvents";
+// Resolvers
+import ErrorResolver from "@@/utils/resolvers/error";
 
 
 // Mutations
@@ -203,7 +203,7 @@ export default {
 
             // Show error
             // Throw error
-            sendError('Произошла ошибка при загрузке избранных релизов');
+            ErrorResolver.emitError('Произошла ошибка при загрузке избранных релизов');
             throw error;
 
           }
@@ -250,7 +250,7 @@ export default {
 
             // Show app error
             // Throw error
-            sendError(error);
+            ErrorResolver.emitError(error);
             throw error;
 
           }
@@ -292,7 +292,7 @@ export default {
 
             // Show app error
             // Throw error
-            sendError(error);
+            ErrorResolver.emitError(error);
             throw error;
 
           }

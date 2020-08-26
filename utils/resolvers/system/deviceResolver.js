@@ -1,26 +1,4 @@
-/**
- * Is web build
- *
- * @return {boolean}
- */
-export const isWeb = () => process.env.IS_WEB === true;
-
-
-/**
- * Is desktop build
- *
- * @return {boolean}
- */
-export const isDesktop = () => process.env.IS_DESKTOP === true;
-
-
-/**
- * Check if app is in mobile mode
- *
- * @return {boolean}
- */
-export const isMobile = () => this.$vuetify.breakpoint.smAndDown && isWeb();
-
+import {isWeb, isDesktop} from "@@/utils/states/deviceStates";
 
 /**
  * Execute callback only on web

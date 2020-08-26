@@ -5,8 +5,8 @@ import AccountProxy from "@proxies/account";
 import __get from 'lodash/get'
 import {v4 as uuid} from 'uuid'
 
-// Handlers
-// import {emitAppError} from "@main/handlers/notifications/notificationsHandler";
+// Resolvers
+import ErrorResolver from "@@/utils/resolvers/error";
 
 const SET_USER_ID = 'SET_USER_ID';
 const SET_SESSION = 'SET_SESSION';
@@ -78,13 +78,12 @@ export default {
     /**
      * Try to login with provided credentials
      *
-     * @param commit
      * @param dispatch
      * @param login
      * @param password
      * @return {Promise<void>}
      */
-    login: async ({commit, dispatch}, {login, password}) => {
+    login: async ({dispatch}, {login, password}) => {
       try {
 
         // Reset session and profile
@@ -98,7 +97,7 @@ export default {
 
         // Show app error
         // Throw error
-        emitAppError(error);
+        ErrorResolver.emitError(error);
         throw error;
 
       }
@@ -120,7 +119,7 @@ export default {
 
         // Show app error
         // Throw error
-        // showAppError('Произошла ошибка при деавторизации пользователя');
+        ErrorResolver.emitError('Произошла ошибка при деавторизации пользователя');
         throw error;
 
       } finally {
@@ -157,6 +156,8 @@ export default {
         await dispatch('setProfile', {id, login, avatar});
 
       } catch (error) {
+
+        ErrorResolver.emitError('Test');
 
         // Reset session and profile on error
         // Reset session and profile

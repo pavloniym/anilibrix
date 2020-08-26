@@ -23,7 +23,7 @@
   import {PlatformMixin, DeviceMixin} from '@mixins/app'
 
   // Utils
-  import {runOnDesktop} from "@utils/device/deviceResolver";
+  import {runOnDesktop} from "@@/utils/resolvers/system/deviceResolver";
 
   export default {
     mixins: [
@@ -68,7 +68,7 @@
        * @return void
        */
       closeApp() {
-        runOnDesktop(this.$electron.remote.app.quit)
+        runOnDesktop(() => this.$electron.remote.app.quit())
       },
 
       /**
@@ -77,7 +77,7 @@
        * @return void
        */
       minimizeApp() {
-        runOnDesktop(this.$electron.remote.getCurrentWindow().minimize)
+        runOnDesktop(() => this.$electron.remote.getCurrentWindow().minimize())
       },
 
 

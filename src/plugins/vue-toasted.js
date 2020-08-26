@@ -6,6 +6,3 @@ Vue.use(Toasted, {
   duration: 4000,
   iconPack: 'mdi'
 });
-
-
-export default () => Vue.prototype.$toasted;

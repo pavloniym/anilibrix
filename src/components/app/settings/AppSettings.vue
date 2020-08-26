@@ -30,10 +30,11 @@
 
   // Utils
   import {meta} from "@package";
-  import {runOnPlatform} from "@utils/device/deviceResolver";
+  import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
 
   // Resolvers
-  import AppResolver from "../../../../desktop/resolvers/app";
+  import AppResolver from "@@/utils/resolvers/app";
+  import ErrorResolver from "@@/utils/resolvers/error";
 
   export default {
     mixins: [PlatformMixin, DeviceMixin],
@@ -354,8 +355,8 @@
               {
                 is: Action,
                 props: {
-                  label: 'Добавить уведомление в хранилище',
-                  action: () => null,
+                  label: 'Показать тестовую ошибку',
+                  action: () => ErrorResolver.emitError('Тестовая ошибка')
                 },
                 divider: true,
               },
