@@ -1,5 +1,9 @@
+// Utils
 import __get from 'lodash/get'
 import axios from '@plugins/axios'
+
+// Resolvers
+import RequestResolver from "@@/utils/resolvers/request";
 
 export default class BaseProxy {
 
@@ -44,7 +48,12 @@ export default class BaseProxy {
    * @returns {Promise} The result in a promise.
    */
   async submit(method, url, config = {}) {
-    return await axios.request({url, method, ...config, timeout: 15000});
+
+    let temp = config;
+    temp.cancelToken = undefined;
+
+    return await RequestResolver.make({url, method, ...temp, timeout: 15000});
+    //return await axios.request({url, method, ...config, timeout: 15000});
   }
 
 

@@ -13,6 +13,7 @@ import devtoolsInstaller from "./utils/devtools/devtoolsInstaller";
 
 // Resolvers
 import AppResolver from "../utils/resolvers/app";
+import RequestResolver from "@@/utils/resolvers/request";
 
 // Check if in development mode
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -49,6 +50,7 @@ app.on('ready', async () => {
 
   // Resolvers
   appResolvers();
+  requestResolvers();
 
   /*
 
@@ -96,4 +98,9 @@ const appResolvers = () => {
   AppResolver.showAbout();
   AppResolver.showAppDevtools(AppWindowInstance);
   AppResolver.showTorrentDevtools(AppWindowInstance);
+};
+
+
+const requestResolvers = () => {
+  RequestResolver.resolveDesktopRequest();
 };

@@ -1,6 +1,11 @@
+// Bus
 import {EventBus} from "@plugins/vue-event-bus";
+
+// Resolvers
 import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
 import {runInProcess, runInRenderer} from "@@/utils/resolvers/system/processResolver";
+
+// Events
 import {APP_ERROR} from "@/events/error/errorsEvents";
 
 
