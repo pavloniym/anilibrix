@@ -1,17 +1,33 @@
 <template>
-  <v-layout align-start>
-
-    <v-skeleton-loader boilerplate type="image" width="160" height="240" />
-    <v-layout column class="ma-4">
-      <v-skeleton-loader boilerplate type="heading" width="400px" height="24px" />
-      <v-skeleton-loader boilerplate type="text" class="mt-3" width="140"/>
-      <v-skeleton-loader boilerplate type="text" class="mt-1" width="240"/>
-      <v-layout class="mt-3">
-        <v-skeleton-loader boilerplate type="button" width="65" class="mr-1"/>
-        <v-skeleton-loader boilerplate type="button" width="160"/>
+  <div>
+    <template v-for="i in perPage">
+      <v-layout align-start :key="i" :class="{'mt-2': i > 0}">
+        <v-skeleton-loader boilerplate type="image" width="160" height="240"/>
+        <v-layout column class="ma-4">
+          <v-skeleton-loader boilerplate type="heading" width="400px" height="24px"/>
+          <v-skeleton-loader boilerplate type="text" class="mt-3" width="140"/>
+          <v-skeleton-loader boilerplate type="text" class="mt-1" width="240"/>
+          <v-layout class="mt-3">
+            <v-skeleton-loader boilerplate type="button" width="65" class="mr-1"/>
+            <v-skeleton-loader boilerplate type="button" width="160"/>
+          </v-layout>
+          <v-skeleton-loader boilerplate type="text@3" width="100%" class="mt-5"/>
+        </v-layout>
       </v-layout>
-      <v-skeleton-loader boilerplate type="text@3" width="100%" class="mt-5"/>
-    </v-layout>
-
-  </v-layout>
+    </template>
+  </div>
 </template>
+
+<script>
+
+  const props = {
+    perPage: {
+      type: Number,
+      default: null
+    }
+  };
+
+  export default {
+    props,
+  }
+</script>

@@ -1,5 +1,5 @@
 <template>
-  <banner v-bind="{image}">
+  <banner>
 
     <!-- Header -->
     <!-- Text -->
@@ -81,6 +81,19 @@
       password: {required},
     },
 
+    computed: {
+
+      /**
+       * Check if form is valid
+       *
+       * @return {boolean}
+       */
+      isValid() {
+        return !this.$v.$invdalid;
+      }
+
+    },
+
     methods: {
       ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
       ...mapActions('app/account', {
@@ -89,13 +102,14 @@
         _getProfile: 'getProfile',
       }),
 
+
       /**
        * Authorize
        *
        * @return {Promise<void>}
        */
       async authorize() {
-        if (!this.$v.$invalid) {
+        if (this.isValid) {
           try {
             this.loading = true;
 

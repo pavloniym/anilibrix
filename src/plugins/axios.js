@@ -15,9 +15,6 @@ import store from '@store'
 // Create axios
 const axios = Axios.create();
 
-// Set cookies
-axios.defaults.withCredentials = false;
-
 /**
  * Error handler function
  *
@@ -31,8 +28,8 @@ const responseErrorHandler = async error => {
     if (error.response.status === 401) {
 
       // Clear session and profile data
-      await store.dispatch('app/account/setSession');
-      await store.dispatch('app/account/setProfile');
+      await store.dispatch('app/account/setSession', null);
+      await store.dispatch('app/account/setProfile', null);
     }
   }
 

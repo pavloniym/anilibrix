@@ -1,27 +1,45 @@
 <template>
-  <v-autocomplete
-    chips
-    outlined
-    multiple
-    clearable
-    hide-details
-    hide-no-data
-    deletable-chips
-    class="filter"
-    placeholder="Выбрать жанры"
-    :value="_value"
-    :items="_items"
-    :loading="_loading"
-    :menu-props="{attach: '#container'}"
-    @input="_setFilterValue({filter: 'genres', value: $event})">
-  </v-autocomplete>
+  <v-card>
+
+    <!-- Header -->
+    <v-card-title v-text="title"/>
+    <v-card-subtitle v-text="subtitle"/>
+    <v-divider/>
+
+    <!-- Content -->
+    <v-autocomplete
+      solo
+      flat
+      chips
+      multiple
+      clearable
+      hide-details
+      hide-no-data
+      deletable-chips
+      class="py-2 filter"
+      label="Выбрать жанры"
+      :value="_value"
+      :items="_items"
+      :loading="_loading"
+      :menu-props="{attach: '#container'}"
+      @input="_setFilterValue({filter: 'genres', value: $event})">
+    </v-autocomplete>
+
+  </v-card>
 </template>
 
 <script>
 
+  // Store
   import {mapState, mapActions} from 'vuex'
 
   export default {
+    data() {
+      return {
+        title: 'Жанры',
+        subtitle: 'Вы можете отфильтровать список релизов по указанным жанрам'
+      }
+    },
     computed: {
       ...mapState('catalog', {
         _items: s => s.filters.genres.items,
@@ -33,12 +51,12 @@
     methods: {
       ...mapActions('catalog', {
         _setFilterValue: 'setFilterValue',
-        _getCatalogGenresFilter: 'getCatalogGenresFilter',
+        _getGenresFilter: 'getGenresFilter',
       })
     },
 
     created() {
-      this._getCatalogGenresFilter();
+      this._getGenresFilter();
     }
   }
 </script>
@@ -49,6 +67,9 @@
     ::v-deep {
       .v-chip {
         border-radius: 4px;
+      }
+      .v-label {
+        padding-left: 4px;
       }
     }
   }

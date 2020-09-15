@@ -157,8 +157,6 @@ export default {
 
       } catch (error) {
 
-        ErrorResolver.emitError('Test');
-
         // Reset session and profile on error
         // Reset session and profile
         await dispatch('setSession', null);

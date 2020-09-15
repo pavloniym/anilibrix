@@ -8,20 +8,16 @@
     </v-card>
 
     <!-- Catalog Filters -->
-    <v-expand-transition>
-      <filters v-if="settings" class="mb-2"/>
-    </v-expand-transition>
+    <filters v-if="settings" class="mb-2"/>
 
     <!-- Toolbar -->
     <toolbar class="mb-2" :settings.sync="settings" @reload="showReleases"/>
 
-    <!-- Catalog Loader -->
     <!-- Catalog Items -->
+    <!-- Catalog Loader -->
     <div class="my-2">
-      <template v-for="release in _items">
-        <release v-bind="{release}" class="mb-2" :ref="release.id" :key="release.id" @click="toRelease(release)"/>
-      </template>
-      <loader v-if="_loading" v-for="i in _perPage" class="mb-2" :key="i"/>
+      <releases :items="_items"/>
+      <loader v-if="_loading" :perPage="_perPage"/>
     </div>
 
     <!-- Load More -->
@@ -39,12 +35,13 @@
 
 <script>
 
+  // Components
   import Loader from './components/loader'
   import Toolbar from './components/toolbar'
   import Filters from './components/filters'
-  import Release from './components/release'
+  import Releases from './components/releases'
 
-  import {toRelease} from "@utils/router/views";
+  // Store
   import {mapActions, mapState} from 'vuex'
 
   export default {
@@ -54,7 +51,7 @@
       Loader,
       Toolbar,
       Filters,
-      Release,
+      Releases,
     },
 
     data() {
@@ -92,14 +89,6 @@
         _setPaginationPage: 'setPaginationPage',
         _clearCatalogReleases: 'clearCatalogReleases',
       }),
-
-
-      /**
-       * Go to release
-       *
-       * @return void
-       */
-      toRelease,
 
       /**
        * Show releases

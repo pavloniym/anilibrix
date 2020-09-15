@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-//import Storage from 'electron-store'
 
+// Utils
 import __merge from 'lodash/merge'
 import getInitialState  from '@utils/store/getInitialState'
-//import createPersistedState from 'vuex-persistedstate'
-//import {getItem, setItem, removeItem} from '@utils/store/storeStorage'
 
+// Store Plugins
+import createPersistedState from 'vuex-persistedstate'
+
+// Store Modules
 import app from './app'
 import release from './release'
 import catalog from './catalog'
@@ -14,6 +16,8 @@ import releases from './releases'
 import favorites from './favorites'
 import notifications from './notifications'
 
+// Store persisted paths
+import {catalogPersisted} from "@store/catalog/catalogStore";
 
 Vue.use(Vuex);
 
@@ -29,28 +33,21 @@ const modules = {
 // Get debug state
 // Create storage instance
 const debug = process.env.NODE_ENV !== 'production';
-//const storage = new Storage({name: 'anilibrix'});
-
 
 // Create store instance
 const store = new Vuex.Store({
   modules,
-  /*plugins: [
+  plugins: [
     createPersistedState({
       key: 'anilibrix',
       paths: [
         'app',
         'notifications',
-        'catalog.filters',
         'favorites.settings',
+        ...catalogPersisted,
       ],
-      /!*storage: {
-        getItem: getItem(storage),
-        setItem: setItem(storage),
-        removeItem: removeItem(storage),
-      },*!/
     }),
-  ],*/
+  ],
   strict: debug,
   mutations: {
 
@@ -64,8 +61,8 @@ const store = new Vuex.Store({
     RESET_STORE(s) {
 
       // Get app persisted states
-      const account = s.app.account;
       const watch = s.app.watch;
+      const account = s.app.account;
 
       // Get initial state
       const state = getInitialState(modules);

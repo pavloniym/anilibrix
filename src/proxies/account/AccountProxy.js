@@ -16,8 +16,9 @@ export default class AccountProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async login({login, password}) {
+
     const data = this.getFormDataObject({mail: login, passwd: password});
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/login.php', {data});
+    const response = await this.submit('POST', this.getApiV1Endpoint() + '/public/login.php', {data});
     const status = __get(response, 'data.err');
 
     // Get status
@@ -34,7 +35,7 @@ export default class AccountProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async logout() {
-    return await this.submit('POST', this.getApiEndpoint() + '/public/logout.php');
+    return await this.submit('POST', this.getApiV1Endpoint() + '/public/logout.php');
   }
 
 
@@ -44,8 +45,9 @@ export default class AccountProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async getProfile() {
+
     const data = this.getFormDataObject({query: 'user'});
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', {data});
+    const response = await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {data});
 
     return this.handleResponse(response.data);
   }
@@ -58,21 +60,18 @@ export default class AccountProxy extends BaseProxy {
    * @return {string|null}
    */
   getAvatarPath(src) {
-    return src
-      ? this.getStaticEndpoint() + src
-      : null;
+    return src ? this.getStaticEndpoint() + src : null;
   }
-
 
 
   async getCloudStoreData({profileId = null} = {}) {
     if (profileId !== null) {
 
-     /* const collection = await firestore
-        .collection(`store/${profileId}`)
-        .get();
+      /* const collection = await firestore
+         .collection(`store/${profileId}`)
+         .get();
 
-      return collection.docs.map(doc => ({_id: doc.id, ...doc.data()}));*/
+       return collection.docs.map(doc => ({_id: doc.id, ...doc.data()}));*/
     }
 
   }

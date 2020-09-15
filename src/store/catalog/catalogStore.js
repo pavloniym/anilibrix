@@ -22,6 +22,8 @@ const SET_CATALOG_RELEASES = 'SET_CATALOG_RELEASES';
 const SET_CATALOG_PAGINATION = 'SET_CATALOG_PAGINATION';
 const CLEAR_CATALOG_RELEASES = 'CLEAR_CATALOG_RELEASES';
 
+export const catalogPersisted = ['catalog.filters'];
+
 export default {
   namespaced: true,
   state: {
@@ -186,7 +188,7 @@ export default {
 
         // Show app error
         // Throw error
-        ErrorResolver.emitError('Произошла ошибка при загрузке релизов');
+        ErrorResolver.emitError('Произошла ошибка при загрузке релизов в каталоге');
         throw error;
 
       } finally {
@@ -202,7 +204,7 @@ export default {
      * @param commit
      * @return {Promise<void>}
      */
-    getCatalogGenresFilter: async ({commit}) => {
+    getGenresFilter: async ({commit}) => {
       const filter = 'genres';
       try {
 
@@ -233,7 +235,7 @@ export default {
      * @param commit
      * @return {Promise<void>}
      */
-    getCatalogYearsFilter: async ({commit}) => {
+    getYearsFilter: async ({commit}) => {
       const filter = 'years';
       try {
 

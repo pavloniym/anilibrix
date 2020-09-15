@@ -1,27 +1,44 @@
 <template>
-  <v-autocomplete
-    chips
-    outlined
-    multiple
-    clearable
-    hide-details
-    hide-no-data
-    deletable-chips
-    class="filter"
-    placeholder="Года"
-    :value="_value"
-    :items="_items"
-    :loading="_loading"
-    @input="_setFilterValue({filter: 'years', value: $event})">
+  <v-card>
 
-  </v-autocomplete>
+    <!-- Header -->
+    <v-card-title v-text="title"/>
+    <v-card-subtitle v-text="subtitle"/>
+    <v-divider/>
+
+    <!-- Content -->
+    <v-autocomplete
+      solo
+      flat
+      chips
+      multiple
+      clearable
+      hide-details
+      hide-no-data
+      deletable-chips
+      class="py-2 filter"
+      label="Года"
+      :value="_value"
+      :items="_items"
+      :loading="_loading"
+      @input="_setFilterValue({filter: 'years', value: $event})">
+    </v-autocomplete>
+
+  </v-card>
 </template>
 
 <script>
 
+  // Store
   import {mapState, mapActions} from 'vuex'
 
   export default {
+    data() {
+      return {
+        title: 'Период',
+        subtitle: 'Вы можете отфильтровать список релизов по годам выпуска'
+      }
+    },
     computed: {
       ...mapState('catalog', {
         _items: s => s.filters.years.items,
@@ -33,12 +50,12 @@
     methods: {
       ...mapActions('catalog', {
         _setFilterValue: 'setFilterValue',
-        _getCatalogYearsFilter: 'getCatalogYearsFilter'
+        _getYearsFilter: 'getYearsFilter'
       })
     },
 
     created() {
-      this._getCatalogYearsFilter();
+      this._getYearsFilter();
     }
   }
 </script>
@@ -49,6 +66,9 @@
     ::v-deep {
       .v-chip {
         border-radius: 4px;
+      }
+      .v-label {
+        padding-left: 4px;
       }
     }
   }

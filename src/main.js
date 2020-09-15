@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 // Import plugins
-import store from '@store'
+import store, {setUserId} from '@store'
 import router from '@router'
 
 // Import vendor plugins
@@ -27,11 +27,22 @@ import App from './App'
 
 Vue.config.productionTip = false;
 
-// Initialize sentry
-// Initialize yandex metrika
-// Vue.use(sentry, {dsn: process.env.SENTRY_DSN, store, source: 'app'});
-// Vue.use(yandex, {id: process.env.YANDEX_TRACKING_ID, store, router});
+// Start app
+// Make some store processing
+// Render App root component
+(async () => {
+
+  // Set user id to store
+  // Ignore if already set
+  await setUserId();
+
+  // Initialize sentry
+  // Initialize yandex metrika
+  // Vue.use(sentry, {dsn: process.env.SENTRY_DSN, store, source: 'app'});
+  // Vue.use(yandex, {id: process.env.YANDEX_TRACKING_ID, store, router});
 
 
-/* eslint-disable no-new */
-new Vue({store, router, vuetify, render: h => h(App)}).$mount('#anilibrix');
+  /* eslint-disable no-new */
+  new Vue({store, router, vuetify, render: h => h(App)}).$mount('#anilibrix');
+
+})();

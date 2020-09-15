@@ -40,7 +40,6 @@ app.on('ready', async () => {
   // On production version
   if (!process.env.WEBPACK_DEV_SERVER_URL) createProtocol('app');
 
-
   // Create app window
   // Set user agent
   // Process app window close event
@@ -48,12 +47,10 @@ app.on('ready', async () => {
   AppWindowInstance.getWindow().webContents.userAgent = `${meta.name}/${version}`;
   AppWindowInstance.getWindow().on('close', () => app.quit());
 
-
   // Resolvers
   appResolvers();
 
-  /* // Set user id
-   await setUserId();
+  /*
 
    // Initialize sentry.io
    sentry({store: getStore(), source: 'main'});
