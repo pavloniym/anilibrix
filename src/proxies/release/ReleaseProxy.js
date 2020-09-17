@@ -1,4 +1,9 @@
+// Proxy
 import BaseProxy from "@proxies/BaseProxy";
+
+// Utils
+import {handleResponseFromV2Api} from "@utils/requests/handleResponse";
+
 
 export default class ReleaseProxy extends BaseProxy {
 
@@ -19,8 +24,9 @@ export default class ReleaseProxy extends BaseProxy {
 
     // Create request
     // Get response data
-    const response = await this.submit('GET', this.getApiEndpoint() + '/getUpdates', {params, ...configuration});
-    return response.data || [];
+    return handleResponseFromV2Api(
+      await this.submit('GET', this.getApiEndpoint() + '/getUpdates', {params, ...configuration})
+    );
   }
 
 
@@ -42,8 +48,9 @@ export default class ReleaseProxy extends BaseProxy {
 
     // Create request
     // Get response data
-    const response = await this.submit('GET', this.getApiEndpoint() + '/getTitle', {params, ...configuration});
-    return response.data || null;
+    return handleResponseFromV2Api(
+      await this.submit('GET', this.getApiEndpoint() + '/getTitle', {params, ...configuration})
+    );
   }
 
 
@@ -61,8 +68,9 @@ export default class ReleaseProxy extends BaseProxy {
 
     // Create request
     // Get response data
-    const response = await this.submit('GET', this.getApiEndpoint() + '/searchTitles', {params, ...configuration});
-    return response.data || [];
+    return handleResponseFromV2Api(
+      await this.submit('GET', this.getApiEndpoint() + '/searchTitles', {params, ...configuration})
+    );
   }
 
 
@@ -87,7 +95,9 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {string|null}
    */
   getReleasePosterPath(src) {
-    return src ? this.getStaticEndpoint() + src : null;
+    return src
+      ? this.getStaticEndpoint() + src
+      : null;
   }
 
 }

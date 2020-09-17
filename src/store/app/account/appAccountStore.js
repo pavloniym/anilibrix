@@ -16,6 +16,7 @@ export default {
   namespaced: true,
   state: {
     userId: null,
+    session: null,
     profile: {
       id: null,
       login: null,
@@ -84,23 +85,18 @@ export default {
      * @return {Promise<void>}
      */
     login: async ({dispatch}, {login, password}) => {
-      try {
 
-        // Reset session and profile
-        await dispatch('setSession', null);
-        await dispatch('setProfile', null);
+      // Reset session and profile
+      await dispatch('setSession', null);
+      await dispatch('setProfile', null);
 
-        // Try to login with provided credentials
-        return await new AccountProxy().login({login, password});
+      // Try to login with provided credentials
+      // Get valid user session
+      const session = await new AccountProxy().login({login, password});
 
-      } catch (error) {
+      // Set session to store
+      await dispatch('setSession', session);
 
-        // Show app error
-        // Throw error
-        ErrorResolver.emitError(error);
-        throw error;
-
-      }
     },
 
 
@@ -113,13 +109,12 @@ export default {
     logout: async ({dispatch}) => {
       try {
 
+        // Make logout request
         await new AccountProxy().logout();
 
       } catch (error) {
 
-        // Show app error
         // Throw error
-        ErrorResolver.emitError('Произошла ошибка при деавторизации пользователя');
         throw error;
 
       } finally {
@@ -130,7 +125,6 @@ export default {
         // Reset session and profile
         await dispatch('setSession', null);
         await dispatch('setProfile', null);
-
       }
     },
 

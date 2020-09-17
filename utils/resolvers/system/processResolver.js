@@ -11,9 +11,9 @@ const electron = isDesktop() ? require('electron') : null;
  * @param mainCallback
  * @param rendererCallback
  */
-export const runInProcess = async (mainCallback, rendererCallback) => {
-  if (isMain()) await runInMain(mainCallback);
-  if (isRenderer()) await runInRenderer(rendererCallback);
+export const runInProcess = (mainCallback, rendererCallback) => {
+  if (isMain()) return runInMain(mainCallback);
+  if (isRenderer()) return runInRenderer(rendererCallback);
 };
 
 
@@ -22,8 +22,8 @@ export const runInProcess = async (mainCallback, rendererCallback) => {
  *
  * @param callback
  */
-export const runInMain = async (callback) => {
-  if (isMain()) await callback(electron);
+export const runInMain = (callback) => {
+  if (isMain()) return callback(electron);
 };
 
 
@@ -32,6 +32,6 @@ export const runInMain = async (callback) => {
  *
  * @param callback
  */
-export const runInRenderer = async (callback) => {
-  if (isRenderer()) await callback(electron);
+export const runInRenderer = (callback) => {
+  if (isRenderer()) return callback(electron);
 };

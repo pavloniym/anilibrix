@@ -2,8 +2,11 @@
 import BaseProxy from "@proxies/BaseProxy";
 
 // Utils
+import qs from 'qs'
 import __get from "lodash/get";
-import firestore from '@plugins/firebase'
+import cookieParser from "set-cookie-parser";
+import {handleResponseFromV1Api} from "@utils/requests/handleResponse";
+
 
 export default class AccountProxy extends BaseProxy {
 
@@ -17,15 +20,28 @@ export default class AccountProxy extends BaseProxy {
    */
   async login({login, password}) {
 
-    const data = this.getFormDataObject({mail: login, passwd: password});
+    // Set form data
+    // Make request to login endpoint
+    const data = qs.stringify({mail: login, passwd: password});
     const response = await this.submit('POST', this.getApiV1Endpoint() + '/public/login.php', {data});
-    const status = __get(response, 'data.err');
+    const status = __get(response, 'data.key');
 
-    // Get status
-    // If err === 'ok' -> authorization is success
-    if (status !== 'ok') {
-      throw new Error(__get(response, 'data.mes', 'Ошибка сервера'));
-    }
+    // Get authorization status
+    // If status === 'success' -> authorization is success
+    if (status === 'success') {
+
+      // Parse header cookies
+      const header_cookies = __get(response, 'headers.set-cookie', null);
+      const cookies = cookieParser(header_cookies, {map: true});
+      const session = __get(cookies, 'PHPSESSID.value', null);
+
+      // Get session
+      // If session is not defined -> throw error
+      if (session && session.length > 0) {
+        return session
+
+      } else throw new Error('Сессия не определена');
+    } else throw new Error(__get(response, 'data.mes', 'Ошибка сервера'));
   }
 
 
@@ -42,14 +58,15 @@ export default class AccountProxy extends BaseProxy {
   /**
    * Get profile
    *
-   * @return {Promise<*>}
+   * @return {Promise}
    */
   async getProfile() {
-
-    const data = this.getFormDataObject({query: 'user'});
-    const response = await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {data});
-
-    return this.handleResponse(response.data);
+    return handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        data: qs.stringify({query: 'user'}),
+        headers: this.getRequestHeaders(),
+      })
+    );
   }
 
 
@@ -60,20 +77,9 @@ export default class AccountProxy extends BaseProxy {
    * @return {string|null}
    */
   getAvatarPath(src) {
-    return src ? this.getStaticEndpoint() + src : null;
-  }
-
-
-  async getCloudStoreData({profileId = null} = {}) {
-    if (profileId !== null) {
-
-      /* const collection = await firestore
-         .collection(`store/${profileId}`)
-         .get();
-
-       return collection.docs.map(doc => ({_id: doc.id, ...doc.data()}));*/
-    }
-
+    return src
+      ? this.getStaticEndpoint() + src
+      : null;
   }
 
 }

@@ -1,6 +1,9 @@
+// Store
+import store from '@store'
+
 // Utils
 import __get from 'lodash/get'
-import axios from '@plugins/axios'
+import {meta, version} from '@package'
 
 // Resolvers
 import RequestResolver from "@@/utils/resolvers/request";
@@ -48,53 +51,30 @@ export default class BaseProxy {
    * @returns {Promise} The result in a promise.
    */
   async submit(method, url, config = {}) {
-
-    let temp = config;
-    temp.cancelToken = undefined;
-
-    return await RequestResolver.make({url, method, ...temp, timeout: 15000});
-    //return await axios.request({url, method, ...config, timeout: 15000});
+    return await RequestResolver.make({url, method, ...config, timeout: 15000});
   }
 
 
-  /**
-   * Parse base response model
-   *
-   * @param response
-   * @return {*}
-   */
-  handleResponse(response) {
-
-    const data = __get(response, 'data', null);
-    const status = __get(response, 'status', false);
-    const message = __get(response, 'error.message', 'Ошибка при запросе');
-
-    if (status === true) {
-      return data;
-
-    } else {
-      throw new Error(message);
-    }
-  }
-
 
   /**
-   * Get form data from provided data object
+   * Get default request headers
    *
-   * @param data
-   * @return {FormData}
+   * @return {{}}
    */
-  getFormDataObject(data = null) {
+  getRequestHeaders() {
 
-    // Create form data object
-    const formData = new FormData();
+    // Create headers
+    const headers = {};
 
-    // Set data
-    Object.keys(data || {})
-      .forEach(key => formData.append(key, typeof (data[key]) === 'object' ? JSON.stringify(data[key]) : data[key]));
+    // Set header user agent
+    headers.UserAgent = `${meta.name}/${version}`;
 
-    // Return form data
-    return formData;
+    // Set header session
+    // Set session in cookies
+    const session = __get(store, 'state.app.account.session');
+    if (session && session.length > 0) headers.Cookie = `PHPSESSID=${session}; Path=/; Secure; HttpOnly`;
+
+    return headers;
   }
 
 }

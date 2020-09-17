@@ -6,7 +6,7 @@ import {isWeb, isDesktop} from "@@/utils/states/deviceStates";
  * @param callback
  */
 export const runOnWeb = (callback = null) => {
-  if (isWeb() && callback) callback();
+  if (isWeb() && callback) return callback();
 };
 
 
@@ -16,7 +16,7 @@ export const runOnWeb = (callback = null) => {
  * @param callback
  */
 export const runOnDesktop = (callback = null) => {
-  if (isDesktop() && callback) callback();
+  if (isDesktop() && callback) return callback();
 };
 
 
@@ -27,6 +27,6 @@ export const runOnDesktop = (callback = null) => {
  * @param desktopCallback
  */
 export const runOnPlatform = (webCallback = null, desktopCallback = null) => {
-  if (isWeb()) runOnWeb(webCallback);
-  if (isDesktop()) runOnDesktop(desktopCallback);
+  if (isWeb()) return runOnWeb(webCallback);
+  if (isDesktop()) return runOnDesktop(desktopCallback);
 };

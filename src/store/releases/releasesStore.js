@@ -134,8 +134,7 @@ export default {
             filteredReleases
               .map(async release => ({
                 ...release,
-                episodes: await new EpisodesTransformer({cancelToken: REQUEST.token})
-                  .fetchItem(release.episodes)
+                episodes: await new EpisodesTransformer({cancelToken: REQUEST.token}).fetchItem(release.episodes)
               }))
           ))
           .filter(promise => promise.status === 'fulfilled')
@@ -161,10 +160,10 @@ export default {
             if (previousRelease === null) {
 
               // Send notification event to main window
-              //   emitReleaseNotification(release);
+              // emitReleaseNotification(release);
 
               // Send release to notifications store
-              dispatch('notifications/setRelease', release, {root: true})
+              // dispatch('notifications/setRelease', release, {root: true})
             }
           });
         }

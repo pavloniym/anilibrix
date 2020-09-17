@@ -1,6 +1,6 @@
 // Resolvers
 import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
-import {runInMain, runInProcess, runInRenderer} from "@@/utils/resolvers/system/processResolver";
+import {runInRenderer} from "@@/utils/resolvers/system/processResolver";
 
 // Utils
 import axios from 'axios'
@@ -16,14 +16,10 @@ export default class RequestResolver {
    * @param configuration
    */
   static async make(configuration) {
-    let response = null;
-    console.log(1);
-    runOnPlatform(
-      async () => null,
-      async () => response = await this.makeDesktopRequest(configuration)
+    return runOnPlatform(
+      async () => await axios.request(configuration),
+      async () => await this.makeDesktopRequest(configuration)
     );
-    console.log(3);
-    return response;
   }
 
 
@@ -34,12 +30,7 @@ export default class RequestResolver {
    * @param configuration
    */
   static async makeDesktopRequest(configuration) {
-    let response = null;
-    await runInRenderer(async electron => {
-      await electron.ipcRenderer.invoke(APP_REQUEST, configuration).then(payload => response = payload);
-    });
-    console.log(2);
-    return response;
+    return runInRenderer(async electron => await electron.remote.getGlobal('resolveDesktopRequest')(configuration));
   }
 
   /**
@@ -47,13 +38,8 @@ export default class RequestResolver {
    *
    * @return {Promise}
    */
-  static async resolveDesktopRequest() {
-    return runInMain(async electron => {
-      electron.ipcMain.handle(APP_REQUEST, async (e, configuration) => {
-        const {data} = await axios.request(configuration);
-        return {data};
-      });
-    })
+  static async resolveDesktopRequest(configuration) {
+    return await axios.request({...configuration});
   }
 
 }

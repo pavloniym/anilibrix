@@ -101,6 +101,11 @@ const appResolvers = () => {
 };
 
 
+/**
+ * Request Resolvers
+ *
+ * @return {void}
+ */
 const requestResolvers = () => {
-  RequestResolver.resolveDesktopRequest();
+  global.resolveDesktopRequest = RequestResolver.resolveDesktopRequest;
 };

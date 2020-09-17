@@ -8,8 +8,7 @@ import {runInProcess, runInRenderer} from "@@/utils/resolvers/system/processReso
 // Events
 import {APP_ERROR} from "@/events/error/errorsEvents";
 
-
-const ERROR_EMIT = 'error:emit';
+export const ERROR_EMIT = 'error:emit';
 
 export default class ErrorResolver {
 
@@ -18,14 +17,14 @@ export default class ErrorResolver {
    * Emit error
    *
    * @param error
-   * @param AppWindow
+   * @param window
    */
-  static emitError(error, {AppWindow} = {}) {
+  static emitError(error, window = null) {
     runOnPlatform(
       () => EventBus.$emit(ERROR_EMIT, error),
       () => {
         runInProcess(
-          () => AppWindow ? AppWindow.sendToWindow(ERROR_EMIT, error) : null, // send error from main process to app window
+          () => window ? window.sendToWindow(ERROR_EMIT, error) : null, // send error from main process to app window
           () => EventBus.$emit(ERROR_EMIT, error) // If emit error from render process -> use event bus
         )
       }
