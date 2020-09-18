@@ -368,6 +368,14 @@
                 },
                 divider: true,
               },
+              {
+                is: Action,
+                props: {
+                  label: 'Полностью сбросить store',
+                  action: async () => await this.$store.dispatch('RESET_STORE')
+                },
+                divider: true,
+              },
             ]
 
           }

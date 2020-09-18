@@ -39,10 +39,9 @@ module.exports = {
     // Use this to change the entry point of your app's main process
     mainProcessFile: './desktop/main.js',
 
-    removeElectronJunk: false,
-
     // Options placed here will be merged with default configuration and passed to electron-builder
     builderOptions: {
+      compression: 'store',
       mac: {
         icon: "build/icons/app/anilibria.icns",
         category: "public.app-category.video"
@@ -58,7 +57,8 @@ module.exports = {
         target: [
           {target: "nsis", arch: ["x64", "ia32"]},
           {target: "portable", arch: ["x64", "ia32"]}
-        ]
+        ],
+
       },
       nsis: {
         oneClick: false,

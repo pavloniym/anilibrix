@@ -5,9 +5,6 @@ import AccountProxy from "@proxies/account";
 import __get from 'lodash/get'
 import {v4 as uuid} from 'uuid'
 
-// Resolvers
-import ErrorResolver from "@@/utils/resolvers/error";
-
 const SET_USER_ID = 'SET_USER_ID';
 const SET_SESSION = 'SET_SESSION';
 const SET_PROFILE = 'SET_PROFILE';

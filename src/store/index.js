@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 // Utils
 import __merge from 'lodash/merge'
-import getInitialState  from '@utils/store/getInitialState'
+import getInitialState from '@utils/store/getInitialState'
 
 // Store Plugins
 import createPersistedState from 'vuex-persistedstate'
@@ -58,19 +58,22 @@ const store = new Vuex.Store({
      *
      * @return void
      */
-    RESET_STORE(s) {
+    RESET_STORE() {
+      this.replaceState(getInitialState(modules));
+    },
 
-      // Get app persisted states
-      const watch = s.app.watch;
-      const account = s.app.account;
 
-      // Get initial state
-      const state = getInitialState(modules);
-
-      // Replace store
-      // Merge initial with persisted
-      this.replaceState(__merge(state, {app: {account, watch}}));
+    /**
+     * Replace state
+     *
+     * @param s
+     * @param store
+     * @constructor
+     */
+    REPLACE_STORE(s, store) {
+      this.replaceState(store);
     }
+
 
   },
 

@@ -15,6 +15,8 @@ import devtoolsInstaller from "./utils/devtools/devtoolsInstaller";
 import AppResolver from "../utils/resolvers/app";
 import RequestResolver from "@@/utils/resolvers/request";
 
+const fs = require('fs');
+
 // Check if in development mode
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -48,9 +50,9 @@ app.on('ready', async () => {
   AppWindowInstance.getWindow().webContents.userAgent = `${meta.name}/${version}`;
   AppWindowInstance.getWindow().on('close', () => app.quit());
 
-  // Resolvers
+  // Resolvers and Functions
   appResolvers();
-  requestResolvers();
+  globalFunctions();
 
   /*
 
@@ -102,10 +104,11 @@ const appResolvers = () => {
 
 
 /**
- * Request Resolvers
+ * Get global functions
  *
  * @return {void}
  */
-const requestResolvers = () => {
+const globalFunctions = () => {
+  global.getFileContent = filepath => fs.existsSync(filepath) ? fs.readFileSync(filepath) : null;
   global.resolveDesktopRequest = RequestResolver.resolveDesktopRequest;
 };

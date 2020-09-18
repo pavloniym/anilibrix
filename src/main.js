@@ -1,12 +1,17 @@
+// Import core
 import Vue from 'vue'
+import electron from 'electron'
 
 // Import plugins
 import store, {setUserId} from '@store'
 import router from '@router'
 
+// Migrations
+import {migrateDB} from "@/migrations";
+
 // Import vendor plugins
-//import sentry from '@plugins/sentry'
-//import yandex from '@plugins/vue-yandex-metrika'
+import sentry from '@plugins/sentry'
+import yandex from '@plugins/vue-yandex-metrika'
 import vuetify from '@plugins/vuetify'
 
 // Import plugins
@@ -18,6 +23,7 @@ import '@plugins/vuelidate'
 import '@plugins/vue-toasted'
 import '@plugins/vue-electron'
 import '@plugins/vue-event-bus'
+
 
 // Import styles
 import '@assets/scss/style.scss'
@@ -32,9 +38,11 @@ Vue.config.productionTip = false;
 // Render App root component
 (async () => {
 
+  // Migrate DB
   // Set user id to store
-  // Ignore if already set
+  await migrateDB({store, electron, vue: Vue});
   await setUserId();
+
 
   // Initialize sentry
   // Initialize yandex metrika

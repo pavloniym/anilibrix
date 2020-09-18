@@ -10,6 +10,7 @@
     "desktop:build:skip": "vue-cli-service electron:build --skipBundle",
     "desktop:serve": "vue-cli-service electron:serve",
     "desktop:release:mac": "vue-cli-service electron:build -- --mac",
+    "desktop:release:win:test": "vue-cli-service electron:build --win",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "web:build": "vue-cli-service build",

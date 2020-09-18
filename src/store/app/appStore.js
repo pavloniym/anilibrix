@@ -4,6 +4,7 @@ import settings from './settings'
 
 const SET_DRAWER = 'SET_DRAWER';
 const SET_SEARCHING = 'SET_SEARCHING';
+const RESOLVE_MIGRATION = 'RESOLVE_MIGRATION';
 
 export default {
   namespaced: true,
@@ -15,6 +16,7 @@ export default {
 
   state: {
     drawer: false,
+    migrations: [],
     is_searching: false,
   },
 
@@ -36,6 +38,16 @@ export default {
      * @return {*}
      */
     [SET_SEARCHING]: (s, state) => s.is_searching = state,
+
+
+    /**
+     * Resolve new migration to store
+     *
+     * @param s
+     * @param migration
+     * @return {number}
+     */
+    [RESOLVE_MIGRATION]: (s, migration) => s.migrations.push(migration),
 
 
   },
@@ -62,6 +74,20 @@ export default {
      * @return {*}
      */
     setSearching: ({commit}, state) => commit(SET_SEARCHING, state),
+
+
+    /**
+     * Resolve migration to state
+     *
+     * @param state
+     * @param commit
+     * @param migration
+     */
+    resolveMigration: ({state, commit}, migration) => {
+      if (state.migrations.findIndex(item => item === migration) === -1) {
+        commit(RESOLVE_MIGRATION, migration);
+      }
+    }
 
   }
 }
