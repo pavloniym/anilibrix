@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 // Utils
-import __merge from 'lodash/merge'
 import getInitialState from '@utils/store/getInitialState'
 
 // Store Plugins
@@ -17,7 +16,11 @@ import favorites from './favorites'
 import notifications from './notifications'
 
 // Store persisted paths
+import {appPersisted} from "@store/app/appStore";
 import {catalogPersisted} from "@store/catalog/catalogStore";
+import {favoritesPersisted} from "@store/favorites/favoritesStore";
+import {notificationsPersisted} from "@store/notifications/notificationsStore";
+
 
 Vue.use(Vuex);
 
@@ -41,14 +44,14 @@ const store = new Vuex.Store({
     createPersistedState({
       key: 'anilibrix',
       paths: [
-        'app',
-        'notifications',
-        'favorites.settings',
+        ...appPersisted,
         ...catalogPersisted,
+        ...favoritesPersisted,
+        ...notificationsPersisted,
       ],
     }),
   ],
-  strict: debug,
+  strict: false,  //debug,
   mutations: {
 
     /**
@@ -73,7 +76,6 @@ const store = new Vuex.Store({
     REPLACE_STORE(s, store) {
       this.replaceState(store);
     }
-
 
   },
 

@@ -2,8 +2,7 @@
 import ReleaseProxy from "@proxies/release";
 
 // Transformers
-import ReleaseTransformer from '@transformers/release'
-import EpisodesTransformer from "@transformers/episode";
+import ReleaseTransformer, {ReleaseEpisodesTransformer} from '@transformers/release'
 
 // Utils
 import axios from 'axios'
@@ -117,47 +116,47 @@ export default {
 
         // Get releases from server
         // Transform releases
-        const data = await new ReleaseProxy().getReleases({cancelToken: REQUEST.token});
-        const releases = new ReleaseTransformer().fetchCollection(data);
+        const response = await new ReleaseProxy().getReleases({cancelToken: REQUEST.token});
+        const releases = new ReleaseTransformer().fetchCollection(response);
 
         // Filters releases without episodes
         // Sort releases from newest to oldest
-        const filteredReleases = releases
+        const filtered_releases = releases
           .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}))
           .sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
 
 
         // Load episodes
         // Filter releases with episodes
-        const processedReleases = (await Promise
-          .allSettled(
-            filteredReleases
-              .map(async release => ({
-                ...release,
-                episodes: await new EpisodesTransformer({cancelToken: REQUEST.token}).fetchItem(release.episodes)
-              }))
+        const releases_with_episodes = (
+          await Promise.allSettled(
+            filtered_releases.map(async release => {
+                const episodes = await new ReleaseEpisodesTransformer().setCancelToken(REQUEST.token).fetchCollection(release);
+                return {...release, episodes};
+              }
+            )
           ))
           .filter(promise => promise.status === 'fulfilled')
           .map(promise => promise.value)
-          .filter(release => release.episodes.length > 0);
+          .filter(release => release && release.episodes && release.episodes.length > 0);
 
 
         // Try to find new releases and show notifications
         // If previous releases exists (ignore initial request)
         if (state.data && state.data.length > 0) {
-          processedReleases.forEach(release => {
+          releases_with_episodes.forEach(release => {
 
             // Get release id and episodes number
-            const releaseId = release.id;
-            const releaseEpisodes = release.episodes.length;
+            const release_id = release.id;
+            const release_episodes = release.episodes.length;
 
             // Get previous release
             // Check by id and same episodes number
-            const previousRelease = state.data.find(item => item.id === releaseId && item.episodes.length === releaseEpisodes) || null;
+            const previous_release = state.data.find(item => item.id === release_id && item.episodes.length === release_episodes) || null;
 
             // If no release found
             // Send to notifications store
-            if (previousRelease === null) {
+            if (previous_release === null) {
 
               // Send notification event to main window
               // emitReleaseNotification(release);
@@ -170,11 +169,10 @@ export default {
 
         // Set updated datetime
         // Commit releases
-        commit(SET_RELEASES_DATA, processedReleases);
+        commit(SET_RELEASES_DATA, releases_with_episodes);
         commit(SET_RELEASES_DATETIME, new Date());
 
       } catch (error) {
-
         if (!axios.isCancel(error)) {
 
           // Set release has error
@@ -186,9 +184,9 @@ export default {
           throw error;
 
         }
-
       } finally {
         commit(SET_RELEASES_LOADING, false);
+
       }
     }
 

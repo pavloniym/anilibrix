@@ -4,7 +4,6 @@ import FavoritesProxy from "@proxies/favorites";
 
 // Transformer
 import ReleaseTransformer from "@transformers/release";
-import EpisodesTransformer from "@transformers/episode";
 
 // Utils
 import axios from "axios";
@@ -26,6 +25,8 @@ const SET_SETTINGS_YEARS_COLLAPSED = 'SET_SETTINGS_YEARS_COLLAPSED';
 // Requests
 let REQUESTS_FOR_CHANGES = {};
 let REQUEST_FOR_FAVORITES = null;
+
+export const favoritesPersisted = ['favorites.settings'];
 
 export default {
   namespaced: true,
@@ -165,8 +166,11 @@ export default {
           commit(SET_LOADING, true);
 
           // Cancel previous request if it was stored
+          if (REQUEST_FOR_FAVORITES) {
+            REQUEST_FOR_FAVORITES.cancel();
+          }
+
           // Create new request token
-          if (REQUEST_FOR_FAVORITES) REQUEST_FOR_FAVORITES.cancel();
           REQUEST_FOR_FAVORITES = axios.CancelToken.source();
 
           // Get releases from server
@@ -176,7 +180,7 @@ export default {
 
           // Load episodes
           // Filter releases with episodes
-          const processedReleases = (await Promise
+          /*const processedReleases = (await Promise
             .allSettled(
               releases
                 .map(async release => ({
@@ -193,12 +197,16 @@ export default {
             .filter(promise => promise.status === 'fulfilled')
             .map(promise => promise.value)
             .filter(release => release.episodes.length > 0)
-            .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}));
+            .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}));*/
 
           // Set releases
-          commit(SET_ITEMS, processedReleases);
+          //commit(SET_ITEMS, processedReleases);
+          commit(SET_ITEMS, releases);
 
         } catch (error) {
+
+          console.log(error);
+
           if (!axios.isCancel(error)) {
 
             // Show error

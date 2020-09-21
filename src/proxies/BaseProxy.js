@@ -2,6 +2,7 @@
 import store from '@store'
 
 // Utils
+import qs from "qs";
 import __get from 'lodash/get'
 import {meta, version} from '@package'
 
@@ -9,17 +10,6 @@ import {meta, version} from '@package'
 import RequestResolver from "@@/utils/resolvers/request";
 
 export default class BaseProxy {
-
-
-  /**
-   * Get api endpoint url
-   *
-   * @return {string}
-   */
-  getApiEndpoint() {
-    return process.env.API_V2_ENDPOINT_URL;
-  }
-
 
   /**
    * Get legacy api endpoint
@@ -51,9 +41,14 @@ export default class BaseProxy {
    * @returns {Promise} The result in a promise.
    */
   async submit(method, url, config = {}) {
-    return await RequestResolver.make({url, method, ...config, timeout: 15000});
+    return await RequestResolver.make({
+      url,
+      method,
+      timeout: 15000,
+      headers: this.getRequestHeaders(),
+      ...config,
+    });
   }
-
 
 
   /**
@@ -75,6 +70,17 @@ export default class BaseProxy {
     if (session && session.length > 0) headers.Cookie = `PHPSESSID=${session}; Path=/; Secure; HttpOnly`;
 
     return headers;
+  }
+
+
+  /**
+   * Prepare query string from provided data
+   *
+   * @param data
+   * @return {string}
+   */
+  prepareFormData(data = {}) {
+    return qs.stringify(data);
   }
 
 }

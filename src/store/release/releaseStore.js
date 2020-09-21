@@ -3,7 +3,6 @@ import ReleaseProxy from "@proxies/release";
 
 // Transformers
 import ReleaseTransformer from '@transformers/release'
-import EpisodesTransformer from "@transformers/episode";
 
 // Utils
 import axios from "axios";
@@ -82,7 +81,7 @@ export default {
         // Get release poster path
         // Load release episodes
         release.poster = new ReleaseProxy().getReleasePosterPath(release.poster);
-        release.episodes = await new EpisodesTransformer().fetchItem(release.episodes);
+        //release.episodes = await new EpisodesTransformer().fetchItem(release.episodes);
 
         // Save release data
         commit(SET_RELEASE_DATA, release);

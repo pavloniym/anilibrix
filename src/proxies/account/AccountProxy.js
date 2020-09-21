@@ -2,9 +2,10 @@
 import BaseProxy from "@proxies/BaseProxy";
 
 // Utils
-import qs from 'qs'
 import __get from "lodash/get";
 import cookieParser from "set-cookie-parser";
+
+// Responses
 import {handleResponseFromV1Api} from "@utils/requests/handleResponse";
 
 
@@ -22,11 +23,13 @@ export default class AccountProxy extends BaseProxy {
 
     // Set form data
     // Make request to login endpoint
-    const data = qs.stringify({mail: login, passwd: password});
-    const response = await this.submit('POST', this.getApiV1Endpoint() + '/public/login.php', {data});
+    const response = await this.submit('POST', this.getApiV1Endpoint() + '/public/login.php', {
+      data: this.prepareFormData({mail: login, passwd: password}),
+    });
+
+    // Get login status
     const status = __get(response, 'data.key');
 
-    // Get authorization status
     // If status === 'success' -> authorization is success
     if (status === 'success') {
 
@@ -63,8 +66,7 @@ export default class AccountProxy extends BaseProxy {
   async getProfile() {
     return handleResponseFromV1Api(
       await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
-        data: qs.stringify({query: 'user'}),
-        headers: this.getRequestHeaders(),
+        data: this.prepareFormData({query: 'user'}),
       })
     );
   }

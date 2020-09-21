@@ -1,8 +1,7 @@
 // Proxy
 import BaseProxy from "@proxies/BaseProxy";
 
-// Utils
-import qs from 'qs';
+// Responses
 import {handleResponseFromV1Api} from '@utils/requests/handleResponse';
 
 
@@ -11,15 +10,14 @@ export default class FavoritesProxy extends BaseProxy {
   /**
    * Get favorites
    *
-   * @param parameters
+   * @param configuration
    * @return {Promise<*>}
    */
-  async getFavorites(parameters = {}) {
+  async getFavorites(configuration = {}) {
     return handleResponseFromV1Api(
       await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
-        ...parameters,
-        data: qs.stringify({page: 1, perPage: 15, query: 'favorites'}),
-        headers: this.getRequestHeaders(),
+        ...configuration,
+        data: this.prepareFormData({page: 1, perPage: 15, query: 'favorites'}),
       })
     );
   }
@@ -29,16 +27,16 @@ export default class FavoritesProxy extends BaseProxy {
    * Add release to favorites
    *
    * @param release_id
-   * @param parameters
+   * @param configuration
    * @return {Promise<*>}
    */
-  async addToFavorites(release_id, parameters = {}) {
-
-    const data = this.getFormDataObject({id: release_id, action: 'add', query: 'favorites'});
-    const params = {data, ...parameters};
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
-
-    return this.handleResponse(response.data);
+  async addToFavorites(release_id, configuration = {}) {
+    return handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        ...configuration,
+        data: this.prepareFormData({id: release_id, action: 'add', query: 'favorites'}),
+      })
+    );
   }
 
 
@@ -46,16 +44,16 @@ export default class FavoritesProxy extends BaseProxy {
    * Remove from favorites
    *
    * @param release_id
-   * @param parameters
+   * @param configuration
    * @return {Promise<void>}
    */
-  async removeFromFavorites(release_id, parameters = {}) {
-
-    const data = this.getFormDataObject({id: release_id, action: 'delete', query: 'favorites'});
-    const params = {data, ...parameters};
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
-
-    return this.handleResponse(response.data);
+  async removeFromFavorites(release_id, configuration = {}) {
+    return handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        ...configuration,
+        data: this.prepareFormData({id: release_id, action: 'delete', query: 'favorites'}),
+      })
+    );
   }
 
 

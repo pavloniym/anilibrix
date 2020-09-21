@@ -1,8 +1,8 @@
 // Utils
 import get from 'lodash/get'
+import stripHtml from "string-strip-html";
 
 export default class BaseTransformer {
-
 
   /**
    * Method used to transform a fetched collection.
@@ -45,5 +45,16 @@ export default class BaseTransformer {
    */
   get(source, search, fallback = null) {
     return get(source, search, fallback);
+  }
+
+
+  /**
+   * Strip html tags
+   *
+   * @param value
+   * @return {*}
+   */
+  stripHtml(value) {
+    return value ? stripHtml(value) : null;
   }
 }

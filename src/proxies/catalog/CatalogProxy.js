@@ -1,4 +1,9 @@
+// Proxy
 import BaseProxy from "@proxies/BaseProxy";
+
+// Responses
+import {handleResponseFromV1Api} from "@utils/requests/handleResponse";
+
 
 export default class CatalogProxy extends BaseProxy {
 
@@ -9,8 +14,11 @@ export default class CatalogProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async getCatalogGenres() {
-    const response = await this.submit('GET', this.getApiEndpoint() + '/getGenres');
-    return response.data || [];
+    return handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        data: this.prepareFormData({query: 'genres'}),
+      })
+    );
   }
 
 
@@ -20,8 +28,11 @@ export default class CatalogProxy extends BaseProxy {
    * @return {Promise<*>}
    */
   async getCatalogYears() {
-    const response = await this.submit('GET', this.getApiEndpoint() + '/getYears');
-    return response.data || [];
+    return handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        data: this.prepareFormData({query: 'years'}),
+      })
+    );
   }
 
 
@@ -33,21 +44,24 @@ export default class CatalogProxy extends BaseProxy {
    * @param page
    * @param perPage
    * @param sort
+   * @param configuration
    * @param parameters
    * @return {Promise<*>}
    */
-  async getCatalogReleases({genres = [], years = [], page = 1, perPage = 15, sort = 1}, parameters = {}) {
-
-    const data = this.getFormDataObject({
-      sort, page, perPage,
-      query: 'catalog', xpage: 'catalog', search: {year: (years || []).join(','), genre: (genres || []).join(',')}
-    });
-
-    const params = {data, ...parameters};
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
-
-    return this.handleResponse(response.data);
-
+  async getCatalogReleases({genres = [], years = [], page = 1, perPage = 15, sort = 1}, configuration = {}) {
+    return handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        ...configuration,
+        data: this.prepareFormData({
+          sort,
+          page,
+          perPage,
+          query: 'catalog',
+          xpage: 'catalog',
+          search: {year: (years || []).join(','), genre: (genres || []).join(',')}
+        })
+      })
+    );
   }
 
 

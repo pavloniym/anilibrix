@@ -40,16 +40,23 @@
 
 <script>
 
+  // Views
   import FlowView from './views/flow'
   import YearsView from './views/years'
 
+  // Components
   import Loader from './components/loader'
   import Toolbar from './components/toolbar'
   import Settings from './components/settings'
   import Authorization from './components/authorization'
 
+  // Utils
   import Fuse from "fuse.js";
+
+  // Routes
   import {toLogin, toRelease} from "@utils/router/views";
+
+  // Store
   import {mapActions, mapGetters, mapState} from 'vuex'
 
   export default {

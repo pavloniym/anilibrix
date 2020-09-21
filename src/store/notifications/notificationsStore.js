@@ -4,6 +4,8 @@ const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
 const FILTER_NOTIFICATIONS = 'FILTER_NOTIFICATIONS';
 const SET_NOTIFICATIONS_SEEN_STATUS = 'SET_NOTIFICATIONS_SEEN_STATUS';
 
+export const notificationsPersisted = ['notifications'];
+
 export default {
   namespaced: true,
   state: {

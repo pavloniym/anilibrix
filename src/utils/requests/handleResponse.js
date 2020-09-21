@@ -23,25 +23,3 @@ export const handleResponseFromV1Api = response => {
   } else throw new Error(message);
 
 };
-
-
-/**
- * Handle response from v2 API
- *
- * @param response
- */
-export const handleResponseFromV2Api = response => {
-
-  const response_data = __get(response, 'data');
-
-  const error_code = __get(response, 'error.code', null);
-  const error_message = __get(response, 'error.message', 'Ошибка при запросе на сервер');
-
-  // If error code is null -> return response data
-  // Otherwise -> throw error with response error message
-  if (error_code === null) {
-    return response_data;
-
-  } else throw new Error(error_message);
-
-};

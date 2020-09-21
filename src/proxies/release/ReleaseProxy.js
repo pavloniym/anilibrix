@@ -2,8 +2,7 @@
 import BaseProxy from "@proxies/BaseProxy";
 
 // Utils
-import {handleResponseFromV2Api} from "@utils/requests/handleResponse";
-
+import {handleResponseFromV1Api} from "@utils/requests/handleResponse";
 
 export default class ReleaseProxy extends BaseProxy {
 
@@ -14,19 +13,13 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {Promise}
    */
   async getReleases(configuration = {}) {
-
-    // Create params object
-    const params = {
-      limit: 14,
-      playlist_type: 'array',
-      description_type: 'no_view_order'
-    };
-
-    // Create request
-    // Get response data
-    return handleResponseFromV2Api(
-      await this.submit('GET', this.getApiEndpoint() + '/getUpdates', {params, ...configuration})
+    const {items} = handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        ...configuration,
+        data: this.prepareFormData({query: 'list', perPage: 15}),
+      })
     );
+    return items;
   }
 
 
@@ -38,18 +31,11 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {Promise}
    */
   async getRelease(release_id, configuration = {}) {
-
-    // Create params object
-    const params = {
-      id: release_id,
-      playlist_type: 'array',
-      description_type: 'no_view_order'
-    };
-
-    // Create request
-    // Get response data
-    return handleResponseFromV2Api(
-      await this.submit('GET', this.getApiEndpoint() + '/getTitle', {params, ...configuration})
+    return handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        ...configuration,
+        data: this.prepareFormData({query: 'release', id: release_id}),
+      })
     );
   }
 
@@ -62,15 +48,12 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {Promise}
    */
   async searchReleases(search, configuration = {}) {
-
-    // Create params object
-    const params = {search, limit: 10};
-
-    // Create request
-    // Get response data
-    return handleResponseFromV2Api(
-      await this.submit('GET', this.getApiEndpoint() + '/searchTitles', {params, ...configuration})
+    const {items} = handleResponseFromV1Api(
+      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
+        data: this.prepareFormData({search, limit: 10}),
+      })
     );
+    return items;
   }
 
 
