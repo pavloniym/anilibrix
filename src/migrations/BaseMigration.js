@@ -1,5 +1,3 @@
-import videoRoutes from "@router/video/videoRoutes";
-
 export default class BaseMigration {
 
   /**
@@ -8,7 +6,6 @@ export default class BaseMigration {
    * @return {void}
    */
   constructor() {
-    this.vue = null;
     this.store = null;
     this.electron = null;
   }
@@ -22,8 +19,7 @@ export default class BaseMigration {
    * @param vue
    * @return {BaseMigration}
    */
-  setProviders({store = null, electron = null, vue = null} = {}) {
-    this.vue = vue;
+  setProviders({store = null, electron = null} = {}) {
     this.store = store;
     this.electron = electron;
     return this;

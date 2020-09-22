@@ -39,6 +39,10 @@ module.exports = {
     // Use this to change the entry point of your app's main process
     mainProcessFile: './desktop/main.js',
 
+    // Provide an array of files that, when changed, will recompile the main process and restart Electron
+    // Your main process file will be added by default
+    mainProcessWatch: ['./utils/**/*'],
+
     // Options placed here will be merged with default configuration and passed to electron-builder
     builderOptions: {
       compression: 'store',

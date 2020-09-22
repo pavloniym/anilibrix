@@ -4,13 +4,12 @@ const webpackConfig = require('./webpack.config');
 const desktopConfig = require('./desktop.config');
 
 module.exports = {
-  pwa: pwaConfig,
-  lintOnSave: false,
-  configureWebpack: {
-    resolve: webpackConfig.resolve,
-    plugins: webpackConfig.plugins,
+  pwa: {...pwaConfig},
+  pages: {
+    index: 'src/main.js',
+    torrents: 'src/torrents.js'
   },
-  pluginOptions: {
-    ...desktopConfig,
-  }
+  lintOnSave: false,
+  pluginOptions: {...desktopConfig},
+  configureWebpack: {...webpackConfig},
 };

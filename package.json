@@ -32,10 +32,12 @@
     "ljson": "^2.1.0",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
+    "parse-torrent": "^7.1.3",
     "plyr": "^3.5.7-beta.0",
     "pretty-bytes": "^5.3.0",
     "qs": "^6.9.4",
     "register-service-worker": "^1.7.1",
+    "rimraf": "^3.0.2",
     "screenfull": "^5.0.2",
     "set-cookie-parser": "^2.4.6",
     "string-strip-html": "^4.3.16",
@@ -52,7 +54,8 @@
     "vuelidate": "^0.7.5",
     "vuetify": "^2.2.8",
     "vuex": "^3.4.0",
-    "vuex-persistedstate": "^3.0.1"
+    "vuex-persistedstate": "^3.0.1",
+    "webtorrent": "^0.108.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

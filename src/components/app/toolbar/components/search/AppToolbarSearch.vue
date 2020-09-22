@@ -19,13 +19,18 @@
     @input="toRelease">
 
     <template v-slot:item="{item}">
+
+      <!-- Avatar -->
       <v-list-item-avatar>
         <v-img :src="item.poster"/>
       </v-list-item-avatar>
+
+      <!-- Content -->
       <v-list-item-content :style="{maxWidth: $refs.search.$el.clientWidth + 'px'}">
         <v-list-item-title v-text="item.names.ru"/>
         <v-list-item-subtitle v-text="item.names.original"/>
       </v-list-item-content>
+
     </template>
 
   </v-autocomplete>
@@ -36,17 +41,19 @@
   // Utils
   import axios from "axios";
   import __debounce from 'lodash/debounce'
+
+  // Storage
   import {mapActions} from 'vuex';
 
   // Routes
   import {toRelease} from "@router/release/releaseRoutes";
 
-  // Proxy
+  // Proxy + Transformer
   import ReleaseProxy from "@proxies/release";
   import SearchTransformer from "@transformers/search";
 
-  // Events
-  import {sendError} from "@/events/error/errorsEvents";
+  // Resolvers
+  import ErrorResolver from "@@/utils/resolvers/error";
 
 
   export default {
@@ -80,7 +87,8 @@
           this.$options.request = axios.CancelToken.source();
 
           // Get releases
-          const response = await new ReleaseProxy().searchReleases(search_query, {cancelToken: this.$options.request.token});
+          const response = await new ReleaseProxy()
+            .searchReleases(search_query, {cancelToken: this.$options.request.token});
 
           // Transform releases
           // Get posters src
@@ -92,12 +100,13 @@
 
           // Emit error
           // Throw error
-          sendError('Произошла ошибка во время поиска релизов');
+          ErrorResolver.emitError('Произошла ошибка во время поиска релизов');
           throw error;
 
 
         } finally {
           this.loading = false;
+
         }
       }, 1000),
 

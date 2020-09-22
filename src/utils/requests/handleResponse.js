@@ -15,6 +15,8 @@ export const handleResponseFromV1Api = response => {
   const status = __get(response_data, 'status', false);
   const message = __get(response_data, 'error.message', 'Ошибка при запросе на сервер');
 
+  console.log({response, data, status});
+
   // If status is true -> return response data
   // Otherwise -> throw error with response error message
   if (status === true) {

@@ -62,7 +62,7 @@ export default class BaseProxy {
     const headers = {};
 
     // Set header user agent
-    headers.UserAgent = `${meta.name}/${version}`;
+    headers['User-Agent'] = `${meta.name}/${version}`;
 
     // Set header session
     // Set session in cookies

@@ -48,12 +48,11 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {Promise}
    */
   async searchReleases(search, configuration = {}) {
-    const {items} = handleResponseFromV1Api(
+    return handleResponseFromV1Api(
       await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
-        data: this.prepareFormData({search, limit: 10}),
+        data: this.prepareFormData({search, query: 'search', limit: 10}),
       })
     );
-    return items;
   }
 
 
@@ -65,9 +64,12 @@ export default class ReleaseProxy extends BaseProxy {
    * @return {Promise<unknown>}
    */
   async getReleaseTorrent(url, parameters = {}) {
-    return url
+
+    const response = url
       ? await this.submit('GET', this.getStaticEndpoint() + url, {...parameters, responseType: 'arraybuffer'})
       : null;
+
+    return response ? response.data : null;
   }
 
 

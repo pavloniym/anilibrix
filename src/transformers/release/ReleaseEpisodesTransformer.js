@@ -6,6 +6,7 @@ import __merge from 'lodash/merge'
 
 // Parsing
 import {parsePlaylist} from "@utils/episodes/parsePlaylist";
+import {parseTorrents} from "@utils/episodes/parseTorrents";
 
 export default class ReleaseEpisodesTransformer extends BaseTransformer {
 
@@ -30,6 +31,7 @@ export default class ReleaseEpisodesTransformer extends BaseTransformer {
     this.store = store;
     return this;
   }
+
 
   /**
    * Set cancel token
@@ -87,6 +89,8 @@ export default class ReleaseEpisodesTransformer extends BaseTransformer {
 
     //this._parseUpscale(playlist, episodes);
     const playlist_episodes = parsePlaylist(this.get(release, 'playlist') || []);
+    const torrent_episodes = parseTorrents(this.get(release, 'torrents') || [], {torrents_enabled: true});
+
     //this._parseTorrents(await this._getTorrents(torrents || []), episodes);
 
     // Filter all sources without payload

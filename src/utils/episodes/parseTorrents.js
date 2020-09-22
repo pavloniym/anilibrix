@@ -1,7 +1,74 @@
-import store from "@store/index";
-import AnilibriaReleaseProxy from "@proxies/release";
-import __camelCase from "lodash/camelCase";
+//import store from "@store/index";
+//import __camelCase from "lodash/camelCase";
 
+// Proxies
+import AnilibriaReleaseProxy from "@proxies/release";
+
+// Utils
+import __get from 'lodash/get'
+
+// Resolvers
+import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
+import TorrentsResolver from "@@/utils/resolvers/torrents";
+
+
+/**
+ * Exclude HEVC torrents
+ *
+ * @param torrents
+ * @return {*}
+ */
+const excludeHEVC = torrents => torrents.filter(torrent => new RegExp('HEVC').test(torrent.quality) === false);
+
+
+/**
+ * Parse torrents
+ *
+ * @param torrents
+ * @param skip_torrents
+ * @param torrents_enabled
+ * @param cancel_token
+ */
+export const parseTorrents = async (torrents, {skip_torrents = false, torrents_enabled = false, cancel_token = null} = {}) => {
+  if (skip_torrents === false && torrents_enabled === true) {
+
+    // Filter torrents
+    // Exclude HEVC torrents (no codec available)
+    const filtered_torrents = excludeHEVC(torrents);
+
+    // Parse torrents data
+    const parsed_torrents = await runOnPlatform(
+      async () => null,
+      async () => await Promise.allSettled(
+        filtered_torrents.map(async torrent => {
+
+          // Get blob torrent file from server
+          const torrents_id = torrent.id;
+          const torrents_file_content = await new AnilibriaReleaseProxy().getReleaseTorrent(torrent.url, {cancelToken: cancel_token});
+
+          if (torrents_file_content) {
+
+            const response = await TorrentsResolver.parseTorrent(torrents_id, torrents_file_content);
+            console.log({torrents_id, response});
+
+          }
+
+          // Check file data is available
+          // Resolve empty if null
+          /*if (file && file.data) {
+
+            // Send torrent for parsing data
+            // Catch torrent for parsing
+            // emitTorrentParsing(torrent.id, file.data);
+            // handleTorrentParsed(({torrent_id, data}) => torrent.id === torrent_id ? resolve({torrent, data}) : null);
+
+          } else resolve(null)*/
+
+        })
+      )
+    )
+  }
+};
 /*
 
 /!**
@@ -12,17 +79,14 @@ import __camelCase from "lodash/camelCase";
  * @private
  * @param torrents
  *!/
-async _getTorrents(torrents = []) {
+async
+_getTorrents(torrents = [])
+{
 
   const torrents_are_skipping = this.skipTorrents === true;
   const torrents_processing_is_enabled = this.get(store, 'state.app.settings.player.torrents.process') === true;
 
   if (0 && !torrents_are_skipping && torrents_processing_is_enabled) {
-
-    // Filter torrents
-    // Exclude HEVC torrents (no codec available)
-    const filteredTorrents = torrents
-      .filter(torrent => new RegExp('HEVC').test(torrent.quality) === false);
 
 
     // Try to parse all torrents data
@@ -63,7 +127,8 @@ async _getTorrents(torrents = []) {
  * @param episodes
  * @private
  *!/
-_parseTorrents(torrents, episodes) {
+_parseTorrents(torrents, episodes)
+{
   torrents.forEach(torrent => {
 
     const type = 'torrent';
@@ -122,7 +187,8 @@ _parseTorrents(torrents, episodes) {
  * @return {null|*}
  * @private
  *!/
-_parseEpisodeFromTorrentFilename(filename) {
+_parseEpisodeFromTorrentFilename(filename)
+{
   if (filename && typeof filename === 'string') {
 
     const episode = this.get(filename.match(/_\[(\d+)\]_/), [1]) || null;
@@ -131,4 +197,5 @@ _parseEpisodeFromTorrentFilename(filename) {
   }
 
   return null;
-}*/
+}
+*/

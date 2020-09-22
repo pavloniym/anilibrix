@@ -90,7 +90,7 @@
             // Get profile data
             await this._login({login: this.login, password: this.password});
             await this._getProfile();
-            // await this.$router.back();
+            await this.$router.back();
 
             // Get user favorites
             this._getFavorites();

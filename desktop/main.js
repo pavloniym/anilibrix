@@ -6,14 +6,16 @@ import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 
 // Windows
 import AppWindow from "./windows/AppWindow";
+import TorrentsWindow from "./windows/TorrentsWindow";
 
 // Utils
 import {meta, version} from './../package'
 import devtoolsInstaller from "./utils/devtools/devtoolsInstaller";
 
 // Resolvers
-import AppResolver from "../utils/resolvers/app";
+import AppResolver from "@@/utils/resolvers/app";
 import RequestResolver from "@@/utils/resolvers/request";
+import TorrentsResolver from "@@/utils/resolvers/torrents";
 
 const fs = require('fs');
 
@@ -27,6 +29,7 @@ protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: {secure: true,
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let AppWindowInstance = new AppWindow();
+let TorrentsWindowInstance = new TorrentsWindow();
 
 
 // Close app on all windows closed (relevant for mac users)
@@ -50,8 +53,16 @@ app.on('ready', async () => {
   AppWindowInstance.getWindow().webContents.userAgent = `${meta.name}/${version}`;
   AppWindowInstance.getWindow().on('close', () => app.quit());
 
-  // Resolvers and Functions
+  // Create torrent window
+  // Set user agent
+  TorrentsWindowInstance.createWindow({title: `${meta.name} — Torrent Master`}).loadURL('torrents', 'torrents.html');
+  TorrentsWindowInstance.getWindow().webContents.userAgent = `${meta.name}/${version}`;
+
+  // Resolvers
   appResolvers();
+  torrentsResolvers();
+
+  // Functions
   globalFunctions();
 
   /*
@@ -99,7 +110,7 @@ if (isDevelopment) {
 const appResolvers = () => {
   AppResolver.showAbout();
   AppResolver.showAppDevtools(AppWindowInstance);
-  AppResolver.showTorrentDevtools(AppWindowInstance);
+  AppResolver.showTorrentDevtools(TorrentsWindowInstance);
 };
 
 
@@ -111,4 +122,14 @@ const appResolvers = () => {
 const globalFunctions = () => {
   global.getFileContent = filepath => fs.existsSync(filepath) ? fs.readFileSync(filepath) : null;
   global.resolveDesktopRequest = RequestResolver.resolveDesktopRequest;
+};
+
+
+/**
+ * Torrents Resolvers
+ *
+ * @return {void}
+ */
+const torrentsResolvers = () => {
+  TorrentsResolver.resolveTorrentsWindowEvent(TorrentsWindowInstance);
 };

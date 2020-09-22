@@ -1,6 +1,5 @@
 // Import core
 import Vue from 'vue'
-import electron from 'electron'
 
 // Import plugins
 import store, {setUserId} from '@store'
@@ -24,7 +23,6 @@ import '@plugins/vue-toasted'
 import '@plugins/vue-electron'
 import '@plugins/vue-event-bus'
 
-
 // Import styles
 import '@assets/scss/style.scss'
 
@@ -40,7 +38,7 @@ Vue.config.productionTip = false;
 
   // Migrate DB
   // Set user id to store
-  await migrateDB({store, electron, vue: Vue});
+  await migrateDB({store});
   await setUserId();
 
 

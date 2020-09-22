@@ -4,6 +4,9 @@ import ErrorResolver from "@@/utils/resolvers/error";
 // Migrations files
 import v1_3_15 from './v1.3.15'
 
+// States
+import {isDesktop} from "@@/utils/states/deviceStates";
+
 
 // Migrations order
 const migrations = [
@@ -18,7 +21,12 @@ const migrations = [
  * @param electron
  * @return {Promise<void>}
  */
-export const migrateDB = async ({store, electron}) => {
+export const migrateDB = async ({store}) => {
+
+  // Require electron
+  // Only on desktop process
+  const electron = isDesktop() ? require('electron') : null;
+
   for (const Migration of migrations) {
 
     // Initialize migration
