@@ -16,7 +16,7 @@
       <!-- Switch -->
       <v-list-item-title>{{label}}</v-list-item-title>
       <v-list-item-action class="mr-2">
-        <v-switch v-model="value"/>
+        <v-switch :input-value="value" @input.stop="value = $event"/>
       </v-list-item-action>
 
     </v-list-item>

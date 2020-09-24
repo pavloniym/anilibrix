@@ -245,21 +245,11 @@
               {
                 is: Action,
                 props: {
-                  label: 'Перезагрузить приложение',
-                  action: () => runOnPlatform(() => window.location.reload(), () => this.$electron.remote.getCurrentWindow().reload()),
-                  description: this.isDesktop ? this.shortcuts['reload'] : null,
-                },
-                visible: true,
-              },
-              {
-                is: Action,
-                props: {
                   label: 'Свернуть приложение',
                   action: () => runOnPlatform(() => window.location.reload(), () => this.$electron.remote.getCurrentWindow().minimize()),
                   description: this.isDesktop ? this.shortcuts['minimize'] : null,
                 },
                 visible: this.isDesktop,
-                divider: true
               },
               {
                 is: Action,
@@ -267,6 +257,16 @@
                   label: 'Закрыть приложение',
                   action: () => runOnPlatform(() => window.close(), () => this.$electron.remote.getCurrentWindow().close()),
                   description: this.isDesktop ? this.shortcuts['close'] : null,
+                },
+                visible: true,
+                divider: true
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Перезагрузить приложение',
+                  action: () => runOnPlatform(() => window.location.reload(), () => this.$electron.remote.getCurrentWindow().reload()),
+                  description: this.isDesktop ? this.shortcuts['reload'] : null,
                 },
                 visible: true,
                 divider: true
@@ -301,9 +301,9 @@
               {
                 is: Action,
                 props: {
-                  label: 'Поддержать проект',
-                  action: () => runOnPlatform(() => window.open(meta.links.donate, '_blank'), () => this.$electron.shell.openExternal(meta.links.donate)),
-                  description: 'Яндекс.Деньги, QIWI, PayPal',
+                  label: 'Исходный код',
+                  action: () => runOnPlatform(() => window.open(meta.links.github, '_blank'), () => this.$electron.shell.openExternal(meta.links.github)),
+                  description: 'anilibrix.git',
                 },
                 divider: true
               },
@@ -313,6 +313,15 @@
                   label: 'Telegram-канал',
                   action: () => runOnPlatform(() => window.open(meta.links.telegram, '_blank'), () => this.$electron.shell.openExternal(meta.links.telegram)),
                   description: '@anilibrix',
+                },
+                divider: true
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Поддержать проект',
+                  action: () => runOnPlatform(() => window.open(meta.links.donate, '_blank'), () => this.$electron.shell.openExternal(meta.links.donate)),
+                  description: 'Яндекс.Деньги, QIWI, PayPal',
                 },
                 divider: true
               },

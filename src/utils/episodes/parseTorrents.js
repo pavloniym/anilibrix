@@ -6,19 +6,12 @@ import AnilibriaReleaseProxy from "@proxies/release";
 
 // Utils
 import __get from 'lodash/get'
+import __merge from 'lodash/merge'
+import __camelCase from 'lodash/camelCase'
+import {getEpisode} from './index'
 
 // Resolvers
-import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
 import TorrentsResolver from "@@/utils/resolvers/torrents";
-
-
-/**
- * Exclude HEVC torrents
- *
- * @param torrents
- * @return {*}
- */
-const excludeHEVC = torrents => torrents.filter(torrent => new RegExp('HEVC').test(torrent.quality) === false);
 
 
 /**
@@ -34,168 +27,136 @@ export const parseTorrents = async (torrents, {skip_torrents = false, torrents_e
 
     // Filter torrents
     // Exclude HEVC torrents (no codec available)
-    const filtered_torrents = excludeHEVC(torrents);
+    const filtered_torrents = _excludeHEVC(torrents);
 
-    // Parse torrents data
-    const parsed_torrents = await runOnPlatform(
-      async () => null,
-      async () => await Promise.allSettled(
-        filtered_torrents.map(async torrent => {
+    // Resolve torrents data
+    const resolved_torrents = await Promise.allSettled(
+      filtered_torrents.map(async torrent => {
 
-          // Get blob torrent file from server
-          const torrents_id = torrent.id;
-          const torrents_file_content = await new AnilibriaReleaseProxy().getReleaseTorrent(torrent.url, {cancelToken: cancel_token});
+        // Get torrent's id
+        // Get blob torrent file from server
+        const torrents_id = torrent.id;
+        const torrents_file_content = await new AnilibriaReleaseProxy().getReleaseTorrent(torrent.url, {cancelToken: cancel_token});
 
-          if (torrents_file_content) {
+        // If torrent file content exists
+        // Try to to parse this torrent
+        if (torrents_file_content) {
 
-            const response = await TorrentsResolver.parseTorrent(torrents_id, torrents_file_content);
-            console.log({torrents_id, response});
+          // Parse torrent data
+          // Send it to torrent window
+          const torrent_parsed_data = await TorrentsResolver.parseTorrent(torrents_id, torrents_file_content);
+          return {torrent, ...torrent_parsed_data};
+        }
 
-          }
-
-          // Check file data is available
-          // Resolve empty if null
-          /*if (file && file.data) {
-
-            // Send torrent for parsing data
-            // Catch torrent for parsing
-            // emitTorrentParsing(torrent.id, file.data);
-            // handleTorrentParsed(({torrent_id, data}) => torrent.id === torrent_id ? resolve({torrent, data}) : null);
-
-          } else resolve(null)*/
-
-        })
-      )
-    )
-  }
-};
-/*
-
-/!**
- * Get torrents data
- * Check if torrents should be processed
- *
- * @return {array}
- * @private
- * @param torrents
- *!/
-async
-_getTorrents(torrents = [])
-{
-
-  const torrents_are_skipping = this.skipTorrents === true;
-  const torrents_processing_is_enabled = this.get(store, 'state.app.settings.player.torrents.process') === true;
-
-  if (0 && !torrents_are_skipping && torrents_processing_is_enabled) {
+        return null;
+      })
+    );
 
 
-    // Try to parse all torrents data
-    return (await Promise
-      .allSettled(
-        filteredTorrents.map(torrent => new Promise(async resolve => {
-
-            // Get blob torrent file from server
-            const file = await new AnilibriaReleaseProxy().getReleaseTorrent(torrent.url, {cancelToken: this.cancelToken});
-
-            // Check file data is available
-            // Resolve empty if null
-            if (file && file.data) {
-
-              // Send torrent for parsing data
-              // Catch torrent for parsing
-              // emitTorrentParsing(torrent.id, file.data);
-              // handleTorrentParsed(({torrent_id, data}) => torrent.id === torrent_id ? resolve({torrent, data}) : null);
-
-            } else resolve(null);
-
-          })
-        )
-      ))
+    // Parse torrents promises
+    // Filter empty ones
+    const parsed_torrents = resolved_torrents
       .filter(response => response.status === 'fulfilled')
       .map(response => response.value)
       .filter(torrent => torrent);
+
+
+    return parsed_torrents.reduce((episodes, parsed_torrent) => {
+
+      const type = 'torrent';
+      const label = __get(parsed_torrent, 'torrent.quality') || null;
+      const files = __get(parsed_torrent, 'torrent_parsed_data.files') || [];
+      const alias = label ? __camelCase(label) : null;
+
+      const parsed_episodes = files.reduce((episodes, file, index) => {
+
+        // Parse episode from torrent filename
+        // Try to get number from "..._[1]_..." string
+        let episode_id = _parseEpisodeFromTorrentFilename(__get(file, 'name'));
+
+        if (episode_id !== null || files.length === 1) {
+
+          // If there is only one file in torrent
+          // And if can't parse episode number -> make it as first (1) episode
+          // This is a little bit hack
+          if (files.length === 1) episode_id = 1;
+
+          // Create episode
+          episodes[episode_id] = {};
+
+          // Set episode data
+          episodes[episode_id].id = episode_id;
+          episodes[episode_id].title = __get(episodes, [episode_id, 'title'], `Серия ${episode_id}`);
+          episodes[episode_id].sources = [].concat(
+            episodes[episode_id].sources || [],
+            [getEpisode(type, label, alias, _getPayload(file, index, parsed_torrent.torrent, parsed_torrent.torrent_parsed_data))]
+          );
+        }
+
+        return episodes;
+      }, {});
+
+      return __merge(episodes, parsed_episodes);
+    }, {})
   }
 
-  return [];
-}
+  return null;
+};
 
 
-/!**
- * Parse torrents
+/**
+ * Exclude HEVC torrents
  *
  * @param torrents
- * @param episodes
- * @private
- *!/
-_parseTorrents(torrents, episodes)
-{
-  torrents.forEach(torrent => {
+ * @return {*}
+ */
+const _excludeHEVC = torrents => torrents.filter(torrent => new RegExp('HEVC').test(torrent.quality) === false);
 
-    const type = 'torrent';
-    const label = this.get(torrent, 'torrent.quality') || null;
-    const alias = label ? __camelCase(label) : null;
-    const files = this.get(torrent, 'data.files') || [];
 
-    files.forEach((file, k) => {
-
-      // Parse episode from torrent filename
-      let episode = this._parseEpisodeFromTorrentFilename(this.get(file, 'name'));
-
-      if (episode !== null || files.length === 1) {
-
-        // If there is only one file in torrent
-        // And if can't parse episode number -> make it as first (1) episode
-        // This is a little bit hack
-        if (files.length === 1) episode = 1;
-
-        // Create episode if it not exists
-        this._createEpisode(episode, episodes);
-
-        // Set episode data
-        episodes[episode].id = episode;
-        episodes[episode].title = episodes[episode].title || `Серия ${episode}`;
-        episodes[episode].sources.push(
-          this._createSource(
-            type, label, alias,
-            {
-              torrent: {
-                id: this.get(torrent, 'torrent.id'),
-                name: this.get(torrent, 'data.name'),
-                peers: torrent.numPeers,
-                seeders: this.get(torrent, 'torrent.seeders'),
-                datetime: this.get(torrent, 'data.created'),
-                leechers: this.get(torrent, 'torrent.leechers'),
-              },
-              file: {
-                name: this.get(file, 'name'),
-                path: this.get(file, 'path'),
-                index: k,
-                length: this.get(file, 'length'),
-              },
-            }
-          )
-        );
-      }
-    })
-  });
-}
-
-/!**
+/**
  * Parse episode from torrent filename
  *
  * @param filename
  * @return {null|*}
  * @private
- *!/
-_parseEpisodeFromTorrentFilename(filename)
-{
+ */
+const _parseEpisodeFromTorrentFilename = (filename) => {
   if (filename && typeof filename === 'string') {
 
-    const episode = this.get(filename.match(/_\[(\d+)\]_/), [1]) || null;
+    const episode = __get(filename.match(/_\[(\d+)\]_/), [1]) || null;
     return episode !== null ? parseFloat(episode) : null;
 
   }
 
   return null;
-}
-*/
+};
+
+
+/**
+ * Get torrent payload data
+ *
+ * @param file
+ * @param index
+ * @param torrent
+ * @param torrent_parsed_data
+ * @return {*}
+ * @private
+ */
+const _getPayload = (file, index, torrent, torrent_parsed_data) => {
+  return {
+    torrent: {
+      id: __get(torrent, 'id'),
+      name: __get(torrent_parsed_data, 'name'),
+      peers: __get(torrent_parsed_data, 'numPeers'),
+      seeders: __get(torrent, 'seeders'),
+      datetime: __get(torrent_parsed_data, 'created'),
+      leechers: __get(torrent, 'leechers'),
+    },
+    file: {
+      name: __get(file, 'name'),
+      path: __get(file, 'path'),
+      index: index,
+      length: __get(file, 'length'),
+    },
+  }
+};

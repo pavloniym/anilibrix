@@ -52,7 +52,7 @@ class Torrents {
         // Save torrent data to store
         // Show in console parsed torrent
         this._saveParsedTorrent(torrents_id, torrent_parsed_data);
-        this._sendToConsole('Parsed Torrent', {torrent: torrent_parsed_data});
+        this._sendToConsole('Torrent is parsed!', {torrents_id, torrent_parsed_data});
 
         return torrent_parsed_data;
       }
@@ -89,7 +89,6 @@ class Torrents {
     console.log('Torrent Error', {torrents_id, error, message});
 
     //sendTorrentError({torrentId, error, message});
-
   };
 
 
@@ -121,7 +120,6 @@ const resolveTorrentParseEvent = () => {
 
     // Try to parse torrent from provided file
     // Stringify and parse torrent data (to clear prototypes)
-    //const torrent_parsed_data = parse(stringify(await TorrentsInstance.parseTorrentFromFile(torrents_id, torrents_file_content)));
     const torrent_parsed_data = await TorrentsInstance.parseTorrentFromFile(torrents_id, torrents_file_content);
 
     // Send event back with torrent parsed data

@@ -4,9 +4,9 @@ import BaseTransformer from "@transformers/BaseTransformer";
 // Utils
 import __merge from 'lodash/merge'
 
-// Parsing
-import {parsePlaylist} from "@utils/episodes/parsePlaylist";
-import {parseTorrents} from "@utils/episodes/parseTorrents";
+// Parsing episode data
+import {parsePlaylist, parseTorrents} from "@utils/episodes";
+
 
 export default class ReleaseEpisodesTransformer extends BaseTransformer {
 
@@ -85,21 +85,34 @@ export default class ReleaseEpisodesTransformer extends BaseTransformer {
    */
   async fetch(release) {
 
-    // const torrents = this.get(release, 'torrents') || [];
+    // Parse episodes from release torrents files
+    const torrent_episodes = await parseTorrents(this.get(release, 'torrents') || [], {
+      cancel_token: this.cancelToken,
+      skip_torrents: this.skipTorrents,
+      torrents_enabled: this._getTorrentsEnabledSetting(),
+    });
 
-    //this._parseUpscale(playlist, episodes);
+    // Parse episodes from release playlist links
     const playlist_episodes = parsePlaylist(this.get(release, 'playlist') || []);
-    const torrent_episodes = parseTorrents(this.get(release, 'torrents') || [], {torrents_enabled: true});
-
-    //this._parseTorrents(await this._getTorrents(torrents || []), episodes);
 
     // Filter all sources without payload
     // Reverse order -> first in array === last in release
     return Object
-      .values(__merge(playlist_episodes))
+      .values(__merge(torrent_episodes, playlist_episodes))
       .map(episode => ({...episode, sources: episode.sources.filter(source => source.payload !== null)}))
       .filter(episode => episode.sources && episode.sources.length > 0)
       .reverse();
+  }
+
+
+  /**
+   * Get torrents enabled settings flag from store
+   *
+   * @return {boolean}
+   * @private
+   */
+  _getTorrentsEnabledSetting() {
+    return this.get(this.store, 'state.app.settings.player.torrents.enabled') === true;
   }
 
 }

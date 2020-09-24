@@ -1,59 +1,6 @@
+// Utils
 import __get from 'lodash/get'
-
-/**
- * Get item payload
- * Use playlist key and file key
- *
- * @param episode
- * @param playlistKey
- * @param fileKey
- * @return {*}
- */
-const getPayload = (episode, playlistKey = null, fileKey = null) => {
-  return {
-    file: __get(episode, fileKey) || null,
-    playlist: __get(episode, playlistKey) || null,
-  }
-};
-
-
-/**
- * Get playlist source
- *
- * @param type
- * @param label
- * @param alias
- * @param payload
- * @return {{payload: *, alias: *, label: *, type: *}}
- */
-const getSource = (type, label, alias, payload) => ({type, label, alias, payload});
-
-
-/**
- * Get full hd source
- *
- * @param episode
- * @return {{payload: *, alias: *, label: *, type: *}}
- */
-export const getFHDSource = episode => getSource('server', '1080', 'fhd', getPayload(episode, 'fullhd'));
-
-
-/**
- * Get hd source
- *
- * @param episode
- * @return {{payload: *, alias: *, label: *, type: *}}
- */
-export const getHDSource = episode => getSource('server', '720', 'hd', getPayload(episode, 'hd'));
-
-
-/**
- * Get sd source
- *
- * @param episode
- * @return {{payload: *, alias: *, label: *, type: *}}
- */
-export const getSDSource = episode => getSource('server', '480', 'sd', getPayload(episode, 'sd'));
+import {getEpisode} from "./index";
 
 
 /**
@@ -90,3 +37,48 @@ export const parsePlaylist = (playlist = []) => {
 
   }, {});
 };
+
+
+/**
+ * Get item payload
+ * Use playlist key and file key
+ *
+ * @param episode
+ * @param playlistKey
+ * @param fileKey
+ * @return {*}
+ */
+const _getPayload = (episode, playlistKey = null, fileKey = null) => {
+  return {
+    file: __get(episode, fileKey) || null,
+    playlist: __get(episode, playlistKey) || null,
+  }
+};
+
+
+
+/**
+ * Get full hd source
+ *
+ * @param episode
+ * @return {{payload: *, alias: *, label: *, type: *}}
+ */
+export const getFHDSource = episode => getEpisode('server', '1080', 'fhd', _getPayload(episode, 'fullhd'));
+
+
+/**
+ * Get hd source
+ *
+ * @param episode
+ * @return {{payload: *, alias: *, label: *, type: *}}
+ */
+export const getHDSource = episode => getEpisode('server', '720', 'hd', _getPayload(episode, 'hd'));
+
+
+/**
+ * Get sd source
+ *
+ * @param episode
+ * @return {{payload: *, alias: *, label: *, type: *}}
+ */
+export const getSDSource = episode => getEpisode('server', '480', 'sd', _getPayload(episode, 'sd'));

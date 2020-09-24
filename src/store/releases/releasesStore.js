@@ -101,7 +101,7 @@ export default {
      * @param dispatch
      * @return {Promise<any>}
      */
-    getReleases: async ({commit, dispatch, state}) => {
+    async getReleases({commit, dispatch, state}) {
       try {
 
         // Set loading state
@@ -131,7 +131,13 @@ export default {
         const releases_with_episodes = (
           await Promise.allSettled(
             filtered_releases.map(async release => {
-                const episodes = await new ReleaseEpisodesTransformer().setCancelToken(REQUEST.token).fetchCollection(release);
+
+                // Parse release episodes
+                const episodes = await new ReleaseEpisodesTransformer()
+                  .setStore(this)
+                  .setCancelToken(REQUEST.token)
+                  .fetchCollection(release);
+
                 return {...release, episodes};
               }
             )
