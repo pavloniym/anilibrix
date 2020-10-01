@@ -1,52 +1,73 @@
+// Plugins
 import VueYandexMetrika from 'vue-yandex-metrika'
 
-import app from '@/../package'
+// App
+import {version} from '@/../package'
+
+// Utils
 import __get from 'lodash/get'
 
 export default {
-  install: (Vue, {id, store, router}) => {
+  install(Vue, {yandex_tracking_id, store}) {
 
-    const USER_ID = __get(store, 'state.app.account.userId');
-    const AUTOPLAY_NEXT = __get(store, 'state.app.settings.player.autoplayNext') ? 1 : 0;
-    const PLAYER_QUALITY = __get(store, 'state.app.settings.player.quality');
-    const CONNECTION_HOST = __get(store, 'state.app.settings.connection.host');
-    const CONNECTION_TYPE = __get(store, 'state.app.settings.connection.proxy.type');
-    const AUTO_REFRESH = __get(store, 'state.app.settings.system.updates.enabled') ? 1 : 0;
-    const AUTO_REFRESH_TIMEOUT = __get(store, 'state.app.settings.system.updates.timeout') || 0;
-    const TORRENTS = __get(store, 'state.app.settings.player.torrents.process') ? 1 : 0;
-    const NOTIFICATIONS = __get(store, 'state.app.settings.system.notifications.system') ? 1 : 0;
-    const ADS = __get(store, 'state.app.settings.system.ads.enabled') ? 1 : 0;
-    const ADS_MAXIMUM = __get(store, 'state.app.settings.system.ads.maximum') ? 1 : 0;
-    const DEVTOOLS = __get(store, 'state.app.settings.system.devtools') ? 1 : 0;
+    // Get account
+    const getAccountStoreValue = (key) => __get(store, `state.app.account.${key}`);
+    const getSettingsStoreValue = (key) => __get(store, `state.app.settings.${key}`);
 
-    if (id) {
+    // Account constants
+    const USER_ID = getAccountStoreValue('userId');
+    const USER_IS_AUTHORIZED = (getAccountStoreValue('profile.id') !== null) ? 1 : 0;
+
+    // Settings app
+    const SETTINGS_APP_DEVTOOLS = getSettingsStoreValue('app.devtools') ? 1 : 0;
+    const SETTINGS_APP_NOTIFICATIONS_SYSTEM = getSettingsStoreValue('app.notifications.system') ? 1 : 0;
+
+    // Settings ads
+    const SETTINGS_ADS_ENABLED = getSettingsStoreValue('ads.enabled') ? 1 : 0;
+    const SETTINGS_ADS_MAXIMUM = getSettingsStoreValue('ads.maximum') ? 1 : 0;
+
+    // Settings player
+    const SETTINGS_PLAYER_QUALITY = getSettingsStoreValue('player.quality');
+    const SETTINGS_PLAYER_TORRENTS_ENABLED = getSettingsStoreValue('player.torrents.enabled') ? 1 : 0;
+
+    // If yandex tracking is provided
+    if (yandex_tracking_id) {
+
       Vue.use(VueYandexMetrika, {
-        id,
-        router,
-        env: process.env.NODE_ENV,
+        id: yandex_tracking_id,
+        env: 'production', //process.env.NODE_ENV,
         options: {
           params: {
-            [`userId:${USER_ID}`]: true,
-            [`version:${app.version}`]: true,
-            [`autoplay:next:${AUTOPLAY_NEXT}`]: true,
-            [`player:quality:${PLAYER_QUALITY}`]: true,
-            [`connection:host:${CONNECTION_HOST}`]: true,
-            [`connection:type:${CONNECTION_TYPE}`]: true,
-            [`auto:refresh:${AUTO_REFRESH}`]: true,
-            [`auto:refresh:timeout:${AUTO_REFRESH_TIMEOUT}`]: true,
-            [`torrents:${TORRENTS}`]: true,
-            [`notifications:${NOTIFICATIONS}`]: true,
-            [`ads:${ADS}`]: true,
-            [`ads:maximum:${ADS_MAXIMUM}`]: true,
-            [`devtools:${DEVTOOLS}`]: true,
+
+            // Account parameters
+            [`profile:user_id:${USER_ID}`]: true,
+            [`profile:user_is_authorized:${USER_IS_AUTHORIZED}`]: true,
+
+            // App parameters
+            [`app:version:${version}`]: true,
+
+            // Settings app
+            [`settings:app:devtools:${SETTINGS_APP_DEVTOOLS}`]: true,
+            [`settings:app:notifications:system${SETTINGS_APP_NOTIFICATIONS_SYSTEM}`]: true,
+
+            // Settings ads
+            [`settings:ads:enabled:${SETTINGS_ADS_ENABLED}`]: true,
+            [`settings:ads:maximum:${SETTINGS_ADS_MAXIMUM}`]: true,
+
+            // Settings player
+            [`settings:player:quality:${SETTINGS_PLAYER_QUALITY}`]: true,
+            [`settings:player:torrents:enabled:${SETTINGS_PLAYER_TORRENTS_ENABLED}`]: true,
           },
-          webvisor: true,
-          clickmap: true,
           trackHash: true,
           userParams: {UserID: USER_ID},
           accurateTrackBounce: true,
         }
       })
     }
+
+    Vue.prototype.$visit = (path, title = null, parameters = {}) => Vue.$metrika
+      ? Vue.prototype.$metrika.hit(path, {title, ...parameters})
+      : null;
+
   }
 }

@@ -1,10 +1,8 @@
 // Utils
 import router from '@router'
-import __get from "lodash/get";
 
 // Route names
 export const RELEASE_ROUTE_NAME = 'release';
-
 
 
 /**
@@ -12,26 +10,22 @@ export const RELEASE_ROUTE_NAME = 'release';
  *
  * @return {Promise<Route>}
  */
-export const toRelease = (release) => {
-  if (release) {
-
-    const releaseId = __get(release, 'id');
-    const releaseName = __get(release, 'names.original');
-
-    return router.push({
-      name: RELEASE_ROUTE_NAME,
-      params: {releaseId, releaseName}
-    });
-  }
+export const toRelease = (release_id) => {
+  return router.push({
+    name: RELEASE_ROUTE_NAME,
+    params: {release_id}
+  });
 };
 
 
 export default [
   {
     name: RELEASE_ROUTE_NAME,
-    path: '/release/:releaseId/:releaseName',
+    path: '/release/:release_id/',
     meta: {
-      toolbar: {title: 'Релиз'}
+      toolbar: {
+        title: 'Релиз'
+      }
     },
     props: true,
     component: () => import('@views/release')

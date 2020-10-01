@@ -41,14 +41,12 @@ Vue.config.productionTip = false;
   await migrateDB({store});
   await setUserId();
 
-
   // Initialize sentry
   // Initialize yandex metrika
   // Vue.use(sentry, {dsn: process.env.SENTRY_DSN, store, source: 'app'});
-  // Vue.use(yandex, {id: process.env.YANDEX_TRACKING_ID, store, router});
+  Vue.use(yandex, {yandex_tracking_id: process.env.YANDEX_TRACKING_ID, store});
 
-
-  /* eslint-disable no-new */
+  // Create vue instance
   new Vue({store, router, vuetify, render: h => h(App)}).$mount('#anilibrix');
 
 })();

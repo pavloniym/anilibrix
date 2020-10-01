@@ -65,7 +65,7 @@
 <script>
 
   import {mapState} from 'vuex'
-  import {toRelease, toReleases} from "@utils/router/views";
+ // import {toRelease, toReleases} from "@utils/router/views";
 
   const props = {
     player: {
@@ -134,14 +134,14 @@
        *
        * @return void
        */
-      toReleases,
+    //  toReleases,
 
       /**
        * Go to release
        *
        * @return void
        */
-      toRelease,
+     // toRelease,
 
 
       /**

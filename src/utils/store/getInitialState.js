@@ -25,7 +25,9 @@ const extrudeSubmodule = (module) => {
  *
  * @param modules
  */
-export default modules =>
-  Object
+export default modules => {
+  return Object
     .keys(modules)
     .reduce((storage, module) => ({...storage, [module]: extrudeSubmodule(modules[module])}), {});
+}
+

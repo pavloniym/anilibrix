@@ -2,7 +2,7 @@
 
   // Utils
   import {meta} from '@package'
-  import {toVideo} from "@utils/router/views";
+  //import {toVideo} from "@utils/router/views";
   import {mapState} from 'vuex'
 
   // Handlers

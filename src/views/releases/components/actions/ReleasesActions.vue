@@ -4,14 +4,15 @@
 
     <!-- Show video -->
     <!-- Show release -->
-    <v-btn class="mr-1" @click="$emit('toVideo')">Смотреть</v-btn>
-    <v-btn class="mr-1" @click="$emit('toRelease')">Релиз</v-btn>
+    <v-btn class="mr-1" @click="$emit('action:video')">Смотреть</v-btn>
+    <v-btn class="mr-1" @click="$emit('action:release')">Релиз</v-btn>
 
   </v-layout>
 </template>
 
 <script>
 
+  // Loader
   import Loader from './components/loader'
 
   const props = {
@@ -19,11 +20,8 @@
       type: Boolean,
       default: false
     },
-    release: {
-      type: Object,
-      default: null
-    }
   };
+
   export default {
     props,
     components: {

@@ -2,7 +2,7 @@
   <v-layout column align-center justify-center>
 
     <!-- Noise -->
-    <blank-noise />
+    <blank-noise/>
 
     <!-- Message -->
     <div class="text-center caption" :style="{zIndex: 1}">
@@ -16,8 +16,11 @@
 
 <script>
 
+  // Components
   import BlankNoise from './components/noise';
-  import {toReleases} from "@utils/router/views";
+
+  // Routes
+  import {toReleases} from "@router/releases/releasesRoutes";
 
   const props = {
     message: {
@@ -32,7 +35,9 @@
 
   export default {
     props,
-    meta: {title: `Видео не доступно`},
+    meta: {
+      title: `Ошибка воспроизведения: ${this.message}`
+    },
     components: {
       BlankNoise
     },
@@ -51,14 +56,12 @@
     },
 
     methods: {
+      ...{toReleases}
+    },
 
-      /**
-       * Go back
-       *
-       * @return void
-       */
-      toReleases,
 
+    mounted() {
+      this.$visit(this.$route.path, this.$metaInfo.title);
     }
 
   }

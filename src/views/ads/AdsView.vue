@@ -11,7 +11,7 @@
 
   // Utils
   import __shuffle from 'lodash/shuffle'
-  import {toReleases} from "@utils/router/views";
+  //import {toReleases} from "@utils/router/views";
 
   const props = {
     to: {
@@ -103,7 +103,7 @@
        *
        * @return {void}
        */
-      toReleases,
+     // toReleases,
 
 
       /**

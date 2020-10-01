@@ -23,6 +23,7 @@ Router.prototype.push = function (location) {
 
 
 const router = new Router({
+  mode: 'history',
   routes: [].concat(
     ads,
     app,

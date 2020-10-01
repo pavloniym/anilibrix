@@ -30,7 +30,7 @@
   import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
 
   import {PlatformMixin} from '@mixins/app'
-  import {toVideo} from "@utils/router/views";
+ // import {toVideo} from "@utils/router/views";
 
   const props = {
     release: {
@@ -87,7 +87,7 @@
        * @param episode
        * @param release
        */
-      toVideo,
+    //  toVideo,
 
     }
 

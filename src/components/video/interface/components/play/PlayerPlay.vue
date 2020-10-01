@@ -45,7 +45,7 @@
 
 <script>
 
-  import {toVideo} from "@utils/router/views";
+//  import {toVideo} from "@utils/router/views";
 
   const props = {
     player: {
@@ -123,7 +123,7 @@
        * @param release
        * @param episode
        */
-      toVideo,
+     // toVideo,
 
     },
 

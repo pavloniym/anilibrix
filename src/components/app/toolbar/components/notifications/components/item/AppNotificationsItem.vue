@@ -18,7 +18,7 @@
 
 <script>
 
-  import {toVideo} from "@utils/router/views";
+ // import {toVideo} from "@utils/router/views";
 
   const props = {
     notification: {
@@ -91,7 +91,7 @@
     },
 
     methods: {
-      toVideo,
+   //   toVideo,
     }
   }
 </script>

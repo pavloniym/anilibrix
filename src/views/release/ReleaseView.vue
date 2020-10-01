@@ -30,7 +30,7 @@
   import Comments from '@components/release/comments'
 
   // Routes
-  import {toVideo} from "@utils/router/views";
+  //import {toVideo} from "@utils/router/views";
 
   // Utils
   import {mapState, mapActions} from 'vuex'
@@ -39,21 +39,21 @@
   import {DeviceMixin} from "@mixins/app";
 
   const props = {
-    releaseId: {
+    release_id: {
       type: [String, Number],
       default: null
     },
-    releaseName: {
-      type: String,
-      default: null
-    }
   };
 
   export default {
     props,
     name: "Release.View",
     meta() {
-      return {title: `Релиз [${this.releaseId}]: ${this.releaseName}`}
+      return {
+        title: this._release
+          ? `Релиз: ${this._release.names.ru} — ${this._release.names.original}`
+          : `Anilibrix: загрузка релиза ${this.release_id}`
+      }
     },
     mixins: [
       DeviceMixin
@@ -125,24 +125,26 @@
 
     watch: {
 
-      releaseId: {
+      release_id: {
         immediate: true,
-        async handler(releaseId) {
+        async handler(release_id) {
 
           // Scroll to top
           document.getElementById('container').scrollTo(0, 0);
 
           // Update if release data changed
-          if (this._release === null || this._release.id !== parseInt(releaseId)) {
+          if (this._release === null || this._release.id !== parseInt(release_id)) {
 
             // Start loading
             // Get release data
             this.loading = true;
-            await this._getRelease(releaseId);
+            await this._getRelease(release_id);
 
             // Reset loading state
             this.loading = false;
 
+            // Hit visit
+            this.$visit(this.$route.path, this.$metaInfo.title);
           }
         }
       }

@@ -1,23 +1,29 @@
 <template>
-  <v-fade-transition appear mode="out-in">
-    <error v-if="_has_error"/>
-    <v-layout v-else column justify-center class="releases">
+  <error v-if="_has_error"/>
+  <v-layout v-else column justify-center class="releases">
 
-      <slider
-        v-bind="{loading}"
-        v-model="index"
-        class="mb-4"
-        :releases="_releases"
-        @next="next"
-        @previous="previous"
-        @toVideo="toVideo(release, episode)">
-      </slider>
+    <slider
+      v-bind="{loading}"
+      v-model="index"
+      class="mb-4"
+      :releases="_releases"
+      @next="next"
+      @previous="previous"
+      @toVideo="toVideo(release.id, episode.id)">
+    </slider>
 
-      <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
-      <actions v-bind="{loading, release}" @toVideo="toVideo(release, episode)" @toRelease="toRelease(release)"/>
+    <!-- Release Data -->
+    <release v-bind="{loading, release, episode}" class="mb-4" :key="release ? release.id : null"/>
 
-    </v-layout>
-  </v-fade-transition>
+    <!-- Actions Button -->
+    <!-- Actions Loader -->
+    <actions
+      v-bind="{loading}"
+      @action:video="toVideo(release.id, episode.id)"
+      @action:release="toRelease(release.id)">
+    </actions>
+
+  </v-layout>
 </template>
 
 <script>
@@ -28,16 +34,21 @@
   import Release from './components/release'
   import Actions from './components/actions'
 
-  // Utils
-  import {toRelease, toVideo} from "@utils/router/views";
+  // Store
   import {mapState, mapActions} from 'vuex'
 
   // Mixins
   import {KeyboardHandlerMixin} from "@mixins/handlers";
 
+  // Routes
+  import {toVideo} from "@router/video/videoRoutes";
+  import {toRelease} from "@router/release/releaseRoutes";
+
   export default {
     name: 'Releases.View',
-    meta: {title: 'Последние релизы'},
+    meta: {
+      title: 'Последние релизы'
+    },
     mixins: [KeyboardHandlerMixin],
     components: {
       Error,
@@ -117,20 +128,8 @@
 
 
     methods: {
+      ...{toVideo, toRelease},
       ...mapActions('releases', {_setIndex: 'setIndex'}),
-
-      /**
-       * Push to video
-       *
-       */
-      toVideo,
-
-      /**
-       * Push to release
-       *
-       */
-      toRelease,
-
 
       /**
        * Listen keyboard event
@@ -144,7 +143,7 @@
         // space || enter
         if (code === 32 || code === 13) {
           if (this._drawer === false && this._is_searching === false) {
-            this.toVideo();
+            toVideo(this.release.id, this.episode.id);
           }
         }
 
@@ -161,7 +160,9 @@
        * @return void
        */
       next() {
-        if (this.index < this._releases.length - 1) this.index = this.index + 1;
+        if (this.index < this._releases.length - 1) {
+          this.index = this.index + 1;
+        }
       },
 
 
@@ -171,10 +172,16 @@
        * @return void
        */
       previous() {
-        if (this.index > 0) this.index = this.index - 1;
+        if (this.index > 0) {
+          this.index = this.index - 1;
+        }
       },
 
 
+    },
+
+    mounted() {
+      this.$visit(this.$route.path, this.$metaInfo.title);
     },
 
 
@@ -199,19 +206,3 @@
 
   }
 </script>
-
-<style lang="scss" scoped>
-
-  .releases {
-    &::-webkit-scrollbar-thumb {
-      background-color: red;
-    }
-
-    &::-webkit-scrollbar {
-      width: 9px;
-      background-color: red;
-    }
-
-  }
-
-</style>

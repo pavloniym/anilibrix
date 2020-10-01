@@ -1,6 +1,7 @@
 <template>
   <video-layout :hide-cursor="cursor_is_hidden">
-    <v-fade-transition mode="out-in" appear>
+
+    <div v-if="!is_loading">
       <component
         v-if="is_mounted"
         v-bind="{sources, source}"
@@ -21,25 +22,42 @@
         </template>
 
       </component>
-    </v-fade-transition>
+    </div>
+
+
   </video-layout>
 </template>
 
 <script>
 
+  // Layout
   import VideoLayout from "@layouts/video";
+
+  // Components
   import PlayerInterface from '@components/video/interface'
   import {ServerHandler, TorrentHandler} from '@components/video/player/types'
 
-  import {toBlank} from "@utils/router/views";
+
+  // Proxy + Transformer
+  import ReleaseProxy from "@proxies/release";
+  import ReleaseTransformer, {ReleaseEpisodesTransformer} from "@transformers/release";
+
+  // Store
   import {mapState, mapActions} from 'vuex'
 
+  // Routes
+  import {toBlank} from "@router/blank/blankRoutes";
+
   const props = {
-    release: {
+    anchor: {
+      type: String,
+      default: null
+    },
+    fromRelease: {
       type: Object,
       default: null
     },
-    episode: {
+    fromEpisode: {
       type: Object,
       default: null
     },
@@ -59,19 +77,24 @@
     },
 
     meta() {
-      return {title: this.title}
+      return {
+        title: this.title,
+      }
     },
 
     data() {
       return {
         time: 0,
+        release: null,
+        episode: null,
         duration: 0,
+        is_loading: false,
         is_mounted: false,
         cursor_is_hidden: true,
       }
     },
     computed: {
-      ...mapState('app/settings/player', {_quality: s => s.quality}),
+      ...mapState('app/settings', {_quality: s => s.player.quality}),
 
 
       /**
@@ -85,7 +108,9 @@
         const episode_id = this.$__get(this.episode, 'id');
         const release_name = this.$__get(this.release, 'names.original');
 
-        return release_id ? `Эпизод [${release_id} / ${episode_id}]: ${release_name}` : null;
+        return release_id
+          ? `Видео: ${release_name} / Эпизод ${episode_id}`
+          : 'Загрузка';
 
       },
 
@@ -94,9 +119,9 @@
        *
        * @return {string}
        */
-      key() {
-        return `${this.release ? this.release.id : 0}:${this.episode ? this.episode.id : 0}`
-      },
+      /*  key() {
+          return `${this.release ? this.release.id : 0}:${this.episode ? this.episode.id : 0}`
+        },*/
 
 
       /**
@@ -192,16 +217,6 @@
       ...mapActions('app/settings/player', {_setQuality: 'setQuality'}),
 
       /**
-       * Go to blank page
-       *
-       * @return Promise
-       */
-      toBlank({message, referer}) {
-        return toBlank(message, referer)
-      },
-
-
-      /**
        * Get watch data from store
        *
        * @param release
@@ -253,6 +268,43 @@
       }
     },
 
+
+    async created() {
+      try {
+
+        // Set loading state
+        this.is_loading = true;
+
+        // Get release and episode from path anchor
+        const [release_id, episode_id] = this.anchor.split(':');
+
+        // Set initial
+        this.release = this.fromRelease;
+        this.episode = this.fromEpisode;
+
+
+        // Get release from server
+        // Set release to local state
+        if (this.release === null) this.release = (new ReleaseTransformer)
+          .fetchItem(await new ReleaseProxy().getRelease(release_id));
+
+        // Transform episodes
+        // Try to find episode
+        if (this.fromEpisode === null) this.episode = (await (new ReleaseEpisodesTransformer).setStore(this.$store).fetchCollection(this.release))
+          .find(episode => episode.id === parseFloat(episode_id));
+
+
+        this.is_loading = false;
+
+        // Hit visit
+        this.$visit(this.$route.path, this.$metaInfo.title);
+
+      } catch (e) {
+        console.log(e);
+
+      }
+    },
+
     watch: {
 
       source: {
@@ -267,7 +319,7 @@
           } else {
 
             // Go to blank screen if no source provided
-            this.toBlank({message: 'Нет данных для воспроизведения', referer: 'source'})
+            // toBlank('Нет данных для воспроизведения');
 
           }
         }

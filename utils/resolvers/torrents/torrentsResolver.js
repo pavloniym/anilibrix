@@ -3,6 +3,7 @@ import {v4 as uuid} from 'uuid'
 
 // Resolvers
 import {runInMain, runInRenderer} from "@@/utils/resolvers/system/processResolver";
+import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
 
 export const TORRENTS_EVENT = 'torrents:event';
 export const TORRENTS_PARSE = 'torrents:parse';
@@ -17,11 +18,17 @@ export default class TorrentsResolver {
    * @return {Promise<undefined>}
    */
   static async parseTorrent(torrents_id, torrents_file_content) {
+    
     const token = uuid();
     const channel = TORRENTS_PARSE;
-    return runInRenderer(async electron =>
-      electron.ipcRenderer.invoke(TORRENTS_EVENT, {token, channel, torrents_id, torrents_file_content})
-    )
+
+    return runOnPlatform(
+      async () => null,
+      async () => runInRenderer(async electron =>
+        electron.ipcRenderer.invoke(TORRENTS_EVENT, {token, channel, torrents_id, torrents_file_content})
+      )
+    );
+
   }
 
 

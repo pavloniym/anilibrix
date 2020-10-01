@@ -1,3 +1,4 @@
+// Router
 import router from '@router'
 
 export const RELEASES_ROUTE_NAME = 'releases';

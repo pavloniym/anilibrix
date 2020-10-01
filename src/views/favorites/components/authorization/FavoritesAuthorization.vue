@@ -17,7 +17,7 @@
   import Banner from "@components/app/ui/banner";
 
   // Utils
-  import {toLogin} from "@utils/router/views";
+ // import {toLogin} from "@utils/router/views";
 
   // Image
   import LibriaTyan02 from '@assets/images/libria-tyan/LibriaTyan02.svg'
