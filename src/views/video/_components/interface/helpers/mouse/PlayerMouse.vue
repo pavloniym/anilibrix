@@ -44,7 +44,7 @@
         if (direction === 'up' && current_volume < 1) updated_volume = updated_volume + .1;
         if (direction === 'down' && current_volume > 0) updated_volume = updated_volume - .1;
 
-        this.$emit('set:volume', updated_volume);
+        this.$emit('update:volume', updated_volume);
       }
 
     }

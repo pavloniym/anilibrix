@@ -57,12 +57,6 @@
       :key="component.key || k">
     </component>
 
-
-    <!-- Keyboard -->
-    <!--<player-next v-bind="{player, release, episode}"/>
-    <player-mouse v-bind="{player}" @set:volume="setVolume"/>
-    <player-label v-bind="{player}" :key="`label:${episode.id}:${source.label}`"/>-->
-
   </div>
 </template>
 
@@ -75,30 +69,18 @@
   // Actions
   import Links from './actions/links'
   import Buttons from './actions/buttons'
+  import Controls from './actions/controls'
 
   // Drawers
   import TorrentDrawer from './drawers/torrent'
   import EpisodesDrawer from './drawers/episodes'
 
   // Helpers
+  import NextHelper from './helpers/next'
   import LabelHelper from './helpers/label'
+  import MouseHelper from './helpers/mouse'
   import KeyboardHelper from './helpers/keyboard'
   import BufferingHelper from './helpers/buffering'
-
-  // Support
-
-  /*import PlayerPlay from './components/play'
-  import PlayerNext from './components/next'
-  import PlayerLabel from './components/label'
-
-  import PlayerMouse from './components/mouse'
-  import PlayerTorrent from './components/torrent'
-  import PlayerKeyboard from './components/keyboard'
-
-  import PlayerControls from './components/controls'
-  import PlayerEpisodes from './components/episodes'
-  import PlayerBuffering from './components/buffering'*/
-
 
   // Utils
   import screenfull from "screenfull";
@@ -138,13 +120,13 @@
       Buttons,
       Headline,
       Timeline,
+      Controls
     },
 
     data() {
       return {
         video: null,
         interface_is_visible: true,
-        cursor_visibility_handler: null,
         interface_visibility_handler: null,
       }
     },
@@ -172,9 +154,21 @@
             events: {'play:episode': $event => this.$emit('play:episode', $event)}
           },
           {
+            is: NextHelper,
+            props: {player: this.player, release: this.release, episode: this.episode},
+
+          },
+          {
             is: LabelHelper,
             key: `label:${this.episode.id}:${this.source.label}`,
             props: {player: this.player}
+          },
+          {
+            is: MouseHelper,
+            props: {player: this.player},
+            events: {
+              'update:volume': this.updateVolume,
+            },
           },
           {
             is: KeyboardHelper,
@@ -300,21 +294,11 @@
 
 
       /**
-       * Set source
-       *
-       * @param source
-       */
-      setSource(source) {
-        this.$emit('set:source', source);
-      },
-
-
-      /**
-       * Set volume
+       * Update volume
        *
        * @param volume
        */
-      setVolume(volume) {
+      updateVolume(volume) {
         this.player.volume = volume;
       }
 
