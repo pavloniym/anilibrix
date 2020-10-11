@@ -6,7 +6,7 @@ import store, {setUserId} from '@store'
 import router from '@router'
 
 // Migrations
-import {migrateDB} from "@/migrations";
+import {migrateDatabase} from "@/migrations";
 
 // Import vendor plugins
 import sentry from '@plugins/sentry'
@@ -38,7 +38,7 @@ Vue.config.productionTip = false;
 
   // Migrate DB
   // Set user id to store
-  await migrateDB({store});
+  await migrateDatabase({store});
   await setUserId();
 
   // Initialize sentry

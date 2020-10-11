@@ -2,7 +2,7 @@
 import ReleaseProxy from "@proxies/release";
 
 // Transformers
-import ReleaseTransformer, {ReleaseEpisodesTransformer} from '@transformers/release'
+import ReleaseTransformer from '@transformers/release'
 
 // Utils
 import axios from "axios";
@@ -75,13 +75,12 @@ export default {
       try {
 
         // Get release data
-        const data = await new ReleaseProxy().getRelease(release_id, {cancelToken: REQUEST.token});
-        const release = await new ReleaseTransformer().fetchItem(data);
-
-        // Get release poster path
-        // Load release episodes
-        release.poster = new ReleaseProxy().getReleasePosterPath(release.poster);
-        release.episodes = await new ReleaseEpisodesTransformer().fetchCollection(release);
+        const response = (await new ReleaseProxy().getRelease(release_id, {cancelToken: REQUEST.token}));
+        const release = (await new ReleaseTransformer()
+          .setStore(this)
+          .setCancelToken(REQUEST.token)
+          .fetchWithEpisodes(true)
+          .fetchItem(response));
 
         // Save release data
         commit(SET_RELEASE_DATA, release);

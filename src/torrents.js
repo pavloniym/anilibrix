@@ -107,6 +107,7 @@ class Torrents {
 // Initialize torrents class
 const TorrentsInstance = new Torrents();
 
+
 /**
  * Resolve torrent parse
  * Listen to TORRENTS_PARSE event from main process

@@ -3,32 +3,23 @@ import {EventBus} from "@plugins/vue-event-bus";
 
 // Resolvers
 import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
-import {runInProcess, runInRenderer} from "@@/utils/resolvers/system/processResolver";
+import {runInRenderer} from "@@/utils/resolvers/system/processResolver";
 
 // Events
-import {APP_ERROR} from "@/events/error/errorsEvents";
-
 export const ERROR_EMIT = 'error:emit';
 
 export default class ErrorResolver {
-
 
   /**
    * Emit error
    *
    * @param error
-   * @param window
    */
-  static emitError(error, window = null) {
+  static emitError(error) {
     runOnPlatform(
       () => EventBus.$emit(ERROR_EMIT, error),
-      () => {
-        runInProcess(
-          () => window ? window.sendToWindow(ERROR_EMIT, error) : null, // send error from main process to app window
-          () => EventBus.$emit(ERROR_EMIT, error) // If emit error from render process -> use event bus
-        )
-      }
-    );
+      () => runInRenderer(() => EventBus.$emit(ERROR_EMIT, error))
+    )
   }
 
 
@@ -40,14 +31,7 @@ export default class ErrorResolver {
   static catchError(callback) {
     runOnPlatform(
       () => EventBus.$on(ERROR_EMIT, callback),
-      () => {
-        runInRenderer(electron => {
-
-          electron.ipcRenderer.on(ERROR_EMIT, (e, error) => callback(error)); // Check from electron
-          EventBus.$on(ERROR_EMIT, callback); // Check from event bus
-
-        })
-      }
+      () => runInRenderer(() => EventBus.$on(ERROR_EMIT, callback))
     )
   }
 
@@ -59,8 +43,8 @@ export default class ErrorResolver {
    */
   static unsubscribeError(callback) {
     runOnPlatform(
-      () => EventBus.$off(APP_ERROR, callback),
-      () => runInRenderer(() => EventBus.$off(APP_ERROR, callback))
+      () => EventBus.$off(ERROR_EMIT, callback),
+      () => runInRenderer(() => EventBus.$off(ERROR_EMIT, callback))
     )
   }
 

@@ -1,14 +1,13 @@
-// Proxy
+// Proxy + Transformers
 import ReleaseProxy from "@proxies/release";
-
-// Transformers
-import ReleaseTransformer, {ReleaseEpisodesTransformer} from '@transformers/release'
+import ReleaseTransformer from '@transformers/release'
 
 // Utils
 import axios from 'axios'
 
 // Resolvers
 import ErrorResolver from "@@/utils/resolvers/error";
+import NotificationsResolver from "@@/utils/resolvers/notifications";
 
 // Mutations
 const SET_INDEX = 'SET_INDEX';
@@ -116,66 +115,21 @@ export default {
 
         // Get releases from server
         // Transform releases
-        const response = await new ReleaseProxy().getReleases({cancelToken: REQUEST.token});
-        const releases = new ReleaseTransformer().fetchCollection(response);
-
-        // Filters releases without episodes
-        // Sort releases from newest to oldest
-        const filtered_releases = releases
-          .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}))
-          .sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system));
-
-
-        // Load episodes
-        // Filter releases with episodes
-        const releases_with_episodes = (
-          await Promise.allSettled(
-            filtered_releases.map(async release => {
-
-                // Parse release episodes
-                const episodes = await new ReleaseEpisodesTransformer()
-                  .setStore(this)
-                  .setCancelToken(REQUEST.token)
-                  .fetchCollection(release);
-
-                return {...release, episodes};
-              }
-            )
-          ))
-          .filter(promise => promise.status === 'fulfilled')
-          .map(promise => promise.value)
+        const response = (await new ReleaseProxy().getReleases({cancelToken: REQUEST.token}));
+        const releases = (await new ReleaseTransformer()
+          .setStore(this)
+          .setCancelToken(REQUEST.token)
+          .fetchWithEpisodes(true)
+          .fetchCollection(response))
+          .sort((a, b) => new Date(b.datetime.system) - new Date(a.datetime.system))
           .filter(release => release && release.episodes && release.episodes.length > 0);
 
-
-        // Try to find new releases and show notifications
-        // If previous releases exists (ignore initial request)
-        if (state.data && state.data.length > 0) {
-          releases_with_episodes.forEach(release => {
-
-            // Get release id and episodes number
-            const release_id = release.id;
-            const release_episodes = release.episodes.length;
-
-            // Get previous release
-            // Check by id and same episodes number
-            const previous_release = state.data.find(item => item.id === release_id && item.episodes.length === release_episodes) || null;
-
-            // If no release found
-            // Send to notifications store
-            if (previous_release === null) {
-
-              // Send notification event to main window
-              // emitReleaseNotification(release);
-
-              // Send release to notifications store
-              // dispatch('notifications/setRelease', release, {root: true})
-            }
-          });
-        }
+        // Try to emit release notifications
+        await dispatch('_emitReleasesNotifications', {releases, previous_releases: state.data});
 
         // Set updated datetime
         // Commit releases
-        commit(SET_RELEASES_DATA, releases_with_episodes);
+        commit(SET_RELEASES_DATA, releases);
         commit(SET_RELEASES_DATETIME, new Date());
 
       } catch (error) {
@@ -192,9 +146,51 @@ export default {
         }
       } finally {
         commit(SET_RELEASES_LOADING, false);
+      }
+    },
 
+
+    /**
+     * Emit releases notifications
+     *
+     * @param state
+     * @param dispatch
+     * @param releases
+     * @param previousReleases
+     * @return {Promise<void>}
+     * @private
+     */
+    async _emitReleasesNotifications({dispatch}, {releases, previous_releases}) {
+
+      // Try to find new releases and show notifications
+      // If previous releases exists (ignore initial request)
+      if (previous_releases && previous_releases.length > 0) {
+        releases.forEach(release => {
+
+          // Get release id and episodes number
+          const release_id = release.id;
+          const release_episodes = release.episodes.length;
+
+          // Get previous release
+          // Check by id and same episodes number
+          const previous_release = previous_releases.find(item => item.id === release_id && item.episodes.length === release_episodes) || null;
+
+          // If no release found
+          // Send to notifications store
+          if (previous_release === null) {
+
+            // Get first (latest) episode
+            const episode = release.episodes[0];
+
+            // Send release to notifications store
+            dispatch('notifications/addNotification', {release, episode}, {root: true});
+
+            // Emit app notification
+            NotificationsResolver.emitNotification({release, episode})
+
+          }
+        });
       }
     }
-
   }
 }

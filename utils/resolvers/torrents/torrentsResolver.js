@@ -18,7 +18,7 @@ export default class TorrentsResolver {
    * @return {Promise<undefined>}
    */
   static async parseTorrent(torrents_id, torrents_file_content) {
-    
+
     const token = uuid();
     const channel = TORRENTS_PARSE;
 
@@ -36,7 +36,7 @@ export default class TorrentsResolver {
    * Resolve torrents window event
    *
    * @param TorrentsWindow
-   * @return {Promise<void>}
+   * @return {void}
    */
   static async resolveTorrentsWindowEvent(TorrentsWindow) {
     runInMain(async electron => await electron.ipcMain.handle(TORRENTS_EVENT, (e, {channel, token, ...payload}) => {

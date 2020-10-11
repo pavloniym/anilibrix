@@ -46,8 +46,10 @@
 
   export default {
     name: 'Releases.View',
-    meta: {
-      title: 'Последние релизы'
+    meta() {
+      return {
+        title: 'Последние релизы'
+      }
     },
     mixins: [KeyboardHandlerMixin],
     components: {

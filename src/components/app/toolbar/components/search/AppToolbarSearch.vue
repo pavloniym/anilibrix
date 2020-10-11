@@ -1,6 +1,6 @@
 <template>
   <v-autocomplete
-    v-bind="{items, loading}"
+    v-bind="{items}"
     solo
     dense
     no-filter
@@ -12,12 +12,12 @@
     item-text="names.ru"
     class="grey darken-2"
     placeholder="Поиск релиза ..."
+    :loading="is_loading"
     :append-icon="null"
     :search-input.sync="search"
     @blur="_setSearching(false)"
     @focus="_setSearching(true)"
     @input="toRelease">
-
     <template v-slot:item="{item}">
 
       <!-- Avatar -->
@@ -26,13 +26,12 @@
       </v-list-item-avatar>
 
       <!-- Content -->
-      <v-list-item-content :style="{maxWidth: $refs.search.$el.clientWidth + 'px'}">
+      <v-list-item-content>
         <v-list-item-title v-text="item.names.ru"/>
         <v-list-item-subtitle v-text="item.names.original"/>
       </v-list-item-content>
 
     </template>
-
   </v-autocomplete>
 </template>
 
@@ -62,8 +61,8 @@
       return {
         items: [],
         search: null,
-        loading: false,
         visible: false,
+        is_loading: false,
       }
     },
 
@@ -77,9 +76,7 @@
        */
       getReleases: __debounce(async function (search_query) {
         try {
-
-          // Set loading state
-          this.loading = true;
+          this.is_loading = true;
 
           // Cancel previous request if it was stored
           // Create new request token if exists
@@ -87,14 +84,9 @@
           this.$options.request = axios.CancelToken.source();
 
           // Get releases
-          const response = await new ReleaseProxy()
-            .searchReleases(search_query, {cancelToken: this.$options.request.token});
-
           // Transform releases
-          // Get posters src
-          this.items = new SearchTransformer()
-            .fetchCollection(response || [])
-            .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}))
+          const response = await new ReleaseProxy().searchReleases(search_query, {cancelToken: this.$options.request.token});
+          this.items = new SearchTransformer().fetchCollection(response || [])
 
         } catch (error) {
 
@@ -103,10 +95,8 @@
           ErrorResolver.emitError('Произошла ошибка во время поиска релизов');
           throw error;
 
-
         } finally {
-          this.loading = false;
-
+          this.is_loading = false;
         }
       }, 1000),
 
@@ -123,7 +113,7 @@
           // Reset input
           // Go to release page
           this.$refs.search.setValue(undefined);
-          toRelease(release);
+          toRelease(release.id);
 
           // Reset items
           this.items = [];
@@ -143,9 +133,8 @@
             // Get releases
             this.getReleases(search);
 
-            // Check if metrics is available
             // Hit metrics event
-            if (this.$metrika) this.$metrika.hit(`/search?query=${search}`);
+            this.$visit(`/search?query=${search}`, 'Поиск релиза');
 
           } else {
 

@@ -16,6 +16,7 @@ import devtoolsInstaller from "./utils/devtools/devtoolsInstaller";
 import AppResolver from "@@/utils/resolvers/app";
 import RequestResolver from "@@/utils/resolvers/request";
 import TorrentsResolver from "@@/utils/resolvers/torrents";
+import NotificationsResolver from "@@/utils/resolvers/notifications";
 
 const fs = require('fs');
 
@@ -61,6 +62,7 @@ app.on('ready', async () => {
   // Resolvers
   appResolvers();
   torrentsResolvers();
+  notificationsResolvers();
 
   // Functions
   globalFunctions();
@@ -83,13 +85,8 @@ app.on('ready', async () => {
 
    // Broadcast all handlers
    // Used for windows communications
-   broadcastAppHandlers();
-   broadcastTorrentEvents();
    broadcastDownloadHandlers();
-   broadcastNotificationsEvents();
  */
-
-  //await autoUpdater.checkForUpdatesAndNotify();
 
 });
 
@@ -132,4 +129,14 @@ const globalFunctions = () => {
  */
 const torrentsResolvers = () => {
   TorrentsResolver.resolveTorrentsWindowEvent(TorrentsWindowInstance);
+};
+
+
+/**
+ * Notifications Resolvers
+ *
+ * @return {void}
+ */
+const notificationsResolvers = () => {
+  NotificationsResolver.setDockNumber();
 };

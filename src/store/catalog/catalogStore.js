@@ -174,15 +174,10 @@ export default {
         const {items} = await new CatalogProxy().getCatalogReleases({sort, genres, years, page, perPage});
         const releases = new CatalogTransformer().fetchCollection(items);
 
-        // Get processed releases
-        // Get poster path
-        const processedReleases = releases
-          .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}));
-
         // Push catalog releases
         // Set updated pagination data
-        commit(SET_CATALOG_RELEASES, processedReleases);
-        commit(SET_CATALOG_PAGINATION, {page, lastItems: processedReleases ? processedReleases.length : 0});
+        commit(SET_CATALOG_RELEASES, releases);
+        commit(SET_CATALOG_PAGINATION, {page, lastItems: releases ? releases.length : 0});
 
       } catch (error) {
 

@@ -19,8 +19,8 @@
         <episode
           v-bind="{release, episode}"
           :key="episode.id"
-          :is-playing="playing && playing.id === episode.id"
-          @click="$emit('episode', episode)">
+          :is_playing="playing_episode_id === episode.id"
+          @click="$emit('play:episode', episode)">
         </episode>
       </template>
     </v-list>
@@ -41,6 +41,8 @@
   // Utils
   import Fuse from "fuse.js";
   import __orderBy from 'lodash/orderBy'
+
+  // Storage
   import {mapState} from 'vuex'
 
   const props = {
@@ -56,8 +58,8 @@
       type: Array,
       default: null,
     },
-    playing: {
-      type: Object,
+    playing_episode_id: {
+      type: [String, Number],
       default: null
     }
   };

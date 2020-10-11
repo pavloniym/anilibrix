@@ -1,9 +1,11 @@
+// Mutations
 const PUSH_TO_RELEASES = 'PUSH_TO_RELEASES';
 const SORT_NOTIFICATIONS = 'SORT_NOTIFICATIONS';
 const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
 const FILTER_NOTIFICATIONS = 'FILTER_NOTIFICATIONS';
 const SET_NOTIFICATIONS_SEEN_STATUS = 'SET_NOTIFICATIONS_SEEN_STATUS';
 
+// Persisted paths
 export const notificationsPersisted = ['notifications'];
 
 export default {
@@ -66,18 +68,19 @@ export default {
   actions: {
 
     /**
-     * Add release to notification items
+     * Add release with episode to notification items
      *
      * @param commit
      * @param release
+     * @param episode
      * @return {*}
      */
-    setRelease: ({commit}, release) => {
+    addNotification: ({commit}, {release, episode}) => {
 
       // Add notification
       // Push release to releases items
-      if (release && release.episodes[0]) {
-        commit(PUSH_TO_RELEASES, {release, episode: release.episodes[0], is_seen: false, datetime: new Date()});
+      if (release && episode) {
+        commit(PUSH_TO_RELEASES, {release, episode, is_seen: false, datetime: new Date()});
       }
 
       // Filter notifications
@@ -89,12 +92,12 @@ export default {
 
 
     /**
-     * Set seen status
+     * Set seen status for all notifications
      *
      * @param commit
      * @return {*}
      */
-    setSeen: ({commit}) => commit(SET_NOTIFICATIONS_SEEN_STATUS),
+    setAllNotificationsSeen: ({commit}) => commit(SET_NOTIFICATIONS_SEEN_STATUS),
 
 
     /**

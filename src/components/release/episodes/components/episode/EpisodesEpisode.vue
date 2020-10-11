@@ -13,7 +13,7 @@
 
         <!-- Episode Progress -->
         <v-layout align-center justify-center :style="{width: '40px'}">
-          <playing v-if="isPlaying"/>
+          <playing v-if="is_playing"/>
           <watched v-else v-bind="{episode, release}"/>
         </v-layout>
 
@@ -42,7 +42,7 @@
       type: Object,
       default: null,
     },
-    isPlaying: {
+    is_playing: {
       type: Boolean,
       default: false,
     }

@@ -21,10 +21,10 @@ export const VIDEO_ROUTE_NAME = 'video';
  *
  * @return {Promise<Route>}
  */
-export const toVideo = (release_id, episode_id) => {
+export const toVideo = (release_id, episode_id, params = {}) => {
   return router.push({
     name: VIDEO_ROUTE_NAME,
-    params: {anchor: release_id + ':' + episode_id}
+    params: {anchor: release_id + ':' + episode_id, ...params}
   });
 };
 

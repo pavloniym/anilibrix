@@ -35,6 +35,7 @@
   // Resolvers
   import AppResolver from "@@/utils/resolvers/app";
   import ErrorResolver from "@@/utils/resolvers/error";
+  import NotificationsResolver from "@@/utils/resolvers/notifications";
 
   export default {
     mixins: [PlatformMixin, DeviceMixin],
@@ -366,6 +367,30 @@
                 props: {
                   label: 'Показать тестовую ошибку',
                   action: () => ErrorResolver.emitError('Тестовая ошибка')
+                },
+                divider: true,
+              },
+              {
+                is: Action,
+                props: {
+                  label: 'Добавить тестовое уведомление о новом релизе',
+                  action: () => {
+
+                    // Get first release and episode from releases data
+                    // Calculate random release index
+                    const releases = this.$__get(this.$store.state, 'releases.data') || [];
+                    const random_release_index = Math.round(Math.random() * releases.length);
+
+                    // Get release and episode
+                    const release = releases && releases[random_release_index] ? releases[random_release_index] : null;
+                    const episode = release && release.episodes[0] ? release.episodes[0] : null;
+
+                    // Dispatch store event
+                    this.$store.dispatch('notifications/addNotification', {release, episode});
+
+                    // Show app notification
+                    NotificationsResolver.emitNotification({release, episode});
+                  }
                 },
                 divider: true,
               },

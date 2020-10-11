@@ -1,47 +1,46 @@
 <template>
   <div>
-
-    <!-- Search input -->
-    <!-- Search Results -->
-    <search-input v-model="search" class="mb-2" />
-    <search-results v-bind="{items, loading}" @click="toRelease" />
-
+    <search v-model="search" class="mb-2"/>
+    <loader v-if="is_loading"/>
+    <results v-else v-bind="{items}" @click="toRelease($event.id)"/>
   </div>
 </template>
 
 <script>
 
   // Components
-  import SearchInput from './components/input'
-  import SearchResults from "./components/results";
+  import Search from './_components/input'
+  import Loader from './_components/loader'
+  import Results from "./_components/results";
 
   // Utils
   import axios from "axios";
   import __debounce from "lodash/debounce";
 
-  // Proxy
+  // Proxy + Transformer
   import ReleaseProxy from "@proxies/release";
   import SearchTransformer from "@transformers/search";
 
-  // Events
-  import {sendError} from "@/events/error/errorsEvents";
-
   // Routes
   import {toRelease} from "@router/release/releaseRoutes";
+
+  // Resolvers
+  import ErrorResolver from "@@/utils/resolvers/error";
 
 
   export default {
     name: "Search",
     request: null,
     components: {
-      SearchInput,
-      SearchResults
+      Search,
+      Loader,
+      Results
     },
     data() {
       return {
         items: [],
         search: null,
-        loading: false,
+        is_loading: false,
       }
     },
 
@@ -58,7 +57,7 @@
         try {
 
           // Set loading state
-          this.loading = true;
+          this.is_loading = true;
 
           // Cancel previous request if it was stored
           // Create new request token if exists
@@ -66,24 +65,20 @@
           this.$options.request = axios.CancelToken.source();
 
           // Get releases
-          const response = await new ReleaseProxy().searchReleases(search_query, {cancelToken: this.$options.request.token});
-
           // Transform releases
-          // Get posters src
-          this.items = new SearchTransformer()
-            .fetchCollection(response || [])
-            .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}))
+          const response = await new ReleaseProxy().searchReleases(search_query, {cancelToken: this.$options.request.token});
+          this.items = new SearchTransformer().fetchCollection(response || [])
+
 
         } catch (error) {
 
           // Emit error
           // Throw error
-          sendError('Произошла ошибка во время поиска релизов');
+          ErrorResolver.emitError('Произошла ошибка во время поиска релизов');
           throw error;
 
-
         } finally {
-          this.loading = false;
+          this.is_loading = false;
         }
       }, 1000),
     },
@@ -96,9 +91,8 @@
             // Get releases
             this.getReleases(search);
 
-            // Check if metrics is available
             // Hit metrics event
-            if (this.$metrika) this.$metrika.hit(`/search?query=${search}`);
+            this.$visit(`/search?query=${search}`, 'Поиск релиза');
 
           } else {
             this.items = [];

@@ -7,7 +7,7 @@ export const BLANK_ROUTE_NAME = 'blank';
 /**
  * Push to blank
  *
- * @return {Promise<Route>}
+ * @return {*}
  */
 export const toBlank = (message) => router.push({name: BLANK_ROUTE_NAME, params: {message}});
 

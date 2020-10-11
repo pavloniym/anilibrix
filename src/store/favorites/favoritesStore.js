@@ -1,5 +1,4 @@
 // Proxy
-import ReleaseProxy from "@proxies/release";
 import FavoritesProxy from "@proxies/favorites";
 
 // Transformer
@@ -175,38 +174,19 @@ export default {
 
           // Get releases from server
           // Transform releases
-          const {items} = await new FavoritesProxy().getFavorites({cancelToken: REQUEST_FOR_FAVORITES.token});
-          const releases = new ReleaseTransformer().fetchCollection(items);
-
-          // Load episodes
-          // Filter releases with episodes
-          /*const processedReleases = (await Promise
-            .allSettled(
-              releases
-                .map(async release => ({
-                  ...release,
-                  episodes: await new EpisodesTransformer(
-                    {
-                      cancelToken: REQUEST_FOR_FAVORITES.token,
-                      skipTorrents: true
-                    }
-                  )
-                    .fetchItem(release.episodes)
-                }))
-            ))
-            .filter(promise => promise.status === 'fulfilled')
-            .map(promise => promise.value)
-            .filter(release => release.episodes.length > 0)
-            .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}));*/
+          const {items} = (await new FavoritesProxy().getFavorites({cancelToken: REQUEST_FOR_FAVORITES.token}));
+          const releases = (await new ReleaseTransformer()
+            .setStore(this)
+            .setCancelToken(REQUEST_FOR_FAVORITES.token)
+            .setSkipTorrents(true)
+            .fetchWithEpisodes(true)
+            .fetchCollection(items))
+            .filter(release => release.episodes.length > 0);
 
           // Set releases
-          //commit(SET_ITEMS, processedReleases);
           commit(SET_ITEMS, releases);
 
         } catch (error) {
-
-          console.log(error);
-
           if (!axios.isCancel(error)) {
 
             // Show error
@@ -216,9 +196,7 @@ export default {
 
           }
         } finally {
-
           commit(SET_LOADING, false);
-
         }
       }
     },
@@ -260,7 +238,6 @@ export default {
             // Throw error
             ErrorResolver.emitError(error);
             throw error;
-
           }
         }
       }

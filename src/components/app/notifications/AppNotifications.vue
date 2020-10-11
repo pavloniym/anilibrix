@@ -1,19 +1,19 @@
 <script>
 
   // Utils
-  import {meta} from '@package'
-  //import {toVideo} from "@utils/router/views";
   import {mapState} from 'vuex'
 
-  // Handlers
-  // import {emitAppDockNumber} from "@main/handlers/app/appHandlers";
-  // import {handleReleaseNotification} from "@main/handlers/notifications/notificationsHandler";
+  // Resolvers
+  import NotificationsResolver from "@@/utils/resolvers/notifications";
+
+  // Routes
+  import {toVideo} from "@router/video/videoRoutes";
 
   export default {
     render: () => null,
     computed: {
+      ...mapState('app/settings', {_system_notifications: s => s.app.notifications.system}),
       ...mapState('notifications', {_items: s => s.items}),
-      //...mapState('app/settings/system', {_notifications: s => s.notifications.system}),
 
 
       /**
@@ -21,48 +21,63 @@
        *
        * @return {number}
        */
-      unseen() {
+      unseenNotifications() {
         return this._items.filter(item => item.is_seen === false).length
+      }
+
+    },
+
+    methods: {
+
+      /**
+       * Show notification
+       *
+       * @param release
+       * @param episode
+       * @return {void}
+       */
+      showNotification({release, episode}) {
+
+        // Check if release is set
+        // Check if system notifications is enabled
+        if (release && episode && this._system_notifications === true) {
+
+          // Show notification
+          const title = this.$__get(episode, 'title');
+          const name = this.$__get(release, 'names.ru');
+
+          if (title && name) {
+
+            // Set notification name
+            NotificationsResolver.setAppUserModelId();
+
+            // Create notification
+            const notification = new window.Notification(title, {body: name});
+
+            // If the user clicks in the Notifications Center, show the app
+            notification.onclick = () => toVideo(release.id, episode.id);
+
+          }
+        }
       }
 
     },
 
 
     created() {
-      handleReleaseNotification((release => {
-
-        // Check if release is set
-        // Check if system notifications is enabled
-        if (release && this._notifications === true) {
-
-          // Show notification
-          const episode = release.episodes[0];
-          const title = episode ? episode.title : null;
-
-          const name = release.names.ru;
-          const poster = release.poster;
-
-          if (title && name) {
-
-            // Set notification name
-           // this.$electron.remote.app.setAppUserModelId(meta.name);
-
-            // Create notification
-            // If the user clicks in the Notifications Center, show the app
-            const notification = new window.Notification(title, {body: name, icon: poster});
-            notification.onclick = () => toVideo(release, episode);
-
-          }
-        }
-
-      }));
+      NotificationsResolver.catchNotification(this.showNotification);
     },
 
+    destroyed() {
+      NotificationsResolver.unsubscribeNotification(this.showNotification);
+    },
+
+
     watch: {
-      unseen: {
+      unseenNotifications: {
         immediate: true,
-        handler(unseen) {
-          emitAppDockNumber(unseen);
+        handler(unseen_notifications_number) {
+          NotificationsResolver.sendNotificationsNumber(unseen_notifications_number);
         }
       }
     }

@@ -130,7 +130,8 @@
         async handler(release_id) {
 
           // Scroll to top
-          document.getElementById('container').scrollTo(0, 0);
+          const container = document.getElementById('container');
+          if (container) container.scrollTo(0, 0);
 
           // Update if release data changed
           if (this._release === null || this._release.id !== parseInt(release_id)) {

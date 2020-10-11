@@ -21,7 +21,7 @@ const migrations = [
  * @param electron
  * @return {Promise<void>}
  */
-export const migrateDB = async ({store}) => {
+export const migrateDatabase = async ({store}) => {
 
   // Require electron
   // Only on desktop process

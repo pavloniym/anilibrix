@@ -1,5 +1,9 @@
-import stripHtml from 'string-strip-html';
+// Proxy + Transformers
+import ReleaseProxy from "@proxies/release/ReleaseProxy";
 import BaseTransformer from "@transformers/BaseTransformer";
+
+// Utils
+import stripHtml from 'string-strip-html';
 
 export default class CatalogTransformer extends BaseTransformer {
 
@@ -18,7 +22,7 @@ export default class CatalogTransformer extends BaseTransformer {
         ru: this._stripHtml(this.get(release, 'names.0')),
         original: this._stripHtml(this.get(release, 'names.1'))
       },
-      poster: this.get(release, 'poster'),
+      poster: this._getPoster(release),
       genres: this.get(release, 'genres') || [],
       description: this._stripHtml(this.get(release, 'description')),
     }
@@ -34,5 +38,17 @@ export default class CatalogTransformer extends BaseTransformer {
    */
   _stripHtml(value) {
     return value ? stripHtml(value) : null;
+  }
+
+
+  /**
+   * Get poster image path
+   *
+   * @param release
+   * @return {string}
+   * @private
+   */
+  _getPoster(release) {
+    return new ReleaseProxy().getReleasePosterPath(this.get(release, 'poster'));
   }
 }

@@ -1,22 +1,21 @@
 <template>
   <v-app>
 
+    <!-- Settings -->
     <!-- System Bar -->
-    <app-system-bar/>
     <app-settings/>
+    <app-system-bar/>
 
     <!-- Content -->
-    <app-loader v-if="loading" key="loader"/>
+    <app-loader v-if="is_loading" key="loader"/>
     <component v-else :is="layout">
       <router-view :key="$route.name"/>
     </component>
 
 
     <!-- Errors -->
-    <!-- Downloads -->
     <!-- Notifications -->
     <app-error/>
-    <!--<app-downloads/>-->
     <app-notifications/>
 
   </v-app>
@@ -24,44 +23,44 @@
 
 <script>
 
-  // Components
+  // App
   import AppError from '@components/app/error'
   import AppLoader from '@components/app/loader'
-  import AppToolBar from "@components/app/toolbar";
   import AppSettings from "@components/app/settings";
   import AppSystemBar from '@components/app/systembar'
-  import AppDownloads from "@components/app/downloads";
+
+  // Layouts
   import AppBaseLayout from '@layouts/base'
+
+  // Notifications
   import AppNotifications from "@components/app/notifications";
 
   // Utils
-  import {mapActions} from 'vuex'
+  import {mapActions, mapState} from 'vuex'
 
   export default {
     name: 'AniLibrix',
     components: {
       AppError,
       AppLoader,
-      AppToolBar,
       AppSettings,
       AppSystemBar,
-      AppDownloads,
       AppBaseLayout,
       AppNotifications,
     },
     data() {
       return {
-        loading: false,
+        is_loading: false,
         update_handler: null
       }
     },
 
 
     computed: {
-      /*...mapState('app/settings/system', {
-        _updates_enabled: s => s.updates.enabled,
-        _updates_timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
-      }),*/
+      ...mapState('app/settings', {
+        _releases_updates_timeout: s => s.app.releases_updates.timeout,
+        _releases_updates_are_enabled: s => s.app.releases_updates.enabled,
+      }),
 
       /**
        * Get route layout
@@ -70,6 +69,19 @@
        */
       layout() {
         return this.$__get(this.$route, 'meta.layout.is', AppBaseLayout);
+      },
+
+
+      /**
+       * Releases updates configuration
+       *
+       * @return {*}
+       */
+      releasesUpdates() {
+        return {
+          releases_updates_timeout: (this._releases_updates_timeout > 0 ? this._releases_updates_timeout : 1) * 60 * 1000,
+          releases_updates_are_enabled: this._releases_updates_are_enabled
+        }
       }
 
     },
@@ -78,6 +90,19 @@
     methods: {
       ...mapActions('releases', {_getReleases: 'getReleases'}),
       ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
+
+
+      /**
+       * Refresh data
+       * Get releases
+       * Get favorites
+       *
+       * @return {void}
+       */
+      refreshData() {
+        this._getReleases();
+        this._getFavorites();
+      },
 
 
       /**
@@ -91,13 +116,8 @@
         if (this.update_handler) clearInterval(this.update_handler);
 
         // If updated are enabled -> set interval for auto updates
-        if (this._updates_enabled === true) {
-          this.update_handler = setInterval(() => {
-
-            this._getReleases();
-            this._getFavorites();
-
-          }, this._updates_timeout);
+        if (this.releasesUpdates.releases_updates_are_enabled === true) {
+          this.update_handler = setInterval(this.refreshData, this.releasesUpdates.releases_updates_timeout);
         }
       }
 
@@ -106,31 +126,24 @@
     created() {
 
       // Initial loading
-      this.loading = true;
-      setTimeout(() => this.loading = false, 1000);
+      // Add some delay for loader
+      this.is_loading = true;
+      setTimeout(() => this.is_loading = false, 1000);
 
       // Get releases
       // Get favorites
-      this._getReleases();
-      this._getFavorites();
+      this.refreshData();
     },
 
 
     watch: {
-
-      _updates: {
+      releasesUpdates: {
+        deep: true,
         immediate: true,
         handler() {
           this.toggleUpdates();
         }
-      },
-
-      _timeout: {
-        handler() {
-          this.toggleUpdates();
-        }
       }
-
     }
 
   }
