@@ -1,26 +1,26 @@
 <template>
-    <loader v-if="is_loading"/>
-    <v-layout v-else align-center fill-height>
+  <loader v-if="is_loading"/>
+  <v-layout v-else align-center fill-height>
 
-      <!-- Player handler component -->
-      <!-- Player interface -->
-      <component
-        v-bind="{sources, source}"
-        :is="handler"
-        :key="`video:${anchor}`"
-        :time.sync="time"
-        :duration.sync="duration"
-        @error="toBlank">
-        <template v-slot="{player}">
-          <interface
-            v-bind="{player, source, release, episode}"
-            :key="`interface:${anchor}`"
-            @play:episode="toVideo">
-          </interface>
-        </template>
-      </component>
+    <!-- Player handler component -->
+    <!-- Player interface -->
+    <component
+      v-bind="{sources, source}"
+      :is="handler"
+      :key="`video:${anchor}`"
+      :time.sync="time"
+      :duration.sync="duration"
+      @error="toBlank">
+      <template v-slot="{player}">
+        <interface
+          v-bind="{player, source, release, episode}"
+          :key="`interface:${anchor}`"
+          @play:episode="toVideo">
+        </interface>
+      </template>
+    </component>
 
-    </v-layout>
+  </v-layout>
 </template>
 
 <script>
@@ -28,6 +28,8 @@
   // Components
   import Loader from './_components/loader'
   import Interface from './_components/interface'
+
+  // Handlers
   import {ServerHandler, TorrentHandler} from './_components/player/types'
 
   // Proxy + Transformer

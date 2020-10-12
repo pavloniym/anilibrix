@@ -1,3 +1,3 @@
-import PlayerInterface from './PlayerInterface'
+import VideoInterface from './VideoInterface'
 
-export default PlayerInterface
+export default VideoInterface

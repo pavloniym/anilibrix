@@ -1,3 +1,7 @@
-import PlayerControls from './PlayerControls'
+import VideoLeftControls from './VideoLeftControls'
+import VideoRightControls from './VideoRightControls'
 
-export default PlayerControls
+export {
+  VideoLeftControls,
+  VideoRightControls
+}

@@ -1,51 +1,25 @@
 <template>
   <v-layout align-center justify-start ref="links">
     <template v-if="is_mounted">
-
-      <!-- Releases -->
-      <v-tooltip right :attach="$refs.links">
-        <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon large @click="toReleases">
-            <v-icon size="24">mdi-view-column</v-icon>
-          </v-btn>
-        </template>
-        <span>К списку релизов</span>
-      </v-tooltip>
-
-
-      <!-- Release -->
-      <v-tooltip right :attach="$refs.links">
-        <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon large @click="toRelease(release.id)">
-            <v-avatar size="24">
-              <img v-bind="{src}">
-            </v-avatar>
-          </v-btn>
-        </template>
-        <span>{{title}}</span>
-      </v-tooltip>
-
-
-      <!-- Episodes -->
-      <v-tooltip right :attach="$refs.links">
-        <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon large @click="getEpisodesDrawer().show()">
-            <v-icon size="24">mdi-playlist-play</v-icon>
-          </v-btn>
-        </template>
-        <span>Эпизоды</span>
-      </v-tooltip>
+      <component
+        v-on="control.events"
+        v-for="(control, k) in controls"
+        v-bind="control.props"
+        :is="control.is"
+        :key="k"
+        :class="control.classes">
+      </component>
 
 
       <!-- Torrent -->
-      <v-tooltip v-if="isTorrent" right :attach="$refs.links">
+      <!--<v-tooltip v-if="isTorrent" right :attach="$refs.links">
         <template v-slot:activator="{on}">
           <v-btn v-on="on" icon large @click="getTorrentDrawer().show()">
             <v-icon size="20">mdi-file-table-box-multiple</v-icon>
           </v-btn>
         </template>
         <span>Торрент</span>
-      </v-tooltip>
+      </v-tooltip>-->
 
       <!-- Opening skip button -->
       <!--<v-tooltip v-if="_opening_skip_is_enabled" right :attach="$refs.links">
@@ -64,12 +38,13 @@
 
 <script>
 
+  // Components
+  import Home from './_components/home'
+  import Volume from './_components/volume'
+  import Release from './_components/release'
+  
   // Storage
   import {mapState} from 'vuex'
-
-  // Routes
-  import {toRelease} from "@router/release/releaseRoutes";
-  import {toReleases} from "@router/releases/releasesRoutes";
 
   const props = {
     player: {
@@ -87,11 +62,7 @@
     getTorrentDrawer: {
       type: Function,
       default: null
-    },
-    getEpisodesDrawer: {
-      type: Function,
-      default: null
-    },
+    }
   };
 
   export default {
@@ -109,21 +80,25 @@
 
 
       /**
-       * Get release poster src
+       * Get controls
        *
-       * @return {string}
+       * @return {array}
        */
-      src() {
-        return this.$__get(this.release, 'poster');
-      },
-
-      /**
-       * Get title
-       *
-       * @return {string}
-       */
-      title() {
-        return this.$__get(this.release, 'names.ru');
+      controls() {
+        return [
+          {
+            is: Home,
+          },
+          {
+            is: Release,
+            props: {release: this.release},
+          },
+          {
+            is: Volume,
+            props: {player: this.player},
+            events: {'update:volume': $event => this.$emit('update:volume', $event)}
+          },
+        ]
       },
 
       /**
@@ -137,7 +112,6 @@
 
     },
     methods: {
-      ...{toReleases, toRelease},
 
 
       /**

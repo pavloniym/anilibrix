@@ -30,7 +30,6 @@
           </v-layout>
         </v-col>
       </v-row>
-
     </v-layout>
 </template>
 

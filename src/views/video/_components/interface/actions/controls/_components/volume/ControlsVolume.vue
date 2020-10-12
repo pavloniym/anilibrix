@@ -1,21 +1,28 @@
 <template>
-  <v-layout align-center class="shrink">
+  <v-layout
+    align-center
+    class="shrink"
+    @mouseenter="is_collapsed = false"
+    @mouseleave="is_collapsed = true">
 
     <!-- Volume Mute -->
-    <v-btn icon large @click="$emit('change', 0)">
+    <v-btn icon large @click="$emit('update:volume', 0)">
       <v-icon size="24">mdi-volume-{{getVolumeState}}</v-icon>
     </v-btn>
 
     <!-- Volume Level -->
-    <v-slider
-      hide-details
-      min="0"
-      max="1"
-      step=".1"
-      :value="volume"
-      :style="{maxWidth: '70px', width: '70px'}"
-      @input="$emit('change', $event)">
-    </v-slider>
+    <v-slide-x-transition>
+      <v-slider
+        v-if="!is_collapsed"
+        hide-details
+        min="0"
+        max="1"
+        step=".1"
+        :value="volume"
+        :style="{maxWidth: '70px', width: '70px'}"
+        @input="$emit('update:volume', $event)">
+      </v-slider>
+    </v-slide-x-transition>
 
   </v-layout>
 </template>
@@ -34,6 +41,7 @@
     data() {
       return {
         volume: .5,
+        is_collapsed: true,
       }
     },
     computed: {

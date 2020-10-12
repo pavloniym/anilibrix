@@ -15,12 +15,11 @@
 
           <!-- Links -->
           <v-col align-self="center">
-            <links
+            <video-left-controls
               v-bind="{release, source, player}"
-              :getTorrentDrawer="() => $refs.torrent[0]"
-              :getEpisodesDrawer="() => $refs.episodes[0]"
-              @update:time="updateTime">
-            </links>
+              @update:time="updateTime"
+              @update:volume="updateVolume">
+            </video-left-controls>
           </v-col>
 
           <!-- Play -->
@@ -30,14 +29,12 @@
 
           <!-- Controls -->
           <v-col align-self="center">
-            <!--<player-controls
+            <video-right-controls
               v-bind="{episode, source, player}"
-              @set:speed="setSpeed"
-              @set:source="setSource"
-              @set:volume="setVolume"
+              @update:speed="updateSpeed"
               @toggle:pip="togglePIP"
               @toggle:fullscreen="toggleFullscreen">
-            </player-controls>-->
+            </video-right-controls>
           </v-col>
         </v-row>
 
@@ -67,9 +64,8 @@
   import Timeline from './header/timeline'
 
   // Actions
-  import Links from './actions/links'
   import Buttons from './actions/buttons'
-  import Controls from './actions/controls'
+  import {VideoLeftControls, VideoRightControls} from './actions/controls'
 
   // Drawers
   import TorrentDrawer from './drawers/torrent'
@@ -116,11 +112,11 @@
     ],
 
     components: {
-      Links,
       Buttons,
       Headline,
       Timeline,
-      Controls
+      VideoLeftControls,
+      VideoRightControls
     },
 
     data() {
@@ -128,6 +124,12 @@
         video: null,
         interface_is_visible: true,
         interface_visibility_handler: null,
+      }
+    },
+
+    provide() {
+      return {
+        '$interface': this
       }
     },
 

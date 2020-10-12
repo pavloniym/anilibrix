@@ -1,31 +1,28 @@
 <template>
-  <v-menu v-bind="{attach}" top nudge-left="60" nudge-top="45">
+  <v-list dense>
 
-    <!-- Quality -->
-    <template v-slot:activator="{ on }">
-      <v-btn v-on="on" icon large>
-        <v-icon size="24">{{getSourceIcon(source)}}</v-icon>
-      </v-btn>
-    </template>
+    <!-- Close -->
+    <v-list-item @click="$emit('back')">
+      <v-icon small class="mr-2">mdi-chevron-left</v-icon>
+      <v-list-item-title v-text="'Назад'"/>
+    </v-list-item>
+    <v-divider class="my-2"/>
 
-    <!-- Qualities -->
-    <v-list dense>
-      <template v-for="(s, k) in sortedSources">
-        <v-list-item
-          :key="k"
-          :input-value="s.alias === source.alias"
-          @click="$emit('click', s)">
+    <!--<template v-for="(s, k) in sortedSources">
+      <v-list-item
+        :key="k"
+        :input-value="s.alias === source.alias"
+        @click="$emit('click', s)">
 
-          <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
-          <v-list-item-content>
-            <v-list-item-subtitle v-text="s.label"/>
-          </v-list-item-content>
+        <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
+        <v-list-item-content>
+          <v-list-item-subtitle v-text="s.label"/>
+        </v-list-item-content>
 
-        </v-list-item>
-      </template>
-    </v-list>
+      </v-list-item>
+    </template>-->
 
-  </v-menu>
+  </v-list>
 </template>
 
 <script>
@@ -37,10 +34,6 @@
     },
     episode: {
       type: Object,
-      default: null
-    },
-    attach: {
-      type: HTMLDivElement,
       default: null
     }
   };
@@ -94,15 +87,12 @@
        * @return {array}
        */
       sortedSources() {
-        return [
-          ...this.upscaleSources,
-          ...this.serverSources,
-          ...this.torrentSources,
-        ].filter(item => item)
+        return [...this.upscaleSources, ...this.serverSources, ...this.torrentSources]
+          .filter(item => item)
       }
 
-
     },
+
     methods: {
 
       /**
