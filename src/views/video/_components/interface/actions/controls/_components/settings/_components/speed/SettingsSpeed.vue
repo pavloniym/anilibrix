@@ -1,16 +1,18 @@
 <template>
   <v-menu
+    v-click-outside="() => $emit('close')"
     top
     left
-    nudge-top="55"
-    min-width="320px"
-    nudge-right="30"
+    min-width="180px"
+    nudge-right="50"
     :value="true"
+    :attach="attach()"
+    :close-on-click="false"
     :close-on-content-click="false">
 
-    <v-list nav dense>
+    <v-list nav dense class="video__settings__items">
 
-      <!-- Close -->
+      <!-- Back -->
       <v-list-item @click="$emit('back')">
         <v-icon small class="mr-2">mdi-chevron-left</v-icon>
         <v-list-item-title v-text="'Назад'"/>
@@ -25,7 +27,6 @@
     </v-list>
 
   </v-menu>
-
 </template>
 
 <script>
@@ -33,6 +34,10 @@
   const props = {
     player: {
       type: Object,
+      default: null
+    },
+    attach: {
+      type: Function,
       default: null
     }
   };
@@ -86,7 +91,7 @@
        * @return {void}
        */
       updateSpeed(value) {
-        this.$emit('back');
+        this.$emit('close');
         this.$emit('update:speed', value);
       }
 
@@ -101,3 +106,15 @@
 
   }
 </script>
+
+
+
+<style scoped lang="scss">
+
+  .video__settings__items {
+    .v-list-item {
+      height: 32px;
+      min-height: auto;
+    }
+  }
+</style>

@@ -15,7 +15,8 @@
         <interface
           v-bind="{player, source, release, episode}"
           :key="`interface:${anchor}`"
-          @play:episode="toVideo">
+          @play:episode="toVideo"
+          @update:quality="setQuality">
         </interface>
       </template>
     </component>
@@ -257,7 +258,7 @@
         const response = await new ReleaseProxy().getRelease(parseFloat(release_id));
         const release = await new ReleaseTransformer()
           .setStore(this.$store)
-          .fetchWithEpisodes(true)
+          .fetchWithEpisodes()
           .fetchItem(response);
 
         // Try to find current episode

@@ -1,6 +1,3 @@
-//import store from "@store/index";
-//import __camelCase from "lodash/camelCase";
-
 // Proxies
 import AnilibriaReleaseProxy from "@proxies/release";
 
@@ -8,7 +5,9 @@ import AnilibriaReleaseProxy from "@proxies/release";
 import __get from 'lodash/get'
 import __merge from 'lodash/merge'
 import __camelCase from 'lodash/camelCase'
-import {getEpisode} from './index'
+
+// Episodes
+import {getEpisode} from './parseEpisode'
 
 // Resolvers
 import TorrentsResolver from "@@/utils/resolvers/torrents";
@@ -95,10 +94,12 @@ export const parseTorrents = async (torrents, {skip_torrents = false, torrents_e
 
         return episodes;
       }, {});
-
       return __merge(episodes, parsed_episodes);
-    }, {})
+    }, {});
   }
+
+
+
 
   return null;
 };

@@ -1,34 +1,27 @@
 <template>
-  <v-menu
-    v-model="is_visible"
-    top
-    left
-    ref="settings"
-    nudge-top="55"
-    min-width="320px"
-    nudge-right="30"
-    :close-on-content-click="false">
+  <div ref="settings" :style="{position: 'relative'}">
 
-    <!-- Settings -->
-    <template v-slot:activator="{ on }">
-      <v-btn v-on="on" icon large>
-        <v-icon size="24">mdi-settings</v-icon>
-      </v-btn>
-    </template>
+    <!--  -->
+    <v-btn icon large @click="showSettings('selector')">
+      <v-icon size="24">mdi-settings</v-icon>
+    </v-btn>
 
     <!-- Handler -->
-    <component
-      v-on="handler.events"
-      v-bind="handler.props"
-      class="video__settings__items"
-      :is="handler.is"
-      :key="handler.alias"
-      @back="component = 'selector'"
-      @close="is_visible = false"
-      @update:component="component = $event">
-    </component>
+    <v-overlay :value="handler !== null">
+      <component
+        v-if="handler"
+        v-on="handler.events"
+        v-bind="handler.props"
+        :is="handler.is"
+        :key="handler.alias"
+        :attach="() => $refs.settings"
+        @back="showSettings('selector')"
+        @close="closeSettings"
+        @update:component="showSettings">
+      </component>
+    </v-overlay>
 
-  </v-menu>
+  </div>
 </template>
 
 <script>
@@ -57,7 +50,7 @@
     props,
     data() {
       return {
-        component: 'selector',
+        component: null,
         is_visible: false,
       }
     },
@@ -79,7 +72,8 @@
           {
             is: Quality,
             alias: 'quality',
-            props: {source: this.source, player: this.player, episode: this.episode}
+            props: {source: this.source, player: this.player, episode: this.episode},
+            events: {'update:quality': $event => this.$emit('update:quality', $event)}
           },
           {
             is: Speed,
@@ -97,38 +91,44 @@
        * @return {*}
        */
       handler() {
-        return this.settings.find(item => item.alias === this.component);
+        return this.settings.find(item => item.alias === this.component) || null;
       }
+
+    },
+
+    methods: {
+
+      /**
+       * Close settings
+       *
+       * @return {void}
+       */
+      closeSettings() {
+        this.component = null;
+      },
+
+
+      /**
+       * Show settings component
+       *
+       * @param component
+       * @return {void}
+       */
+      showSettings(component) {
+        this.component = component;
+      }
+
 
     },
 
 
     watch: {
-      is_visible: {
+      /*is_visible: {
         handler(is_visible) {
           if (is_visible === true) this.component = 'selector';
         }
-      },
-
-      component: {
-        handler() {
-
-          console.log(this.$refs.settings)
-        }
-      }
+      }*/
     }
 
   }
 </script>
-
-<style lang="scss" scoped>
-
-  .video__settings__items {
-    ::v-deep {
-      .v-list-item {
-        height: 32px;
-        min-height: auto;
-      }
-    }
-  }
-</style>

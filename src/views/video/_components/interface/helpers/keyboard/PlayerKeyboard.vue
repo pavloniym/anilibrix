@@ -27,6 +27,7 @@
         // State
         if (e.which === 32) this.$emit('toggle:play'); // Space -> play
         if (e.code === 'KeyF') this.$emit('toggle:fullscreen'); // F -> fullscreen
+        if (e.code === 'KeyM') this.$emit('update:muted', !this.player.muted); // M -> mute/unmute
 
         // Seek
         if (e.which === 39) this.forward(); // right arrow -> forward

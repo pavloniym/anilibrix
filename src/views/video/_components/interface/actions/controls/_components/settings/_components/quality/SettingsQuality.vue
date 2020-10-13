@@ -1,31 +1,41 @@
 <template>
-  <v-list dense>
+  <v-menu
+    v-click-outside="() => $emit('close')"
+    top
+    left
+    min-width="180px"
+    nudge-right="50"
+    :value="true"
+    :attach="attach()"
+    :close-on-click="false"
+    :close-on-content-click="false">
 
-    <!-- Close -->
-    <v-list-item @click="$emit('back')">
-      <v-icon small class="mr-2">mdi-chevron-left</v-icon>
-      <v-list-item-title v-text="'Назад'"/>
-    </v-list-item>
-    <v-divider class="my-2"/>
+    <v-list nav dense class="video__settings__items">
 
-    <!--<template v-for="(s, k) in sortedSources">
-      <v-list-item
-        :key="k"
-        :input-value="s.alias === source.alias"
-        @click="$emit('click', s)">
-
-        <v-icon class="mr-2" color="grey">{{getSourceIcon(s)}}</v-icon>
-        <v-list-item-content>
-          <v-list-item-subtitle v-text="s.label"/>
-        </v-list-item-content>
-
+      <!-- Back -->
+      <v-list-item @click="$emit('back')">
+        <v-icon small class="mr-2">mdi-chevron-left</v-icon>
+        <v-list-item-title v-text="'Назад'"/>
       </v-list-item>
-    </template>-->
+      <v-divider class="my-2"/>
 
-  </v-list>
+      <!-- Qualities -->
+      <quality
+        v-for="(s, k) in sources"
+        :key="k"
+        :source="s"
+        :is_active="s.alias === source.alias"
+        @click="$emit('update:quality', s.alias)">
+      </quality>
+
+    </v-list>
+  </v-menu>
 </template>
 
 <script>
+
+  // Components
+  import Quality from './_components/quality'
 
   const props = {
     source: {
@@ -35,12 +45,30 @@
     episode: {
       type: Object,
       default: null
+    },
+    attach: {
+      type: Function,
+      default: null
     }
   };
 
   export default {
     props,
+    components: {
+      Quality
+    },
     computed: {
+
+
+      /**
+       * Get sorted sources
+       *
+       * @return {array}
+       */
+      sources() {
+        return [...this.upscaleSources, ...this.serverSources, ...this.torrentSources]
+          .filter(item => item)
+      },
 
 
       /**
@@ -48,10 +76,9 @@
        *
        * @return {array}
        */
-      sources() {
+      episodeSources() {
         return this.$__get(this.episode, 'sources') || [];
       },
-
 
       /**
        * Get upscale sources
@@ -59,7 +86,7 @@
        * @return {array}
        */
       upscaleSources() {
-        return (this.sources || []).filter(item => item.type === 'upscale')
+        return (this.episodeSources || []).filter(item => item.type === 'upscale')
       },
 
       /**
@@ -68,8 +95,9 @@
        * @return {array}
        */
       serverSources() {
-        return (this.sources || []).filter(item => item.type === 'server')
+        return (this.episodeSources || []).filter(item => item.type === 'server')
       },
+
 
       /**
        * Get torrent sources
@@ -77,45 +105,29 @@
        * @return {array}
        */
       torrentSources() {
-        return (this.sources || []).filter(item => item.type === 'torrent')
-      },
-
-
-      /**
-       * Get sorted sources
-       *
-       * @return {array}
-       */
-      sortedSources() {
-        return [...this.upscaleSources, ...this.serverSources, ...this.torrentSources]
-          .filter(item => item)
+        return (this.episodeSources || []).filter(item => item.type === 'torrent')
       }
 
     },
 
     methods: {
 
-      /**
-       * Get source icon
-       *
-       * @param source
-       * @return {string|null}
-       */
-      getSourceIcon(source) {
 
-        const type = this.$__get(source, 'type');
-        const alias = this.$__get(source, 'alias');
+      getLabel() {
 
-        if (alias === 'sd') return 'mdi-standard-definition';
-        if (alias === 'hd') return 'mdi-high-definition';
-        if (alias === 'fhd') return 'mdi-high-definition';
-        if (alias === '2k') return 'mdi-ultra-high-definition';
-        if (alias === '4k') return 'mdi-ultra-high-definition';
-        if (type === 'torrent') return 'mdi-alpha-t';
-
-        return null;
       }
 
     },
   }
 </script>
+
+
+<style scoped lang="scss">
+
+  .video__settings__items {
+    .v-list-item {
+      height: 32px;
+      min-height: auto;
+    }
+  }
+</style>

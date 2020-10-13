@@ -1,6 +1,8 @@
 // Utils
 import __get from 'lodash/get'
-import {getEpisode} from "./index";
+
+// Episodes
+import {getEpisode} from './parseEpisode'
 
 
 /**
@@ -63,7 +65,7 @@ const _getPayload = (episode, playlistKey = null, fileKey = null) => {
  * @param episode
  * @return {{payload: *, alias: *, label: *, type: *}}
  */
-export const getFHDSource = episode => getEpisode('server', '1080', 'fhd', _getPayload(episode, 'fullhd'));
+export const getFHDSource = episode => getEpisode('server', '1080p', 'fhd', _getPayload(episode, 'fullhd'));
 
 
 /**
@@ -72,7 +74,7 @@ export const getFHDSource = episode => getEpisode('server', '1080', 'fhd', _getP
  * @param episode
  * @return {{payload: *, alias: *, label: *, type: *}}
  */
-export const getHDSource = episode => getEpisode('server', '720', 'hd', _getPayload(episode, 'hd'));
+export const getHDSource = episode => getEpisode('server', '720p', 'hd', _getPayload(episode, 'hd'));
 
 
 /**
@@ -81,4 +83,4 @@ export const getHDSource = episode => getEpisode('server', '720', 'hd', _getPayl
  * @param episode
  * @return {{payload: *, alias: *, label: *, type: *}}
  */
-export const getSDSource = episode => getEpisode('server', '480', 'sd', _getPayload(episode, 'sd'));
+export const getSDSource = episode => getEpisode('server', '480p', 'sd', _getPayload(episode, 'sd'));

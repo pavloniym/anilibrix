@@ -42,7 +42,7 @@
   import Home from './_components/home'
   import Volume from './_components/volume'
   import Release from './_components/release'
-  
+
   // Storage
   import {mapState} from 'vuex'
 
@@ -96,7 +96,10 @@
           {
             is: Volume,
             props: {player: this.player},
-            events: {'update:volume': $event => this.$emit('update:volume', $event)}
+            events: {
+              'update:muted': $event => this.$emit('update:muted', $event),
+              'update:volume': $event => this.$emit('update:volume', $event),
+            }
           },
         ]
       },

@@ -1,29 +1,42 @@
 <template>
-  <v-list nav dense>
+  <v-menu
+    v-click-outside="() => $emit('close')"
+    top
+    left
+    min-width="320px"
+    nudge-right="50"
+    :value="true"
+    :attach="attach()"
+    :close-on-click="false"
+    :close-on-content-click="false">
 
-    <!-- Close -->
-    <v-list-item @click="$emit('close')">
-      <v-icon small class="mr-2">mdi-close</v-icon>
-      <v-list-item-title v-text="'Закрыть'"/>
-    </v-list-item>
-    <v-divider class="my-2"/>
+    <v-list nav dense class="video__settings__items">
 
-    <!-- Settings -->
-    <template v-for="(item, k) in items">
-      <v-list-item :key="k" @click="$emit('update:component', item.component)">
-        <v-list-item-content>
-          <v-list-item-title v-text="item.title"/>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-layout align-center>
-            <v-list-item-subtitle v-text="item.subtitle" class="mr-2"/>
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-layout>
-        </v-list-item-action>
+      <!-- Close -->
+      <v-list-item @click="$emit('close')">
+        <v-icon small class="mr-2">mdi-close</v-icon>
+        <v-list-item-title v-text="'Закрыть'"/>
       </v-list-item>
-    </template>
+      <v-divider class="my-2"/>
 
-  </v-list>
+      <!-- Settings -->
+      <template v-for="(item, k) in items">
+        <v-list-item :key="k" @click="$emit('update:component', item.component)">
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title"/>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-layout align-center>
+              <v-list-item-subtitle v-text="item.subtitle" class="mr-2"/>
+              <v-icon>mdi-chevron-right</v-icon>
+            </v-layout>
+          </v-list-item-action>
+        </v-list-item>
+      </template>
+
+    </v-list>
+
+  </v-menu>
 </template>
 
 <script>
@@ -35,6 +48,10 @@
     },
     player: {
       type: Object,
+      default: null
+    },
+    attach: {
+      type: Function,
       default: null
     }
   };
@@ -86,7 +103,7 @@
 
     },
 
-    mounted() {
+    created() {
 
       this.player_speed = this.player.speed;
       this.player.on('ratechange', () => this.player_speed = this.player.speed);
@@ -94,3 +111,15 @@
     }
   }
 </script>
+
+
+<style scoped lang="scss">
+
+  .video__settings__items {
+    .v-list-item {
+      height: 32px;
+      min-height: auto;
+    }
+  }
+
+</style>

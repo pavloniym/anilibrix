@@ -35,8 +35,10 @@
 
   export default {
     props,
-    meta: {
-      title: `Ошибка воспроизведения: ${this.message}`
+    meta() {
+      return {
+        title: `Ошибка воспроизведения: ${this.text}`
+      }
     },
     components: {
       BlankNoise

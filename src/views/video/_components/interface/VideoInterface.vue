@@ -18,6 +18,7 @@
             <video-left-controls
               v-bind="{release, source, player}"
               @update:time="updateTime"
+              @update:muted="updateMuted"
               @update:volume="updateVolume">
             </video-left-controls>
           </v-col>
@@ -31,8 +32,9 @@
           <v-col align-self="center">
             <video-right-controls
               v-bind="{episode, source, player}"
-              @update:speed="updateSpeed"
               @toggle:pip="togglePIP"
+              @update:speed="updateSpeed"
+              @update:quality="$emit('update:quality', $event)"
               @toggle:fullscreen="toggleFullscreen">
             </video-right-controls>
           </v-col>
@@ -179,6 +181,7 @@
               'update:time': this.updateTime,
               'toggle:play': this.togglePlay,
               'update:speed': this.updateSpeed,
+              'update:muted': this.updateMuted,
               'toggle:fullscreen': this.toggleFullscreen
             },
           },
@@ -302,6 +305,16 @@
        */
       updateVolume(volume) {
         this.player.volume = volume;
+      },
+
+
+      /**
+       * Update player muted state
+       *
+       * @param muted
+       */
+      updateMuted(muted) {
+        this.player.muted = muted;
       }
 
     },

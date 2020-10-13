@@ -5,9 +5,6 @@ import BaseTransformer from "@transformers/BaseTransformer";
 // Parsing episode data
 import {parsePlaylist, parseTorrents} from "@utils/episodes";
 
-// Utils
-import __merge from "lodash/merge";
-
 export default class ReleaseTransformer extends BaseTransformer {
 
   constructor() {
@@ -163,20 +160,39 @@ export default class ReleaseTransformer extends BaseTransformer {
   async _getEpisodes(release) {
     if (this.with_episodes === true) {
 
+      const episodes = {};
+
+      /**
+       * Append episode to stack
+       * Add sources if episode is already in stack
+       *
+       * @param number
+       * @param value
+       * @return {void}
+       */
+      const appendEpisodeToStack = (number, value) => {
+        if (episodes[number]) episodes[number].sources = [...episodes[number].sources, ...value.sources];
+        if (!episodes[number]) episodes[number] = value;
+      };
+
+      // Parse episodes from release playlist links
       // Parse episodes from release torrents files
+      const playlist_episodes = parsePlaylist(this.get(release, 'playlist') || []);
       const torrent_episodes = await parseTorrents(this.get(release, 'torrents') || [], {
         cancel_token: this.cancel_token,
         skip_torrents: this.skip_torrents,
         torrents_enabled: this.get(this.store, 'state.app.settings.player.torrents.enabled') === true,
       });
 
-      // Parse episodes from release playlist links
-      const playlist_episodes = parsePlaylist(this.get(release, 'playlist') || []);
+      // Set playlist episodes to episodes stack
+      // Set torrent episodes to episodes stack
+      Object.keys(playlist_episodes || {}).forEach(number => appendEpisodeToStack(number, playlist_episodes[number]));
+      Object.keys(torrent_episodes || {}).forEach(number => appendEpisodeToStack(number, torrent_episodes[number]));
 
       // Filter all sources without payload
       // Reverse order -> first in array === last in release
       return Object
-        .values(__merge(torrent_episodes, playlist_episodes))
+        .values(episodes)
         .map(episode => ({...episode, sources: episode.sources.filter(source => source.payload !== null)}))
         .filter(episode => episode.sources && episode.sources.length > 0)
         .reverse();
