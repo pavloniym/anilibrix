@@ -1,3 +1,3 @@
-import PlayerServerHandler from './PlayerServerHandler'
+import ServerHandler from './ServerHandler'
 
-export default PlayerServerHandler
+export default ServerHandler

@@ -41,10 +41,7 @@
         options: {
           autoplay: false,
           controls: false,
-          keyboard: {
-            global: false,
-            focused: false,
-          },
+          keyboard: {global: false, focused: false},
           resetOnEnd: false,
           fullscreen: {enabled: false},
           clickToPlay: false,

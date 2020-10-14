@@ -52,8 +52,8 @@
         if (this.alias === 'sd') return 'mdi-standard-definition';
         if (this.alias === 'hd') return 'mdi-high-definition';
         if (this.alias === 'fhd') return 'mdi-high-definition';
-        if (this.alias === '2k') return 'mdi-ultra-high-definition';
-        if (this.alias === '4k') return 'mdi-ultra-high-definition';
+        if (this.alias === 'upscale_2k') return 'mdi-ultra-high-definition';
+        if (this.alias === 'upscale_4k') return 'mdi-ultra-high-definition';
         if (this.type === 'torrent') return 'mdi-alpha-t';
 
         return null;

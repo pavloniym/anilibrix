@@ -75,7 +75,7 @@
     computed: {
       ...mapState('app/settings', {
         _opening_skip_offset: s => s.player.skip_opening.offset,
-        _opening_skip_is_enabled: s => s.player.skip_opening.enabled,
+        _opening_skip_is_enabled: s => s.player.skip_opening.is_enabled,
       }),
 
 

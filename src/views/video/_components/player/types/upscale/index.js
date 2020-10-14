@@ -1,3 +1,3 @@
-import PlaybackUpscalePlayerType from './PlaybackUpscalePlayerType'
+import UpscaleHandler from './UpscaleHandler'
 
-export default PlaybackUpscalePlayerType
+export default UpscaleHandler

@@ -31,7 +31,7 @@
   import Interface from './_components/interface'
 
   // Handlers
-  import {ServerHandler, TorrentHandler} from './_components/player/types'
+  import {ServerHandler, TorrentHandler, UpscaleHandler} from './_components/player/types'
 
   // Proxy + Transformer
   import ReleaseProxy from "@proxies/release";
@@ -138,7 +138,11 @@
        * @return {*}
        */
       handlers() {
-        return {server: ServerHandler, torrent: TorrentHandler}
+        return {
+          server: ServerHandler,
+          torrent: TorrentHandler,
+          upscale: UpscaleHandler,
+        }
       },
 
 

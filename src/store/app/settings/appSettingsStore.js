@@ -10,20 +10,38 @@ export default {
   state: {
     app: {
       devtools: false,
-      notifications: {system: true},
-      releases_updates: {enabled: true, timeout: 10},
+      notifications: {
+        system: true
+      },
+      releases_updates: {
+        timeout: 10,
+        is_enabled: true
+      },
     },
     ads: {
-      enabled: true,
-      maximum: false
+      is_enabled: true,
+      is_maximum: false
     },
     player: {
       quality: null,
-      upscale: {bold: 6, blur: 2, enabled: false},
-      episodes: {order: 'asc'},
-      autoplay: {enabled: true},
-      torrents: {enabled: false},
-      skip_opening: {enabled: false, offset: 30}
+      anime4k: {
+        bold: 6,
+        blur: 2,
+        is_enabled: false,
+      },
+      episodes: {
+        order: 'asc'
+      },
+      autoplay: {
+        is_enabled: true
+      },
+      torrents: {
+        is_enabled: false
+      },
+      skip_opening: {
+        offset: 30,
+        is_enabled: false,
+      }
     },
   },
 

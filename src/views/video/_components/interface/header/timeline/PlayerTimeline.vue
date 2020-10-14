@@ -21,8 +21,8 @@
 
 <script>
 
+  // Utils
   import humanTime from "@utils/strings/human-time";
-  import {KeyboardHandlerMixin} from "@mixins/handlers";
 
   const props = {
     player: {
@@ -33,7 +33,6 @@
 
   export default {
     props,
-    mixins: [KeyboardHandlerMixin],
     data() {
       return {
         time: 0,
@@ -44,14 +43,7 @@
     },
 
     methods: {
-
-      /**
-       * Get human time
-       *
-       * @param secs
-       * @return {number}
-       */
-      humanTime,
+      ...{humanTime},
     },
 
     mounted() {

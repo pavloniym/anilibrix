@@ -4,6 +4,7 @@ import BaseTransformer from "@transformers/BaseTransformer";
 
 // Parsing episode data
 import {parsePlaylist, parseTorrents} from "@utils/episodes";
+import {parseUpscale} from "@utils/episodes/parseUpscale";
 
 export default class ReleaseTransformer extends BaseTransformer {
 
@@ -176,16 +177,23 @@ export default class ReleaseTransformer extends BaseTransformer {
       };
 
       // Parse episodes from release playlist links
-      // Parse episodes from release torrents files
       const playlist_episodes = parsePlaylist(this.get(release, 'playlist') || []);
+
+      // Parse episodes from release playlist as upscale
+      const upscale_episodes = parseUpscale(this.get(release, 'playlist'), {
+        upscale_is_enabled: this.get(this.store, 'state.app.settings.player.anime4k.is_enabled') === true
+      });
+
+      // Parse episodes from release torrents files
       const torrent_episodes = await parseTorrents(this.get(release, 'torrents') || [], {
         cancel_token: this.cancel_token,
         skip_torrents: this.skip_torrents,
-        torrents_enabled: this.get(this.store, 'state.app.settings.player.torrents.enabled') === true,
+        torrents_is_enabled: this.get(this.store, 'state.app.settings.player.torrents.is_enabled') === true,
       });
 
       // Set playlist episodes to episodes stack
       // Set torrent episodes to episodes stack
+      Object.keys(upscale_episodes || {}).forEach(number => appendEpisodeToStack(number, upscale_episodes[number]));
       Object.keys(playlist_episodes || {}).forEach(number => appendEpisodeToStack(number, playlist_episodes[number]));
       Object.keys(torrent_episodes || {}).forEach(number => appendEpisodeToStack(number, torrent_episodes[number]));
 

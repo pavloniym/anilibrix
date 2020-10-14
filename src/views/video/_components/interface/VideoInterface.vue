@@ -2,7 +2,7 @@
   <div>
 
     <!-- Main Interface Components -->
-    <v-slide-y-reverse-transition>
+    <v-fade-transition appear mode="out-in">
       <v-layout v-show="interface_is_visible" column class="interface pa-8 pt-0">
 
         <!-- Header components -->
@@ -41,7 +41,7 @@
         </v-row>
 
       </v-layout>
-    </v-slide-y-reverse-transition>
+    </v-fade-transition>
 
 
     <!-- Misc components -->

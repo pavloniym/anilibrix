@@ -44,8 +44,8 @@ export default [
 
       // Check if it is allowed to show ads
       // Check if not form ads
-      const ads = __get(store, 'state.app.settings.ads.enabled') === true;
-      const ads_maximum = __get(store, 'state.app.settings.system.ads.maximum') === true;
+      const ads = __get(store, 'state.app.settings.ads.is_enabled') === true;
+      const ads_maximum = __get(store, 'state.app.settings.system.ads.is_maximum') === true;
 
       const from_ads = from && from.name === 'ads';
       const is_shown_this_time = Math.random() >= 0.5 || ads_maximum;

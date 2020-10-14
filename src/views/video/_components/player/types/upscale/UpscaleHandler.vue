@@ -1,11 +1,16 @@
 <template>
   <player-handler
     v-bind="options"
+    class="video--upscale"
     @error="$emit('error', $event)"
     @update:time="$emit('update:time', $event)"
     @update:payload="$emit('update:payload', $event)"
     @update:duration="$emit('update:duration', $event)">
 
+    <!-- Canvas -->
+    <canvas ref="board" slot="prepend" width="1280" height="720"></canvas>
+
+    <!-- Interface -->
     <template v-slot="context">
       <slot v-bind="context"/>
     </template>
@@ -19,7 +24,10 @@
   import PlayerHandler from './../../components/handler'
 
   // Utils
-  import Hls from 'hls.js';
+  import Hls from "hls.js";
+
+  // Anime4K
+  import Anime4K from 'anime4k'
 
   const props = {
     source: {
@@ -34,22 +42,19 @@
 
   export default {
     props,
-    components: {
-      PlayerHandler,
-    },
-
+    components: {PlayerHandler},
     data() {
       return {
-        hls: null,
+        bold: 0,
+        blur: 0,
       }
     },
-
     computed: {
 
       /**
        * Playback player options
        *
-       * @return {*}
+       * @return Object
        */
       options() {
         return {
@@ -58,7 +63,16 @@
           processPayload: this.processPayload,
           destroyPayload: this.destroyPayload,
         }
-      }
+      },
+
+      /**
+       * Scale
+       *
+       * @return {number}
+       */
+      scale() {
+        return this.$__get(this.source, 'payload.scale') * 1.6;
+      },
 
     },
 
@@ -83,17 +97,13 @@
        * @return void
        */
       processPayload({player, payload} = {}) {
+
         // If payload provided - create new hls instance
         if (payload) {
 
           // Pause player
           player.pause();
-
-          console.log('hereeeee');
-
           if (Hls.isSupported()) {
-
-            console.log('supported', {player});
 
             // Create hls and attach media element
             this.hls = new Hls({startPosition: this.time || 0});
@@ -105,13 +115,25 @@
               // Load source payload
               // If play should play -> play source automatically
               this.hls.loadSource(payload);
+
+              // Player play
               player.play();
+              player.on('loadedmetadata', () => {
+
+                const upscale = Anime4K.Scaler(this.$refs.board.getContext('webgl'));
+
+                upscale.inputVideo(player.media);
+
+                const render = () => {
+                  upscale.resize(this.scale, {blur: this.blur, bold: this.bold});
+                  requestAnimationFrame(render);
+                };
+
+                requestAnimationFrame(render);
+
+              })
 
             });
-          } else  {
-
-            console.log('fffffffffuck');
-
           }
         }
       },
@@ -123,9 +145,40 @@
        * @return void
        */
       destroyPayload() {
+
+        // Destroy hls
         if (this.hls) this.hls.destroy();
       }
+
+    },
+
+    created() {
+
+      /*setInterval(() => {
+        this.bold = this.bold === 6 ? 0 : this.bold + 1;
+        this.blur = this.blur === 2 ? 0 : this.blur + 1;
+
+      }, 200)*/
+
     }
 
   }
 </script>
+<style lang="scss" scoped>
+
+  .video--upscale {
+    ::v-deep {
+      .plyr {
+        display: none;
+      }
+    }
+
+    canvas {
+      height: auto;
+      width: 100%;
+      margin: auto 0;
+    }
+  }
+
+
+</style>

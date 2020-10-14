@@ -18,11 +18,11 @@ import TorrentsResolver from "@@/utils/resolvers/torrents";
  *
  * @param torrents
  * @param skip_torrents
- * @param torrents_enabled
+ * @param torrents_is_enabled
  * @param cancel_token
  */
-export const parseTorrents = async (torrents, {skip_torrents = false, torrents_enabled = false, cancel_token = null} = {}) => {
-  if (skip_torrents === false && torrents_enabled === true) {
+export const parseTorrents = async (torrents, {skip_torrents = false, torrents_is_enabled = false, cancel_token = null} = {}) => {
+  if (skip_torrents === false && torrents_is_enabled === true) {
 
     // Filter torrents
     // Exclude HEVC torrents (no codec available)
@@ -97,9 +97,6 @@ export const parseTorrents = async (torrents, {skip_torrents = false, torrents_e
       return __merge(episodes, parsed_episodes);
     }, {});
   }
-
-
-
 
   return null;
 };

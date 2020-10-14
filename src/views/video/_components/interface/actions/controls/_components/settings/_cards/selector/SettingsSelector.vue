@@ -1,45 +1,32 @@
 <template>
-  <v-menu
-    v-click-outside="() => $emit('close')"
-    top
-    left
-    min-width="320px"
-    nudge-right="50"
-    :value="true"
-    :attach="attach()"
-    :close-on-click="false"
-    :close-on-content-click="false">
+  <options
+    v-bind="{attach}"
+    is_close
+    width="320"
+    @back="$emit('back')"
+    @close="$emit('close')">
 
-    <v-list nav dense class="video__settings__items">
-
-      <!-- Close -->
-      <v-list-item @click="$emit('close')">
-        <v-icon small class="mr-2">mdi-close</v-icon>
-        <v-list-item-title v-text="'Закрыть'"/>
+    <template v-for="(item, k) in items">
+      <v-list-item :key="k" @click="$emit('update:component', item.component)">
+        <v-list-item-content>
+          <v-list-item-title v-text="item.title"/>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-layout align-center>
+            <v-list-item-subtitle v-text="item.subtitle" class="mr-2"/>
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-layout>
+        </v-list-item-action>
       </v-list-item>
-      <v-divider class="my-2"/>
+    </template>
 
-      <!-- Settings -->
-      <template v-for="(item, k) in items">
-        <v-list-item :key="k" @click="$emit('update:component', item.component)">
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title"/>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-layout align-center>
-              <v-list-item-subtitle v-text="item.subtitle" class="mr-2"/>
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-layout>
-          </v-list-item-action>
-        </v-list-item>
-      </template>
-
-    </v-list>
-
-  </v-menu>
+  </options>
 </template>
 
 <script>
+
+  // Components
+  import Options from './../../_components/options'
 
   const props = {
     source: {
@@ -58,6 +45,7 @@
 
   export default {
     props,
+    components: {Options},
     data() {
       return {
         player_speed: 1,
@@ -81,6 +69,10 @@
             title: 'Скорость воспроизведения',
             subtitle: this.speedHuman,
             component: 'speed',
+          },
+          {
+            title: 'Показать горячие клавиши',
+            component: 'hotkeys',
           },
         ]
       },
@@ -111,15 +103,3 @@
     }
   }
 </script>
-
-
-<style scoped lang="scss">
-
-  .video__settings__items {
-    .v-list-item {
-      height: 32px;
-      min-height: auto;
-    }
-  }
-
-</style>

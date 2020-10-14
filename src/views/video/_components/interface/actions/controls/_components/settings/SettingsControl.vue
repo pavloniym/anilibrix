@@ -3,7 +3,7 @@
 
     <!--  -->
     <v-btn icon large @click="showSettings('selector')">
-      <v-icon size="24">mdi-settings</v-icon>
+      <v-icon size="22">mdi-settings</v-icon>
     </v-btn>
 
     <!-- Handler -->
@@ -27,9 +27,10 @@
 <script>
 
   // Components
-  import Speed from './_components/speed'
-  import Quality from './_components/quality'
-  import Selector from './_components/selector'
+  import Speed from './_cards/speed'
+  import Quality from './_cards/quality'
+  import Hotkeys from './_cards/hotkeys'
+  import Selector from './_cards/selector'
 
   const props = {
     episode: {
@@ -80,6 +81,10 @@
             alias: 'speed',
             props: {player: this.player},
             events: {'update:speed': $event => this.$emit('update:speed', $event)}
+          },
+          {
+            is: Hotkeys,
+            alias: 'hotkeys',
           }
         ]
       },

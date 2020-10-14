@@ -1,35 +1,24 @@
 <template>
-  <v-menu
-    v-click-outside="() => $emit('close')"
-    top
-    left
-    min-width="180px"
-    nudge-right="50"
-    :value="true"
-    :attach="attach()"
-    :close-on-click="false"
-    :close-on-content-click="false">
+  <options
+    v-bind="{attach}"
+    is_back
+    width="180"
+    @back="$emit('back')"
+    @close="$emit('close')">
 
-    <v-list nav dense class="video__settings__items">
-
-      <!-- Back -->
-      <v-list-item @click="$emit('back')">
-        <v-icon small class="mr-2">mdi-chevron-left</v-icon>
-        <v-list-item-title v-text="'Назад'"/>
+    <template v-for="(s, k) in variants">
+      <v-list-item :key="k" :input-value="s.value === active.value" @click="updateSpeed(s.value)">
+        <v-list-item-subtitle v-text="s.label"/>
       </v-list-item>
-      <v-divider class="my-2"/>
+    </template>
 
-      <template v-for="(s, k) in variants">
-        <v-list-item :key="k" :input-value="s.value === active.value" @click="updateSpeed(s.value)">
-          <v-list-item-subtitle v-text="s.label"/>
-        </v-list-item>
-      </template>
-    </v-list>
-
-  </v-menu>
+  </options>
 </template>
 
 <script>
+
+  // Components
+  import Options from './../../_components/options'
 
   const props = {
     player: {
@@ -44,6 +33,7 @@
 
   export default {
     props,
+    components: {Options},
     data() {
       return {
         speed: 1
@@ -94,7 +84,6 @@
         this.$emit('close');
         this.$emit('update:speed', value);
       }
-
     },
 
     created() {
@@ -102,19 +91,7 @@
       this.speed = this.player.speed;
       this.player.on('ratechange', () => this.speed = this.player.speed);
 
-    },
+    }
 
   }
 </script>
-
-
-
-<style scoped lang="scss">
-
-  .video__settings__items {
-    .v-list-item {
-      height: 32px;
-      min-height: auto;
-    }
-  }
-</style>

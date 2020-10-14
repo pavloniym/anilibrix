@@ -59,7 +59,7 @@
     computed: {
       ...mapState('app/settings', {
         _releases_updates_timeout: s => s.app.releases_updates.timeout,
-        _releases_updates_are_enabled: s => s.app.releases_updates.enabled,
+        _releases_updates_are_enabled: s => s.app.releases_updates.is_enabled,
       }),
 
       /**

@@ -14,6 +14,7 @@
 
 <script>
 
+  // Components
   import PlayerHandler from './../../components/handler'
 
   /*import {
@@ -37,10 +38,7 @@
 
   export default {
     props,
-    components: {
-      PlayerHandler,
-    },
-
+    components: {PlayerHandler},
     computed: {
 
       /**

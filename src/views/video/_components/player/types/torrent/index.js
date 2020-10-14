@@ -1,3 +1,3 @@
-import PlayerTorrentHandler from './PlayerTorrentHandler'
+import TorrentHandler from './TorrentHandler'
 
-export default PlayerTorrentHandler
+export default TorrentHandler

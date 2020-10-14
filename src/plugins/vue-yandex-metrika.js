@@ -23,12 +23,12 @@ export default {
     const SETTINGS_APP_NOTIFICATIONS_SYSTEM = getSettingsStoreValue('app.notifications.system') ? 1 : 0;
 
     // Settings ads
-    const SETTINGS_ADS_ENABLED = getSettingsStoreValue('ads.enabled') ? 1 : 0;
-    const SETTINGS_ADS_MAXIMUM = getSettingsStoreValue('ads.maximum') ? 1 : 0;
+    const SETTINGS_ADS_ENABLED = getSettingsStoreValue('ads.is_enabled') ? 1 : 0;
+    const SETTINGS_ADS_MAXIMUM = getSettingsStoreValue('ads.is_maximum') ? 1 : 0;
 
     // Settings player
     const SETTINGS_PLAYER_QUALITY = getSettingsStoreValue('player.quality');
-    const SETTINGS_PLAYER_TORRENTS_ENABLED = getSettingsStoreValue('player.torrents.enabled') ? 1 : 0;
+    const SETTINGS_PLAYER_TORRENTS_ENABLED = getSettingsStoreValue('player.torrents.is_enabled') ? 1 : 0;
 
     // If yandex tracking is provided
     if (yandex_tracking_id) {
