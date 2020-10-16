@@ -16,6 +16,7 @@
 
   // Components
   import PlayerHandler from './../../components/handler'
+  import TorrentsResolver from "@@/utils/resolvers/torrents";
 
   /*import {
     emitTorrentStart,
@@ -66,34 +67,30 @@
        *
        * @return Promise
        */
-      getPayload(source) {
-        return new Promise(resolve => {
+      async getPayload(source) {
 
-          const payload = this.$__get(source, 'payload');
-          const torrent_id = this._getSourceTorrentId(source);
-          const file_index = this.$__get(payload, 'file.index', -1);
+        const payload = this.$__get(source, 'payload');
+        const file_index = this.$__get(payload, 'file.index', -1);
+        const torrents_id = this.$__get(payload, 'torrent.id') || null;
 
-          if (torrent_id) {
+        if (torrents_id) {
 
-            // Send event to start server with provided torrent id
-            //emitTorrentStart(torrent_id, file_index);
+          const response = await TorrentsResolver.startTorrent({torrents_id, file_index});
 
-            // Listen event with torrent server data
-            // Resolve when event is caught
-            /*handleTorrentServer(server => {
-              if (server.torrent_id === torrent_id) {
-                resolve(`${server.url}/${file_index}/${encodeURIComponent(payload.file.name)}`);
-              }
-            });*/
+          console.log({...response});
 
-          } else {
+          // Send event to start server with provided torrent id
+          //emitTorrentStart(torrent_id, file_index);
 
-            // Emit error
-            this.$emit('error', {
-              source, referer: 'getPayload', message: 'Не удалось определить источник воспроизведения',
-            });
-          }
-        });
+          // Listen event with torrent server data
+          // Resolve when event is caught
+          /*handleTorrentServer(server => {
+            if (server.torrent_id === torrent_id) {
+              resolve(`${server.url}/${file_index}/${encodeURIComponent(payload.file.name)}`);
+            }
+          });*/
+
+        } else this.$emit('error', 'Не удалось определить источник воспроизведения');
       },
 
 
@@ -141,14 +138,14 @@
 
           // Emit torrent destroy event
           // Emit event for current torrent
-         // emitTorrentDestroy({torrent_id: this._getSourceTorrentId(source)});
+          // emitTorrentDestroy({torrent_id: this._getSourceTorrentId(source)});
 
 
           // Handle torrent clear event
           // Resolve promise if clear event is for current torrent
-         /* handleTorrentClear(({torrent_id}) => {
-            if (torrent_id === this._getSourceTorrentId(source)) resolve();
-          });*/
+          /* handleTorrentClear(({torrent_id}) => {
+             if (torrent_id === this._getSourceTorrentId(source)) resolve();
+           });*/
 
         });
       },
@@ -162,7 +159,7 @@
        * @private
        */
       _getSourceTorrentId(source) {
-        return this.$__get(source, 'payload.torrent.id') || null;
+        return
       }
 
     },

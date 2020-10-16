@@ -3,33 +3,43 @@ import {v4 as uuid} from 'uuid'
 
 // Resolvers
 import {runInMain, runInRenderer} from "@@/utils/resolvers/system/processResolver";
-import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
 
 export const TORRENTS_EVENT = 'torrents:event';
 export const TORRENTS_PARSE = 'torrents:parse';
+export const TORRENTS_START = 'torrents:start';
+export const TORRENTS_SERVER_CREATE = 'torrents:server:create';
 
 export default class TorrentsResolver {
 
   /**
    * Parse torrent
+   * Parse torrent id and torrent file content as buffer
    *
    * @param torrents_id
    * @param torrents_file_content
-   * @return {Promise<undefined>}
+   * @return {Promise}
    */
   static async parseTorrent(torrents_id, torrents_file_content) {
-
-    const token = uuid();
-    const channel = TORRENTS_PARSE;
-
-    return runOnPlatform(
-      async () => null,
-      async () => runInRenderer(async electron =>
-        electron.ipcRenderer.invoke(TORRENTS_EVENT, {token, channel, torrents_id, torrents_file_content})
-      )
-    );
-
+    return runInRenderer(async electron =>
+      this._sendTorrentsWindowEvent(electron, TORRENTS_PARSE, {torrents_id, torrents_file_content})
+    )
   }
+
+
+  /**
+   * Start torrent
+   * Provide torrent id and file index to start local server
+   *
+   * @param torrents_id
+   * @param file_index
+   * @return {Promise}
+   */
+  static async startTorrent({torrents_id, file_index} = {}) {
+    return runInRenderer(async electron =>
+      this._sendTorrentsWindowEvent(electron, TORRENTS_START, {torrents_id, file_index})
+    )
+  }
+
 
 
   /**
@@ -59,5 +69,19 @@ export default class TorrentsResolver {
     }))
   }
 
+
+
+  /**
+   * Send event
+   *
+   * @param electron
+   * @param channel
+   * @param payload
+   * @return {Promise<any>}
+   * @private
+   */
+  static async _sendTorrentsWindowEvent(electron, channel, payload = null) {
+    return electron.ipcRenderer.invoke(TORRENTS_EVENT, {token: uuid(), channel, ...payload})
+  }
 
 }

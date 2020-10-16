@@ -32,7 +32,6 @@ module.exports = {
       config.plugin('define').tap(defineEnvParameters)
     },
 
-
     // If you need to use native modules such as fs or sqlite in the renderer process, you can enable nodeIntegration
     nodeIntegration: true,
 

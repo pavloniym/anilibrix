@@ -8,7 +8,7 @@
     @update:duration="$emit('update:duration', $event)">
 
     <!-- Canvas -->
-    <canvas ref="board" slot="prepend" width="1280" height="720"></canvas>
+    <div slot="prepend" ref="board" class="board"></div>
 
     <!-- Interface -->
     <template v-slot="context">
@@ -25,9 +25,12 @@
 
   // Utils
   import Hls from "hls.js";
+  import Anime4K, {render, upscale} from "@utils/player/upscale/upscaleVideo";
+
+  //import * as PIXI from 'pixi.js'
 
   // Anime4K
-  import Anime4K from 'anime4k'
+  //import Anime4K from 'anime4k'
 
   const props = {
     source: {
@@ -47,6 +50,7 @@
       return {
         bold: 0,
         blur: 0,
+        is_enabled: true
       }
     },
     computed: {
@@ -119,20 +123,14 @@
               // Player play
               player.play();
               player.on('loadedmetadata', () => {
-
-                const upscale = Anime4K.Scaler(this.$refs.board.getContext('webgl'));
-
-                upscale.inputVideo(player.media);
-
-                const render = () => {
-                  upscale.resize(this.scale, {blur: this.blur, bold: this.bold});
-                  requestAnimationFrame(render);
-                };
-
-                requestAnimationFrame(render);
-
+                /*new Anime4K()
+                  .setVideo(player.media)
+                  .setIsEnabled(() => this.is_enabled)
+                  .setContainer(this.$refs.board)
+                  .setResolution({width: 1280, height: 720})
+                  .upscale()
+                  .render();*/
               })
-
             });
           }
         }
@@ -152,16 +150,6 @@
 
     },
 
-    created() {
-
-      /*setInterval(() => {
-        this.bold = this.bold === 6 ? 0 : this.bold + 1;
-        this.blur = this.blur === 2 ? 0 : this.blur + 1;
-
-      }, 200)*/
-
-    }
-
   }
 </script>
 <style lang="scss" scoped>
@@ -173,10 +161,16 @@
       }
     }
 
-    canvas {
-      height: auto;
-      width: 100%;
-      margin: auto 0;
+    .board {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      ::v-deep {
+        canvas {
+          width: 100%;
+        }
+      }
     }
   }
 
