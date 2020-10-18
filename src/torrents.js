@@ -1,3 +1,5 @@
+/* webpackChunkName: "torrents-ch" */
+
 // To keep the UI snappy, we run WebTorrent in its own hidden window, a separate
 // process from the main window.
 
@@ -17,16 +19,20 @@ import {meta} from '@@/package'
 import {parse, stringify} from 'flatted'
 
 // Resolvers
-import TorrentsResolver, {TORRENTS_PARSE, TORRENTS_START} from "@@/utils/resolvers/torrents/torrentsResolver";
+import TorrentsResolver, {
+  TORRENTS_DESTROY,
+  TORRENTS_PARSE,
+  TORRENTS_START
+} from "@@/utils/resolvers/torrents/torrentsResolver";
 
 
 class Torrents {
-
   constructor() {
 
     // Create WebTorrentClient
     // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
     // client, as explained here: https://webtorrent.io/faq
+
     this.torrent_client = new WebTorrent({
       torrentPort: Math.floor(Math.random() * (60000 - 12000) + 12000)
     });
@@ -102,7 +108,7 @@ class Torrents {
           torrent.deselect(0, torrent.pieces.length - 1, false);
 
           // Select file with provided index
-          if (file !== null) torrent.select(file._startPiece, file._endPiece, false)
+          if (file !== null) torrent.select(file._startPiece, file._endPiece, false);
           if (file === null) throw new Error('Файл с таким порядковым номером не обнаружен');
 
           // Resolve started torrent
@@ -172,8 +178,6 @@ class Torrents {
       // Save server instance to store
       this._saveStartedTorrentServer({torrents_id, server});
 
-      console.log({server});
-
       // Start server
       server.listen(0, () => {
 
@@ -184,10 +188,73 @@ class Torrents {
         this._sendToConsole('Started Torrent Server: ', {url, server, torrents_id});
 
         // Resolve url
-        resolve({url, server});
+        resolve({url});
       })
     });
   }
+
+
+  /**
+   * Destroy torrent
+   * Destroy server
+   * Clear torrent data
+   *
+   * @return Promise
+   */
+  async destroyTorrent({torrents_id}) {
+    return await new Promise(resolve => {
+      try {
+
+        // Destroy server
+        // Close server
+        // Clear server for provided torrent in storage
+        if (this._getStartedTorrentServer({torrents_id})) {
+
+          // Show in console
+          this._sendToConsole('Destroy Torrent Server', {
+            torrents_id,
+            server: this._getStartedTorrentServer({torrents_id})
+          });
+
+          // Stop and destroy server
+          this._getStartedTorrentServer({torrents_id}).close();
+          this._saveStartedTorrentServer({torrents_id, server: null});
+        }
+
+        // Destroy started torrent watcher
+        this._clearStartedTorrentWatcher({torrents_id});
+
+        // Destroy torrent
+        if (this._getStartedTorrent({torrents_id})) {
+
+          // Torrent files path
+          const path = this._getStartedTorrent({torrents_id}).path;
+
+          // Remove files from fs
+          rimraf(path, () => {
+
+            // Show in console
+            this._sendToConsole('Destroy Torrent', {torrents_id, path});
+
+            // Destroy torrent
+            // Clear storage
+            this._getStartedTorrent({torrents_id}).destroy();
+            this._saveStartedTorrent({torrents_id, torrent: null});
+
+            // Resolve destroy event
+            resolve();
+          });
+
+        } else {
+          resolve();
+        }
+
+      } catch (error) {
+        this._sendError({torrents_id, message: 'Произошла ошибка при остановке и уничтожении торрент-файла', error});
+      }
+    });
+  };
+
 
   /**
    * Save parsed torrent to collection
@@ -233,7 +300,7 @@ class Torrents {
    * @private
    */
   _getParsedTorrent(torrents_id) {
-    return this.parsed_torrents_collection && this.parsed_torrents_collection[torrents_id]
+    return this.parsed_torrents_collection[torrents_id]
       ? this.parsed_torrents_collection[torrents_id]
       : null;
   }
@@ -247,7 +314,7 @@ class Torrents {
    * @private
    */
   _getStartedTorrent({torrents_id}) {
-    return this.started_torrents_collection && this.started_torrents_collection[torrents_id]
+    return this.started_torrents_collection[torrents_id]
       ? this.started_torrents_collection[torrents_id]
       : null;
   }
@@ -267,6 +334,21 @@ class Torrents {
     }
     return null;
   }
+
+
+  /**
+   * Get started server
+   *
+   * @param torrents_id
+   * @return {*}
+   * @private
+   */
+  _getStartedTorrentServer({torrents_id}) {
+    return this.started_torrents_servers[torrents_id]
+      ? this.started_torrents_servers[torrents_id]
+      : null;
+  }
+
 
   /**
    * Remove torrent if it was already started before
@@ -328,13 +410,8 @@ class Torrents {
    * @param message
    * @param error
    */
-  _sendError = ({torrents_id, message = null, error = null} = {}) => {
-
-    // Show in console
-    // Send error message
-    console.log('Torrent Error', {torrents_id, error, message});
-
-    //sendTorrentError({torrentId, error, message});
+  _sendError({torrents_id, message = null, error = null} = {}) {
+    console.error('Torrent Error', {torrents_id, error, message});
   };
 
 
@@ -395,11 +472,29 @@ const resolveTorrentStartEvent = () => {
     await TorrentsInstance.startTorrentFileWatcher({torrents_id, file_index});
 
     // Start torrent server
-    const {url, server} = await TorrentsInstance.startTorrentServer({torrents_id});
+    const {url} = await TorrentsInstance.startTorrentServer({torrents_id});
 
     // Send event back with torrent server data
     // Provide event token
-    ipcRenderer.send(TORRENTS_START, {torrents_id, url, server, token, file_index});
+    ipcRenderer.send(TORRENTS_START, {torrents_id, url, token, file_index});
+  })
+};
+
+
+/**
+ * Resolve torrent destroy event
+ *
+ * @return {void}
+ */
+const resolveTorrentDestroyEvent = () => {
+  ipcRenderer.on(TORRENTS_DESTROY, async (e, {token, torrents_id}) => {
+
+    // Try to destroy torrent
+    await TorrentsInstance.destroyTorrent({torrents_id});
+
+    // Send event back with torrent server data
+    // Provide event token
+    ipcRenderer.send(TORRENTS_DESTROY, {torrents_id, token});
   })
 };
 
@@ -407,3 +502,4 @@ const resolveTorrentStartEvent = () => {
 // Events
 resolveTorrentParseEvent();
 resolveTorrentStartEvent();
+resolveTorrentDestroyEvent();

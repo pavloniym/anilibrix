@@ -6,8 +6,14 @@ const desktopConfig = require('./desktop.config');
 module.exports = {
   pwa: {...pwaConfig},
   pages: {
-    index: 'src/main.js',
-    torrents: 'src/torrents.js'
+    index: {
+      entry: 'src/main.js',
+      template: 'public/index.html',
+    },
+    torrents: {
+      entry: 'src/torrents.js',
+      template: 'public/torrents.html',
+    },
   },
   lintOnSave: false,
   pluginOptions: {...desktopConfig},

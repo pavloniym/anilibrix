@@ -43,7 +43,7 @@
 
   import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
 
-  import prettyBytes from 'pretty-bytes'
+  //import prettyBytes from 'pretty-bytes'
   import {PlatformMixin} from '@mixins/app'
   // import {handleTorrentDownload} from "@main/handlers/torrents/torrentsHandler";
 
@@ -116,15 +116,15 @@
           },
           {
             title: 'Размер файла',
-            value: prettyBytes(this.file.length || 0),
+          //  value: prettyBytes(this.file.length || 0),
           },
           {
             title: 'Скорость загрузки',
-            value: prettyBytes(parseFloat(this.speed.toFixed(2)), {bits: true}),
+          //  value: prettyBytes(parseFloat(this.speed.toFixed(2)), {bits: true}),
           },
           {
             title: 'Скорость раздачи',
-            value: prettyBytes(parseFloat(this.seeding.toFixed(2)), {bits: true}),
+          //  value: prettyBytes(parseFloat(this.seeding.toFixed(2)), {bits: true}),
           },
           {
             title: 'Прогресс',

@@ -50,5 +50,5 @@ module.exports = {
       '@components': resolve('src/components'),
       '@transformers': resolve('src/transformers'),
     },
-  },
+  }
 };

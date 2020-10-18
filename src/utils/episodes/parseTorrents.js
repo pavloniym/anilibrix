@@ -43,7 +43,7 @@ export const parseTorrents = async (torrents, {skip_torrents = false, torrents_i
 
           // Parse torrent data
           // Send it to torrent window
-          const torrent_parsed_data = await TorrentsResolver.parseTorrent(torrents_id, torrents_file_content);
+          const torrent_parsed_data = await TorrentsResolver.parseTorrent({torrents_id, torrents_file_content});
           return {torrent, ...torrent_parsed_data};
         }
 

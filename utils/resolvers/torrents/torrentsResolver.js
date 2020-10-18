@@ -7,7 +7,7 @@ import {runInMain, runInRenderer} from "@@/utils/resolvers/system/processResolve
 export const TORRENTS_EVENT = 'torrents:event';
 export const TORRENTS_PARSE = 'torrents:parse';
 export const TORRENTS_START = 'torrents:start';
-export const TORRENTS_SERVER_CREATE = 'torrents:server:create';
+export const TORRENTS_DESTROY = 'torrents:destroy';
 
 export default class TorrentsResolver {
 
@@ -19,7 +19,7 @@ export default class TorrentsResolver {
    * @param torrents_file_content
    * @return {Promise}
    */
-  static async parseTorrent(torrents_id, torrents_file_content) {
+  static async parseTorrent({torrents_id, torrents_file_content} = {}) {
     return runInRenderer(async electron =>
       this._sendTorrentsWindowEvent(electron, TORRENTS_PARSE, {torrents_id, torrents_file_content})
     )
@@ -40,6 +40,18 @@ export default class TorrentsResolver {
     )
   }
 
+
+  /**
+   * Destroy torrent
+   *
+   * @param torrents_id
+   * @return {Promise}
+   */
+  static async destroyTorrent({torrents_id} = {}) {
+    return runInRenderer(async electron =>
+      this._sendTorrentsWindowEvent(electron, TORRENTS_DESTROY, {torrents_id})
+    )
+  }
 
 
   /**

@@ -16,15 +16,9 @@
 
   // Components
   import PlayerHandler from './../../components/handler'
-  import TorrentsResolver from "@@/utils/resolvers/torrents";
 
-  /*import {
-    emitTorrentStart,
-    emitTorrentDestroy,
-    handleTorrentClear,
-    handleTorrentError,
-    handleTorrentServer,
-  } from "@main/handlers/torrents/torrentsHandler";*/
+  // Resolvers
+  import TorrentsResolver from "@@/utils/resolvers/torrents";
 
   const props = {
     time: {
@@ -61,7 +55,6 @@
 
     methods: {
 
-
       /**
        * Get payload from provided source
        *
@@ -75,22 +68,17 @@
 
         if (torrents_id) {
 
-          const response = await TorrentsResolver.startTorrent({torrents_id, file_index});
+          // Start torrent
+          // Get torrent server url
+          const {url} = await TorrentsResolver.startTorrent({torrents_id, file_index});
 
-          console.log({...response});
+          // Create url for video file
+          // Resolve full url
+          return `${url}/${file_index}/${encodeURIComponent(payload.file.name)}`;
 
-          // Send event to start server with provided torrent id
-          //emitTorrentStart(torrent_id, file_index);
-
-          // Listen event with torrent server data
-          // Resolve when event is caught
-          /*handleTorrentServer(server => {
-            if (server.torrent_id === torrent_id) {
-              resolve(`${server.url}/${file_index}/${encodeURIComponent(payload.file.name)}`);
-            }
-          });*/
-
-        } else this.$emit('error', 'Не удалось определить источник воспроизведения');
+        } else {
+          this.$emit('error', 'Не удалось определить источник воспроизведения');
+        }
       },
 
 
@@ -100,7 +88,7 @@
        *
        * @return void
        */
-      processPayload({player, payload} = {}) {
+      async processPayload({player, payload} = {}) {
         if (payload) {
 
           // Pause player
@@ -115,14 +103,7 @@
           player.play();
 
         } else {
-
-          // Emit error
-          this.$emit('error', {
-            payload,
-            referer: 'processPayload',
-            message: 'Не удалось подключиться к источнику воспроизведения',
-          });
-
+          this.$emit('error', 'Не удалось подключиться к источнику воспроизведения');
         }
       },
 
@@ -133,48 +114,15 @@
        * @param source
        * @return Promise
        */
-      destroyPayload({source}) {
-        return new Promise(resolve => {
-
-          // Emit torrent destroy event
-          // Emit event for current torrent
-          // emitTorrentDestroy({torrent_id: this._getSourceTorrentId(source)});
-
-
-          // Handle torrent clear event
-          // Resolve promise if clear event is for current torrent
-          /* handleTorrentClear(({torrent_id}) => {
-             if (torrent_id === this._getSourceTorrentId(source)) resolve();
-           });*/
-
-        });
+      async destroyPayload({source}) {
+        return await TorrentsResolver.destroyTorrent({torrents_id: this.$__get(source, 'payload.torrent.id') || null});
       },
-
-
-      /**
-       * Get source's torrent id
-       *
-       * @param source
-       * @return {*|null}
-       * @private
-       */
-      _getSourceTorrentId(source) {
-        return
-      }
 
     },
 
 
     created() {
-      /*handleTorrentError(({torrentId: torrent_id, message, error}) => {
-
-        // Check if torrent error is for current torrent
-        // Emit error event to parent component
-        if (torrent_id === this._getSourceTorrentId(this.source)) {
-          this.$emit('error', {torrent_id, message, error})
-        }
-
-      });*/
+      // handle torrent error here
     }
 
   }
