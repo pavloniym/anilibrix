@@ -20,7 +20,7 @@
 <script>
 
   // Mixins
-  import {PlatformMixin, DeviceMixin} from '@mixins/app'
+  import {PlatformMixin, DeviceMixin, FullscreenMixin} from '@mixins/app'
 
   // Utils
   import {runOnDesktop} from "@@/utils/resolvers/system/deviceResolver";
@@ -28,7 +28,8 @@
   export default {
     mixins: [
       DeviceMixin,
-      PlatformMixin
+      PlatformMixin,
+      FullscreenMixin
     ],
     computed: {
 

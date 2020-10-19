@@ -3,8 +3,8 @@
 
     <!-- Settings -->
     <!-- System Bar -->
+    <app-topbar/>
     <app-settings/>
-    <app-system-bar/>
 
     <!-- Content -->
     <app-loader v-if="is_loading" key="loader"/>
@@ -26,8 +26,8 @@
   // App
   import AppError from '@components/app/error'
   import AppLoader from '@components/app/loader'
+  import AppTopbar from '@components/app/topbar'
   import AppSettings from "@components/app/settings";
-  import AppSystemBar from '@components/app/systembar'
 
   // Layouts
   import AppBaseLayout from '@layouts/base'
@@ -43,8 +43,8 @@
     components: {
       AppError,
       AppLoader,
+      AppTopbar,
       AppSettings,
-      AppSystemBar,
       AppBaseLayout,
       AppNotifications,
     },

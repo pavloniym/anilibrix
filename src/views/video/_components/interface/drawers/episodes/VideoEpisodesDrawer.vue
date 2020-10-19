@@ -1,28 +1,23 @@
 <template>
-  <v-navigation-drawer v-model="is_visible" absolute temporary width="400" :style="{zIndex: 100}">
-
-    <!-- Episodes -->
-    <v-card>
-      <v-card-title>Эпизоды</v-card-title>
-      <v-card-subtitle>Список всех эпизодов релиза</v-card-subtitle>
-      <episodes
-        v-bind="{release, episodes}"
-        class="pa-4"
-        :playing_episode_id="episode ? episode.id : null"
-        @play:episode="$emit('play:episode', {release_id: release.id, episode_id: $event.id})">
-      </episodes>
-    </v-card>
-
-  </v-navigation-drawer>
+  <drawer v-model="is_visible" width="400" z-index="100">
+      <v-card>
+        <v-card-title>Эпизоды</v-card-title>
+        <v-card-subtitle>Список всех эпизодов релиза</v-card-subtitle>
+        <episodes
+          v-bind="{release, episodes}"
+          class="pa-4"
+          :playing_episode_id="episode ? episode.id : null"
+          @play:episode="$emit('play:episode', {release_id: release.id, episode_id: $event.id})">
+        </episodes>
+      </v-card>
+  </drawer>
 </template>
 
 <script>
 
   // Components
+  import Drawer from '@components/app/ui/drawer'
   import Episodes from '@components/release/episodes'
-
-  // Mixins
-  import {PlatformMixin} from '@mixins/app'
 
   const props = {
     release: {
@@ -37,8 +32,8 @@
 
   export default {
     props,
-    mixins: [PlatformMixin],
     components: {
+      Drawer,
       Episodes,
     },
 

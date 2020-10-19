@@ -1,3 +1,3 @@
-import PlayerTorrent from './PlayerTorrent'
+import VideoTorrentDrawer from './VideoTorrentDrawer'
 
-export default PlayerTorrent
+export default VideoTorrentDrawer

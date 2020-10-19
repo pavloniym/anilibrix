@@ -36,11 +36,11 @@
 <script>
 
   // Components
-  import Update from './components/update'
-  import Search from './components/search'
-  import Account from './components/account'
-  import Settings from './components/settings'
-  import Notifications from './components/notifications'
+  import Update from './_components/update'
+  import Search from './_components/search'
+  import Account from './_components/account'
+  import Settings from './_components/settings'
+  import Notifications from './_components/notifications'
 
   export default {
     components: {

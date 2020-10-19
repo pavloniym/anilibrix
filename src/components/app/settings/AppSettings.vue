@@ -23,7 +23,7 @@
 <script>
 
   // Components
-  import {Input, Switch, Action} from "./components/fields";
+  import {Input, Switch, Action} from "./_components/fields";
 
   // Mixins
   import {PlatformMixin, DeviceMixin} from '@mixins/app'

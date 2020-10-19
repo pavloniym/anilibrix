@@ -4,10 +4,15 @@ import {v4 as uuid} from 'uuid'
 // Resolvers
 import {runInMain, runInRenderer} from "@@/utils/resolvers/system/processResolver";
 
+// Event Bus
+import {EventBus} from "@plugins/vue-event-bus";
+
+// Events
 export const TORRENTS_EVENT = 'torrents:event';
 export const TORRENTS_PARSE = 'torrents:parse';
 export const TORRENTS_START = 'torrents:start';
-export const TORRENTS_DESTROY = 'torrents:destroy';
+export const TORRENTS_CLEAR = 'torrents:clear';
+export const TORRENTS_PROGRESS_WATCHER = 'torrents:progress-watcher';
 
 export default class TorrentsResolver {
 
@@ -47,10 +52,41 @@ export default class TorrentsResolver {
    * @param torrents_id
    * @return {Promise}
    */
-  static async destroyTorrent({torrents_id} = {}) {
+  static async clearTorrent({torrents_id} = {}) {
     return runInRenderer(async electron =>
-      this._sendTorrentsWindowEvent(electron, TORRENTS_DESTROY, {torrents_id})
+      this._sendTorrentsWindowEvent(electron, TORRENTS_CLEAR, {torrents_id})
     )
+  }
+
+
+  /**
+   * Emit torrent watcher event
+   *
+   * @param torrents_id
+   * @param payload
+   * @return {Promise<void>}
+   */
+  static async emitTorrentProgressWatcher({torrents_id, payload} = {}) {
+    EventBus.$emit(TORRENTS_PROGRESS_WATCHER, {torrents_id, payload});
+  }
+
+  /**
+   * Catch torrent watcher event
+   *
+   * @param callback
+   */
+  static catchTorrentProgressWatcher(callback) {
+    EventBus.$on(TORRENTS_PROGRESS_WATCHER, callback);
+  }
+
+
+  /**
+   * Unsubscribe torrent watcher event
+   *
+   * @param callback
+   */
+  static unsubscribeTorrentProgressWatcher(callback) {
+    EventBus.$off(TORRENTS_PROGRESS_WATCHER, callback);
   }
 
 
@@ -80,7 +116,6 @@ export default class TorrentsResolver {
       });
     }))
   }
-
 
 
   /**

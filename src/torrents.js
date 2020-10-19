@@ -20,7 +20,7 @@ import {parse, stringify} from 'flatted'
 
 // Resolvers
 import TorrentsResolver, {
-  TORRENTS_DESTROY,
+  TORRENTS_CLEAR,
   TORRENTS_PARSE,
   TORRENTS_START
 } from "@@/utils/resolvers/torrents/torrentsResolver";
@@ -32,15 +32,13 @@ class Torrents {
     // Create WebTorrentClient
     // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
     // client, as explained here: https://webtorrent.io/faq
+    this.torrent_client = new WebTorrent({torrentPort: Math.floor(Math.random() * (60000 - 12000) + 12000)});
 
-    this.torrent_client = new WebTorrent({
-      torrentPort: Math.floor(Math.random() * (60000 - 12000) + 12000)
-    });
-
-    this.started_torrents_servers = {}; // Servers instances for torrents
-    this.parsed_torrents_collection = {}; // Parsed torrents collection
-    this.started_torrents_collection = {}; // Torrents instances
-    this.started_torrents_watchers_handlers = {}; // Update handlers
+    // Collections
+    this.torrents_parsed = {}; // Parsed torrents collection
+    this.torrents_servers = {}; // Servers instances for torrents
+    this.torrents_instances = {}; // Torrents instances
+    this.torrents_progress_watchers = {}; // Update handlers
 
   }
 
@@ -53,19 +51,19 @@ class Torrents {
    */
   async parseTorrentFromBuffer({torrents_id, torrents_file_content}) {
     try {
-      let torrent_parsed_data = null;
+      let torrent_parsed = null;
       if (torrents_file_content !== null) {
 
         // If blob is provided -> try to create buffer with torrent file
         // Try to parse torrent
-        torrent_parsed_data = await ParseTorrent(new Buffer(torrents_file_content));
+        torrent_parsed = await ParseTorrent(new Buffer(torrents_file_content));
 
         // Save torrent data to store
         // Show in console parsed torrent
-        this._sendToConsole('Torrent is parsed!', {torrents_id, torrent_parsed_data});
-        this._saveParsedTorrent({torrents_id, torrent_parsed_data});
+        this._sendToConsole('Torrent is parsed!', {torrents_id, torrent_parsed});
+        this._saveTorrentParsed({torrents_id, torrent_parsed});
 
-        return torrent_parsed_data;
+        return torrent_parsed;
       }
     } catch (error) {
       this._sendError({torrents_id, message: 'Произошла ошибка при парсинге торрент-файла', error});
@@ -87,18 +85,18 @@ class Torrents {
 
     // Check if torrent is exists and parsed
     // Get parsed torrent from store
-    if (this._getParsedTorrent(torrents_id)) {
+    if (this._getTorrentParsed(torrents_id)) {
 
       // Destroy torrent if it already added
-      this._destroyStartedTorrent(torrents_id);
+      this._clearTorrentInstance(torrents_id);
 
       // Add torrent
       // Resolve promise when torrent is ready and saved to started torrents collection
       return await new Promise(async resolve => {
-        this.torrent_client.add(this._getParsedTorrent(torrents_id), {path: this._getTorrentFilepath()}, torrent => {
+        this.torrent_client.add(this._getTorrentParsed(torrents_id), {path: this._getTorrentFilepath()}, torrent => {
 
           // Save torrent instance to store
-          this._saveStartedTorrent({torrents_id, torrent});
+          this._saveTorrentInstance({torrents_id, torrent});
 
           // Get file with provided file index
           const file = this._getTorrentFile({torrents_id, file_index});
@@ -120,23 +118,23 @@ class Torrents {
 
 
   /**
-   * Start torrent file watcher
+   * Start torrent progress watcher
    *
    * @param torrents_id
    * @param file_index
    * @return {Promise}
    */
-  async startTorrentFileWatcher({torrents_id, file_index}) {
+  async startTorrentProgressWatcher({torrents_id, file_index}) {
 
     // Clear previous interval
     // Create torrent download data watcher
-    this._clearStartedTorrentWatcher(torrents_id);
-    this._createStartedTorrentWatcher({
+    this._clearTorrentProgressWatcher(torrents_id);
+    this._saveTorrentProgressWatcher({
       torrents_id,
       callback: () => {
 
         const file = this._getTorrentFile({torrents_id, file_index});
-        const torrent = this._getStartedTorrent({torrents_id});
+        const torrent = this._getTorrentInstance({torrents_id});
 
         if (file && torrent) {
 
@@ -152,6 +150,8 @@ class Torrents {
             downloaded: file.downloaded,
           };
 
+          // Emit torrent watcher
+          TorrentsResolver.emitTorrentProgressWatcher({torrents_id, payload});
 
           // Sent to console
           this._sendToConsole('Torrent progress:', payload);
@@ -172,11 +172,11 @@ class Torrents {
     return new Promise(async resolve => {
 
       // Create new server
-      const torrent = this._getStartedTorrent({torrents_id});
+      const torrent = this._getTorrentInstance({torrents_id});
       const server = torrent.createServer();
 
       // Save server instance to store
-      this._saveStartedTorrentServer({torrents_id, server});
+      this._saveTorrentServer({torrents_id, server});
 
       // Start server
       server.listen(0, () => {
@@ -201,34 +201,34 @@ class Torrents {
    *
    * @return Promise
    */
-  async destroyTorrent({torrents_id}) {
+  async clearTorrent({torrents_id}) {
     return await new Promise(resolve => {
       try {
 
         // Destroy server
         // Close server
         // Clear server for provided torrent in storage
-        if (this._getStartedTorrentServer({torrents_id})) {
+        if (this._getTorrentServer({torrents_id})) {
 
           // Show in console
           this._sendToConsole('Destroy Torrent Server', {
             torrents_id,
-            server: this._getStartedTorrentServer({torrents_id})
+            server: this._getTorrentServer({torrents_id})
           });
 
           // Stop and destroy server
-          this._getStartedTorrentServer({torrents_id}).close();
-          this._saveStartedTorrentServer({torrents_id, server: null});
+          this._getTorrentServer({torrents_id}).close();
+          this._saveTorrentServer({torrents_id, server: null});
         }
 
         // Destroy started torrent watcher
-        this._clearStartedTorrentWatcher({torrents_id});
+        this._clearTorrentProgressWatcher({torrents_id});
 
         // Destroy torrent
-        if (this._getStartedTorrent({torrents_id})) {
+        if (this._getTorrentInstance({torrents_id})) {
 
           // Torrent files path
-          const path = this._getStartedTorrent({torrents_id}).path;
+          const path = this._getTorrentInstance({torrents_id}).path;
 
           // Remove files from fs
           rimraf(path, () => {
@@ -238,8 +238,8 @@ class Torrents {
 
             // Destroy torrent
             // Clear storage
-            this._getStartedTorrent({torrents_id}).destroy();
-            this._saveStartedTorrent({torrents_id, torrent: null});
+            this._getTorrentInstance({torrents_id}).destroy();
+            this._saveTorrentInstance({torrents_id, torrent: null});
 
             // Resolve destroy event
             resolve();
@@ -264,8 +264,8 @@ class Torrents {
    * @return {void}
    * @private
    */
-  _saveParsedTorrent({torrents_id, torrent_parsed_data}) {
-    this.parsed_torrents_collection[torrents_id] = torrent_parsed_data;
+  _saveTorrentParsed({torrents_id, torrent_parsed}) {
+    this.torrents_parsed[torrents_id] = torrent_parsed;
   }
 
   /**
@@ -275,8 +275,8 @@ class Torrents {
    * @param torrent
    * @private
    */
-  _saveStartedTorrent({torrents_id, torrent}) {
-    this.started_torrents_collection[torrents_id] = torrent;
+  _saveTorrentInstance({torrents_id, torrent}) {
+    this.torrents_instances[torrents_id] = torrent;
   }
 
 
@@ -287,8 +287,20 @@ class Torrents {
    * @param server
    * @private
    */
-  _saveStartedTorrentServer({torrents_id, server}) {
-    this.started_torrents_servers[torrents_id] = server;
+  _saveTorrentServer({torrents_id, server}) {
+    this.torrents_servers[torrents_id] = server;
+  }
+
+
+  /**
+   * Create started torrent watcher
+   *
+   * @param torrents_id
+   * @param callback
+   * @private
+   */
+  _saveTorrentProgressWatcher({torrents_id, callback}) {
+    this.torrents_progress_watchers[torrents_id] = setInterval(callback, 2000);
   }
 
 
@@ -299,12 +311,11 @@ class Torrents {
    * @return {*}
    * @private
    */
-  _getParsedTorrent(torrents_id) {
-    return this.parsed_torrents_collection[torrents_id]
-      ? this.parsed_torrents_collection[torrents_id]
+  _getTorrentParsed(torrents_id) {
+    return this.torrents_parsed[torrents_id]
+      ? this.torrents_parsed[torrents_id]
       : null;
   }
-
 
   /**
    * Get started torrent from collection
@@ -313,11 +324,12 @@ class Torrents {
    * @return {*}
    * @private
    */
-  _getStartedTorrent({torrents_id}) {
-    return this.started_torrents_collection[torrents_id]
-      ? this.started_torrents_collection[torrents_id]
+  _getTorrentInstance({torrents_id}) {
+    return this.torrents_instances[torrents_id]
+      ? this.torrents_instances[torrents_id]
       : null;
   }
+
 
   /**
    * Get torrent file
@@ -328,7 +340,7 @@ class Torrents {
    * @private
    */
   _getTorrentFile({torrents_id, file_index}) {
-    const torrent = this._getStartedTorrent({torrents_id});
+    const torrent = this._getTorrentInstance({torrents_id});
     if (torrent && file_index >= 0) {
       return torrent.files[file_index];
     }
@@ -343,10 +355,20 @@ class Torrents {
    * @return {*}
    * @private
    */
-  _getStartedTorrentServer({torrents_id}) {
-    return this.started_torrents_servers[torrents_id]
-      ? this.started_torrents_servers[torrents_id]
+  _getTorrentServer({torrents_id}) {
+    return this.torrents_servers[torrents_id]
+      ? this.torrents_servers[torrents_id]
       : null;
+  }
+
+
+  /**
+   * Get torrent path in temp folder
+   *
+   * @type {string}
+   */
+  _getTorrentFilepath() {
+    path.join(remote.app.getPath('temp'), meta.build.appId);
   }
 
 
@@ -356,30 +378,17 @@ class Torrents {
    * @param torrents_id
    * @private
    */
-  _destroyStartedTorrent(torrents_id) {
-    if (this.started_torrents_collection && this.started_torrents_collection[torrents_id]) {
+  _clearTorrentInstance(torrents_id) {
+    if (this.torrents_instances && this.torrents_instances[torrents_id]) {
 
       // Destroy and clear
-      this.started_torrents_collection[torrents_id].destroy();
-      this.started_torrents_collection[torrents_id] = undefined;
+      this.torrents_instances[torrents_id].destroy();
+      this.torrents_instances[torrents_id] = undefined;
 
       // Show in console
       this._sendToConsole('Destroy already started torrent', {torrents_id});
     }
   }
-
-
-  /**
-   * Create started torrent watcher
-   *
-   * @param torrents_id
-   * @param callback
-   * @private
-   */
-  _createStartedTorrentWatcher({torrents_id, callback}) {
-    this.started_torrents_watchers_handlers[torrents_id] = setInterval(callback, 2000);
-  }
-
 
   /**
    * Clear started torrent watcher
@@ -387,19 +396,10 @@ class Torrents {
    * @param torrents_id
    * @private
    */
-  _clearStartedTorrentWatcher(torrents_id) {
-    if (this.started_torrents_watchers_handlers[torrents_id]) {
-      clearInterval(this.started_torrents_watchers_handlers[torrents_id]);
+  _clearTorrentProgressWatcher(torrents_id) {
+    if (this.torrents_progress_watchers[torrents_id]) {
+      clearInterval(this.torrents_progress_watchers[torrents_id]);
     }
-  }
-
-  /**
-   * Get torrent path in temp folder
-   *
-   * @type {string}
-   */
-  _getTorrentFilepath() {
-    path.join(remote.app.getPath('temp'), meta.build.appId);
   }
 
 
@@ -444,11 +444,11 @@ const resolveTorrentParseEvent = () => {
 
     // Try to parse torrent from provided file
     // Stringify and parse torrent data (to clear prototypes)
-    const torrent_parsed_data = await TorrentsInstance.parseTorrentFromBuffer({torrents_id, torrents_file_content});
+    const torrent_parsed = await TorrentsInstance.parseTorrentFromBuffer({torrents_id, torrents_file_content});
 
     // Send event back with torrent parsed data
     // Provide event token
-    ipcRenderer.send(TORRENTS_PARSE, {torrents_id, torrent_parsed_data, token});
+    ipcRenderer.send(TORRENTS_PARSE, {torrents_id, torrent_parsed, token});
 
   });
 };
@@ -467,9 +467,9 @@ const resolveTorrentStartEvent = () => {
   ipcRenderer.on(TORRENTS_START, async (e, {token, torrents_id, file_index}) => {
 
     // Start torrent for provided file index
-    // Start torrent file watcher
+    // Start torrent progress watcher
     await TorrentsInstance.startTorrentForFile({torrents_id, file_index});
-    await TorrentsInstance.startTorrentFileWatcher({torrents_id, file_index});
+    await TorrentsInstance.startTorrentProgressWatcher({torrents_id, file_index});
 
     // Start torrent server
     const {url} = await TorrentsInstance.startTorrentServer({torrents_id});
@@ -486,15 +486,15 @@ const resolveTorrentStartEvent = () => {
  *
  * @return {void}
  */
-const resolveTorrentDestroyEvent = () => {
-  ipcRenderer.on(TORRENTS_DESTROY, async (e, {token, torrents_id}) => {
+const resolveTorrentClearEvent = () => {
+  ipcRenderer.on(TORRENTS_CLEAR, async (e, {token, torrents_id}) => {
 
     // Try to destroy torrent
-    await TorrentsInstance.destroyTorrent({torrents_id});
+    await TorrentsInstance.clearTorrent({torrents_id});
 
     // Send event back with torrent server data
     // Provide event token
-    ipcRenderer.send(TORRENTS_DESTROY, {torrents_id, token});
+    ipcRenderer.send(TORRENTS_CLEAR, {torrents_id, token});
   })
 };
 
@@ -502,4 +502,4 @@ const resolveTorrentDestroyEvent = () => {
 // Events
 resolveTorrentParseEvent();
 resolveTorrentStartEvent();
-resolveTorrentDestroyEvent();
+resolveTorrentClearEvent();

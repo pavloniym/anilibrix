@@ -1,5 +1,10 @@
 <template>
-  <v-navigation-drawer
+  <drawer v-model="is_visible" width="400" z-index="100">
+
+
+
+  </drawer>
+  <!--<v-navigation-drawer
     v-if="source.type === 'torrent'"
     v-model="visible"
     absolute
@@ -7,10 +12,10 @@
     width="350"
     :style="{zIndex: 100}">
 
-    <!-- System Bar Offset-->
-    <app-system-bar-placeholder fixed/>
+    &lt;!&ndash; System Bar Offset&ndash;&gt;
+    &lt;!&ndash;<app-system-bar-placeholder fixed/>&ndash;&gt;
 
-    <!-- Torrent Details -->
+    &lt;!&ndash; Torrent Details &ndash;&gt;
     <v-card :class="{'mt-9': !this.isMacOnFullscreen}">
       <v-card-title>Торрент</v-card-title>
       <v-card-subtitle>Данные по воспроизводимому торренту и соединению</v-card-subtitle>
@@ -30,21 +35,23 @@
       <v-divider/>
     </v-card>
 
-    <!-- Notice -->
-    <div class="caption grey--text px-4 mt-4">
+    &lt;!&ndash; Notice &ndash;&gt;
+    <div class="caption grey&#45;&#45;text px-4 mt-4">
       Малое количество сидеров и личеров может негативно сказаться на скорости загрузки и
       привести к буфферизации воспроизведения
     </div>
 
-  </v-navigation-drawer>
+  </v-navigation-drawer>-->
 </template>
 
 <script>
 
-  import AppSystemBarPlaceholder from '@components/app/systembar/placeholder'
+  // Components
+  import Drawer from '@components/app/ui/drawer'
+  import TorrentsResolver from "@@/utils/resolvers/torrents";
 
   //import prettyBytes from 'pretty-bytes'
-  import {PlatformMixin} from '@mixins/app'
+
   // import {handleTorrentDownload} from "@main/handlers/torrents/torrentsHandler";
 
   const props = {
@@ -56,9 +63,8 @@
 
   export default {
     props,
-    mixins: [PlatformMixin],
     components: {
-      AppSystemBarPlaceholder
+      Drawer
     },
     data() {
       return {
@@ -69,7 +75,7 @@
         },
         speed: 0,
         seeding: 0,
-        visible: false,
+        is_visible: true,
       }
     },
 
@@ -143,26 +149,43 @@
        * @return void
        */
       show() {
-        this.visible = true
-      }
+        this.is_visible = true;
+      },
 
-    },
 
-    created() {
-      /*handleTorrentDownload(data => {
-        if (this.torrent && this.torrent.id === data.torrent_id) {
+      /**
+       * Set torrent progress
+       *
+       * @param torrents_id
+       * @param payload
+       * @return {void}
+       */
+      setTorrentProgress({torrents_id, payload}) {
+        console.log({...payload});
 
-          // Set download speed
+        //if (this.torrent && this.torrent.id === torrents_id) {
+
+
+
+          /*// Set download speed
           this.speed = data.speed || 0;
           this.seeding = data.seeding || 0;
 
           // Set file data
           this.file.name = data.name;
           this.file.length = data.length;
-          this.file.progress = data.progress;
+          this.file.progress = data.progress;*/
+        //}
+      }
 
-        }
-      });*/
+    },
+
+    created() {
+      TorrentsResolver.catchTorrentProgressWatcher(this.setTorrentProgress);
+    },
+
+    destroyed() {
+      TorrentsResolver.unsubscribeTorrentProgressWatcher(this.setTorrentProgress);
     }
 
   }
@@ -173,6 +196,5 @@
   .white-space--pre-wrap {
     white-space: pre-wrap;
   }
-
 
 </style>

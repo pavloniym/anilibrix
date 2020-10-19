@@ -115,7 +115,7 @@
        * @return Promise
        */
       async destroyPayload({source}) {
-        return await TorrentsResolver.destroyTorrent({torrents_id: this.$__get(source, 'payload.torrent.id') || null});
+        return await TorrentsResolver.clearTorrent({torrents_id: this.$__get(source, 'payload.torrent.id') || null});
       },
 
     },

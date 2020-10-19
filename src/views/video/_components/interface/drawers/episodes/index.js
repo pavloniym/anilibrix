@@ -1,3 +1,3 @@
-import PlayerEpisodes from './PlayerEpisodes'
+import VideoEpisodesDrawer from './VideoEpisodesDrawer'
 
-export default PlayerEpisodes
+export default VideoEpisodesDrawer

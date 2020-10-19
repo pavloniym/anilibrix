@@ -80,7 +80,7 @@
     },
 
     computed: {
-      ...mapState('app/settings/player', {_sort: s => s.episodes.order}),
+      ...mapState('app/settings', {_episodes_sort: s => s.player.episodes.order}),
 
       /**
        * Get playlist
@@ -88,7 +88,7 @@
        * @return Array
        */
       playlist() {
-        return __orderBy(this.episodes || [], ['id'], [this._sort]);
+        return __orderBy(this.episodes || [], ['id'], [this._episodes_sort]);
       },
 
 

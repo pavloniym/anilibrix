@@ -14,11 +14,11 @@
 
 <script>
 
-  import {BackRouteMixin} from "@mixins/routes";
+
 
   export default {
     mixins: [
-      BackRouteMixin
+
     ],
 
     computed: {

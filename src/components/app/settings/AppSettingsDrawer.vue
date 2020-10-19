@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="drawer" app right fixed temporary width="400" class="settings">
+  <drawer v-model="drawer" app right fixed temporary width="400">
 
     <!-- Header -->
     <v-toolbar flat class="shrink" color="#363636">
@@ -12,12 +12,13 @@
     <app-settings />
     <app-settings-credentials class="py-4" />
 
-  </v-navigation-drawer>
+  </drawer>
 </template>
 
 <script>
 
   // Components
+  import Drawer from './../ui/drawer'
   import AppSettings from './AppSettings'
   import AppSettingsCredentials from './AppSettingsCredentials'
 
@@ -30,6 +31,7 @@
   export default {
     mixins: [PlatformMixin],
     components: {
+      Drawer,
       AppSettings,
       AppSettingsCredentials
     },
@@ -66,22 +68,3 @@
 
   }
 </script>
-<style lang="scss" scoped>
-
-  .settings {
-    ::v-deep {
-      .v-navigation-drawer__content {
-        overflow-y: scroll;
-      }
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background-color: black;
-    }
-
-    ::-webkit-scrollbar {
-      background-color: transparent;
-    }
-  }
-
-</style>

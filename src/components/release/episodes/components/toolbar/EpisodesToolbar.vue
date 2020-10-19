@@ -13,6 +13,7 @@
 
 <script>
 
+  // Components
   import Sort from './components/sort'
   import Search from './components/search'
   import Actions from './components/actions'

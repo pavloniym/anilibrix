@@ -43,8 +43,8 @@ export const parseTorrents = async (torrents, {skip_torrents = false, torrents_i
 
           // Parse torrent data
           // Send it to torrent window
-          const torrent_parsed_data = await TorrentsResolver.parseTorrent({torrents_id, torrents_file_content});
-          return {torrent, ...torrent_parsed_data};
+          const torrent_parsed = await TorrentsResolver.parseTorrent({torrents_id, torrents_file_content});
+          return {torrent, ...torrent_parsed};
         }
 
         return null;
@@ -64,7 +64,7 @@ export const parseTorrents = async (torrents, {skip_torrents = false, torrents_i
 
       const type = 'torrent';
       const label = __get(parsed_torrent, 'torrent.quality') || null;
-      const files = __get(parsed_torrent, 'torrent_parsed_data.files') || [];
+      const files = __get(parsed_torrent, 'torrent_parsed.files') || [];
       const alias = label ? __camelCase(label) : null;
 
       const parsed_episodes = files.reduce((episodes, file, index) => {

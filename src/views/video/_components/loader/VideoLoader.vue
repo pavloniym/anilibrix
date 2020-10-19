@@ -25,6 +25,7 @@
         <v-col align-self="center">
           <v-layout align-center justify-end>
             <v-skeleton-loader boilerplate type="avatar" class="mr-2" width="32" height="32" />
+            <v-skeleton-loader boilerplate type="avatar" class="mr-2" width="32" height="32" />
             <v-skeleton-loader boilerplate type="avatar" class="mr-2" width="32" height="32"/>
             <v-skeleton-loader boilerplate type="avatar" class="mr-2" width="32" height="32"/>
           </v-layout>

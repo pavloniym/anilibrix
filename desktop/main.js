@@ -59,6 +59,9 @@ app.on('ready', async () => {
   TorrentsWindowInstance.createWindow({title: `${meta.name} — Torrent Master`}).loadURL('torrents', 'torrents.html');
   TorrentsWindowInstance.getWindow().webContents.userAgent = `${meta.name}/${version}`;
 
+  AppWindowInstance.showDevTools();
+  TorrentsWindowInstance.showDevTools();
+
   // Resolvers
   appResolvers();
   torrentsResolvers();
