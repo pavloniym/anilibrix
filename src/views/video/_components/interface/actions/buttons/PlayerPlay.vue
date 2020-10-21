@@ -10,7 +10,7 @@
             icon
             large
             :disabled="!previous"
-            @click="$emit('play:episode', {release_id: release.id, episode_id: previous.id})">
+            @click="toEpisode(previous)">
             <v-icon>mdi-skip-previous</v-icon>
           </v-btn>
         </template>
@@ -40,7 +40,7 @@
             icon
             large
             :disabled="!next"
-            @click="$emit('play:episode', {release_id: release.id, episode_id: next.id})">
+            @click="toEpisode(next)">
             <v-icon>mdi-skip-next</v-icon>
           </v-btn>
         </template>
@@ -120,6 +120,26 @@
       previous() {
         return this.episodes
           .find(episode => episode.id === (this.$__get(this.episode, 'id') || -1) - 1) || null;
+      }
+    },
+
+
+    methods: {
+
+      /**
+       * Emit to episode event
+       * Play from start of episode
+       *
+       * @param episode
+       */
+      toEpisode(episode) {
+        if (this.release && episode) {
+          this.$emit('play:episode', {
+            params: {from_start: true},
+            episode_id: episode.id,
+            release_id: this.release.id
+          });
+        }
       }
 
     },

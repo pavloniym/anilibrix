@@ -2,7 +2,7 @@
 import __get from 'lodash/get'
 
 // Episodes
-import {getEpisode} from './parseEpisode'
+import {getEpisode} from './episodeParser'
 
 
 /**

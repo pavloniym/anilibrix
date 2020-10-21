@@ -111,6 +111,7 @@ const appResolvers = () => {
   AppResolver.showAbout();
   AppResolver.showAppDevtools(AppWindowInstance);
   AppResolver.showTorrentDevtools(TorrentsWindowInstance);
+  AppResolver.resolveBroadcastEvent([AppWindowInstance, TorrentsWindowInstance]);
 };
 
 

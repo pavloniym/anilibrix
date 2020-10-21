@@ -1,6 +1,6 @@
 <template>
   <player-handler
-    v-bind="options"
+    v-bind="configuration"
     @error="$emit('error', $event)"
     @update:time="$emit('update:time', $event)"
     @update:duration="$emit('update:duration', $event)">
@@ -37,16 +37,16 @@
     computed: {
 
       /**
-       * Playback player options
+       * Playback player configuration
        *
-       * @return Object
+       * @return {*}
        */
-      options() {
+      configuration() {
         return {
           source: this.source,
-          getPayload: this.getPayload,
-          processPayload: this.processPayload,
-          destroyPayload: this.destroyPayload,
+          getHandler: this._getHandler,
+          clearHandler: this._clearHandler,
+          resolveHandler: this._resolveHandler,
         }
       }
 
@@ -60,7 +60,7 @@
        *
        * @return Promise
        */
-      async getPayload(source) {
+      async _getHandler(source) {
 
         const payload = this.$__get(source, 'payload');
         const file_index = this.$__get(payload, 'file.index', -1);
@@ -83,12 +83,23 @@
 
 
       /**
+       * Destroy payload
+       *
+       * @param source
+       * @return Promise
+       */
+      async _clearHandler({source}) {
+        return await TorrentsResolver.clearTorrent({torrents_id: this.$__get(source, 'payload.torrent.id') || null});
+      },
+
+
+      /**
        * Set source from torrent video payload
        * Play source if provided
        *
        * @return void
        */
-      async processPayload({player, payload} = {}) {
+      async _resolveHandler({player, payload} = {}) {
         if (payload) {
 
           // Pause player
@@ -105,17 +116,6 @@
         } else {
           this.$emit('error', 'Не удалось подключиться к источнику воспроизведения');
         }
-      },
-
-
-      /**
-       * Destroy payload
-       *
-       * @param source
-       * @return Promise
-       */
-      async destroyPayload({source}) {
-        return await TorrentsResolver.clearTorrent({torrents_id: this.$__get(source, 'payload.torrent.id') || null});
       },
 
     },

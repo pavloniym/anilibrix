@@ -1,58 +1,43 @@
 <template>
-  <drawer v-model="is_visible" width="400" z-index="100">
+  <drawer v-model="is_visible" absolute temporary width="400" z-index="100">
 
-
-
-  </drawer>
-  <!--<v-navigation-drawer
-    v-if="source.type === 'torrent'"
-    v-model="visible"
-    absolute
-    temporary
-    width="350"
-    :style="{zIndex: 100}">
-
-    &lt;!&ndash; System Bar Offset&ndash;&gt;
-    &lt;!&ndash;<app-system-bar-placeholder fixed/>&ndash;&gt;
-
-    &lt;!&ndash; Torrent Details &ndash;&gt;
-    <v-card :class="{'mt-9': !this.isMacOnFullscreen}">
+    <!-- Content -->
+    <v-card>
       <v-card-title>Торрент</v-card-title>
       <v-card-subtitle>Данные по воспроизводимому торренту и соединению</v-card-subtitle>
       <v-list dense>
         <template v-for="(item, k) in items">
           <v-divider :key="`d:${k}`"/>
-
           <v-list-item :key="k">
             <v-list-item-content>
               <v-list-item-subtitle v-text="item.title"/>
               <v-list-item-title v-text="item.value" :class="item.classes"/>
             </v-list-item-content>
           </v-list-item>
-
         </template>
       </v-list>
       <v-divider/>
     </v-card>
 
-    &lt;!&ndash; Notice &ndash;&gt;
-    <div class="caption grey&#45;&#45;text px-4 mt-4">
-      Малое количество сидеров и личеров может негативно сказаться на скорости загрузки и
-      привести к буфферизации воспроизведения
-    </div>
+    <!-- Footer -->
+    <template v-slot:footer>
+      Небольшое количество сидеров и личеров может негативно сказаться на скорости загрузки и
+      привести к буфферизации воспроизведения.
+    </template>
 
-  </v-navigation-drawer>-->
+  </drawer>
 </template>
 
 <script>
 
   // Components
   import Drawer from '@components/app/ui/drawer'
+
+  // Resolver
   import TorrentsResolver from "@@/utils/resolvers/torrents";
 
-  //import prettyBytes from 'pretty-bytes'
-
-  // import {handleTorrentDownload} from "@main/handlers/torrents/torrentsHandler";
+  // Utils
+  import prettyBytes from 'pretty-bytes'
 
   const props = {
     source: {
@@ -75,7 +60,7 @@
         },
         speed: 0,
         seeding: 0,
-        is_visible: true,
+        is_visible: false,
       }
     },
 
@@ -94,43 +79,41 @@
       /**
        * Get torrent name
        *
-       * @return {{title: string, value: *}[]}
+       * @return {array}
        */
       items() {
         return [
           {
             title: 'Название торрента',
-            value: this.$__get(this.torrent, 'name'),
+            value: this.$__get(this.torrent, 'name') || 'Нет данных',
             classes: ['white-space--pre-wrap']
           },
           {
             title: 'Дата создания торрента',
-            value: this.$__get(this.torrent, 'datetime') ? new Date(this.$__get(this.torrent, 'datetime')).toLocaleString() : null,
+            value: this.$__get(this.torrent, 'datetime')
+              ? new Date(this.$__get(this.torrent, 'datetime')).toLocaleString()
+              : 'Нет данных',
           },
           {
             title: 'Количество сидеров',
-            value: this.$__get(this.torrent, 'seeders'),
+            value: this.$__get(this.torrent, 'seeders') || 'Нет данных',
           },
           {
             title: 'Количество личеров',
-            value: this.$__get(this.torrent, 'leechers'),
+            value: this.$__get(this.torrent, 'leechers') || 'Нет данных',
           },
           {
             title: 'Воспроизводимый файл',
-            value: this.file.name,
+            value: this.file.name || 'Нет данных',
             classes: ['white-space--pre-wrap']
           },
           {
             title: 'Размер файла',
-          //  value: prettyBytes(this.file.length || 0),
+            value: prettyBytes(this.file.length || 0) || 'Нет данных',
           },
           {
             title: 'Скорость загрузки',
-          //  value: prettyBytes(parseFloat(this.speed.toFixed(2)), {bits: true}),
-          },
-          {
-            title: 'Скорость раздачи',
-          //  value: prettyBytes(parseFloat(this.seeding.toFixed(2)), {bits: true}),
+            value: prettyBytes(parseFloat(this.speed.toFixed(2)), {bits: true}),
           },
           {
             title: 'Прогресс',
@@ -150,43 +133,26 @@
        */
       show() {
         this.is_visible = true;
-      },
-
-
-      /**
-       * Set torrent progress
-       *
-       * @param torrents_id
-       * @param payload
-       * @return {void}
-       */
-      setTorrentProgress({torrents_id, payload}) {
-        console.log({...payload});
-
-        //if (this.torrent && this.torrent.id === torrents_id) {
-
-
-
-          /*// Set download speed
-          this.speed = data.speed || 0;
-          this.seeding = data.seeding || 0;
-
-          // Set file data
-          this.file.name = data.name;
-          this.file.length = data.length;
-          this.file.progress = data.progress;*/
-        //}
       }
-
     },
 
     created() {
-      TorrentsResolver.catchTorrentProgressWatcher(this.setTorrentProgress);
+      TorrentsResolver.catchTorrentProgressWatcher(({torrents_id, payload}) => {
+        if (this.$__get(this.torrent, 'id') === torrents_id) {
+
+          // Set download speed
+          this.speed = this.$__get(payload, 'speed') || 0;
+          this.seeding = this.$__get(payload, 'seeding') || 0;
+
+          // Set file data
+          this.file.name = this.$__get(payload, 'name');
+          this.file.length = this.$__get(payload, 'length');
+          this.file.progress = this.$__get(payload, 'progress');
+
+        }
+      });
     },
 
-    destroyed() {
-      TorrentsResolver.unsubscribeTorrentProgressWatcher(this.setTorrentProgress);
-    }
 
   }
 </script>

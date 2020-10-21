@@ -21,7 +21,7 @@
           width="80"
           height="80"
           :style="{backgroundColor: '#ffffff45'}"
-          @click="toVideo">
+          @click="toEpisode">
           <v-icon large>mdi-skip-next</v-icon>
         </v-btn>
       </v-progress-circular>
@@ -37,7 +37,8 @@
 
 <script>
 
- // import {toVideo} from "@utils/router/views";
+
+  // Utils
   import {mapState} from 'vuex'
 
   const props = {
@@ -69,7 +70,7 @@
 
 
     computed: {
-      ...mapState('app/settings/player', {_autoplay_next: s => s.autoplayNext}),
+      ...mapState('app/settings', {_player_autoplay_next: s => s.player.autoplay.is_enabled}),
 
       /**
        * Get episodes
@@ -124,9 +125,16 @@
        *
        * @return void
        */
-      toVideo() {
-        toVideo(this.release, this.next, {fromStart: true})
+      toEpisode() {
+        if (this.release && this.next) {
+          this.$emit('play:episode', {
+            params: {from_start: true},
+            episode_id: this.next.id,
+            release_id: this.release.id
+          });
+        }
       },
+
 
       /**
        * Start autoplay
@@ -139,7 +147,7 @@
           this.value = 0;
           this.visible = true;
 
-          this.timer = setTimeout(() => this.toVideo(), 3000);
+          this.timer = setTimeout(() => this.toEpisode(), 3000);
           this.interval = setInterval(() => this.value = this.value + 20, 500);
 
         }
@@ -166,7 +174,7 @@
 
 
     created() {
-      if (this._autoplay_next === true) {
+      if (this._player_autoplay_next === true) {
 
         // Start autoplay component on player ended
         // Or to release page on player ended and no next episode

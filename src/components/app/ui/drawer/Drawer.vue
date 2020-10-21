@@ -1,8 +1,6 @@
 <template>
   <v-navigation-drawer
     v-bind="{value, width, ...$attrs}"
-    absolute
-    temporary
     class="drawer"
     :style="{top, zIndex, paddingBottom}"
     @input="$emit('input', $event)">

@@ -160,7 +160,7 @@
           {
             is: NextHelper,
             props: {player: this.player, release: this.release, episode: this.episode},
-
+            events: {'play:episode': $event => this.$emit('play:episode', $event)}
           },
           {
             is: LabelHelper,

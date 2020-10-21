@@ -49,7 +49,7 @@
       type: String,
       default: null
     },
-    fromStart: {
+    from_start: {
       type: Boolean,
       default: false
     }
@@ -280,7 +280,7 @@
       /**
        * Get initial episode start time
        * Get watch data from store for provided release id and episode id
-       * Check fromStart flag
+       * Check from_start flag
        *
        * @param release_id
        * @param episode_id
@@ -289,7 +289,7 @@
       async getEpisodeInitialTime({release_id, episode_id}) {
         const watch_item = await this.$store.getters['app/watch/getWatchedEpisode']({release_id, episode_id});
         const watch_time = this.$__get(watch_item, 'time', null) || 0;
-        return watch_time && this.fromStart === false ? watch_time : 0;
+        return watch_time && this.from_start === false ? watch_time : 0;
       }
 
     },

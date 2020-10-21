@@ -19,17 +19,17 @@
       type: Object,
       default: null
     },
-    getPayload: {
+    getHandler: {
       type: Function,
       default: null
     },
-    processPayload: {
-      type: Function,
-      default: null
-    },
-    destroyPayload: {
+    clearHandler: {
       type: Function,
       default: null,
+    },
+    resolveHandler: {
+      type: Function,
+      default: null
     }
   };
 
@@ -61,26 +61,15 @@
        * @param source
        * @return {Promise<void>}
        */
-      async handlePayload({source}) {
-        if (this.processPayload) {
-
-          // Get payload
-          const payload = await this.getPayload(source);
-
-          // Emit payload to parent
-          this.$emit('update:payload', payload);
-
-          // Process payload
-          this.processPayload({
-            payload,
+      async resolve({source}) {
+        if (this.resolveHandler) {
+          this.resolveHandler.call(null, {
             source: this.source,
             player: this.player,
-            playing: this.player.playing,
+            payload: await this.getHandler.call(this, source),
           });
         }
       }
-
-
     },
 
     mounted() {
@@ -104,15 +93,17 @@
 
       // Destroy player instance
       if (this.player) {
+
         this.player.pause();
         this.player.media.src = '';
         this.player.destroy();
       }
 
       // Destroy payload
-      if (this.destroyPayload) {
-        await this.destroyPayload({source: this.source});
+      if (this.clearHandler) {
+        await this.clearHandler.call(null, {source: this.source});
       }
+
     },
 
 
@@ -126,7 +117,7 @@
             if (source !== null) {
 
               // Handle payload
-              this.handlePayload({source});
+              this.resolve({source});
 
             }
           });

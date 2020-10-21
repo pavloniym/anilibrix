@@ -6,13 +6,15 @@ import {runInMain, runInRenderer} from "@@/utils/resolvers/system/processResolve
 
 // Event Bus
 import {EventBus} from "@plugins/vue-event-bus";
+import AppResolver from "@@/utils/resolvers/app";
+import {runOnPlatform} from "@@/utils/resolvers/system/deviceResolver";
 
 // Events
 export const TORRENTS_EVENT = 'torrents:event';
 export const TORRENTS_PARSE = 'torrents:parse';
 export const TORRENTS_START = 'torrents:start';
 export const TORRENTS_CLEAR = 'torrents:clear';
-export const TORRENTS_PROGRESS_WATCHER = 'torrents:progress-watcher';
+export const TORRENTS_PROGRESS = 'torrents:progress';
 
 export default class TorrentsResolver {
 
@@ -67,7 +69,10 @@ export default class TorrentsResolver {
    * @return {Promise<void>}
    */
   static async emitTorrentProgressWatcher({torrents_id, payload} = {}) {
-    EventBus.$emit(TORRENTS_PROGRESS_WATCHER, {torrents_id, payload});
+    runOnPlatform(
+      () => console.log('TODO: torrent progress on web'),
+      () => AppResolver.broadcastEvent(TORRENTS_PROGRESS, {torrents_id, payload})
+    );
   }
 
   /**
@@ -76,17 +81,11 @@ export default class TorrentsResolver {
    * @param callback
    */
   static catchTorrentProgressWatcher(callback) {
-    EventBus.$on(TORRENTS_PROGRESS_WATCHER, callback);
-  }
-
-
-  /**
-   * Unsubscribe torrent watcher event
-   *
-   * @param callback
-   */
-  static unsubscribeTorrentProgressWatcher(callback) {
-    EventBus.$off(TORRENTS_PROGRESS_WATCHER, callback);
+    runOnPlatform(
+      () => console.log('TODO: catch torrent progress on web'),
+      () =>
+        runInRenderer(electron => electron.ipcRenderer.on(TORRENTS_PROGRESS, (e, payload) => callback(payload)))
+    )
   }
 
 

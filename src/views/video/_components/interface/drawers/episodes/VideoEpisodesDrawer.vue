@@ -1,5 +1,5 @@
 <template>
-  <drawer v-model="is_visible" width="400" z-index="100">
+  <drawer v-model="is_visible" absolute temporary width="400" z-index="100">
       <v-card>
         <v-card-title>Эпизоды</v-card-title>
         <v-card-subtitle>Список всех эпизодов релиза</v-card-subtitle>

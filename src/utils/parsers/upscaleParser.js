@@ -2,8 +2,8 @@
 import __get from 'lodash/get'
 
 // Episodes
-import {getEpisode} from './parseEpisode'
-import {getHDSource} from "./parsePlaylist";
+import {getEpisode} from './episodeParser'
+import {getHDSource} from "./playlistParser";
 
 /**
  * Parse upscale

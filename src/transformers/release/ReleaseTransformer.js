@@ -3,8 +3,9 @@ import ReleaseProxy from "@proxies/release";
 import BaseTransformer from "@transformers/BaseTransformer";
 
 // Parsing episode data
-import {parsePlaylist, parseTorrents} from "@utils/episodes";
-import {parseUpscale} from "@utils/episodes/parseUpscale";
+import {parseUpscale} from "@utils/parsers/upscaleParser";
+import {parsePlaylist} from "@utils/parsers/playlistParser";
+import {parseTorrents} from "@utils/parsers/torrentsParser";
 
 export default class ReleaseTransformer extends BaseTransformer {
 

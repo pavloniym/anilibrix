@@ -1,10 +1,9 @@
 <template>
   <player-handler
-    v-bind="options"
+    v-bind="configuration"
     class="video--upscale"
     @error="$emit('error', $event)"
     @update:time="$emit('update:time', $event)"
-    @update:payload="$emit('update:payload', $event)"
     @update:duration="$emit('update:duration', $event)">
 
     <!-- Canvas -->
@@ -56,16 +55,16 @@
     computed: {
 
       /**
-       * Playback player options
+       * Playback player configuration
        *
-       * @return Object
+       * @return {*}
        */
-      options() {
+      configuration() {
         return {
           source: this.source,
-          getPayload: this.getPayload,
-          processPayload: this.processPayload,
-          destroyPayload: this.destroyPayload,
+          getHandler: this._getHandler,
+          clearHandler: this._clearHandler,
+          resolveHandler: this._resolveHandler,
         }
       },
 
@@ -87,8 +86,20 @@
        *
        * @return Promise
        */
-      getPayload(source) {
+      _getHandler(source) {
         return this.$__get(source, 'payload.playlist');
+      },
+
+
+      /**
+       * Set destroy payload handler
+       *
+       * @return void
+       */
+      _clearHandler() {
+        if (this.hls) {
+          this.hls.destroy();
+        }
       },
 
 
@@ -100,7 +111,7 @@
        *
        * @return void
        */
-      processPayload({player, payload} = {}) {
+      _resolveHandler({player, payload} = {}) {
 
         // If payload provided - create new hls instance
         if (payload) {
@@ -134,18 +145,6 @@
             });
           }
         }
-      },
-
-
-      /**
-       * Set destroy payload handler
-       *
-       * @return void
-       */
-      destroyPayload() {
-
-        // Destroy hls
-        if (this.hls) this.hls.destroy();
       }
 
     },
