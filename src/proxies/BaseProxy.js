@@ -61,13 +61,12 @@ export default class BaseProxy {
     // Create headers
     const headers = {};
 
-    // Set header user agent
-    headers['User-Agent'] = `${meta.name}/${version}`;
-
     // Set header session
     // Set session in cookies
     const session = __get(store, 'state.app.account.session');
-    if (session && session.length > 0) headers.Cookie = `PHPSESSID=${session}; Path=/; Secure; HttpOnly`;
+    if (session && session.length > 0) {
+      headers.Cookie = `PHPSESSID=${session}; Path=/; Secure; HttpOnly`;
+    }
 
     return headers;
   }

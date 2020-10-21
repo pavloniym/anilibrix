@@ -4,7 +4,7 @@ const webpackConfig = require('./webpack.config');
 const desktopConfig = require('./desktop.config');
 
 module.exports = {
-  pwa: {...pwaConfig},
+  pwa: pwaConfig,
   pages: {
     index: {
       entry: 'src/main.js',
@@ -18,5 +18,5 @@ module.exports = {
   lintOnSave: false,
   publicPath: process.env.PUBLIC_PATH || '/',
   pluginOptions: {...desktopConfig},
-  configureWebpack: {...webpackConfig}
+  configureWebpack: webpackConfig,
 };
