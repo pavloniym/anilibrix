@@ -2,7 +2,7 @@
   <v-navigation-drawer
     v-bind="{value, width, ...$attrs}"
     class="drawer"
-    :style="{top, zIndex, paddingBottom}"
+    :style="{zIndex, top: offset, paddingBottom: offset}"
     @input="$emit('input', $event)">
 
     <!-- Content -->
@@ -33,10 +33,6 @@
     zIndex: {
       type: [String, Number],
       default: null
-    },
-    with_bottom_offset: {
-      type: Boolean,
-      default: true
     }
   };
 
@@ -55,18 +51,9 @@
        *
        * @return {*}
        */
-      top() {
-        return this.heightOffset;
+      offset() {
+        return this.isDesktop ? this.heightOffset : null;
       },
-
-      /**
-       * Get padding bottom
-       *
-       * @return {*}
-       */
-      paddingBottom() {
-        return this.with_bottom_offset ? this.heightOffset : null;
-      }
 
     }
   }

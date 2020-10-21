@@ -6,7 +6,6 @@ const DotEnvPlugin = require('dotenv-webpack');
 
 // Utils
 const path = require('path');
-const dependencies = require('./package').dependencies;
 
 // Resolve path
 // Starting from root by default
@@ -52,6 +51,7 @@ module.exports = {
       '@transformers': resolve('src/transformers'),
     },
   },
-  output: {libraryTarget: 'commonjs2'},
-  externals: [...Object.keys(dependencies || {}).filter(d => ['webtorrent'].includes(d))],
+  externals: {
+    webtorrent: 'commonjs2 webtorrent'
+  },
 };
