@@ -120,9 +120,6 @@
             player.once('playing', () => player.currentTime = this.time);
             player.play();
 
-            // Set error handler
-            player.on('error', () => this.$emit('error', 'Произошла ошибка при загрузке видео'))
-
           }
         } else {
           this.$emit('error', 'Не удалось определить источник воспроизведения');

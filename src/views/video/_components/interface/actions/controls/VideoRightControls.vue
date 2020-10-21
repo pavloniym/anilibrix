@@ -15,10 +15,15 @@
 
 <script>
 
+  // Components
   import PIP from './_components/pip'
   import Settings from './_components/settings'
   import Episodes from './_components/episodes'
   import Fullscreen from './_components/fullscreen'
+
+
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
 
   const props = {
     player: {
@@ -37,6 +42,9 @@
 
   export default {
     props,
+    mixins: [
+      DeviceMixin
+    ],
     data() {
       return {
         is_mounted: false
@@ -54,6 +62,7 @@
         return [
           {
             is: Episodes,
+            visible: true,
           },
           {
             is: Settings,
@@ -65,17 +74,20 @@
             events: {
               'update:speed': $event => this.$emit('update:speed', $event),
               'update:quality': $event => this.$emit('update:quality', $event),
-            }
+            },
+            visible: true,
           },
           {
             is: PIP,
-            events: {click: () => this.$emit('toggle:pip')}
+            events: {click: () => this.$emit('toggle:pip')},
+            visible: !this.isMobile,
           },
           {
             is: Fullscreen,
-            events: {click: () => this.$emit('toggle:fullscreen')}
+            events: {click: () => this.$emit('toggle:fullscreen')},
+            visible: !this.isMobile,
           }
-        ]
+        ].filter(item => item.visible === true)
       }
 
     },

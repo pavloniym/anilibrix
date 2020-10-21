@@ -1,6 +1,6 @@
 <template>
   <v-fade-transition appear>
-    <div v-if="isBuffering" class="player__buffering">
+    <div v-if="is_buffering" class="player__buffering">
         <v-progress-circular color="white" indeterminate size="64"/>
     </div>
   </v-fade-transition>
@@ -19,17 +19,22 @@
     props,
     data() {
       return {
-        isBuffering: true,
+        is_buffering: true,
       }
     },
 
     created() {
 
       // Handler buffering events
-      this.player.on('waiting', () => this.isBuffering = true);
-      this.player.on('emptied', () => this.isBuffering = true);
-      this.player.on('stalled', () => this.isBuffering = true);
-      this.player.on('playing', () => this.isBuffering = false);
+      this.player.on('waiting', () => this.is_buffering = true);
+      this.player.on('emptied', () => this.is_buffering = true);
+      this.player.on('stalled', () => this.is_buffering = true);
+
+      // Reset buffering
+      this.player.on('stop', () => this.is_buffering = false);
+      this.player.on('error', () => this.is_buffering = false);
+      this.player.on('playing', () => this.is_buffering = false);
+      this.player.on('progress', () => this.is_buffering = this.player.loading)
 
     },
   }

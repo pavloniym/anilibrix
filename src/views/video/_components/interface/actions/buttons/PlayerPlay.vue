@@ -150,15 +150,19 @@
       this.is_playing = this.player.playing;
 
       // Watch for player playing and pause events
-      this.player.on('playing', () => this.is_playing = true);
       this.player.on('pause', () => this.is_playing = false);
+      this.player.on('playing', () => this.is_playing = true);
 
 
       // Handler buffering events
       this.player.on('waiting', () => this.is_buffering = true);
-      this.player.on('playing', () => this.is_buffering = false);
       this.player.on('emptied', () => this.is_buffering = true);
       this.player.on('stalled', () => this.is_buffering = true);
+
+      // Reset
+      this.player.on('error', () => this.is_buffering = false);
+      this.player.on('playing', () => this.is_buffering = false);
+      this.player.on('progress', () => this.is_buffering = this.player.loading)
 
     },
 
