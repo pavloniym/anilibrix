@@ -16,6 +16,7 @@ module.exports = {
     },
   },
   lintOnSave: false,
+  publicPath: process.env.PUBLIC_PATH || '/',
   pluginOptions: {...desktopConfig},
-  configureWebpack: {...webpackConfig},
+  configureWebpack: {...webpackConfig}
 };
