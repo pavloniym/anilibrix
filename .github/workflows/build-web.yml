@@ -3,7 +3,7 @@ name: Build for web and publish
 on:
   push:
     branches:
-      - *
+      - '*'
 
 jobs:
   deploy:
