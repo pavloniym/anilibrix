@@ -11,11 +11,11 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("/workbox-v4.3.1/workbox-sw.js");
-workbox.setConfig({modulePathPrefix: "/workbox-v4.3.1"});
+importScripts("/anilibrix/workbox-v4.3.1/workbox-sw.js");
+workbox.setConfig({modulePathPrefix: "/anilibrix/workbox-v4.3.1"});
 
 importScripts(
-  "/precache-manifest.72074ae3d1266b021216feec85e78ff9.js"
+  "/anilibrix/precache-manifest.98c832d2de9726e0867b5b38356c30e2.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "anilibrix"});
