@@ -1,4 +1,4 @@
-name: Build for web and publish
+name: Build for web and publish to gh-pages
 
 on:
   push:
@@ -16,18 +16,22 @@ jobs:
         with:
           node-version: '12.x'
 
+      - name: Get yarn cache
+          id: yarn-cache
+          run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - name: Cache dependencies
         uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-yarn-
 
-      - run: 'npm install'
-      - run: 'npm run web:build'
+      - run: 'yarn install'
+      - run: 'yarn web:build'
 
-      - name: deploy
+      - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
