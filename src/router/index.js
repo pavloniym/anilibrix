@@ -24,6 +24,7 @@ Router.prototype.push = function (location) {
 
 const router = new Router({
   mode: 'history',
+  base: process.env.PUBLIC_PATH || '/',
   routes: [].concat(
     ads,
     app,
