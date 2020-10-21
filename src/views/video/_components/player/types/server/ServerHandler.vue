@@ -20,9 +20,6 @@
   // Utils
   import Hls from 'hls.js';
 
-  // Resolvers
-  import ErrorResolver from "@@/utils/resolvers/error";
-
   const props = {
     source: {
       type: Object,
@@ -93,15 +90,13 @@
        * @return void
        */
       _resolveHandler({player, payload} = {}) {
-
-        // If payload provided - create new hls instance
         if (payload) {
-
-          // Pause player
-          player.pause();
 
           // If Hls is supported
           if (Hls.isSupported()) {
+
+            // Pause player
+            player.pause();
 
             // Create hls and attach media element
             this.hls = new Hls({...this.options, startPosition: this.time || 0});
@@ -111,7 +106,26 @@
             this.hls.on(Hls.Events.MEDIA_ATTACHED, () => this._startSource({payload, player}));
             this.hls.on(Hls.Events.ERROR, (event, data) => this._handleError(data));
 
+          } else {
+
+            // Pause player
+            player.pause();
+
+            // Hls is not supported
+            // Set player source
+            player.source = {type: 'video', sources: [{src: payload, type: 'video/mp4'}]};
+
+            // Set event to forward on current time
+            // Play source automatically
+            player.once('playing', () => player.currentTime = this.time);
+            player.play();
+
+            // Set error handler
+            player.on('error', () => this.$emit('error', 'Произошла ошибка при загрузке видео'))
+
           }
+        } else {
+          this.$emit('error', 'Не удалось определить источник воспроизведения');
         }
       },
 
@@ -142,7 +156,7 @@
        */
       _handleError({type, details}) {
         if (type === Hls.ErrorTypes.NETWORK_ERROR) {
-          this.$emit('error', `Произошла ошибка при загруке видео: ${details}`)
+          this.$emit('error', `Произошла ошибка при загрузке видео: ${details}`)
         }
       }
 

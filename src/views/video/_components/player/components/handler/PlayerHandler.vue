@@ -4,7 +4,7 @@
     <slot name="prepend"/>
 
     <!-- Video container -->
-    <video autoplay muted ref="player" crossorigin="anonymous" preload="auto"/>
+    <video autoplay playsinline muted ref="player" crossorigin="anonymous" preload="auto"/>
 
     <!-- Interface slot -->
     <slot v-if="player" v-bind="{player}"/>
@@ -73,6 +73,8 @@
     },
 
     mounted() {
+
+      console.log('Player', this.player);
 
       // Create player
       this.player = new this.$plyr(this.$refs.player, this.options);

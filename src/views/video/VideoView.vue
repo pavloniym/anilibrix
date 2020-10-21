@@ -342,6 +342,8 @@
         immediate: true,
         handler(source) {
 
+          console.log({source});
+
           // Set quality
           this.setQuality(this.$__get(source, 'alias'));
         }
