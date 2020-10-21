@@ -18,7 +18,6 @@ jobs:
       ADS_URLS: ${{ secrets.ADS_URLS }}
       VK_APP_ID: ${{ secrets.VK_APP_ID }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      PUBLIC_PATH: ${{ secrets.PUBLIC_PATH }}
       ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
       API_ENDPOINT_URL: ${{ secrets.API_ENDPOINT_URL }}
       YANDEX_TRACKING_ID: ${{ secrets.YANDEX_TRACKING_ID }}
