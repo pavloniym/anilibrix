@@ -76,6 +76,7 @@
        */
       _clearHandler() {
         if (this.hls) {
+          this.hls.detachMedia();
           this.hls.destroy();
         }
       },

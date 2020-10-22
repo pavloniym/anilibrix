@@ -9,40 +9,41 @@
         class="interface pa-8 pt-0"
         :class="{'interface--mobile': this.isMobile}">
 
-        <!-- Header components -->
-        <!-- Headline + Timeline -->
-        <headline v-bind="{player, release,episode}" class="pb-2"/>
-        <seek v-bind="{player}"/>
 
-        <!-- Actions components -->
-        <v-row no-gutters justify="center">
+          <!-- Header components -->
+          <!-- Headline + Timeline -->
+          <headline v-bind="{player, release,episode}" class="pb-2"/>
+          <seek v-bind="{player}"/>
 
-          <!-- Links -->
-          <v-col align-self="center">
-            <video-left-controls
-              v-bind="{release, source, player}"
-              @update:time="updateTime"
-              @update:muted="updateMuted"
-              @update:volume="updateVolume">
-            </video-left-controls>
-          </v-col>
+          <!-- Actions components -->
+          <v-row no-gutters justify="center">
 
-          <!-- Play -->
-          <v-col align-self="center">
-            <buttons v-bind="{player, release, episode}" @play:episode="$emit('play:episode', $event)"/>
-          </v-col>
+            <!-- Links -->
+            <v-col align-self="center">
+              <video-left-controls
+                v-bind="{release, source, player}"
+                @update:time="updateTime"
+                @update:muted="updateMuted"
+                @update:volume="updateVolume">
+              </video-left-controls>
+            </v-col>
 
-          <!-- Controls -->
-          <v-col align-self="center">
-            <video-right-controls
-              v-bind="{episode, source, player}"
-              @toggle:pip="togglePIP"
-              @update:speed="updateSpeed"
-              @update:quality="$emit('update:quality', $event)"
-              @toggle:fullscreen="toggleFullscreen">
-            </video-right-controls>
-          </v-col>
-        </v-row>
+            <!-- Play -->
+            <v-col align-self="center">
+              <buttons v-bind="{player, release, episode}" @play:episode="$emit('play:episode', $event)"/>
+            </v-col>
+
+            <!-- Controls -->
+            <v-col align-self="center">
+              <video-right-controls
+                v-bind="{episode, source, player}"
+                @toggle:pip="togglePIP"
+                @update:speed="updateSpeed"
+                @update:quality="$emit('update:quality', $event)"
+                @toggle:fullscreen="toggleFullscreen">
+              </video-right-controls>
+            </v-col>
+          </v-row>
 
       </v-layout>
     </v-fade-transition>
