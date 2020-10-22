@@ -8,7 +8,7 @@
         <!-- Header components -->
         <!-- Headline + Timeline -->
         <headline v-bind="{player, release,episode}" class="pb-2"/>
-        <timeline v-bind="{player}"/>
+        <seek v-bind="{player}"/>
 
         <!-- Actions components -->
         <v-row no-gutters justify="center">
@@ -62,8 +62,8 @@
 <script>
 
   // Header
+  import Seek from './header/seek'
   import Headline from './header/headline'
-  import Timeline from './header/timeline'
 
   // Actions
   import Buttons from './actions/buttons'
@@ -114,9 +114,9 @@
     ],
 
     components: {
+      Seek,
       Buttons,
       Headline,
-      Timeline,
       VideoLeftControls,
       VideoRightControls
     },
@@ -209,8 +209,8 @@
 
         // Clear previous interval
         // Create new interval
-        if (this.interface_visibility_handler) clearTimeout(this.interface_visibility_handler);
-        this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
+       // if (this.interface_visibility_handler) clearTimeout(this.interface_visibility_handler);
+       // this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
 
       },
 

@@ -74,8 +74,6 @@
 
     mounted() {
 
-      console.log('Player', this.player);
-
       // Create player
       this.player = new this.$plyr(this.$refs.player, this.options);
 
