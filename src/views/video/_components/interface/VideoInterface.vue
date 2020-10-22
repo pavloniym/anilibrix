@@ -209,8 +209,8 @@
 
         // Clear previous interval
         // Create new interval
-       // if (this.interface_visibility_handler) clearTimeout(this.interface_visibility_handler);
-       // this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
+        if (this.interface_visibility_handler) clearTimeout(this.interface_visibility_handler);
+        this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
 
       },
 
