@@ -21,7 +21,6 @@
   import Episodes from './_components/episodes'
   import Fullscreen from './_components/fullscreen'
 
-
   // Mixins
   import {DeviceMixin} from "@mixins/app";
 

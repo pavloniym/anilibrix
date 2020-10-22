@@ -47,18 +47,29 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
   .seek__tooltip {
-    top: 32px;
-    width: 64px !important;
+    top: -28px;
+    width: 60px !important;
     padding: .3rem .6rem;
     position: absolute;
     font-size: .75rem;
     border-radius: 4px;
     text-align: center;
     font-weight: bold;
-    margin-left: -32px;
+    margin-left: -60px;
+
+    &::after {
+      content: "";
+      width: 2px;
+      height: 20px;
+      background: inherit;
+      display: flex;
+      position: absolute;
+      left: 50%;
+      bottom: -20px;
+    }
   }
 
 

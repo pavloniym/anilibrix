@@ -1,5 +1,5 @@
 <template>
-  <div @mousemove="showSeekTooltip" @mouseleave="is_hovered = false">
+  <div @mousemove="showSeekTooltip" @mouseleave="is_hovered = false" :style="{position: 'relative'}">
     <v-slider
       hide-details
       ref="slider"
@@ -117,12 +117,20 @@
         .v-slider__track-container {
           transition: height .2s ease;
         }
+
+        .v-slider__thumb {
+          transition: opacity .2s ease;
+        }
       }
 
       &:hover {
         ::v-deep {
           .v-slider__track-container {
-            height: 12px;
+            height: 8px;
+          }
+
+          .v-slider__thumb {
+            opacity: 0;
           }
         }
       }

@@ -46,6 +46,9 @@
   // Storage
   import {mapState} from 'vuex'
 
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
+
   const props = {
     player: {
       type: Object,
@@ -67,6 +70,7 @@
 
   export default {
     props,
+    mixins: [DeviceMixin],
     data() {
       return {
         is_mounted: false
@@ -88,10 +92,12 @@
         return [
           {
             is: Home,
+            visible: true,
           },
           {
             is: Release,
             props: {release: this.release},
+            visible: true,
           },
           {
             is: Volume,
@@ -99,9 +105,10 @@
             events: {
               'update:muted': $event => this.$emit('update:muted', $event),
               'update:volume': $event => this.$emit('update:volume', $event),
-            }
+            },
+            visible: !this.isMobile
           },
-        ]
+        ].filter(item => item.visible === true)
       },
 
       /**

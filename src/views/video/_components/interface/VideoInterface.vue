@@ -3,7 +3,11 @@
 
     <!-- Main Interface Components -->
     <v-fade-transition appear mode="out-in">
-      <v-layout v-show="interface_is_visible" column class="interface pa-8 pt-0">
+      <v-layout
+        v-show="interface_is_visible"
+        column
+        class="interface pa-8 pt-0"
+        :class="{'interface--mobile': this.isMobile}">
 
         <!-- Header components -->
         <!-- Headline + Timeline -->
@@ -83,7 +87,8 @@
   // Utils
   import screenfull from "screenfull";
 
-  // Handlers
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
   import {KeyboardHandlerMixin, MouseHandlerMixin} from "@mixins/handlers";
 
   const props = {
@@ -109,6 +114,7 @@
   export default {
     props,
     mixins: [
+      DeviceMixin,
       MouseHandlerMixin,
       KeyboardHandlerMixin,
     ],
@@ -208,10 +214,10 @@
         this.interface_is_visible = true;
 
         // Clear previous interval
-        // Create new interval
         if (this.interface_visibility_handler) clearTimeout(this.interface_visibility_handler);
-        this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
 
+        // Create new interval
+        this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
       },
 
 
@@ -327,21 +333,31 @@
       // Get video element
       this.video = document.getElementsByClassName('plyr')[0];
 
-      // Add some event listeners
-      // Set player click event
-      // Toggle player state
-      this.video.addEventListener('click', this.togglePlay);
-      this.video.addEventListener('dblclick', this.toggleFullscreen);
+      if (!this.isMobile) {
 
+        // Add some event listeners
+        // Set player click event
+        // Toggle player state
+        this.video.addEventListener('click', this.togglePlay);
+        this.video.addEventListener('dblclick', this.toggleFullscreen);
+
+      } else {
+
+        // If mobile -> set volume to 100%
+        this.updateVolume(100);
+
+      }
     },
 
 
     beforeDestroy() {
+      if (!this.isMobile) {
 
-      // Remove player listeners
-      this.video.removeEventListener('click', this.togglePlay);
-      this.video.removeEventListener('dblclick', this.toggleFullscreen);
+        // Remove player listeners
+        this.video.removeEventListener('click', this.togglePlay);
+        this.video.removeEventListener('dblclick', this.toggleFullscreen);
 
+      }
     }
 
   }
@@ -354,8 +370,16 @@
     bottom: 0;
     z-index: 10;
     position: absolute;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 50%, rgba(255, 255, 255, 0) 100%);
+    //background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 50%, rgba(255, 255, 255, 0) 100%);
     user-select: none;
+
+
+    &--mobile {
+      opacity: .5;
+      height: 100%;
+      display: flex;
+      justify-items: flex-end;
+    }
 
   }
 
