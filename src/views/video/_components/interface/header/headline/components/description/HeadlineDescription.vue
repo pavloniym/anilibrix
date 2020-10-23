@@ -1,11 +1,19 @@
 <template>
-  <div v-if="caption && title" class="d-flex flex-column justify-end">
+  <div
+    v-if="caption && title"
+    class="d-flex flex-column justify-end"
+    :class="{'interface__headline--mobile': this.isMobile}">
+
     <h4 class="pb-1">{{caption}}</h4>
     <h1>{{title}}</h1>
+
   </div>
 </template>
 
 <script>
+
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
 
   const props = {
     release: {
@@ -20,6 +28,7 @@
 
   export default {
     props,
+    mixins: [DeviceMixin],
     computed: {
 
       /**
@@ -44,3 +53,17 @@
     }
   }
 </script>
+
+
+<style scoped lang="scss">
+
+  .interface__headline--mobile {
+    h1 {
+      font-size: 1rem;
+    }
+    h4 {
+      font-size: .75rem;
+    }
+  }
+
+</style>

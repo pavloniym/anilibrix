@@ -1,5 +1,9 @@
 <template>
-  <v-layout align-center justify-start ref="links">
+  <v-layout
+    align-center
+    justify-start
+    ref="links"
+    :class="{'interface__left__controls--mobile': this.isMobile}">
     <template v-if="is_mounted">
       <component
         v-on="control.events"
@@ -140,3 +144,13 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+
+  .interface__left__controls--mobile {
+    position: absolute;
+    top: 12px;
+    left: 20px;
+  }
+
+</style>

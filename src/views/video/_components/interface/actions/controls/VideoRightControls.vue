@@ -1,5 +1,9 @@
 <template>
-  <v-layout align-center justify-end ref="controls">
+  <v-layout
+    align-center
+    justify-end
+    ref="controls"
+    :class="{'interface__right__controls--mobile': this.isMobile}">
     <template v-if="is_mounted">
       <component
         v-on="control.events"
@@ -98,3 +102,13 @@
   }
 
 </script>
+
+<style scoped lang="scss">
+
+  .interface__right__controls--mobile {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+  }
+
+</style>

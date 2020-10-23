@@ -1,5 +1,10 @@
 <template>
-  <v-layout align-center justify-center ref="play">
+  <v-layout
+    align-center
+    justify-center
+    ref="play"
+    class="interface__play"
+    :class="{'interface--mobile': this.isMobile}">
     <template v-if="is_mounted">
 
       <!-- Previous episode -->
@@ -10,7 +15,7 @@
             icon
             large
             :disabled="!previous"
-            @click="toEpisode(previous)">
+            @click.stop="toEpisode(previous)">
             <v-icon>mdi-skip-previous</v-icon>
           </v-btn>
         </template>
@@ -27,7 +32,7 @@
         width="90"
         height="90"
         :disabled="is_buffering"
-        @click="player.togglePlay()">
+        @click.stop="$emit('toggle:play')">
         <v-icon size="40">mdi-{{is_playing ? 'pause': 'play'}}</v-icon>
       </v-btn>
 
@@ -40,7 +45,7 @@
             icon
             large
             :disabled="!next"
-            @click="toEpisode(next)">
+            @click.stop="toEpisode(next)">
             <v-icon>mdi-skip-next</v-icon>
           </v-btn>
         </template>
@@ -55,6 +60,9 @@
 </template>
 
 <script>
+
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
 
   const props = {
     player: {
@@ -73,6 +81,7 @@
 
   export default {
     props,
+    mixins: [DeviceMixin],
     data() {
       return {
         is_mounted: false,
@@ -177,9 +186,17 @@
 
 <style lang="scss" scoped>
 
+  .interface--mobile {
+    top: calc(50% - 45px);
+    left: 0;
+    right: 0;
+    height: 90px;
+    position: absolute;
+  }
+
   .play__tooltip {
+    //z-index: 1000000;
     line-height: 1;
-    z-index: 1000000;
 
     > div {
       line-height: 1;

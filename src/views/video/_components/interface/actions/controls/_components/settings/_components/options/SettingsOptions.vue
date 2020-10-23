@@ -1,19 +1,19 @@
 <template>
   <v-menu
-    v-click-outside="() => close()"
-    top
+    v-click-outside="() => close"
     left
-    :min-width="width"
-    nudge-right="50"
+    :top="!this.isMobile"
     :value="true"
     :attach="attach()"
+    :bottom="this.isMobile"
+    :min-width="width"
     :close-on-click="false"
     :close-on-content-click="false">
     <v-list nav dense class="video__settings__items">
 
       <!-- Back -->
       <template v-if="is_back">
-        <v-list-item @click="back">
+        <v-list-item @click.stop="back">
           <v-icon small class="mr-2">mdi-chevron-left</v-icon>
           <v-list-item-title v-text="'Назад'"/>
         </v-list-item>
@@ -22,7 +22,7 @@
 
       <!-- Close -->
       <template v-if="is_close">
-        <v-list-item @click="close">
+        <v-list-item @click.stop="close">
           <v-icon small class="mr-2">mdi-close</v-icon>
           <v-list-item-title v-text="'Закрыть'"/>
         </v-list-item>
@@ -37,6 +37,9 @@
 </template>
 
 <script>
+
+
+  import {DeviceMixin} from "@mixins/app";
 
   const props = {
     attach: {
@@ -59,6 +62,7 @@
 
   export default {
     props,
+    mixins: [DeviceMixin],
     methods: {
 
       /**

@@ -1,14 +1,10 @@
 <template>
-  <div>
+  <div ref="interface">
 
     <!-- Main Interface Components -->
     <v-fade-transition appear mode="out-in">
-      <v-layout
-        v-show="interface_is_visible"
-        column
-        class="interface pa-8 pt-0"
-        :class="{'interface--mobile': this.isMobile}">
-
+      <div v-show="interface_is_visible" class="interface pa-8" :class="{'interface--mobile': this.isMobile}">
+        <v-layout column>
 
           <!-- Header components -->
           <!-- Headline + Timeline -->
@@ -30,7 +26,11 @@
 
             <!-- Play -->
             <v-col align-self="center">
-              <buttons v-bind="{player, release, episode}" @play:episode="$emit('play:episode', $event)"/>
+              <play
+                v-bind="{player, release, episode}"
+                @toggle:play="togglePlay"
+                @play:episode="$emit('play:episode', $event)">
+              </play>
             </v-col>
 
             <!-- Controls -->
@@ -45,7 +45,8 @@
             </v-col>
           </v-row>
 
-      </v-layout>
+        </v-layout>
+      </div>
     </v-fade-transition>
 
 
@@ -71,7 +72,7 @@
   import Headline from './header/headline'
 
   // Actions
-  import Buttons from './actions/buttons'
+  import Play from './actions/play'
   import {VideoLeftControls, VideoRightControls} from './actions/controls'
 
   // Drawers
@@ -122,7 +123,7 @@
 
     components: {
       Seek,
-      Buttons,
+      Play,
       Headline,
       VideoLeftControls,
       VideoRightControls
@@ -208,19 +209,18 @@
        *
        * @return void
        */
-      showInterface() {
+      showInterface(is_visible = true) {
 
         // Show controls
         // Send event to show cursor
-        this.interface_is_visible = true;
+        this.interface_is_visible = is_visible;
 
         // Clear previous interval
         if (this.interface_visibility_handler) clearTimeout(this.interface_visibility_handler);
 
         // Create new interval
-        this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
+        // this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
       },
-
 
       /**
        * Handle mouse move
@@ -229,7 +229,9 @@
        * @return {void}
        */
       handleMouseEvents() {
-        this.showInterface();
+        if (!this.isMobile) {
+          this.showInterface();
+        }
       },
 
 
@@ -238,7 +240,9 @@
        * Show interface on mouse move
        */
       handleMouseScroll() {
-        this.showInterface();
+        if (!this.isMobile) {
+          this.showInterface();
+        }
       },
 
       /**
@@ -248,7 +252,9 @@
        * @return {void}
        */
       handleKeyboardEvents() {
-        this.showInterface();
+        if (!this.isMobile) {
+          this.showInterface();
+        }
       },
 
 
@@ -259,7 +265,9 @@
        * @return {void}
        */
       toggleFullscreen() {
-        screenfull.toggle(document.getElementById('player-container'));
+        if (!this.isMobile) {
+          screenfull.toggle(document.getElementById('player-container'));
+        }
       },
 
 
@@ -334,30 +342,21 @@
       // Get video element
       this.video = document.getElementsByClassName('plyr')[0];
 
-      if (!this.isMobile) {
+      // Add some event listeners
+      // Set player click event
+      // Toggle player state
+      [this.video, this.$refs.interface].forEach(el => {
+        el.addEventListener('click', () => {
+          if (!this.isMobile) this.togglePlay();
+          if (this.isMobile) this.showInterface(!this.interface_is_visible);
+        });
+        el.addEventListener('dblclick', this.toggleFullscreen);
+      });
 
-        // Add some event listeners
-        // Set player click event
-        // Toggle player state
-        this.video.addEventListener('click', this.togglePlay);
-        this.video.addEventListener('dblclick', this.toggleFullscreen);
 
-      } else {
-
-        // If mobile -> set volume to 100%
+      // If mobile -> set volume to 100%
+      if (this.isMobile) {
         this.updateVolume(100);
-
-      }
-    },
-
-
-    beforeDestroy() {
-      if (!this.isMobile) {
-
-        // Remove player listeners
-        this.video.removeEventListener('click', this.togglePlay);
-        this.video.removeEventListener('dblclick', this.toggleFullscreen);
-
       }
     }
 
@@ -369,17 +368,15 @@
   .interface {
     width: 100%;
     bottom: 0;
+    height: 100%;
     z-index: 10;
+    display: flex;
     position: absolute;
-    //background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 50%, rgba(255, 255, 255, 0) 100%);
-    user-select: none;
+    background: rgb(0 0 0 / 0.35);
+    align-items: flex-end;
 
-
-    &--mobile {
-      opacity: .5;
-      height: 100%;
-      display: flex;
-      justify-items: flex-end;
+    * {
+      user-select: none;
     }
 
   }

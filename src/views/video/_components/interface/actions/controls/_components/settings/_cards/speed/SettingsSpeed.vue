@@ -7,7 +7,7 @@
     @close="$emit('close')">
 
     <template v-for="(s, k) in variants">
-      <v-list-item :key="k" :input-value="s.value === active.value" @click="updateSpeed(s.value)">
+      <v-list-item :key="k" :input-value="s.value === active.value" @click.stop="updateSpeed(s.value)">
         <v-list-item-subtitle v-text="s.label"/>
       </v-list-item>
     </template>

@@ -7,7 +7,7 @@
     @close="$emit('close')">
 
     <template v-for="(item, k) in items">
-      <v-list-item :key="k" @click="$emit('update:component', item.component)">
+      <v-list-item :key="k" @click.stop="$emit('update:component', item.component)">
         <v-list-item-content>
           <v-list-item-title v-text="item.title"/>
         </v-list-item-content>
@@ -28,6 +28,9 @@
   // Components
   import Options from './../../_components/options'
 
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
+
   const props = {
     source: {
       type: Object,
@@ -45,6 +48,7 @@
 
   export default {
     props,
+    mixins: [DeviceMixin],
     components: {Options},
     data() {
       return {
@@ -62,19 +66,22 @@
         return [
           {
             title: 'Качество',
+            visible: true,
             subtitle: this.source.label,
             component: 'quality',
           },
           {
             title: 'Скорость воспроизведения',
+            visible: true,
             subtitle: this.speedHuman,
             component: 'speed',
           },
           {
             title: 'Показать горячие клавиши',
+            visible: !this.isMobile,
             component: 'hotkeys',
           },
-        ]
+        ].filter(item => item.visible === true)
       },
 
 
