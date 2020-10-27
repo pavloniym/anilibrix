@@ -2,16 +2,17 @@ const {name} = require('./package');
 
 module.exports = {
   name,
-  themeColor: '#b32121',
+  //themeColor: '#b32121',
+  themeColor: '#ff9c91',
   msTileColor: '#b32121',
-  workboxPluginMode: 'GenerateSW',
   workboxOptions: {
     skipWaiting: true,
     clientsClaim: true,
-    importWorkboxFrom: 'local',
-    include: [/\.html/, /\.js/, /\.css/, /\.json/, /\.jpg/, /\.png/],
+    //importWorkboxFrom: 'local',
+    //include: [/\.html/, /\.js/, /\.css/, /\.json/, /\.jpg/, /\.png/],
     navigateFallback: 'index.html',
     cleanupOutdatedCaches: true,
   },
+  workboxPluginMode: 'GenerateSW',
   appleMobileWebAppCapable: 'yes',
 };
