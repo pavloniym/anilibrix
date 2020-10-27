@@ -81,8 +81,10 @@
 
 
     &--mobile {
-      ::-webkit-scrollbar {
-        display: none;
+      ::v-deep {
+        .v-navigation-drawer__content {
+          overflow-y: auto;
+        }
       }
     }
   }
