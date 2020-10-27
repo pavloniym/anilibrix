@@ -1,11 +1,20 @@
 <template>
-  <drawer v-model="is_visible" absolute temporary width="400" z-index="100">
+  <drawer
+    v-model="is_visible"
+    absolute
+    temporary
+    width="400"
+    z-index="100"
+    :stateless="this.isMobile">
 
     <v-toolbar dark>
       <v-app-bar-nav-icon @click="is_visible = false">
         <v-icon>mdi-close</v-icon>
       </v-app-bar-nav-icon>
-      <v-toolbar-title>Эпизоды</v-toolbar-title>
+      <v-toolbar-title>
+        <div>Эпизоды</div>
+        <div class="caption grey--text" :style="{lineHeight: 1}">Список всех эпизодов релиза</div>
+      </v-toolbar-title>
     </v-toolbar>
 
     <episodes
@@ -25,6 +34,9 @@
   import Drawer from '@components/app/ui/drawer'
   import Episodes from '@components/release/episodes'
 
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
+
   const props = {
     release: {
       type: Object,
@@ -38,6 +50,7 @@
 
   export default {
     props,
+    mixins: [DeviceMixin],
     components: {
       Drawer,
       Episodes,
