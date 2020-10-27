@@ -2,6 +2,7 @@
   <v-navigation-drawer
     v-bind="{value, width, ...$attrs}"
     class="drawer"
+    :class="{'drawer--mobile': this.isMobile}"
     :style="{zIndex, top: offset, paddingBottom: offset}"
     @input="$emit('input', $event)">
 
@@ -75,6 +76,13 @@
     ::-webkit-scrollbar {
       border-left: 1px solid #141414;
       background-color: #1E1E1E;
+    }
+
+
+    &--mobile {
+      ::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 
