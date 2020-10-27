@@ -2,15 +2,17 @@
   <drawer v-model="drawer" app right fixed temporary width="400">
 
     <!-- Header -->
-    <v-toolbar flat class="shrink" color="#363636">
+    <v-toolbar>
+      <v-app-bar-nav-icon @click="drawer = false">
+        <v-icon>mdi-close</v-icon>
+      </v-app-bar-nav-icon>
       <v-toolbar-title class="body-1">Настройки приложения</v-toolbar-title>
     </v-toolbar>
-    <v-divider/>
 
     <!-- Settings -->
     <!-- Credentials -->
-    <app-settings />
-    <app-settings-credentials class="py-4" />
+    <app-settings/>
+    <app-settings-credentials class="py-4"/>
 
   </drawer>
 </template>

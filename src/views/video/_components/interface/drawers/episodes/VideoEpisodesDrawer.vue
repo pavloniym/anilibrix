@@ -6,7 +6,7 @@
     width="400"
     z-index="100">
 
-    <v-toolbar dark>
+    <v-toolbar>
       <v-app-bar-nav-icon @click="is_visible = false">
         <v-icon>mdi-close</v-icon>
       </v-app-bar-nav-icon>
