@@ -13,7 +13,7 @@
 
       <!-- Back -->
       <template v-if="is_back">
-        <v-list-item @click.stop="back">
+        <v-list-item @click="back">
           <v-icon small class="mr-2">mdi-chevron-left</v-icon>
           <v-list-item-title v-text="'Назад'"/>
         </v-list-item>
@@ -22,7 +22,7 @@
 
       <!-- Close -->
       <template v-if="is_close">
-        <v-list-item @click.stop="close">
+        <v-list-item @click="close">
           <v-icon small class="mr-2">mdi-close</v-icon>
           <v-list-item-title v-text="'Закрыть'"/>
         </v-list-item>

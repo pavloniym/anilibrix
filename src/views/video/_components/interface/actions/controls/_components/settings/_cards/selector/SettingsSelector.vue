@@ -7,7 +7,7 @@
     @close="$emit('close')">
 
     <template v-for="(item, k) in items">
-      <v-list-item :key="k" @click.stop="$emit('update:component', item.component)">
+      <v-list-item :key="k" @click="$emit('update:component', item.component)">
         <v-list-item-content>
           <v-list-item-title v-text="item.title"/>
         </v-list-item-content>

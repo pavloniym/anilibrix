@@ -9,7 +9,7 @@
     <!-- Release progress -->
     <!-- Toolbar -->
     <toolbar v-bind="{release}" class="mb-2" :search.sync="search"/>
-    <release-progress v-bind="{release, episodes}" class="mb-2" color="grey darken-3" height="48"/>
+    <release-progress v-if="show_progress" v-bind="{release, episodes}" class="mb-2" color="grey darken-3" height="48"/>
 
 
     <!-- Playlist Items -->
@@ -58,6 +58,10 @@
       type: Array,
       default: null,
     },
+    show_progress: {
+      type: Boolean,
+      default: false
+    },
     playing_episode_id: {
       type: [String, Number],
       default: null
@@ -98,7 +102,7 @@
        * @return Object
        */
       playlistSearchable() {
-        return new Fuse(this.playlist, {keys: ['title']});
+        return new Fuse(this.playlist, {keys: ['title'], threshold: .2});
       },
 
 

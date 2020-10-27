@@ -5,7 +5,7 @@
     <search v-bind="{search}" @update:search="$emit('update:search', $event)"/>
 
     <!-- Sort -->
-    <sort class="mx-2"/>
+    <sort class="mx-1"/>
     <actions v-bind="{release, container}"/>
 
   </v-layout>

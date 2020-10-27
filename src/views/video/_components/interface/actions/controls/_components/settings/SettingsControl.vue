@@ -2,7 +2,7 @@
   <div ref="settings" :style="{position: 'relative'}">
 
     <!-- Settings  -->
-    <v-btn icon large @click.stop="showSettings('selector')">
+    <v-btn icon large @click="showSettings('selector')">
       <v-icon size="22">mdi-settings</v-icon>
     </v-btn>
 

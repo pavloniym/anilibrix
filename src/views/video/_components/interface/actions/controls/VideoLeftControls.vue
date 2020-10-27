@@ -13,29 +13,6 @@
         :key="k"
         :class="control.classes">
       </component>
-
-
-      <!-- Torrent -->
-      <!--<v-tooltip v-if="isTorrent" right :attach="$refs.links">
-        <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon large @click="getTorrentDrawer().show()">
-            <v-icon size="20">mdi-file-table-box-multiple</v-icon>
-          </v-btn>
-        </template>
-        <span>Торрент</span>
-      </v-tooltip>-->
-
-      <!-- Opening skip button -->
-      <!--<v-tooltip v-if="_opening_skip_is_enabled" right :attach="$refs.links">
-        <template v-slot:activator="{on}">
-          <v-btn v-on="on" icon large @click="skipOpening">
-            <span class="caption font-weight-bold">+{{_opening_skip_time}}</span>
-          </v-btn>
-        </template>
-        <span>Перемотка опенинга</span>
-      </v-tooltip>-->
-
-
     </template>
   </v-layout>
 </template>
@@ -46,9 +23,6 @@
   import Home from './_components/home'
   import Volume from './_components/volume'
   import Release from './_components/release'
-
-  // Storage
-  import {mapState} from 'vuex'
 
   // Mixins
   import {DeviceMixin} from "@mixins/app";
@@ -81,11 +55,6 @@
       }
     },
     computed: {
-      ...mapState('app/settings', {
-        _opening_skip_offset: s => s.player.skip_opening.offset,
-        _opening_skip_is_enabled: s => s.player.skip_opening.is_enabled,
-      }),
-
 
       /**
        * Get controls
@@ -113,30 +82,7 @@
             visible: !this.isMobile
           },
         ].filter(item => item.visible === true)
-      },
-
-      /**
-       * Check if torrent
-       *
-       * @return {boolean}
-       */
-      isTorrent() {
-        return this.$__get(this.source, 'type') === 'torrent';
       }
-
-    },
-    methods: {
-
-
-      /**
-       * Skip opening
-       *
-       * @return {void}
-       */
-      skipOpening() {
-        this.$emit('update:time', this.player.currentTime + (this._opening_skip_offset || 0));
-      }
-
     },
 
     mounted() {

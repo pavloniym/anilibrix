@@ -3,6 +3,7 @@
     solo
     clearable
     hide-details
+    background-color="#272727"
     prepend-inner-icon="mdi-magnify"
     :value="search"
     @input="$emit('update:search', $event)">

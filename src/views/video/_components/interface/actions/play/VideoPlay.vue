@@ -15,7 +15,7 @@
             icon
             large
             :disabled="!previous"
-            @click.stop="toEpisode(previous)">
+            @click="toEpisode(previous)">
             <v-icon>mdi-skip-previous</v-icon>
           </v-btn>
         </template>
@@ -32,7 +32,7 @@
         width="90"
         height="90"
         :disabled="is_buffering"
-        @click.stop="$emit('toggle:play')">
+        @click="$emit('toggle:play')">
         <v-icon size="40">mdi-{{is_playing ? 'pause': 'play'}}</v-icon>
       </v-btn>
 
@@ -45,7 +45,7 @@
             icon
             large
             :disabled="!next"
-            @click.stop="toEpisode(next)">
+            @click="toEpisode(next)">
             <v-icon>mdi-skip-next</v-icon>
           </v-btn>
         </template>

@@ -1,9 +1,14 @@
 <template>
-  <div ref="interface">
+  <div>
 
     <!-- Main Interface Components -->
     <v-fade-transition appear mode="out-in">
-      <div v-show="interface_is_visible" class="interface pa-8" :class="{'interface--mobile': this.isMobile}">
+      <div
+        v-show="interface_is_visible"
+        ref="interface"
+        class="interface pa-8"
+        :class="{'interface--mobile': this.isMobile}">
+
         <v-layout column>
 
           <!-- Header components -->
@@ -345,12 +350,24 @@
       // Add some event listeners
       // Set player click event
       // Toggle player state
+      // Prevent children clicks invocation
       [this.video, this.$refs.interface].forEach(el => {
-        el.addEventListener('click', () => {
+
+        el.addEventListener('click', e => {
+          if (e.target !== el) return;
+
+          console.log('Interface event, single click', e);
           if (!this.isMobile) this.togglePlay();
           if (this.isMobile) this.showInterface(!this.interface_is_visible);
         });
-        el.addEventListener('dblclick', this.toggleFullscreen);
+
+        el.addEventListener('dblclick', (e) => {
+          if (e.target !== el) return;
+
+          console.log('Interface event, double click', e);
+          this.toggleFullscreen();
+        });
+
       });
 
 
@@ -376,7 +393,7 @@
     align-items: flex-end;
 
     * {
-      user-select: none;
+      user-select: none !important;
     }
 
   }
