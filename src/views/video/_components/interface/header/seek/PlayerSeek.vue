@@ -10,13 +10,13 @@
       :value="is_ready ? time : 0"
       :disabled="is_ready === false"
       @change="player.currentTime = $event"
-      @mousedown="is_seeking = true"
-      @mouseup="is_seeking = false">
+      @mouseup="is_seeking = false"
+      @mousedown="is_seeking = true">
     </v-slider>
 
 
     <!-- Tooltip -->
-    <tooltip v-if="is_hovered && !this.isMobile" v-bind="{duration, cursor_left_offset, seek_tooltip_position}"/>
+    <tooltip v-if="is_hovered" v-bind="{duration, cursor_left_offset, seek_tooltip_position}"/>
 
   </div>
 </template>
@@ -119,6 +119,7 @@
         }
 
         .v-slider__thumb {
+          opacity: 0;
           transition: opacity .2s ease;
         }
       }
@@ -126,11 +127,11 @@
       &:hover {
         ::v-deep {
           .v-slider__track-container {
-            height: 8px;
+            height: 6px;
           }
 
           .v-slider__thumb {
-            opacity: 0;
+            opacity: 1;
           }
         }
       }
