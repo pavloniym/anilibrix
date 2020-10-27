@@ -4,6 +4,7 @@
     class="drawer"
     :class="{'drawer--mobile': this.isMobile}"
     :style="{zIndex, top: offset, paddingBottom: offset}"
+    :stateless="this.isMobile"
     @input="$emit('input', $event)">
 
     <!-- Content -->

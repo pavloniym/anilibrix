@@ -4,8 +4,7 @@
     absolute
     temporary
     width="400"
-    z-index="100"
-    :stateless="this.isMobile">
+    z-index="100">
 
     <v-toolbar dark>
       <v-app-bar-nav-icon @click="is_visible = false">
