@@ -17,10 +17,6 @@ module.exports = {
   },
   lintOnSave: false,
   publicPath: process.env.PUBLIC_PATH || '/',
-  /*chainWebpack: config => {
-    config.plugins.add('pwa');
-    config.plugins.add('workbox');
-  },*/
   pluginOptions: {...desktopConfig},
   configureWebpack: webpackConfig
 };

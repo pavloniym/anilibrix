@@ -253,7 +253,7 @@ class Torrents {
         this._sendError({torrents_id, message: 'Произошла ошибка при остановке и уничтожении торрент-файла', error});
       }
     });
-  };
+  }
 
 
   /**
@@ -412,7 +412,7 @@ class Torrents {
    */
   _sendError({torrents_id, message = null, error = null} = {}) {
     console.error('Torrent Error', {torrents_id, error, message});
-  };
+  }
 
 
   /**

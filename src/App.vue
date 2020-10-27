@@ -4,6 +4,7 @@
     <!-- Settings -->
     <!-- System Bar -->
     <app-topbar/>
+    <app-web-update/>
     <app-settings/>
 
     <!-- Content -->
@@ -28,12 +29,12 @@
   import AppLoader from '@components/app/loader'
   import AppTopbar from '@components/app/topbar'
   import AppSettings from "@components/app/settings";
+  import {AppWebUpdate} from '@components/app/update'
+  import AppNotifications from "@components/app/notifications";
 
   // Layouts
   import AppBaseLayout from '@layouts/base'
 
-  // Notifications
-  import AppNotifications from "@components/app/notifications";
 
   // Utils
   import {mapActions, mapState} from 'vuex'
@@ -45,6 +46,7 @@
       AppLoader,
       AppTopbar,
       AppSettings,
+      AppWebUpdate,
       AppBaseLayout,
       AppNotifications,
     },

@@ -29,6 +29,9 @@ import '@assets/scss/style.scss'
 // Import entry component
 import App from './App'
 
+// Import service worker
+import './registerServiceWorker'
+
 Vue.config.productionTip = false;
 
 // Start app
