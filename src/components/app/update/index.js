@@ -1,6 +1,6 @@
-import AppWebUpdate  from './AppWebUpdate'
+import AppPwaUpdate  from './pwa'
 
 
 export {
-  AppWebUpdate
+  AppPwaUpdate
 }

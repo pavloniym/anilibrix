@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    v-click-outside="() => close"
+    v-click-outside="() => close()"
     left
     :top="!this.isMobile"
     :value="true"

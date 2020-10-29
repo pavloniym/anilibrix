@@ -88,15 +88,16 @@
     mounted() {
       this.is_mounted = true;
     }
+
   }
 </script>
 
 <style scoped lang="scss">
 
   .interface__left__controls--mobile {
-    position: absolute;
     top: 12px;
     left: 20px;
+    position: absolute;
   }
 
 </style>

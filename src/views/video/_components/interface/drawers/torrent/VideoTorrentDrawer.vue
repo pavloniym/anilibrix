@@ -1,23 +1,26 @@
 <template>
   <drawer v-model="is_visible" absolute temporary width="400" z-index="100">
 
+    <!-- Toolbar -->
+    <v-toolbar>
+      <v-app-bar-nav-icon @click="is_visible = false">
+        <v-icon>mdi-close</v-icon>
+      </v-app-bar-nav-icon>
+      <v-toolbar-title>Торрент</v-toolbar-title>
+    </v-toolbar>
+
     <!-- Content -->
-    <v-card>
-      <v-card-title>Торрент</v-card-title>
-      <v-card-subtitle>Данные по воспроизводимому торренту и соединению</v-card-subtitle>
-      <v-list dense>
-        <template v-for="(item, k) in items">
-          <v-divider :key="`d:${k}`"/>
-          <v-list-item :key="k">
-            <v-list-item-content>
-              <v-list-item-subtitle v-text="item.title"/>
-              <v-list-item-title v-text="item.value" :class="item.classes"/>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-list>
-      <v-divider/>
-    </v-card>
+    <v-list dense>
+      <template v-for="(item, k) in items">
+        <v-divider v-if="k > 0" :key="`d:${k}`"/>
+        <v-list-item :key="k">
+          <v-list-item-content>
+            <v-list-item-subtitle v-text="item.title"/>
+            <v-list-item-title v-text="item.value" :class="item.classes"/>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+    </v-list>
 
     <!-- Footer -->
     <template v-slot:footer>

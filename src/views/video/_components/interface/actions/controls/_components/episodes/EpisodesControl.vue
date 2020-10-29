@@ -1,12 +1,7 @@
 <template>
-  <v-tooltip left>
-    <template v-slot:activator="{on}">
-      <v-btn v-on="on" icon large @click="episodesDrawer ? episodesDrawer.show() : ''">
-        <v-icon size="24">mdi-playlist-play</v-icon>
-      </v-btn>
-    </template>
-    <span>Эпизоды</span>
-  </v-tooltip>
+  <v-btn icon large @click="drawer ? drawer.show() : ''">
+    <v-icon size="24">mdi-playlist-play</v-icon>
+  </v-btn>
 </template>
 
 <script>
@@ -19,7 +14,7 @@
        *
        * @return {*}
        */
-      episodesDrawer() {
+      drawer() {
         return this.$__get(this.$interface, '$refs.episodes.0')
       }
     }

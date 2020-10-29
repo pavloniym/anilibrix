@@ -1,21 +1,15 @@
 <template>
-  <drawer
-    v-model="is_visible"
-    absolute
-    temporary
-    width="400"
-    z-index="100">
+  <drawer v-model="is_visible" absolute temporary width="400" z-index="100">
 
+    <!-- Toolbar -->
     <v-toolbar>
       <v-app-bar-nav-icon @click="is_visible = false">
         <v-icon>mdi-close</v-icon>
       </v-app-bar-nav-icon>
-      <v-toolbar-title>
-        <div>Эпизоды</div>
-        <div class="caption grey--text" :style="{lineHeight: 1}">Список всех эпизодов релиза</div>
-      </v-toolbar-title>
+      <v-toolbar-title>Эпизоды</v-toolbar-title>
     </v-toolbar>
 
+    <!-- Content -->
     <episodes
       v-bind="{release, episodes}"
       class="py-4 px-2"

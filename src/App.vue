@@ -4,7 +4,7 @@
     <!-- Settings -->
     <!-- System Bar -->
     <app-topbar/>
-    <app-web-update/>
+    <app-pwa-update/>
     <app-settings/>
 
     <!-- Content -->
@@ -29,7 +29,7 @@
   import AppLoader from '@components/app/loader'
   import AppTopbar from '@components/app/topbar'
   import AppSettings from "@components/app/settings";
-  import {AppWebUpdate} from '@components/app/update'
+  import {AppPwaUpdate} from '@components/app/update'
   import AppNotifications from "@components/app/notifications";
 
   // Layouts
@@ -46,7 +46,7 @@
       AppLoader,
       AppTopbar,
       AppSettings,
-      AppWebUpdate,
+      AppPwaUpdate,
       AppBaseLayout,
       AppNotifications,
     },

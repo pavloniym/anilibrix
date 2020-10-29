@@ -7,14 +7,14 @@
     @close="$emit('close')">
 
     <template v-for="(item, k) in items">
-      <v-list-item :key="k" @click="$emit('update:component', item.component)">
+      <v-list-item :key="k" @click="item.action">
         <v-list-item-content>
           <v-list-item-title v-text="item.title"/>
         </v-list-item-content>
         <v-list-item-action>
           <v-layout align-center>
             <v-list-item-subtitle v-text="item.subtitle" class="mr-2"/>
-            <v-icon>mdi-chevron-right</v-icon>
+            <v-icon v-if="item.hide_arrow !== true">mdi-chevron-right</v-icon>
           </v-layout>
         </v-list-item-action>
       </v-list-item>
@@ -48,6 +48,7 @@
 
   export default {
     props,
+    inject: ['$interface'],
     mixins: [DeviceMixin],
     components: {Options},
     data() {
@@ -55,6 +56,7 @@
         player_speed: 1,
       }
     },
+
     computed: {
 
       /**
@@ -66,20 +68,29 @@
         return [
           {
             title: 'Качество',
+            action: () => this.$emit('update:component', 'quality'),
             visible: true,
             subtitle: this.source.label,
-            component: 'quality',
           },
           {
             title: 'Скорость воспроизведения',
+            action: () => this.$emit('update:component', 'speed'),
             visible: true,
             subtitle: this.speedHuman,
-            component: 'speed',
           },
           {
             title: 'Показать горячие клавиши',
+            action: () => this.$emit('update:component', 'hotkeys'),
             visible: !this.isMobile,
-            component: 'hotkeys',
+          },
+          {
+            title: 'Торрент-сервер',
+            action: () => {
+              this.torrentDrawer ? this.torrentDrawer.show() : '';
+              this.$emit('close');
+            },
+            visible: this.isTorrent,
+            hide_arrow: true
           },
         ].filter(item => item.visible === true)
       },
@@ -98,6 +109,26 @@
         if (this.player_speed >= 1) return 'Обычная';
         if (this.player_speed >= 0.75) return '0.75x';
         if (this.player_speed >= 0.50) return '0.5x';
+      },
+
+
+      /**
+       * Check if source is torrent
+       *
+       * @return {boolean}
+       */
+      isTorrent() {
+        return this.$__get(this.source, 'type') === 'torrent';
+      },
+
+
+      /**
+       * Get torrent drawer ref from interface
+       *
+       * @return {*}
+       */
+      torrentDrawer() {
+        return this.$__get(this.$interface, '$refs.torrent.0')
       }
 
     },

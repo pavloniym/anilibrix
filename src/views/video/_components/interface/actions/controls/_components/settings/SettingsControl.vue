@@ -7,17 +7,19 @@
     </v-btn>
 
     <!-- Handler -->
-    <component
-      v-if="handler"
-      v-on="handler.events"
-      v-bind="handler.props"
-      :is="handler.is"
-      :key="handler.alias"
-      :attach="() => $refs.settings"
-      @back="showSettings('selector')"
-      @close="closeSettings"
-      @update:component="showSettings">
-    </component>
+    <v-overlay opacity="0" :value="!!component">
+      <component
+        v-if="handler"
+        v-on="handler.events"
+        v-bind="handler.props"
+        :is="handler.is"
+        :key="handler.alias"
+        :attach="() => $refs.settings"
+        @back="showSettings('selector')"
+        @close="closeSettings"
+        @update:component="showSettings">
+      </component>
+    </v-overlay>
 
   </div>
 </template>
@@ -77,14 +79,24 @@
             is: Quality,
             alias: 'quality',
             props: {source: this.source, player: this.player, episode: this.episode},
-            events: {'update:quality': $event => this.$emit('update:quality', $event)},
+            events: {
+              'update:quality': $event => {
+                this.$emit('update:quality', $event);
+                this.closeSettings();
+              }
+            },
             visible: true,
           },
           {
             is: Speed,
             alias: 'speed',
             props: {player: this.player},
-            events: {'update:speed': $event => this.$emit('update:speed', $event)},
+            events: {
+              'update:speed': $event => {
+                this.$emit('update:speed', $event);
+                this.closeSettings();
+              }
+            },
             visible: true,
           },
           {
