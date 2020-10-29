@@ -61,7 +61,7 @@
       display: flex;
       position: absolute;
       left: 50%;
-      bottom: -20px;
+      bottom: -18px;
       pointer-events: none;
     }
   }
