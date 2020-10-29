@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="container" class="interface__container">
 
     <!-- Main Interface Components -->
     <v-fade-transition appear mode="out-in">
@@ -343,14 +343,11 @@
       // Hide / Show controls
       this.showInterface();
 
-      // Get video element
-      const video = document.getElementsByClassName('plyr')[0].getElementsByTagName('video')[0];
-
       // Add some event listeners
       // Set player click event
       // Toggle player state
       // Prevent children clicks invocation
-      [video, this.$refs.interface].forEach(el => {
+      [this.$refs.container, this.$refs.interface].forEach(el => {
 
         // Single click
         el.addEventListener('click', e => {
@@ -378,6 +375,13 @@
 </script>
 
 <style scoped lang="scss">
+
+  .interface__container {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    z-index: 5;
+  }
 
   .interface {
     width: 100%;
