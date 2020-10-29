@@ -1,13 +1,10 @@
 <template>
-  <div v-if="seekTime" class="seek__tooltip secondary" :style="{left: cursor_left_offset + 'px'}">
-    {{seekTime}}
+  <div v-if="value" class="seek__tooltip secondary" :style="{left: cursor_left_offset + 'px'}">
+    <slot v-bind="{value}"/>
   </div>
 </template>
 
 <script>
-
-  // Utils
-  import humanizeTime from "@utils/strings/human-time";
 
   const props = {
     duration: {
@@ -18,7 +15,6 @@
       type: Number,
       default: null
     },
-
     seek_tooltip_position: {
       type: Number,
       default: null
@@ -33,32 +29,29 @@
        * Calculate seek time
        * Convert to human time format
        *
-       * @return {string|null}
+       * @return {number|null}
        */
-      seekTime() {
+      value() {
         if (this.duration && this.seek_tooltip_position) {
-          return humanizeTime((this.duration / 100) * this.seek_tooltip_position + 1);
+          return (this.duration / 100) * this.seek_tooltip_position + 1;
         }
         return null;
-      }
+      },
 
     }
 
   }
 </script>
 
+
 <style scoped lang="scss">
 
   .seek__tooltip {
-    top: -28px;
-    width: 60px !important;
-    padding: .3rem .6rem;
+    top: -29.5px;
     position: absolute;
-    font-size: .75rem;
+    margin-left: -62px;
     border-radius: 4px;
-    text-align: center;
-    font-weight: bold;
-    margin-left: -60px;
+    pointer-events: none;
 
     &::after {
       content: "";
@@ -69,6 +62,7 @@
       position: absolute;
       left: 50%;
       bottom: -20px;
+      pointer-events: none;
     }
   }
 
