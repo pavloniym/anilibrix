@@ -381,6 +381,11 @@
     height: 100vh;
     width: 100vw;
     z-index: 5;
+    ::v-deep {
+      * {
+        user-select: none !important;
+      }
+    }
   }
 
   .interface {
@@ -392,11 +397,6 @@
     position: absolute;
     background: rgb(0 0 0 / 0.35);
     align-items: flex-end;
-
-    * {
-      user-select: none !important;
-    }
-
   }
 
 </style>
