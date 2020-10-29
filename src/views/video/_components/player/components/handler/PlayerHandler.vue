@@ -1,5 +1,5 @@
 <template>
-  <v-layout column class="fill-height">
+  <v-layout column class="fill-height player__handler">
 
     <slot name="prepend"/>
 
@@ -128,3 +128,15 @@
 
   }
 </script>
+
+<style lang="scss" scoped>
+
+  .player__handler {
+    ::v-deep {
+      .plyr__poster {
+        display: none;
+      }
+    }
+  }
+
+</style>

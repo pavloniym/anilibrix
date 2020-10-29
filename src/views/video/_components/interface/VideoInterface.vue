@@ -136,7 +136,6 @@
 
     data() {
       return {
-        video: null,
         interface_is_visible: true,
         interface_visibility_handler: null,
       }
@@ -224,7 +223,7 @@
         if (this.interface_visibility_handler) clearTimeout(this.interface_visibility_handler);
 
         // Create new interval
-        // this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
+        this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
       },
 
       /**
@@ -345,26 +344,24 @@
       this.showInterface();
 
       // Get video element
-      this.video = document.getElementsByClassName('plyr')[0];
+      const video = document.getElementsByClassName('plyr')[0].getElementsByTagName('video')[0];
 
       // Add some event listeners
       // Set player click event
       // Toggle player state
       // Prevent children clicks invocation
-      [this.video, this.$refs.interface].forEach(el => {
+      [video, this.$refs.interface].forEach(el => {
 
+        // Single click
         el.addEventListener('click', e => {
           if (e.target !== el) return;
-
-          console.log('Interface event, single click', e);
           if (!this.isMobile) this.togglePlay();
           if (this.isMobile) this.showInterface(!this.interface_is_visible);
         });
 
+        // Double click
         el.addEventListener('dblclick', (e) => {
           if (e.target !== el) return;
-
-          console.log('Interface event, double click', e);
           this.toggleFullscreen();
         });
 
