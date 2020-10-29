@@ -7,6 +7,10 @@
     :class="{'interface--mobile': this.isMobile}">
     <template v-if="is_mounted">
 
+      <!-- Rewind button -->
+      <div v-if="this.isMobile" ref="rewind" class="play__rewind" @click="rewind"></div>
+
+
       <!-- Previous episode -->
       <v-tooltip left :attach="$refs.play">
         <template v-slot:activator="{on}">
@@ -76,7 +80,7 @@
     release: {
       type: Object,
       default: null
-    },
+    }
   };
 
   export default {
@@ -149,6 +153,19 @@
             release_id: this.release.id
           });
         }
+      },
+
+
+      /**
+       * Rewind
+       *
+       * @return {void}
+       */
+      rewind() {
+        this.$refs.rewind.classList.remove("animation");
+        this.player.currentTime = Math.max(0, this.player.currentTime - 30);
+        this.$refs.rewind.classList.add("animation");
+        setTimeout(() => this.$refs.rewind.classList.remove("animation"), 650);
       }
 
     },
@@ -192,10 +209,32 @@
     right: 0;
     height: 90px;
     position: absolute;
+
+    .play__rewind {
+      position: absolute;
+      left: -20vw;
+      height: 80vh;
+      background: white;
+      width: 40vw;
+      border-radius: 50%;
+      opacity: 0;
+      cursor: pointer;
+
+      &.animation {
+        animation: playing .65s;
+      }
+
+    }
+
+    @keyframes playing {
+      from {opacity: 0;}
+      50% {opacity: .1}
+      to {opacity: 0}
+    }
+
   }
 
   .play__tooltip {
-    //z-index: 1000000;
     line-height: 1;
 
     > div {
