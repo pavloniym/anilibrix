@@ -349,6 +349,9 @@
       // Prevent children clicks invocation
       [this.$refs.container, this.$refs.interface].forEach(el => {
 
+        // Show interface on any click
+        this.showInterface();
+
         // Single click
         el.addEventListener('click', e => {
           if (e.target !== el) return;

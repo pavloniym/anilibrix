@@ -4,8 +4,8 @@
     <!-- Settings -->
     <!-- System Bar -->
     <app-topbar/>
-    <app-pwa-update/>
     <app-settings/>
+    <app-pwa-update/>
 
     <!-- Content -->
     <app-loader v-if="is_loading" key="loader"/>
@@ -29,12 +29,13 @@
   import AppLoader from '@components/app/loader'
   import AppTopbar from '@components/app/topbar'
   import AppSettings from "@components/app/settings";
-  import {AppPwaUpdate} from '@components/app/update'
   import AppNotifications from "@components/app/notifications";
+
+  // Components
+  import {AppPwaUpdate} from '@components/app/update'
 
   // Layouts
   import AppBaseLayout from '@layouts/base'
-
 
   // Utils
   import {mapActions, mapState} from 'vuex'
