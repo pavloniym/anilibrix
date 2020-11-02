@@ -137,9 +137,6 @@
       // Get favorites
       this.refreshData();
 
-
-      screen.orientation.lock('portrait');
-
     },
 
 
