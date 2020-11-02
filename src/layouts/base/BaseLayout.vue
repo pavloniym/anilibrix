@@ -1,14 +1,9 @@
 <template>
-  <v-layout
-    column
-    fill-height
-    id="container"
-    class="base-layout"
-    :class="{isOnBlack, isWeb, isMobile}">
+  <v-layout column fill-height id="container" class="base-layout" :class="{isOnBlack, isWeb, isMobile}">
 
     <!-- Mobile  -->
-    <template v-if="isMobile">
-      <mobile-toolbar />
+    <template v-if="this.isMobile">
+      <mobile-toolbar :title="toolbarTitle" :hide-back="toolbarHideBack"/>
       <mobile-navigation/>
     </template>
 
@@ -56,8 +51,28 @@
        */
       isOnBlack() {
         return this.$__get(this.$route, 'meta.layout.is_on_black') || false;
-      }
+      },
 
+
+      /**
+       * Get toolbar title
+       * From route meta
+       *
+       * @return {string|null}
+       */
+      toolbarTitle() {
+        return this.$__get(this.$route, 'meta.layout.toolbar_title')
+      },
+
+
+      /**
+       * Toolbar hide back
+       *
+       * @return {boolean|null}
+       */
+      toolbarHideBack() {
+        return this.$__get(this.$route, 'meta.layout.toolbar_hide_back')
+      }
 
     }
   }
@@ -98,6 +113,7 @@
       top: 56px;
       height: auto;
       bottom: 80px;
+      padding: 0;
     }
   }
 

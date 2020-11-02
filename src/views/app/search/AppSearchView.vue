@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pa-2">
     <search v-model="search" class="mb-2"/>
     <loader v-if="is_loading"/>
     <results v-else v-bind="{items}" @click="toRelease($event.id)"/>
@@ -29,7 +29,7 @@
 
 
   export default {
-    name: "Search",
+    name: "App.Search.View",
     request: null,
     components: {
       Search,

@@ -12,7 +12,7 @@
 
       <!-- Settings Fields -->
       <template v-for="(field, f) in item.fields">
-        <v-divider v-if="field.divider" :key="`d:${k}:${f}`"/>
+        <v-divider v-if="field.divider" :key="`d:${k}:${f}`" :style="{paddingBottom: '1px', visibility: 'hidden'}"/>
         <component v-bind="field.props" :is="field.is" :key="`${k}:${f}`"/>
       </template>
 
@@ -89,7 +89,8 @@
                     'Торренты не требуют стороннего плеера или клиента и доступны онлайн, в меню выбора качества воспроизведения релиза.'
                   ],
                   label: 'Воспроизводить торренты'
-                }
+                },
+                visible: this.isDesktop
               },
               {
                 is: Switch,
@@ -98,7 +99,8 @@
                   hint: ['После окончания эпизода плеер автоматически начнет воспроизведение следующего эпизода в релизе при его наличии'],
                   label: 'Автовоспроизведение следующего эпизода',
                   class: ['mt-2']
-                }
+                },
+                visible: true
               },
               {
                 is: Switch,
@@ -110,7 +112,8 @@
                   ],
                   label: 'Подключить Anime4K',
                   class: ['mt-2']
-                }
+                },
+                visible: false
               },
               {
                 is: Switch,
@@ -122,11 +125,11 @@
                   ],
                   label: 'Кнопка пропуска опенинга',
                   class: ['mt-2']
-                }
+                },
+                visible: false
               },
               {
                 is: Input,
-                divider: true,
                 props: {
                   min: 0,
                   path: 'player.skip_opening.offset',
@@ -135,9 +138,11 @@
                   label: 'Количество секунд для пропуска опенинга',
                   suffix: 'сек',
                   handler: (value) => value && value > 0 ? parseInt(value) : 0
-                }
+                },
+                divider: true,
+                visible: false
               }
-            ]
+            ].filter(field => field.visible)
           }
         ];
       },

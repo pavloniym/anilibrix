@@ -1,39 +1,38 @@
 <template>
-  <v-app-bar app color="#121212">
+  <v-app-bar app>
 
     <!-- Back button -->
-    <v-btn icon @click="toBack">
+    <v-btn v-if="!hideBack && this.hasBack" icon @click="this.toBack">
       <v-icon large>mdi-chevron-left</v-icon>
     </v-btn>
 
     <!-- Toolbar title -->
-    <v-toolbar-title v-text="title" class="body-1 toolbar__title pl-0"/>
+    <v-toolbar-title v-text="title"/>
 
   </v-app-bar>
 </template>
 
 <script>
 
+  // Mixins
+  import {BackRouteMixin} from "@mixins/routes";
 
+  const props = {
+    title: {
+      type: String,
+      default: null
+    },
+    hideBack: {
+      type: Boolean,
+      default: false
+    }
+  };
 
   export default {
+    props,
     mixins: [
-
-    ],
-
-    computed: {
-
-      /**
-       * Get toolbar title
-       * From route meta
-       *
-       * @return {*}
-       */
-      title() {
-        return this.$__get(this.$route, 'meta.toolbar.title')
-      }
-
-    }
+      BackRouteMixin
+    ]
   }
 </script>
 <style lang="scss" scoped>

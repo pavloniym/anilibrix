@@ -2,6 +2,7 @@
   <v-text-field
     v-bind="{value}"
     solo
+    autofocus
     clearable
     hide-details
     placeholder="Введите название релиза ..."

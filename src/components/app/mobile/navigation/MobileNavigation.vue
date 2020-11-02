@@ -1,22 +1,10 @@
 <template>
-  <v-bottom-navigation
-    app
-    min-height="80"
-    color="grey darken-3"
-    active-class="white--text">
+  <v-bottom-navigation app min-height="80" color="grey darken-3" active-class="white--text">
 
     <template v-for="(view, k) in views">
-      <v-btn
-        text
-        exact
-        min-width="65"
-        :to="view.to"
-        :key="k"
-        :ripple="false">
-
+      <v-btn text exact min-width="65" :to="view.to" :key="k">
         <span :style="{fontSize: '.6rem'}">{{view.title}}</span>
         <v-icon>{{view.icon}}</v-icon>
-
       </v-btn>
     </template>
 
@@ -26,10 +14,10 @@
 <script>
 
   // Routes
-  import {SEARCH_ROUTE_NAME} from "@router/search/searchRoutes";
   import {CATALOG_ROUTE_NAME} from "@router/catalog/catalogRoutes";
   import {RELEASES_ROUTE_NAME} from "@router/releases/releasesRoutes";
   import {FAVORITES_ROUTE_NAME} from "@router/favorites/favoritesRoutes";
+  import {APP_SETTINGS_ROUTE_NAME, APP_SEARCH_ROUTE_NAME} from "@router/app/appRoutes";
 
   export default {
     computed: {
@@ -52,14 +40,14 @@
             title: 'Избранное'
           },
           {
-            to: {name: SEARCH_ROUTE_NAME},
+            to: {name: APP_SEARCH_ROUTE_NAME},
             icon: 'mdi-magnify',
             title: 'Поиск'
           },
           {
-            to: null,
-            icon: 'mdi-account',
-            title: 'Профиль'
+            to: {name: APP_SETTINGS_ROUTE_NAME},
+            icon: 'mdi-settings',
+            title: 'Настройки'
           },
         ]
       }

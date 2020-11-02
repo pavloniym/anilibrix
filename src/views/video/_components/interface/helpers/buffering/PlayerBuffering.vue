@@ -27,14 +27,12 @@
 
       // Handler buffering events
       this.player.on('waiting', () => this.is_buffering = true);
-      this.player.on('emptied', () => this.is_buffering = true);
       this.player.on('stalled', () => this.is_buffering = true);
 
       // Reset buffering
       this.player.on('stop', () => this.is_buffering = false);
       this.player.on('error', () => this.is_buffering = false);
       this.player.on('playing', () => this.is_buffering = false);
-      this.player.on('progress', () => this.is_buffering = this.player.loading)
 
     },
   }

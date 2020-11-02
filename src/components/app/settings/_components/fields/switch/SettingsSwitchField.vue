@@ -24,7 +24,7 @@
     <!-- Hint -->
     <v-card-text class="caption pt-1">
       <template v-for="(item, s) in hint">
-        <div :key="s" :class="{'pt-2': s > 0}">{{item}}</div>
+        <div :key="s">{{item}}</div>
       </template>
     </v-card-text>
 

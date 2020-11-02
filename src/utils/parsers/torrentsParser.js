@@ -6,6 +6,9 @@ import __get from 'lodash/get'
 import __merge from 'lodash/merge'
 import __camelCase from 'lodash/camelCase'
 
+// States
+import {isDesktop} from "@@/utils/states/deviceStates";
+
 // Episodes
 import {getEpisode} from './episodeParser'
 
@@ -22,7 +25,7 @@ import TorrentsResolver from "@@/utils/resolvers/torrents";
  * @param cancel_token
  */
 export const parseTorrents = async (torrents, {skip_torrents = false, torrents_is_enabled = false, cancel_token = null} = {}) => {
-  if (skip_torrents === false && torrents_is_enabled === true) {
+  if (isDesktop() && skip_torrents === false && torrents_is_enabled === true) {
 
     // Exclude some torrents (no codec available)
     // Resolve torrents data

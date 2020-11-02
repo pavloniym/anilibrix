@@ -6,7 +6,6 @@ import ads from './ads'
 import app from './app'
 import blank from './blank'
 import video from './video'
-import search from './search'
 import release from './release'
 import catalog from './catalog'
 import releases from './releases'
@@ -30,7 +29,6 @@ const router = new Router({
     app,
     blank,
     video,
-    search,
     release,
     catalog,
     releases,
