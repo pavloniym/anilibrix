@@ -2,16 +2,14 @@
 @import "helpers/helpers";
 
 html, body {
-  //background: #121212;
-  background: black;
+  background: #121212;
   overflow-y: hidden !important;
-
+  
   * {
     touch-action: pan-y pan-x;
   }
 
 }
-
 
 ::-webkit-scrollbar-thumb {
   cursor: pointer;

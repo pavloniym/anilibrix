@@ -223,7 +223,10 @@
         if (this.interface_visibility_handler) clearTimeout(this.interface_visibility_handler);
 
         // Create new interval
-        this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
+        if (this.isMobile === false) {
+          this.interface_visibility_handler = setTimeout(() => this.interface_is_visible = false, 2500);
+        }
+
       },
 
       /**
@@ -384,6 +387,7 @@
     height: 100vh;
     width: 100vw;
     z-index: 5;
+
     ::v-deep {
       * {
         user-select: none !important;

@@ -1,6 +1,6 @@
 <template>
-  <div class="pa-2">
-    <search v-model="search" class="mb-2"/>
+  <div class="ma-3">
+    <search v-model="search" class="mb-3"/>
     <loader v-if="is_loading"/>
     <results v-else v-bind="{items}" @click="toRelease($event.id)"/>
   </div>
@@ -26,7 +26,6 @@
 
   // Resolvers
   import ErrorResolver from "@@/utils/resolvers/error";
-
 
   export default {
     name: "App.Search.View",

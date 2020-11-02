@@ -16,7 +16,6 @@
   // Routes
   import {CATALOG_ROUTE_NAME} from "@router/catalog/catalogRoutes";
   import {RELEASES_ROUTE_NAME} from "@router/releases/releasesRoutes";
-  import {FAVORITES_ROUTE_NAME} from "@router/favorites/favoritesRoutes";
   import {APP_SETTINGS_ROUTE_NAME, APP_SEARCH_ROUTE_NAME} from "@router/app/appRoutes";
 
   export default {
@@ -33,11 +32,6 @@
             to: {name: CATALOG_ROUTE_NAME},
             icon: 'mdi-folder-text-outline',
             title: 'Каталог'
-          },
-          {
-            to: {name: FAVORITES_ROUTE_NAME},
-            icon: 'mdi-star',
-            title: 'Избранное'
           },
           {
             to: {name: APP_SEARCH_ROUTE_NAME},
