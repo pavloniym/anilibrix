@@ -112,8 +112,9 @@
     &.isMobile {
       top: 56px;
       height: auto;
-      bottom: 80px;
+      bottom: calc(44px + 50px + env(safe-area-inset-bottom)) !important;
       padding: 0;
+      overflow-y: auto !important;
     }
   }
 

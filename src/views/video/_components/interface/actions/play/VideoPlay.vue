@@ -4,13 +4,10 @@
     justify-center
     ref="play"
     class="interface__play"
-    :class="{'interface--mobile': this.isMobile}">
+    :class="{'interface__play--mobile': this.isMobile}">
     <template v-if="is_mounted">
 
-      <!-- Rewind button -->
-      <div v-if="this.isMobile" ref="rewind" class="play__rewind" @click="rewind"></div>
-
-
+      
       <!-- Previous episode -->
       <v-tooltip left :attach="$refs.play">
         <template v-slot:activator="{on}">
@@ -18,6 +15,7 @@
             v-on="on"
             icon
             large
+            class="play__button"
             :disabled="!previous"
             @click="toEpisode(previous)">
             <v-icon>mdi-skip-previous</v-icon>
@@ -32,7 +30,7 @@
       <!-- Play - Pause button -->
       <v-btn
         icon
-        class="mx-2"
+        class="mx-2 play__button"
         width="90"
         height="90"
         :disabled="is_buffering"
@@ -48,6 +46,7 @@
             v-on="on"
             icon
             large
+            class="play__button"
             :disabled="!next"
             @click="toEpisode(next)">
             <v-icon>mdi-skip-next</v-icon>
@@ -88,9 +87,10 @@
     mixins: [DeviceMixin],
     data() {
       return {
+        handler: null,
         is_mounted: false,
         is_playing: false,
-        is_buffering: true,
+        is_buffering: false,
       }
     },
 
@@ -171,31 +171,22 @@
     },
 
     created() {
+      this.handler = setInterval(() => {
 
-      // Set initial values
-      this.is_playing = this.player.playing;
+        this.is_playing = this.player.playing;
+        this.is_buffering = this.player.loading;
 
-      // Watch for player playing and pause events
-      this.player.on('pause', () => this.is_playing = false);
-      this.player.on('playing', () => this.is_playing = true);
-
-
-      // Handler buffering events
-      this.player.on('waiting', () => this.is_buffering = true);
-      this.player.on('emptied', () => this.is_buffering = true);
-      this.player.on('stalled', () => this.is_buffering = true);
-
-      // Reset
-      this.player.on('error', () => this.is_buffering = false);
-      this.player.on('playing', () => this.is_buffering = false);
-      this.player.on('progress', () => this.is_buffering = this.player.loading)
-
+      }, 200);
     },
 
     mounted() {
-
-      // Set mounted state
       this.is_mounted = true;
+    },
+
+    destroyed() {
+      if (this.handler) {
+        clearInterval(this.handler);
+      }
     }
 
   }
@@ -203,43 +194,29 @@
 
 <style lang="scss" scoped>
 
-  .interface--mobile {
-    top: calc(50% - 45px);
-    left: 0;
-    right: 0;
-    height: 90px;
-    position: absolute;
+  .interface__play {
+    pointer-events: none;
 
-    .play__rewind {
+    &--mobile {
+      top: calc(50% - 45px);
+      left: 0;
+      right: 0;
+      height: 90px;
       position: absolute;
-      left: -20vw;
-      height: 80vh;
-      background: white;
-      width: 40vw;
-      border-radius: 50%;
-      opacity: 0;
-      cursor: pointer;
-
-      &.animation {
-        animation: playing .65s;
-      }
-
     }
 
-    @keyframes playing {
-      from {opacity: 0;}
-      50% {opacity: .1}
-      to {opacity: 0}
+    .play__button {
+      pointer-events: all;
     }
 
-  }
-
-  .play__tooltip {
-    line-height: 1;
-
-    > div {
+    .play__tooltip {
       line-height: 1;
+
+      > div {
+        line-height: 1;
+      }
     }
   }
+
 
 </style>
