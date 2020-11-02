@@ -1,2 +1,2 @@
 (window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d2308d5"],{ed88:function(t,e,n){"use strict";n.r(e);var s=function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",[n("app-settings"),n("app-settings-credentials",{staticClass:"py-4"})],1)},p=[],i=n("c87f"),a={name:"App.Settings.View",components:{AppSettings:i["a"],AppSettingsCredentials:i["b"]}},c=a,l=n("2877"),r=Object(l["a"])(c,s,p,!1,null,null,null),u=r.exports;e["default"]=u}}]);
-//# sourceMappingURL=chunk-2d2308d5.a26367a0.js.map
+//# sourceMappingURL=chunk-2d2308d5.dcc8f313.js.map
