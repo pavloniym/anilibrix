@@ -1,8 +1,8 @@
 <template>
-  <v-bottom-navigation app min-height="80" color="grey darken-3" active-class="white--text">
+  <v-bottom-navigation app class="mobile--navigation" color="grey darken-3" active-class="white--text">
 
     <template v-for="(view, k) in views">
-      <v-btn text exact min-width="65" :to="view.to" :key="k">
+      <v-btn text exact min-width="65" :ref="view.ref" :key="k" @click="toView(view)">
         <span :style="{fontSize: '.6rem'}">{{view.title}}</span>
         <v-icon>{{view.icon}}</v-icon>
       </v-btn>
@@ -14,39 +14,75 @@
 <script>
 
   // Routes
-  import {CATALOG_ROUTE_NAME} from "@router/catalog/catalogRoutes";
-  import {RELEASES_ROUTE_NAME} from "@router/releases/releasesRoutes";
-  import {APP_SETTINGS_ROUTE_NAME, APP_SEARCH_ROUTE_NAME} from "@router/app/appRoutes";
+  import {toCatalog} from "@router/catalog/catalogRoutes";
+  import {toReleases} from "@router/releases/releasesRoutes";
+  import {toSearch, toSettings} from "@router/app/appRoutes";
 
   export default {
     computed: {
 
+      /**
+       * Get available mobile views
+       *
+       * @return {array}
+       */
       views() {
         return [
           {
-            to: {name: RELEASES_ROUTE_NAME},
+            ref: 'releases',
             icon: 'mdi-view-column',
-            title: 'Релизы'
+            title: 'Релизы',
+            action: toReleases,
           },
           {
-            to: {name: CATALOG_ROUTE_NAME},
+            ref: 'catalog',
             icon: 'mdi-folder-text-outline',
-            title: 'Каталог'
+            title: 'Каталог',
+            action: toCatalog,
           },
           {
-            to: {name: APP_SEARCH_ROUTE_NAME},
+            ref: 'search',
             icon: 'mdi-magnify',
-            title: 'Поиск'
+            title: 'Поиск',
+            action: toSearch,
           },
           {
-            to: {name: APP_SETTINGS_ROUTE_NAME},
+            ref: 'settings',
             icon: 'mdi-settings',
-            title: 'Настройки'
+            title: 'Настройки',
+            action: toSettings,
           },
         ]
       }
 
+    },
+
+    methods: {
+
+      /**
+       * Go to provided view
+       *
+       * @param view
+       */
+      toView(view) {
+
+        // Go to view
+        view.action();
+        
+        // Blur button
+        this.$refs[view.ref][0].$el.blur();
+
+
+      }
 
     }
   }
 </script>
+
+<style lang="scss" scoped>
+
+  .mobile--navigation {
+    min-height: calc(50px + env(safe-area-inset-bottom)) !important;
+  }
+
+</style>

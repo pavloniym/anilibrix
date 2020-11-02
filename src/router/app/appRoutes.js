@@ -13,6 +13,21 @@ export const APP_SETTINGS_ROUTE_NAME = 'app.settings';
  */
 export const toLogin = () => router.push({name: APP_LOGIN_ROUTE_NAME});
 
+/**
+ * Push to search view
+ *
+ * @return {Promise<Route>}
+ */
+export const toSearch = () => router.push({name: APP_SEARCH_ROUTE_NAME});
+
+
+/**
+ * Push to settings view
+ *
+ * @return {Promise<Route>}
+ */
+export const toSettings = () => router.push({name: APP_SETTINGS_ROUTE_NAME});
+
 
 export default [
   {
