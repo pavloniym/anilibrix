@@ -1,11 +1,11 @@
 <template>
-  <v-layout v-if="loading || _release" column :class="{'py-6': !isMobile}">
+  <v-layout v-if="is_loading || _release" column :class="{'py-6': !this.isMobile}">
 
     <!-- Release Card -->
-    <card v-bind="{loading}" class="mb-2" :release="_release"/>
+    <card class="mb-2" :loading="is_loading" :release="_release"/>
 
     <!-- Release Tabs -->
-    <v-tabs v-if="!loading" v-model="tab" class="shrink mb-6" background-color="transparent">
+    <v-tabs v-if="!is_loading" v-model="tab" class="shrink mb-6" background-color="transparent">
       <v-tab>Эпизоды</v-tab>
       <v-tab>Комментарии</v-tab>
     </v-tabs>
@@ -16,7 +16,7 @@
       v-on="component.events"
       v-bind="component.props"
       :is="component.is"
-      :class="{'pb-6' : isMobile}">
+      :class="{'pb-6' : this.isMobile}">
     </component>
 
   </v-layout>
@@ -30,7 +30,7 @@
   import Comments from '@components/release/comments'
 
   // Routes
-  //import {toVideo} from "@utils/router/views";
+  import {toVideo} from "@router/video/videoRoutes";
 
   // Utils
   import {mapState, mapActions} from 'vuex'
@@ -67,7 +67,7 @@
     data() {
       return {
         tab: 0,
-        loading: false,
+        is_loading: false,
       }
     },
 
@@ -98,7 +98,7 @@
               release: this._release,
               episodes: this.episodes,
             },
-            events: {episode: episode => toVideo(this._release, episode)},
+            events: {'play:episode': episode => toVideo(this._release.id, episode.id)},
           },
           {
             is: Comments,
@@ -138,11 +138,11 @@
 
             // Start loading
             // Get release data
-            this.loading = true;
+            this.is_loading = true;
             await this._getRelease(release_id);
 
             // Reset loading state
-            this.loading = false;
+            this.is_loading = false;
 
             // Hit visit
             this.$visit(this.$route.path, this.$metaInfo.title);

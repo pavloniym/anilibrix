@@ -7,7 +7,7 @@
     :class="{'interface__play--mobile': this.isMobile}">
     <template v-if="is_mounted">
 
-      
+
       <!-- Previous episode -->
       <v-tooltip left :attach="$refs.play">
         <template v-slot:activator="{on}">
