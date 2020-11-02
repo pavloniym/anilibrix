@@ -68,7 +68,7 @@
 
         // Go to view
         view.action();
-        
+
         // Blur button
         this.$refs[view.ref][0].$el.blur();
 

@@ -14,4 +14,5 @@ module.exports = {
   },
   workboxPluginMode: 'GenerateSW',
   appleMobileWebAppCapable: 'yes',
+  appleMobileWebAppStatusBarStyle: 'black-translucent'
 };
