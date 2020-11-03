@@ -31,6 +31,9 @@
   // Mixins
   import {DeviceMixin, PlatformMixin} from "@mixins/app";
 
+  // Utils
+  import safeAreaInsets from 'safe-area-insets'
+
   export default {
     name: "Layout.Base",
     mixins: [
@@ -51,16 +54,17 @@
        */
       layoutClasses() {
         return {
+          'px-8': !this.isMobile,
           'is-web': this.isWeb,
           'is-mobile': this.isMobile,
-          'is-on-black': this.isOnBlack,
+          'is-on-black': this.isOnBlack
         }
       },
 
       layoutStyles() {
         return {
           paddingTop: this.$vuetify.application.top + 'px',
-          paddingBottom: (this.$vuetify.application.bottom + getComputedStyle(document.documentElement).getPropertyValue("--sab")) + 'px',
+          paddingBottom: this.$vuetify.application.bottom + safeAreaInsets.bottom + 'px',
         }
       },
 

@@ -39,6 +39,7 @@
     "qs": "^6.9.4",
     "register-service-worker": "^1.7.1",
     "rimraf": "^3.0.2",
+    "safe-area-insets": "^1.4.1",
     "screenfull": "^5.0.2",
     "set-cookie-parser": "^2.4.6",
     "string-strip-html": "^4.3.16",

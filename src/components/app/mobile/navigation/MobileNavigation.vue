@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation v-bind="{height}" app class="mobile--navigation" color="grey darken-3" active-class="white--text">
+  <v-bottom-navigation app color="grey darken-3" :style="navigationStyles">
 
     <template v-for="(view, k) in views">
       <v-btn text exact min-width="65" :ref="view.ref" :key="k" @click="toView(view)">
@@ -18,6 +18,9 @@
   import {toCatalog} from "@router/catalog/catalogRoutes";
   import {toReleases} from "@router/releases/releasesRoutes";
   import {toSettings} from "@router/app/appRoutes";
+
+  // Utils
+  import safeAreaInsets from 'safe-area-insets'
 
   export default {
     computed: {
@@ -59,10 +62,13 @@
       /**
        * Get mobile navigation height
        *
-       * @return {string}
+       * @return {*}
        */
-      height() {
-        return `calc(56px + ${getComputedStyle(document.documentElement).getPropertyValue("--sab")})`;
+      navigationStyles() {
+        return {
+          minHeight: 56 + safeAreaInsets.bottom + 'px',
+          paddingBottom: safeAreaInsets.bottom + 'px'
+        }
       }
 
     },
