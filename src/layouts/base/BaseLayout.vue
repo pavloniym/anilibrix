@@ -60,7 +60,7 @@
       layoutStyles() {
         return {
           paddingTop: this.$vuetify.application.top + 'px',
-          paddingBottom: this.$vuetify.application.bottom + getComputedStyle(document.documentElement).getPropertyValue("--sab") + 'px',
+          paddingBottom: (this.$vuetify.application.bottom + getComputedStyle(document.documentElement).getPropertyValue("--sab")) + 'px',
         }
       },
 
@@ -125,11 +125,10 @@
     }
 
     &.is-web {
-      height: 100%;
+
     }
 
     &.is-mobile {
-      height: 100%;
       overflow-y: auto !important;
     }
 
