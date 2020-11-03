@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation app class="mobile--navigation" color="grey darken-3" active-class="white--text">
+  <v-bottom-navigation v-bind="{height}" app class="mobile--navigation" color="grey darken-3" active-class="white--text">
 
     <template v-for="(view, k) in views">
       <v-btn text exact min-width="65" :ref="view.ref" :key="k" @click="toView(view)">
@@ -54,6 +54,15 @@
             action: toSettings,
           },
         ]
+      },
+
+      /**
+       * Get mobile navigation height
+       *
+       * @return {string}
+       */
+      height() {
+        return `calc(56px + ${getComputedStyle(document.documentElement).getPropertyValue("--sab")})`;
       }
 
     },
@@ -74,15 +83,6 @@
         this.$refs[view.ref][0].$el.blur();
 
       }
-
     }
   }
 </script>
-
-<style lang="scss" scoped>
-
-  .mobile--navigation {
-    min-height: calc(50px + env(safe-area-inset-bottom)) !important;
-  }
-
-</style>

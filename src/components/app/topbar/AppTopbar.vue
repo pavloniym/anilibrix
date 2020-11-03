@@ -1,8 +1,11 @@
 <template>
-  <v-layout
+  <v-app-bar
     v-if="this.isDesktop && !this.isOnFullscreen"
+    app
+    flat
     align-center
     class="black system-bar white--text px-2"
+    height="40"
     @dblclick="maximizeApp">
 
     <template v-if="!this.isMac">
@@ -14,7 +17,7 @@
       </template>
     </template>
 
-  </v-layout>
+  </v-app-bar>
 </template>
 
 <script>
@@ -102,7 +105,7 @@
 
   .system-bar {
     top: 0;
-    height: 40px;
+    //height: 40px;
     width: 100%;
     z-index: 10;
     position: fixed;

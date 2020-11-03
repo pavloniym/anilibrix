@@ -1,5 +1,5 @@
 <template>
-  <v-layout column fill-height id="container" class="layout__base" :class="layoutClasses">
+  <v-layout column fill-height id="container" class="layout__base" :class="layoutClasses" :style="layoutStyles">
 
     <!-- Mobile  -->
     <template v-if="this.isMobile">
@@ -57,6 +57,14 @@
         }
       },
 
+      layoutStyles() {
+        return {
+          paddingTop: this.$vuetify.application.top + 'px',
+          paddingBottom: this.$vuetify.application.bottom + 'px',
+        }
+      },
+
+
       /**
        * Check if is on black background
        *
@@ -96,7 +104,10 @@
       toolbarHideBack() {
         return this.$__get(this.$route, 'meta.layout.toolbar_hide_back')
       }
+    },
 
+    mounted() {
+      console.log(this.$vuetify);
     }
   }
 </script>
@@ -104,31 +115,21 @@
 <style lang="scss" scoped>
 
   .layout__base {
-    top: 40px;
-    padding: 15px 5% 30px 5%;
+    width: 100%;
     position: absolute;
     overflow-x: hidden;
     overflow-y: scroll;
-    width: 100%;
-    height: calc(100vh - 40px);
 
     &.is-on-black {
       background: black;
     }
 
     &.is-web {
-      top: 0;
-      bottom: 0;
       height: 100%;
-      padding-top: 18px;
-      padding-bottom: 18px;
     }
 
     &.is-mobile {
-      top: 56px;
-      height: auto;
-      bottom: calc(56px + 50px + env(safe-area-inset-bottom)) !important;
-      padding: 12px;
+      height: 100%;
       overflow-y: auto !important;
     }
 
