@@ -60,7 +60,7 @@
       layoutStyles() {
         return {
           paddingTop: this.$vuetify.application.top + 'px',
-          paddingBottom: this.$vuetify.application.bottom + 'px',
+          paddingBottom: this.$vuetify.application.bottom + getComputedStyle(document.documentElement).getPropertyValue("--sab") + 'px',
         }
       },
 
