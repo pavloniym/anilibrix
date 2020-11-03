@@ -75,6 +75,8 @@
 
   // Utils
   import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
+
+  // Store
   import {mapGetters, mapState, mapActions} from 'vuex'
 
   export default {

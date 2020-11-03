@@ -15,7 +15,7 @@
 <script>
 
   // Routes
-  import {toSearch} from "@router/app/search/appSearchRoutes";
+  import {toSearch} from "@router/search/searchRoutes";
 
   export default {
     methods: {
