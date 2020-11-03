@@ -1,5 +1,5 @@
 <template>
-  <v-layout column fill-height id="container" class="base-layout" :class="{isOnBlack, isWeb, isMobile}">
+  <v-layout column fill-height id="container" class="layout__base" :class="layoutClasses">
 
     <!-- Mobile  -->
     <template v-if="this.isMobile">
@@ -43,6 +43,19 @@
       MobileNavigation
     },
     computed: {
+
+      /**
+       * Get layout classes
+       *
+       * @return {*}
+       */
+      layoutClasses() {
+        return {
+          'is-web': this.isWeb,
+          'is-mobile': this.isMobile,
+          'is-on-black': this.isOnBlack,
+        }
+      },
 
       /**
        * Check if is on black background
@@ -90,7 +103,7 @@
 
 <style lang="scss" scoped>
 
-  .base-layout {
+  .layout__base {
     top: 40px;
     padding: 15px 5% 30px 5%;
     position: absolute;
@@ -99,19 +112,11 @@
     width: 100%;
     height: calc(100vh - 40px);
 
-    &::-webkit-scrollbar-thumb {
-      background-color: #353535;
-    }
-
-    &::-webkit-scrollbar {
-      background-color: #1d1d1d;
-    }
-
-    &.isOnBlack {
+    &.is-on-black {
       background: black;
     }
 
-    &.isWeb {
+    &.is-web {
       top: 0;
       bottom: 0;
       height: 100%;
@@ -119,12 +124,21 @@
       padding-bottom: 18px;
     }
 
-    &.isMobile {
+    &.is-mobile {
       top: 56px;
       height: auto;
-      bottom: calc(44px + 50px + env(safe-area-inset-bottom)) !important;
-      padding: 0;
+      bottom: calc(56px + 50px + env(safe-area-inset-bottom)) !important;
+      padding: 12px;
       overflow-y: auto !important;
+    }
+
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #353535;
+    }
+
+    &::-webkit-scrollbar {
+      background-color: #1d1d1d;
     }
   }
 
