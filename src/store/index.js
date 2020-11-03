@@ -9,6 +9,7 @@ import createPersistedState from 'vuex-persistedstate'
 
 // Store Modules
 import app from './app'
+import search from './search'
 import release from './release'
 import catalog from './catalog'
 import releases from './releases'
@@ -17,6 +18,7 @@ import notifications from './notifications'
 
 // Store persisted paths
 import {appPersisted} from "@store/app/appStore";
+import {searchPersisted} from "@store/search/searchStore";
 import {catalogPersisted} from "@store/catalog/catalogStore";
 import {favoritesPersisted} from "@store/favorites/favoritesStore";
 import {notificationsPersisted} from "@store/notifications/notificationsStore";
@@ -26,6 +28,7 @@ Vue.use(Vuex);
 
 const modules = {
   app,
+  search,
   release,
   catalog,
   releases,
@@ -45,6 +48,7 @@ const store = new Vuex.Store({
       key: 'anilibrix',
       paths: [
         ...appPersisted,
+        ...searchPersisted,
         ...catalogPersisted,
         ...favoritesPersisted,
         ...notificationsPersisted,

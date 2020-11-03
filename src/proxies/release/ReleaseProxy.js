@@ -39,23 +39,6 @@ export default class ReleaseProxy extends BaseProxy {
     );
   }
 
-
-  /**
-   * Search releases by name
-   *
-   * @param search
-   * @param configuration
-   * @return {Promise}
-   */
-  async searchReleases(search, configuration = {}) {
-    return handleResponseFromV1Api(
-      await this.submit('POST', this.getApiV1Endpoint() + '/public/api/index.php', {
-        data: this.prepareFormData({search, query: 'search', limit: 10}),
-      })
-    );
-  }
-
-
   /**
    * Get torrent file
    *

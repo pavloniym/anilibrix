@@ -1,5 +1,8 @@
+// Transformers
 import BaseTransformer from "@transformers/BaseTransformer";
-import ReleaseProxy from "@proxies/release";
+
+// Proxy
+import SearchProxy from "@proxies/search";
 
 export default class SearchTransformer extends BaseTransformer {
 
@@ -31,7 +34,7 @@ export default class SearchTransformer extends BaseTransformer {
    * @private
    */
   _getPoster(release) {
-    return new ReleaseProxy().getReleasePosterPath(this.get(release, 'poster'));
+    return new SearchProxy().getReleasePosterPath(this.get(release, 'poster'));
   }
 
 }

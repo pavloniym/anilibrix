@@ -1,11 +1,14 @@
+// Modules
 import watch from './watch'
 import account from './account'
 import settings from './settings'
 
+// Mutations
 const SET_DRAWER = 'SET_DRAWER';
 const SET_SEARCHING = 'SET_SEARCHING';
 const RESOLVE_MIGRATION = 'RESOLVE_MIGRATION';
 
+// Persisted
 export const appPersisted = ['app'];
 
 export default {

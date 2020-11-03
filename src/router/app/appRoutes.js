@@ -3,7 +3,6 @@ import router from '@router'
 
 // Routes
 export const APP_LOGIN_ROUTE_NAME = 'app.login';
-export const APP_SEARCH_ROUTE_NAME = 'app.search';
 export const APP_SETTINGS_ROUTE_NAME = 'app.settings';
 
 /**
@@ -12,13 +11,6 @@ export const APP_SETTINGS_ROUTE_NAME = 'app.settings';
  * @return {Promise<Route>}
  */
 export const toLogin = () => router.push({name: APP_LOGIN_ROUTE_NAME});
-
-/**
- * Push to search view
- *
- * @return {Promise<Route>}
- */
-export const toSearch = () => router.push({name: APP_SEARCH_ROUTE_NAME});
 
 
 /**
@@ -46,16 +38,5 @@ export default [
     },
     component: () => import('@views/app/settings')
   },
-  {
-    path: '/app/search',
-    name: APP_SEARCH_ROUTE_NAME,
-    meta: {
-      layout: {
-        toolbar_title: 'Поиск релизов',
-        toolbar_hide_back: true,
-      }
-    },
-    component: () => import('@views/app/search'),
 
-  }
 ]

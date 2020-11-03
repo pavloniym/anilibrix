@@ -14,9 +14,10 @@
 <script>
 
   // Routes
+  import {toSearch} from "@router/search/searchRoutes";
   import {toCatalog} from "@router/catalog/catalogRoutes";
   import {toReleases} from "@router/releases/releasesRoutes";
-  import {toSearch, toSettings} from "@router/app/appRoutes";
+  import {toSettings} from "@router/app/appRoutes";
 
   export default {
     computed: {
@@ -71,7 +72,6 @@
 
         // Blur button
         this.$refs[view.ref][0].$el.blur();
-
 
       }
 

@@ -3,14 +3,14 @@
 
     <!-- Mobile  -->
     <template v-if="this.isMobile">
-      <mobile-toolbar :title="toolbarTitle" :hide-back="toolbarHideBack"/>
+      <mobile-toolbar v-if="!toolbarIsHidden" :title="toolbarTitle" :hide-back="toolbarHideBack"/>
       <mobile-navigation/>
     </template>
 
     <!-- App Toolbar -->
     <!-- Content -->
     <template v-else>
-      <app-tool-bar/>
+      <app-tool-bar v-if="!toolbarIsHidden"/>
     </template>
 
     <!-- Content -->
@@ -62,6 +62,16 @@
        */
       toolbarTitle() {
         return this.$__get(this.$route, 'meta.layout.toolbar_title')
+      },
+
+
+      /**
+       * Check if toolbar is hidden
+       *
+       * @return {boolean}
+       */
+      toolbarIsHidden() {
+        return this.$__get(this.$route, 'meta.layout.toolbar_is_hidden') || false;
       },
 
 

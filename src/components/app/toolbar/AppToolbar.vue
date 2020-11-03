@@ -1,33 +1,21 @@
 <template>
   <v-fade-transition appear>
-    <v-app-bar v-if="!hideToolbar" flat color="transparent" class="toolbar shrink">
+    <v-app-bar flat color="transparent" class="toolbar shrink">
 
-      <!-- Releases -->
-      <v-btn small text exact class="mr-1" height="38" :to="{name: 'releases'}">
-        <v-icon size="18" class="mr-2">mdi-view-column</v-icon>
-        <span>Релизы</span>
-      </v-btn>
+      <!-- Views -->
+      <template v-for="(view, k) in views">
+        <v-btn small text exact class="mr-1" height="38" :key="`v:${k}`" :class="{'ml-1': k > 0}" @click="view.action">
+          <v-icon size="18" class="mr-2">{{view.icon}}</v-icon>
+          <span>{{view.title}}</span>
+        </v-btn>
+      </template>
 
-      <!-- Catalog-->
-      <v-btn small text exact class="mr-1" height="38" :to="{name: 'catalog'}">
-        <v-icon size="18" class="mr-2">mdi-folder-text-outline</v-icon>
-        <span>Каталог</span>
-      </v-btn>
+      <v-spacer/>
 
-      <!-- Favorite -->
-      <v-btn small text exact class="mr-4" height="38" :to="{name: 'favorites'}">
-        <v-icon size="18" class="mr-2">mdi-star</v-icon>
-        <span>Избранное</span>
-      </v-btn>
-
-      <!-- Search-->
-      <search class="mr-4"/>
-
-      <update/>
-      <notifications/>
-      <settings/>
-      <account/>
-
+      <!-- Actions -->
+      <template v-for="(action, k) in actions">
+        <component :is="action.is" :key="`a:${k}`"/>
+      </template>
 
     </v-app-bar>
   </v-fade-transition>
@@ -42,24 +30,62 @@
   import Settings from './_components/settings'
   import Notifications from './_components/notifications'
 
-  export default {
-    components: {
-      Update,
-      Search,
-      Account,
-      Settings,
-      Notifications
-    },
+  // Routes
+  import {toCatalog} from "@router/catalog/catalogRoutes";
+  import {toReleases} from "@router/releases/releasesRoutes";
+  import {toFavorites} from "@router/favorites/favoritesRoutes";
 
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
+
+  export default {
+    mixins: [
+      DeviceMixin
+    ],
     computed: {
 
       /**
-       * Check if should hide toolbar
+       * Available views
        *
-       * @return {*|boolean}
+       * @return {array}
        */
-      hideToolbar() {
-        return this.$__get(this.$route, 'meta.layout.hide_toolbar') || false;
+      views() {
+        return [
+          {
+            icon: 'mdi-view-column',
+            title: 'Релизы',
+            action: toReleases,
+            visible: true,
+          },
+          {
+            icon: 'mdi-folder-text-outline',
+            title: 'Каталог',
+            action: toCatalog,
+            visible: true,
+          },
+          {
+            icon: 'mdi-star',
+            title: 'Избранное',
+            action: toFavorites,
+            visible: this.isDesktop,
+          }
+        ].filter(view => view.visible)
+      },
+
+
+      /**
+       * Get actions
+       *
+       * @return {array}
+       */
+      actions() {
+        return [
+          {is: Search, visible: true},
+          {is: Update, visible: true},
+          {is: Notifications, visible: true},
+          {is: Settings, visible: true},
+          {is: Account, visible: this.isDesktop}
+        ].filter(action => action.visible)
       }
 
     }

@@ -18,7 +18,7 @@ export default [
     meta: {
       layout: {
         hide_scroll: true,
-        hide_toolbar: true,
+        toolbar_is_hidden: true,
       }
     },
     props: true,
