@@ -1,22 +1,24 @@
 <template>
-  <v-layout column fill-height id="container" class="layout__base" :class="layoutClasses" :style="layoutStyles">
+  <v-main>
+    <div id="container" class="layout--container" :class="layoutClasses" :style="layoutStyles">
 
-    <!-- Mobile  -->
-    <template v-if="this.isMobile">
-      <mobile-toolbar v-if="!toolbarIsHidden" :title="toolbarTitle" :hide-back="toolbarHideBack"/>
-      <mobile-navigation/>
-    </template>
+      <!-- Mobile  -->
+      <template v-if="this.isMobile">
+        <mobile-toolbar v-if="!toolbarIsHidden" :title="toolbarTitle" :hide-back="toolbarHideBack"/>
+        <mobile-navigation/>
+      </template>
 
-    <!-- App Toolbar -->
-    <!-- Content -->
-    <template v-else>
-      <app-tool-bar v-if="!toolbarIsHidden"/>
-    </template>
+      <!-- App Toolbar -->
+      <!-- Content -->
+      <template v-else>
+        <app-tool-bar v-if="!toolbarIsHidden"/>
+      </template>
 
-    <!-- Content -->
-    <slot/>
+      <!-- Content -->
+      <slot/>
 
-  </v-layout>
+    </div>
+  </v-main>
 </template>
 
 <script>
@@ -55,29 +57,21 @@
       layoutClasses() {
         return {
           'px-8': !this.isMobile,
-          'is-web': this.isWeb,
-          'is-mobile': this.isMobile,
-          'is-on-black': this.isOnBlack
-        }
-      },
-
-      layoutStyles() {
-        return {
-          paddingTop: this.$vuetify.application.top + 'px',
-          paddingBottom: this.$vuetify.application.bottom + safeAreaInsets.bottom + 'px',
+          'is-on-black': this.$__get(this.$route, 'meta.layout.is_on_black') === true
         }
       },
 
 
       /**
-       * Check if is on black background
+       * Get layout styles
        *
-       * @return {*|boolean}
+       * @return {*}
        */
-      isOnBlack() {
-        return this.$__get(this.$route, 'meta.layout.is_on_black') || false;
+      layoutStyles() {
+        return {
+          paddingTop: safeAreaInsets.top + 'px'
+        }
       },
-
 
       /**
        * Get toolbar title
@@ -118,24 +112,10 @@
 
 <style lang="scss" scoped>
 
-  .layout__base {
-    width: 100%;
-    position: absolute;
-    overflow-x: hidden;
-    overflow-y: scroll;
-
+  .layout--container {
     &.is-on-black {
       background: black;
     }
-
-    &.is-web {
-
-    }
-
-    &.is-mobile {
-      overflow-y: auto !important;
-    }
-
 
     &::-webkit-scrollbar-thumb {
       background-color: #353535;

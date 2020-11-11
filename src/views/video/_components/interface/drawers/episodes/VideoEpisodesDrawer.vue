@@ -2,7 +2,7 @@
   <drawer v-model="is_visible" absolute temporary width="400" z-index="100">
 
     <!-- Toolbar -->
-    <v-toolbar>
+    <v-toolbar :style="toolbarStyles">
       <v-app-bar-nav-icon @click="is_visible = false">
         <v-icon>mdi-close</v-icon>
       </v-app-bar-nav-icon>
@@ -29,6 +29,9 @@
 
   // Mixins
   import {DeviceMixin} from "@mixins/app";
+
+  // Utils
+  import safeAreaInsets from "safe-area-insets";
 
   const props = {
     release: {
@@ -64,6 +67,18 @@
        */
       episodes() {
         return this.$__get(this.release, 'episodes') || [];
+      },
+
+
+      /**
+       * Get toolbar styles
+       *
+       * @return {*}
+       */
+      toolbarStyles() {
+        return {
+          paddingTop: safeAreaInsets.top + 'px'
+        }
       }
 
     },

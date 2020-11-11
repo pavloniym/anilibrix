@@ -1,5 +1,9 @@
 <template>
-  <div @mousemove="showSeekTooltip" @mouseleave="is_hovered = false" :style="{position: 'relative'}">
+  <div
+    :style="seekStyles"
+    @mousemove="showSeekTooltip"
+    @mouseleave="is_hovered = false">
+
     <v-slider
       hide-details
       validate-on-blur
@@ -9,18 +13,24 @@
       :min="0"
       :max="is_ready ? duration : 100"
       :value="is_ready ? time : 0"
+      :class="{'isMobile': this.isMobile}"
       :disabled="is_ready === false"
+      :thumb-label="'always'"
       @change="changeTime"
       @mouseup="is_seeking = false"
       @mousedown="is_seeking = true">
+
       <template v-slot:thumb-label="{ value }">
         <timer v-if="is_seeking" v-bind="{value}"/>
       </template>
+
     </v-slider>
 
 
     <!-- Tooltip -->
-    <tooltip v-if="is_hovered && !is_seeking" v-bind="{duration, cursor_left_offset, seek_tooltip_position}">
+    <tooltip
+      v-if="!this.isMobile && is_hovered && !is_seeking"
+      v-bind="{duration, cursor_left_offset, seek_tooltip_position}">
       <template v-slot="{value}">
         <timer v-bind="{value}"/>
       </template>
@@ -37,6 +47,9 @@
 
   // Mixins
   import {DeviceMixin} from "@mixins/app";
+
+  // Utils
+  import safeAreaInsets from "safe-area-insets";
 
   const props = {
     player: {
@@ -62,6 +75,22 @@
         cursor_left_offset: 0,
         seek_tooltip_position: 0,
       }
+    },
+
+    computed: {
+
+      /**
+       * Seek styles
+       *
+       * @return {*}
+       */
+      seekStyles() {
+        return {
+          position: 'relative',
+          marginBottom: safeAreaInsets.bottom + 'px'
+        }
+      }
+
     },
 
     methods: {
@@ -121,51 +150,70 @@
 
 <style scoped lang="scss">
 
-  .slider {
-    &__timeline {
-      cursor: pointer;
-      position: relative;
+  .slider__timeline {
+    cursor: pointer;
+    position: relative;
 
+    &.isMobile {
       ::v-deep {
-        .v-slider--horizontal {
-          margin-left: 0;
-          margin-right: 0;
-        }
-
-        .v-slider__thumb-label-container {
-          transition: none !important;
-          top: -18px;
-
-          .v-slider__thumb-label {
-            height: 0 !important;
-            width: 0 !important;
-          }
-        }
-
-
         .v-slider__track-container {
-          transition: height .2s ease;
+          height: 8px;
         }
 
         .v-slider__thumb {
-          opacity: 0;
-          transition: opacity .2s ease;
-        }
-      }
-
-      &:hover {
-        ::v-deep {
-
-          .v-slider__track-container {
-            height: 6px;
-          }
-
-          .v-slider__thumb {
-            opacity: 1;
-          }
+          opacity: 1;
         }
       }
     }
+
+    ::v-deep {
+      .v-slider--horizontal {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .v-slider__thumb-label-container {
+        transition: none !important;
+        top: -18px;
+
+        .v-slider__thumb-label {
+          height: 0 !important;
+          width: 0 !important;
+        }
+      }
+
+
+      .v-slider__track-container {
+        transition: height .2s ease;
+      }
+
+      .v-slider__thumb {
+        opacity: 0;
+        transition: opacity .2s ease;
+      }
+    }
+
+    &:hover {
+      ::v-deep {
+        .v-slider__track-container {
+          height: 6px;
+        }
+
+        .v-slider__thumb {
+          opacity: 1;
+        }
+      }
+    }
+
+    &.isMobile {
+      ::v-deep {
+        .v-slider__track-container {
+          height: 8px;
+        }
+      }
+    }
+
   }
+
 
 </style>

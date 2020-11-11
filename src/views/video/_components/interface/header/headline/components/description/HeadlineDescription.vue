@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="caption && title"
-    class="d-flex flex-column justify-end"
-    :class="{'interface__headline--mobile': this.isMobile}">
+  <div v-if="caption && title" class="d-flex flex-column justify-end" :class="{'isMobile': this.isMobile}">
 
     <h4 class="pb-1">{{caption}}</h4>
     <h1>{{title}}</h1>
@@ -57,10 +54,11 @@
 
 <style scoped lang="scss">
 
-  .interface__headline--mobile {
+  .isMobile {
     h1 {
       font-size: 1rem;
     }
+
     h4 {
       font-size: .75rem;
     }

@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation app color="grey darken-3" :style="navigationStyles">
+  <v-bottom-navigation app fixed color="grey darken-3" :style="navigationStyles">
 
     <template v-for="(view, k) in views">
       <v-btn text exact min-width="65" :ref="view.ref" :key="k" @click="toView(view)">

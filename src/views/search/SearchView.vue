@@ -1,15 +1,20 @@
 <template>
-  <div>
+  <v-layout column class="my-2">
 
     <!-- Search -->
-    <search :value="_search" :loading="_is_loading" class="mb-2" @input="_setSearch"/>
+    <search
+      class="mb-2"
+      :value="_search"
+      :loading="_is_loading"
+      @input="_setSearch">
+    </search>
 
     <!-- Loader -->
     <!-- Releases -->
     <loader v-if="_is_loading"/>
     <releases v-else :items="_releases" @click="toRelease($event.id)"/>
-
-  </div>
+  
+  </v-layout>
 </template>
 
 <script>
@@ -28,8 +33,12 @@
   // Routes
   import {toRelease} from "@router/release/releaseRoutes";
 
+  // Mixins
+  import {DeviceMixin} from "@mixins/app";
+
   export default {
     name: "Search.View",
+    mixins: [DeviceMixin],
     components: {
       Search,
       Loader,
@@ -48,8 +57,8 @@
       ...{toRelease},
       ...mapActions('search', {
         _setSearch: 'setSearch',
+        _clearReleases: 'clearReleases',
         _searchReleases: 'searchReleases',
-        _clearReleases: 'clearReleases'
       }),
 
       /**

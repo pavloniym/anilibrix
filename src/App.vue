@@ -7,6 +7,7 @@
     <app-settings/>
     <app-pwa-update/>
 
+    <!-- Loader -->
     <!-- Content -->
     <app-loader v-if="is_loading" key="loader"/>
     <component v-else :is="layout">

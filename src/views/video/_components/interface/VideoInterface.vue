@@ -3,11 +3,7 @@
 
     <!-- Main Interface Components -->
     <v-fade-transition appear mode="out-in">
-      <div
-        v-show="interface_is_visible"
-        ref="interface"
-        class="interface pa-8"
-        :class="{'interface--mobile': this.isMobile}">
+      <div v-show="interface_is_visible" ref="interface" class="interface pa-8">
 
         <v-layout column>
 

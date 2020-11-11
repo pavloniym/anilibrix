@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app>
+  <v-app-bar app :style="toolbarStyles">
 
     <!-- Back button -->
     <v-btn v-if="!hideBack && this.hasBack" icon @click="this.toBack">
@@ -17,6 +17,9 @@
   // Mixins
   import {BackRouteMixin} from "@mixins/routes";
 
+  // Utils
+  import safeAreaInsets from "safe-area-insets";
+
   const props = {
     title: {
       type: String,
@@ -30,21 +33,21 @@
 
   export default {
     props,
-    mixins: [
-      BackRouteMixin
-    ]
+    mixins: [BackRouteMixin],
+    computed: {
+
+      /**
+       * Get toolbar styles
+       *
+       * @return {*}
+       */
+      toolbarStyles() {
+        return {
+          paddingTop: safeAreaInsets.top + 'px',
+        }
+      },
+
+
+    }
   }
 </script>
-<style lang="scss" scoped>
-
-  .toolbar__title {
-    left: 0;
-    right: 0;
-    width: 100%;
-    padding: 0;
-    z-index: -1;
-    position: absolute;
-    text-align: center;
-  }
-
-</style>

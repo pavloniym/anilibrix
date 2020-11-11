@@ -1,9 +1,5 @@
 <template>
-  <v-layout
-    align-center
-    justify-end
-    ref="controls"
-    :class="{'interface__right__controls--mobile': this.isMobile}">
+  <v-layout align-center justify-end ref="controls" :class="{'isMobile': this.isMobile}" :style="controlsStyles">
     <template v-if="is_mounted">
       <component
         v-on="control.events"
@@ -27,6 +23,9 @@
 
   // Mixins
   import {DeviceMixin} from "@mixins/app";
+
+  // Utils
+  import safeAreaInsets from "safe-area-insets";
 
   const props = {
     player: {
@@ -91,6 +90,18 @@
             visible: !this.isMobile,
           }
         ].filter(item => item.visible === true)
+      },
+
+
+      /**
+       * Get controls styles
+       *
+       * @return {*}
+       */
+      controlsStyles() {
+        return {
+          top: 12 + safeAreaInsets.top + 'px'
+        }
       }
 
     },
@@ -105,10 +116,9 @@
 
 <style scoped lang="scss">
 
-  .interface__right__controls--mobile {
-    position: absolute;
-    top: 12px;
+  .isMobile {
     right: 20px;
+    position: absolute;
   }
 
 </style>

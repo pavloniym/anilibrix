@@ -1,9 +1,7 @@
 <template>
   <v-navigation-drawer
     v-bind="{value, width, ...$attrs}"
-    class="drawer"
-    :class="{'drawer--mobile': this.isMobile}"
-    :style="{zIndex, top: offset, paddingBottom: offset}"
+    :style="drawerStyles"
     :stateless="this.isMobile"
     @input="$emit('input', $event)">
 
@@ -49,13 +47,17 @@
     computed: {
 
       /**
-       * Get top offset
+       * Get drawer styles
        *
        * @return {*}
        */
-      offset() {
-        return this.isDesktop ? this.heightOffset : null;
-      },
+      drawerStyles() {
+        return {
+          top: this.isDesktop ? this.heightOffset : null,
+          zIndex: this.zIndex,
+          paddingBottom: this.isDesktop ? this.heightOffset : null
+        }
+      }
 
     }
   }
@@ -64,11 +66,6 @@
 <style lang="scss" scoped>
 
   .drawer {
-    ::v-deep {
-      .v-navigation-drawer__content {
-        overflow-y: scroll;
-      }
-    }
 
     ::-webkit-scrollbar-thumb {
       background-color: black;
@@ -77,15 +74,6 @@
     ::-webkit-scrollbar {
       border-left: 1px solid #141414;
       background-color: #1E1E1E;
-    }
-
-
-    &--mobile {
-      ::v-deep {
-        .v-navigation-drawer__content {
-          overflow-y: auto;
-        }
-      }
     }
   }
 
