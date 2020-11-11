@@ -15,7 +15,7 @@ importScripts("/anilibrix/workbox-v4.3.1/workbox-sw.js");
 workbox.setConfig({modulePathPrefix: "/anilibrix/workbox-v4.3.1"});
 
 importScripts(
-  "/anilibrix/precache-manifest.406e761d6a8760ceaedba38d5a874802.js"
+  "/anilibrix/precache-manifest.1586fb605cb18473c4205a6ea9957152.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "anilibrix"});
