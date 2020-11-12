@@ -13,7 +13,7 @@
     <!-- Releases -->
     <loader v-if="_is_loading"/>
     <releases v-else :items="_releases" @click="toRelease($event.id)"/>
-  
+
   </v-layout>
 </template>
 

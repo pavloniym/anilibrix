@@ -1,10 +1,9 @@
 <template>
 
-  <!-- Loading -->
-  <loader v-if="loading"/>
-
+  <!-- Loader -->
   <!-- Playlist -->
-  <div v-else-if="loading === false && release" id="playlist">
+  <loader v-if="is_loading"/>
+  <div v-else-if="is_loading === false && release" id="playlist">
 
     <!-- Release progress -->
     <!-- Toolbar -->
@@ -13,8 +12,8 @@
 
 
     <!-- Playlist Items -->
-    <v-list v-if="playlistSearched.length > 0" dense dark>
-      <template v-for="(episode, k) in playlistSearched">
+    <v-list v-if="playlist.length > 0" dense dark>
+      <template v-for="(episode, k) in playlist">
         <v-divider v-if="k > 0" :key="`d:${k}`"/>
         <episode
           v-bind="{release, episode}"
@@ -42,14 +41,10 @@
   import Fuse from "fuse.js";
   import __orderBy from 'lodash/orderBy'
 
-  // Storage
+  // Store
   import {mapState} from 'vuex'
 
   const props = {
-    loading: {
-      type: Boolean,
-      default: false,
-    },
     release: {
       type: Object,
       default: null
@@ -57,6 +52,10 @@
     episodes: {
       type: Array,
       default: null,
+    },
+    is_loading: {
+      type: Boolean,
+      default: false,
     },
     show_progress: {
       type: Boolean,
@@ -89,34 +88,21 @@
       /**
        * Get playlist
        *
-       * @return Array
+       * @return {array}
        */
       playlist() {
-        return __orderBy(this.episodes || [], ['id'], [this._episodes_sort]);
+        const episodes = this.search ? this.searchable.search(this.search) : this.episodes;
+        return __orderBy(episodes || [], ['id'], [this._episodes_sort]);
       },
-
 
       /**
        * Create searchable entity
        *
-       * @return Object
+       * @return {*}
        */
-      playlistSearchable() {
-        return new Fuse(this.playlist, {keys: ['title'], threshold: .2});
+      searchable() {
+        return new Fuse(this.episodes, {keys: ['title'], threshold: .2});
       },
-
-
-      /**
-       * Get playlist items
-       *
-       * @return {any}
-       */
-      playlistSearched() {
-        return this.search
-          ? this.playlistSearchable.search(this.search)
-          : this.playlist;
-      },
-
 
     }
   }

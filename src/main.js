@@ -2,7 +2,7 @@
 import Vue from 'vue'
 
 // Import plugins
-import store, {setUserId} from '@store'
+import store, {setUsersId} from '@store'
 import router from '@router'
 
 // Migrations
@@ -42,7 +42,7 @@ Vue.config.productionTip = false;
   // Migrate DB
   // Set user id to store
   await migrateDatabase({store});
-  await setUserId();
+  await setUsersId();
 
   // Initialize sentry
   // Initialize yandex metrika

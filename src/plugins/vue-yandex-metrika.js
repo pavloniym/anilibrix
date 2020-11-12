@@ -14,8 +14,10 @@ export default {
     const getAccountStoreValue = (key) => __get(store, `state.app.account.${key}`);
     const getSettingsStoreValue = (key) => __get(store, `state.app.settings.${key}`);
 
+    // App
+    const USERS_ID = getAccountStoreValue('users_id');
+
     // Account constants
-    const USER_ID = getAccountStoreValue('userId');
     const USER_IS_AUTHORIZED = (getAccountStoreValue('profile.id') !== null) ? 1 : 0;
 
     // Settings app
@@ -39,8 +41,10 @@ export default {
         options: {
           params: {
 
+            // App
+            [`app:users_id:${USERS_ID}`]: true,
+
             // Account parameters
-            [`profile:user_id:${USER_ID}`]: true,
             [`profile:user_is_authorized:${USER_IS_AUTHORIZED}`]: true,
 
             // App parameters
@@ -59,7 +63,7 @@ export default {
             [`settings:player:torrents:enabled:${SETTINGS_PLAYER_TORRENTS_ENABLED}`]: true,
           },
           trackHash: true,
-          userParams: {UserID: USER_ID},
+          userParams: {UserID: USERS_ID},
           accurateTrackBounce: true,
         }
       })

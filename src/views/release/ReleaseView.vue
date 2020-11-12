@@ -94,9 +94,9 @@
           {
             is: Episodes,
             props: {
-              loading: this.loading,
               release: this._release,
               episodes: this.episodes,
+              is_loading: this.is_loading,
             },
             events: {'play:episode': episode => toVideo(this._release.id, episode.id)},
           },
@@ -123,6 +123,11 @@
       ...mapActions('release', {_getRelease: 'getRelease'}),
     },
 
+
+    mounted() {
+      window.scrollTo(0, 0);
+    },
+
     watch: {
 
       release_id: {
@@ -137,8 +142,9 @@
           if (this._release === null || this._release.id !== parseInt(release_id)) {
 
             // Start loading
-            // Get release data
             this.is_loading = true;
+
+            // Get release data
             await this._getRelease(release_id);
 
             // Reset loading state

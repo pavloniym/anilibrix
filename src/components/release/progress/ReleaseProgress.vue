@@ -4,9 +4,9 @@
     class="release__progress"
     :class="{square}"
     :value="progress"
-    :indeterminate="loading">
+    :indeterminate="is_loading">
 
-    <template v-if="!loading && showNumbers" v-slot>
+    <template v-if="!is_loading && show_numbers" v-slot>
       <div class="release__progress__description caption white--text font-weight-bold px-4">
 
         <!-- Complete All Episodes -->
@@ -35,9 +35,18 @@
 
 <script>
 
+  // Utils
   import pluralize from "@utils/strings/pluralize";
 
+  // Store
+  import {mapGetters} from 'vuex'
+  import {GET_RELEASE_PROGRESS_GETTER, GET_WATCHED_EPISODES_GETTER} from "@store/app/watch/appWatchStore";
+
   const props = {
+    color: {
+      type: String,
+      default: 'secondary'
+    },
     release: {
       type: Object,
       default: null
@@ -45,14 +54,6 @@
     episodes: {
       type: Array,
       default: null
-    },
-    showNumbers: {
-      type: Boolean,
-      default: true
-    },
-    color: {
-      type: String,
-      default: 'secondary'
     },
     height: {
       type: [Number, String],
@@ -66,19 +67,24 @@
       type: Boolean,
       default: false,
     },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
     square: {
       type: Boolean,
       default: false
+    },
+    is_loading: {
+      type: Boolean,
+      default: false,
+    },
+    show_numbers: {
+      type: Boolean,
+      default: true
     }
   };
 
   export default {
     props,
     computed: {
+      ...mapGetters('app/watch', [GET_RELEASE_PROGRESS_GETTER, GET_WATCHED_EPISODES_GETTER]),
 
       /**
        * Calculate total seen progress
@@ -86,33 +92,34 @@
        * @return {*}
        */
       progress() {
-
         const release_id = this.release.id;
         const total_episodes_number = (this.episodes || []).length;
         const payload = {release_id, total_episodes_number};
 
-        return this.$store.getters['app/watch/getReleaseProgress'](payload);
-
+        return this[GET_RELEASE_PROGRESS_GETTER](payload);
       },
 
 
       /**
        * Get watched episodes
        *
-       * @return {*}
+       * @return {string}
        */
       watched() {
 
+        // Get release data and total episodes number
+        // Get payload data
         const release_id = this.release.id;
         const total_episodes_number = (this.episodes || []).length;
         const payload = {release_id, total_episodes_number};
 
         // Get watched episodes
-        // Convert to string with suffix
-        const watched_episodes = this.$store.getters['app/watch/getWatchedEpisodes'](payload);
-        return pluralize(watched_episodes.length, ['эпизод', 'эпизода', 'эпизодов'])
+        const watched_episodes = this[GET_WATCHED_EPISODES_GETTER](payload);
 
+        // Convert to string with suffix
+        return pluralize(watched_episodes.length, ['эпизод', 'эпизода', 'эпизодов'])
       },
+
 
       /**
        * Check if release if fully watched

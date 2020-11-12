@@ -3,10 +3,10 @@
   <!-- Check if release is in favorite -->
   <!-- Remove release from favorites -->
   <v-btn
-    v-if="_isAuthorized"
+    v-if="isAuthorized"
     :color="isInFavorite ? 'secondary' : color"
-    :loading="_loading"
-    @click.stop="isInFavorite ? _removeFromFavorites(release) : _addToFavorites(release)">
+    :loading="_is_loading"
+    @click.stop="toggleFavorite(release)">
 
     <v-icon v-if="isInFavorite">mdi-star</v-icon>
     <v-icon v-else>mdi-star-outline</v-icon>
@@ -16,7 +16,11 @@
 
 <script>
 
+  // Store
+  import {IS_AUTHORIZED_GETTER} from "@store/app/account/appAccountStore";
+  import {IS_IN_FAVORITE_GETTER} from "@store/favorites/favoritesStore";
   import {mapState, mapGetters, mapActions} from 'vuex'
+  import {ADD_TO_FAVORITES_ACTION, REMOVE_FROM_FAVORITES_ACTION} from "@store/favorites/favoritesStore";
 
   const props = {
     release: {
@@ -32,8 +36,18 @@
   export default {
     props,
     computed: {
-      ...mapState('favorites', {_loading: s => s.loading}),
-      ...mapGetters('app/account', {_isAuthorized: 'isAuthorized'}),
+      ...mapState('favorites', {_is_loading: s => s.is_loading}),
+      ...mapGetters('favorites', [IS_IN_FAVORITE_GETTER]),
+      ...mapGetters('app/account', [IS_AUTHORIZED_GETTER]),
+
+      /**
+       * Check if user is authorized
+       *
+       * @return {boolean}
+       */
+      isAuthorized() {
+        return this[IS_AUTHORIZED_GETTER] === true;
+      },
 
 
       /**
@@ -42,16 +56,26 @@
        * @return {*}
        */
       isInFavorite() {
-        return this.$store.getters['favorites/isInFavorite'](this.release);
+        return this[IS_IN_FAVORITE_GETTER](this.release);
       }
 
     },
 
     methods: {
-      ...mapActions('favorites', {
-        _addToFavorites: 'addToFavorites',
-        _removeFromFavorites: 'removeFromFavorites'
-      })
+      ...mapActions('favorites', [ADD_TO_FAVORITES_ACTION, REMOVE_FROM_FAVORITES_ACTION]),
+
+      /**
+       * Toggle favorite
+       *
+       * @param release
+       * @return {void}
+       */
+      toggleFavorite(release) {
+        this.isInFavorite
+          ? this[REMOVE_FROM_FAVORITES_ACTION](release)
+          : this[ADD_TO_FAVORITES_ACTION](release)
+      },
+
     },
   }
 </script>

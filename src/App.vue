@@ -38,8 +38,9 @@
   // Layouts
   import AppBaseLayout from '@layouts/base'
 
-  // Utils
+  // Store
   import {mapActions, mapState} from 'vuex'
+  import {GET_FAVORITES_ACTION} from "@store/favorites/favoritesStore";
 
   export default {
     name: 'AniLibrix',
@@ -93,7 +94,7 @@
 
     methods: {
       ...mapActions('releases', {_getReleases: 'getReleases'}),
-      ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
+      ...mapActions('favorites', [GET_FAVORITES_ACTION]),
 
 
       /**
@@ -105,7 +106,7 @@
        */
       refreshData() {
         this._getReleases();
-        this._getFavorites();
+        this[GET_FAVORITES_ACTION]();
       },
 
 

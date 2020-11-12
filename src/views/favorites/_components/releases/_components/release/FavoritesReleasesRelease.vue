@@ -1,6 +1,7 @@
 <template>
   <v-hover v-slot:default="{ hover }">
     <v-lazy :options="{threshold: .5}">
+
       <v-card class="grey darken-3 release-card" @click="$emit('click')">
         <v-img aspect-ratio=".7" :src="poster">
 
@@ -35,28 +36,28 @@
             square
             class="release-card--progress"
             height="5"
-            :show-numbers="false">
+            :show_numbers="false">
           </release-progress>
 
         </v-img>
       </v-card>
+
     </v-lazy>
   </v-hover>
 </template>
 
 <script>
 
+  // Utils
   import VClamp from 'vue-clamp'
+
+  // Release Components
   import ReleaseProgress from '@components/release/progress'
 
   const props = {
     release: {
       type: Object,
       default: null
-    },
-    showSeen: {
-      type: Boolean,
-      default: false
     }
   };
 
@@ -115,6 +116,10 @@
   .release-card {
     position: relative;
     display: flex;
+
+    * {
+      user-select: none;
+    }
 
     &--reveal {
       bottom: 0;

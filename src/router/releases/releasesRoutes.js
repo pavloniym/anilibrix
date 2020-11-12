@@ -1,6 +1,7 @@
 // Router
 import router from '@router'
 
+// Routes
 export const RELEASES_ROUTE_NAME = 'releases';
 
 /**

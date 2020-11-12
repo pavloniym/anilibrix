@@ -1,25 +1,22 @@
 <template>
   <div>
 
+    <!-- Activator Button -->
     <v-btn id="episodes__actions" height="48">
       <v-icon>mdi-dots-vertical</v-icon>
     </v-btn>
 
-    <v-menu bottom left activator="#episodes__actions" :attach="container">
+    <!-- Menu -->
+    <v-menu v-model="is_visible" bottom left activator="#episodes__actions" :attach="container">
       <v-list dense class="grey darken-4">
         <template v-for="(item, k) in actions">
+
           <v-divider v-if="k > 0" :key="`d:${k}`"/>
-          <v-list-item :key="k" :disabled="loading" @click="item.action">
-
-            <!-- Icon -->
-            <v-icon class="mr-2">{{item.icon}}</v-icon>
-
-            <!-- Item -->
-            <v-list-item-content>
-              <v-list-item-title>{{item.title}}</v-list-item-title>
-            </v-list-item-content>
-
+          <v-list-item :key="k" @click="item.action">
+            <v-icon v-text="item.icon" class="mr-2"/>
+            <v-list-item-title v-text="item.title"/>
           </v-list-item>
+
         </template>
       </v-list>
     </v-menu>
@@ -30,6 +27,7 @@
 <script>
 
   import {mapActions} from 'vuex'
+  import {REMOVE_WATCHED_EPISODES_ACTION, SET_WATCHED_EPISODES_ACTION} from "@store/app/watch/appWatchStore";
 
   const props = {
     release: {
@@ -42,23 +40,28 @@
     props,
     data() {
       return {
-        loading: false,
         container: null,
+        is_visible: false,
       }
     },
     computed: {
 
+      /**
+       * Get available actions
+       *
+       * @return {array}
+       */
       actions() {
         return [
           {
             icon: 'mdi-check',
             title: 'Отметить все серии как просмотренные',
-            action: this.setWatched,
+            action: this.setWatchedEpisodes,
           },
           {
             icon: 'mdi-close',
             title: 'Снять все отметки о просмотре',
-            action: this.removeWatched,
+            action: this.removeWatchedEpisodes,
           }
         ]
       }
@@ -67,10 +70,7 @@
 
 
     methods: {
-      ...mapActions('app/watch', {
-        _setWatchedEpisodes: 'setWatchedEpisodes',
-        _removeWatchedEpisodes: 'removeWatchedEpisodes'
-      }),
+      ...mapActions('app/watch', [SET_WATCHED_EPISODES_ACTION, REMOVE_WATCHED_EPISODES_ACTION]),
 
 
       /**
@@ -78,16 +78,16 @@
        *
        * @return {Promise<void>}
        */
-      async setWatched() {
-        this.loading = true;
+      async setWatchedEpisodes() {
 
-        const release_id = this.release.id;
-        const episodes = this.release.episodes || [];
-        const payload = {release_id, episodes};
+        // Set watched
+        await this[SET_WATCHED_EPISODES_ACTION]({
+          episodes: this.release.episodes || [],
+          release_id: this.release.id,
+        });
 
-        await this._setWatchedEpisodes(payload);
-
-        this.loading = false;
+        // Close menu
+        this.is_visible = false;
       },
 
 
@@ -96,16 +96,16 @@
        *
        * @return {Promise<void>}
        */
-      async removeWatched() {
-        this.loading = true;
+      async removeWatchedEpisodes() {
 
-        const release_id = this.release.id;
-        const episodes = this.release.episodes || [];
-        const payload = {release_id, episodes};
+        // Remove watched episodes
+        await this[REMOVE_WATCHED_EPISODES_ACTION]({
+          episodes: this.release.episodes || [],
+          release_id: this.release.id,
+        });
 
-        await this._removeWatchedEpisodes(payload);
-
-        this.loading = false;
+        // Close menu
+        this.is_visible = false;
       },
 
     },

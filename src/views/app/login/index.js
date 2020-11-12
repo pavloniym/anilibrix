@@ -1,3 +1,3 @@
-import AccountAuthorizationView from './AccountLoginView'
+import AppLoginView from './AppLoginView'
 
-export default AccountAuthorizationView
+export default AppLoginView

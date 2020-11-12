@@ -1,10 +1,14 @@
 <template>
-  <v-btn v-if="isSeen" icon color="grey">
+  <v-btn v-if="hasSeenState" icon color="grey">
     <v-icon>mdi-check</v-icon>
   </v-btn>
 </template>
 
 <script>
+
+  // Store
+  import {mapGetters} from "vuex";
+  import {GET_WATCHED_EPISODE_GETTER} from "@store/app/watch/appWatchStore";
 
   const props = {
     release: {
@@ -20,22 +24,17 @@
   export default {
     props,
     computed: {
+      ...mapGetters('app/watch', [GET_WATCHED_EPISODE_GETTER]),
 
       /**
        * Get watch data
        *
        * @return {*}
        */
-      watch() {
-        if (this.release && this.episode) {
-
-          const release_id = this.release.id;
-          const episode_id = this.episode.id;
-
-          // Get watch data for provided release
-          const payload = {release_id, episode_id};
-          return this.$store.getters['app/watch/getWatchedEpisode'](payload);
-        }
+      watchedEpisode() {
+        return this.release && this.episode
+          ? this[GET_WATCHED_EPISODE_GETTER]({release_id: this.release.id, episode_id: this.episode.id})
+          : null;
       },
 
       /**
@@ -43,8 +42,8 @@
        *
        * @return {boolean}
        */
-      isSeen() {
-        return this.$__get(this.watch, 'isSeen') || false;
+      hasSeenState() {
+        return this.$__get(this.watchedEpisode, 'is_seen') || false;
       }
 
     }

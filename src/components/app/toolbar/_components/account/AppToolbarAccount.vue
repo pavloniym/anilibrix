@@ -3,7 +3,7 @@
 
     <!-- Login -->
     <!-- Tooltip -->
-    <template v-if="!_isAuthorized">
+    <template v-if="isAuthorized">
       <v-btn icon id="toolbar__login" @click="toLogin">
         <v-icon>mdi-account</v-icon>
       </v-btn>
@@ -71,12 +71,13 @@
 <script>
 
   // Router
-  import {toLogin} from '@router/app/appRoutes'
+  import {toLogin} from '@router/app/login/appLoginRoutes'
 
   // Utils
   import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
 
   // Store
+  import {GET_PROFILE_ACTION, IS_AUTHORIZED_GETTER, LOGOUT_ACTION} from "@store/app/account/appAccountStore";
   import {mapGetters, mapState, mapActions} from 'vuex'
 
   export default {
@@ -84,14 +85,14 @@
       return {
         menu: false,
         handler: null,
-        loading: false,
+        is_loading: false,
       }
     },
     computed: {
       ...mapState('app/watch', {_watch: s => s.items}),
       ...mapState('favorites', {_favorites: s => s.items}),
       ...mapState('app/account', {_profile: s => s.profile}),
-      ...mapGetters('app/account', {_isAuthorized: 'isAuthorized'}),
+      ...mapGetters('app/account', [IS_AUTHORIZED_GETTER]),
 
 
       /**
@@ -110,9 +111,7 @@
        * @return {number}
        */
       episodes() {
-        return Object.values(this._watch || {})
-          .filter(item => item.isSeen)
-          .length;
+        return Object.values(this._watch || {}).filter(item => item.is_seen).length;
       },
 
 
@@ -149,6 +148,16 @@
             value: stringsPluralize(this.hours, ['час', 'часа', 'часов']),
           }
         ]
+      },
+
+
+      /**
+       * Check if user is authorized
+       *
+       * @return {boolean}
+       */
+      isAuthorized() {
+        return this[IS_AUTHORIZED_GETTER] === true;
       }
 
 
@@ -157,10 +166,7 @@
 
     methods: {
       ...{toLogin},
-      ...mapActions('app/account', {
-        _logout: 'logout',
-        _getProfile: 'getProfile'
-      }),
+      ...mapActions('app/account', [LOGOUT_ACTION, GET_PROFILE_ACTION]),
 
 
       /**
@@ -172,13 +178,13 @@
       async logout() {
         try {
 
-          await this._logout();
+          await this[LOGOUT_ACTION]();
 
         } finally {
 
           // Close menu
           this.menu = false;
-          this.loading = false;
+          this.is_loading = false;
         }
       },
 
@@ -191,15 +197,11 @@
       async getProfile() {
         try {
 
-          this.loading = true;
-          await this._getProfile();
-
-        } catch (e) {
-
-          //
+          this.is_loading = true;
+          await this[GET_PROFILE_ACTION]();
 
         } finally {
-          this.loading = false;
+          this.is_loading = false;
         }
       }
     },

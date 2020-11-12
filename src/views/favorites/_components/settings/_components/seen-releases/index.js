@@ -1,0 +1,3 @@
+import FavoritesSeenReleasesSettings from './FavoritesSeenReleasesSettings'
+
+export default FavoritesSeenReleasesSettings

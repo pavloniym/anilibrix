@@ -48,9 +48,9 @@ export default class FetchStoreFromFile extends BaseMigration {
 
         // Here restore data from old file store
         // Restore account details
-        __set(new_store, 'app.account.userId', __get(old_store, 'app.account.userId'));
         __set(new_store, 'app.account.session', __get(old_store, 'app.account.session'));
         __set(new_store, 'app.account.profile', __get(old_store, 'app.account.profile'));
+        __set(new_store, 'app.account.users_id', __get(old_store, 'app.account.userId'));
 
         // Restore watch data
         __set(new_store, 'app.watch.items', __get(old_store, 'app.watch.items', []));

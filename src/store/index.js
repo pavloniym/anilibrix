@@ -23,6 +23,9 @@ import {catalogPersisted} from "@store/catalog/catalogStore";
 import {favoritesPersisted} from "@store/favorites/favoritesStore";
 import {notificationsPersisted} from "@store/notifications/notificationsStore";
 
+// Actions
+import {SET_USERS_ID_ACTION} from "@store/app/account/appAccountStore";
+
 
 Vue.use(Vuex);
 
@@ -111,7 +114,7 @@ export const getStore = () => store;
  *
  * @return {Promise<any>}
  */
-export const setUserId = async () => await store.dispatch('app/account/setUserId');
+export const setUsersId = async () => await store.dispatch(`app/account/${SET_USERS_ID_ACTION}`);
 
 
 /**

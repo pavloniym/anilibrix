@@ -1,5 +1,5 @@
 <template>
-  <drawer v-model="drawer" app right width="400">
+  <drawer v-model="drawer" app temporary right width="400">
 
     <!-- Header -->
     <v-toolbar>

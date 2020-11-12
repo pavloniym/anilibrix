@@ -36,21 +36,35 @@
     </v-card>
 
     <!-- Actions -->
-    <v-btn v-bind="{loading}" :disabled="$v.$invalid" @click="authorize">Войти</v-btn>
+    <v-layout>
+      <v-btn class="mr-2" :loading="is_loading" :disabled="this.$v.$invalid" @click="authorize">Войти</v-btn>
+      <v-btn :loading="is_loading" @click="back">Назад</v-btn>
+    </v-layout>
+
 
   </v-layout>
 </template>
 
 <script>
 
-  // Utils
+  // Validation
   import {required} from 'vuelidate/lib/validators'
+
+  // Store
   import {mapActions} from 'vuex'
+  import {GET_FAVORITES_ACTION} from "@store/favorites/favoritesStore";
+  import {GET_PROFILE_ACTION, LOGIN_ACTION} from "@store/app/account/appAccountStore";
 
   // Mixins
   import {DeviceMixin} from "@mixins/app";
   import {BackRouteMixin} from "@mixins/routes";
+
+  // Resolvers
   import ErrorResolver from "@@/utils/resolvers/error";
+
+  // Routes
+  import {toReleases} from "@router/releases/releasesRoutes";
+
 
   export default {
     name: "Account.Login.View",
@@ -60,10 +74,9 @@
     ],
     data() {
       return {
-        tab: 0,
         login: null,
-        loading: false,
         password: null,
+        is_loading: false,
       }
     },
 
@@ -73,8 +86,9 @@
     },
 
     methods: {
-      ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
-      ...mapActions('app/account', {_login: 'login', _setSession: 'setSession', _getProfile: 'getProfile'}),
+      ...{toReleases},
+      ...mapActions('favorites', [GET_FAVORITES_ACTION]),
+      ...mapActions('app/account', [LOGIN_ACTION, GET_PROFILE_ACTION]),
 
       /**
        * Authorize
@@ -84,29 +98,42 @@
       async authorize() {
         if (!this.$v.$invalid) {
           try {
-            this.loading = true;
+            this.is_loading = true;
 
             // Make login request with provided credentials
             // Get profile data
-            await this._login({login: this.login, password: this.password});
-            await this._getProfile();
-            await this.$router.back();
+            await this[LOGIN_ACTION]({login: this.login, password: this.password});
+            await this[GET_PROFILE_ACTION]();
 
+            // Go back
             // Get user favorites
-            this._getFavorites();
+            this.back();
+            this[GET_FAVORITES_ACTION]();
 
           } catch (error) {
 
-            console.log(error);
-
             // Emit error
-            ErrorResolver.emitError(error)
+            // Throw error
+            ErrorResolver.emitError(error);
+            throw error;
 
           } finally {
-            this.loading = false;
+            this.is_loading = false;
+
           }
         }
+      },
+
+
+      /**
+       * Go back
+       *
+       * @return {Promise<void>}
+       */
+      async back() {
+        this.hasBack ? await this.toBack() : await toReleases();
       }
+
     }
 
   }

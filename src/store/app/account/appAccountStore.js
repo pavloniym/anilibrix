@@ -5,20 +5,30 @@ import AccountProxy from "@proxies/account";
 import __get from 'lodash/get'
 import {v4 as uuid} from 'uuid'
 
-const SET_USER_ID = 'SET_USER_ID';
-const SET_SESSION = 'SET_SESSION';
-const SET_PROFILE = 'SET_PROFILE';
+// Getters
+export const IS_AUTHORIZED_GETTER = 'IS_AUTHORIZED_GETTER';
+
+// Mutations
+export const SET_SESSION_MUTATION = 'SET_SESSION';
+export const SET_PROFILE_MUTATION = 'SET_PROFILE';
+export const SET_USERS_ID_MUTATION = 'SET_USER_ID';
+
+// Actions
+export const LOGIN_ACTION = 'LOGIN_ACTION';
+export const LOGOUT_ACTION = 'LOGOUT_ACTION';
+export const GET_PROFILE_ACTION = 'GET_PROFILE_ACTION';
+export const SET_USERS_ID_ACTION = 'SET_USER_ID_ACTION';
 
 export default {
   namespaced: true,
   state: {
-    userId: null,
     session: null,
     profile: {
       id: null,
       login: null,
       avatar: null,
-    }
+    },
+    users_id: null
   },
 
   getters: {
@@ -29,20 +39,20 @@ export default {
      * @param s
      * @return {boolean}
      */
-    isAuthorized: s => s.profile.id !== null,
+    [IS_AUTHORIZED_GETTER]: s => s.profile.id !== null,
 
   },
 
   mutations: {
 
     /**
-     * Set user id
+     * Set users id
      *
      * @param s
      * @param uuid
      * @return {*}
      */
-    [SET_USER_ID]: (s, uuid) => s.userId = uuid,
+    [SET_USERS_ID_MUTATION]: (s, uuid) => s.users_id = uuid,
 
     /**
      * Set session
@@ -51,7 +61,7 @@ export default {
      * @param session
      * @return {*}
      */
-    [SET_SESSION]: (s, session) => s.session = session,
+    [SET_SESSION_MUTATION]: (s, session) => s.session = session,
 
 
     /**
@@ -62,7 +72,7 @@ export default {
      * @param login
      * @param avatar
      */
-    [SET_PROFILE]: (s, profile) => {
+    [SET_PROFILE_MUTATION]: (s, profile) => {
       s.profile.id = __get(profile, 'id') || null;
       s.profile.login = __get(profile, 'login') || null;
       s.profile.avatar = __get(profile, 'avatar') || null;
@@ -81,18 +91,16 @@ export default {
      * @param password
      * @return {Promise<void>}
      */
-    login: async ({dispatch}, {login, password}) => {
+    [LOGIN_ACTION]: async ({commit}, {login, password}) => {
 
       // Reset session and profile
-      await dispatch('setSession', null);
-      await dispatch('setProfile', null);
+      commit(SET_SESSION_MUTATION, null);
+      commit(SET_PROFILE_MUTATION, null);
 
       // Try to login with provided credentials
       // Get valid user session
-      const session = await new AccountProxy().login({login, password});
-
       // Set session to store
-      await dispatch('setSession', session);
+      commit(SET_SESSION_MUTATION, await new AccountProxy().login({login, password}));
 
     },
 
@@ -103,7 +111,7 @@ export default {
      * @param dispatch
      * @return {Promise<void>}
      */
-    logout: async ({dispatch}) => {
+    [LOGOUT_ACTION]: async ({commit}) => {
       try {
 
         // Make logout request
@@ -120,8 +128,8 @@ export default {
         // Clear profile data
         // Even if logout error
         // Reset session and profile
-        await dispatch('setSession', null);
-        await dispatch('setProfile', null);
+        commit(SET_SESSION_MUTATION, null);
+        commit(SET_PROFILE_MUTATION, null);
       }
     },
 
@@ -131,7 +139,7 @@ export default {
      *
      * @return {Promise<*>}
      */
-    getProfile: async ({dispatch}) => {
+    [GET_PROFILE_ACTION]: async ({commit}) => {
       try {
 
         // Create request to get profile data
@@ -144,19 +152,20 @@ export default {
         const avatar = new AccountProxy().getAvatarPath(__get(profile, 'avatar'));
 
         // Set profile data
-        await dispatch('setProfile', {id, login, avatar});
+        commit(SET_PROFILE_MUTATION, {id, login, avatar});
 
       } catch (error) {
 
         // Reset session and profile on error
         // Reset session and profile
-        await dispatch('setSession', null);
-        await dispatch('setProfile', null);
+        commit(SET_SESSION_MUTATION, null);
+        commit(SET_PROFILE_MUTATION, null);
 
         // Throw error
         throw error;
       }
     },
+
 
     /**
      * Set account id
@@ -166,29 +175,7 @@ export default {
      * @param state
      * @param uuid
      */
-    setUserId: ({commit, state}) => {
-      if (state.userId === null) commit(SET_USER_ID, uuid());
-    },
-
-
-    /**
-     * Set session value
-     *
-     * @param commit
-     * @param session
-     * @return {*}
-     */
-    setSession: ({commit}, session = null) => commit(SET_SESSION, session || null),
-
-
-    /**
-     * Set profile data
-     *
-     * @param commit
-     * @param profile
-     * @return {*}
-     */
-    setProfile: ({commit}, profile = null) => commit(SET_PROFILE, profile || {})
+    [SET_USERS_ID_ACTION]: ({commit, state}) => state.users_id === null ? commit(SET_USERS_ID_MUTATION, uuid()) : null,
 
   }
 }

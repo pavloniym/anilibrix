@@ -17,7 +17,7 @@
   import {toSearch} from "@router/search/searchRoutes";
   import {toCatalog} from "@router/catalog/catalogRoutes";
   import {toReleases} from "@router/releases/releasesRoutes";
-  import {toSettings} from "@router/app/appRoutes";
+  import {toSettings} from "@router/app/settings/appSettingsRoutes";
 
   // Utils
   import safeAreaInsets from 'safe-area-insets'

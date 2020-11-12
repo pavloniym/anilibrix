@@ -1,6 +1,6 @@
 <template>
   <v-main>
-    <div id="container" class="layout--container" :class="layoutClasses" :style="layoutStyles">
+    <v-layout column id="container" class="layout--container" :class="layoutClasses" :style="layoutStyles">
 
       <!-- Mobile  -->
       <template v-if="this.isMobile">
@@ -17,7 +17,7 @@
       <!-- Content -->
       <slot/>
 
-    </div>
+    </v-layout>
   </v-main>
 </template>
 
@@ -113,6 +113,8 @@
 <style lang="scss" scoped>
 
   .layout--container {
+    min-height: 100%;
+
     &.is-on-black {
       background: black;
     }

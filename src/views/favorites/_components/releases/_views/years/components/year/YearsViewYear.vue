@@ -31,7 +31,7 @@
 
 <script>
 
-  import Release from './../../../../components/release'
+  import Release from './../../../../_components/release'
 
   import pluralize from "@utils/strings/pluralize";
   import {mapState, mapActions} from 'vuex'

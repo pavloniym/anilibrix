@@ -1,8 +1,9 @@
-// Proxy
+// Proxy + Transformer
 import FavoritesProxy from "@proxies/favorites";
-
-// Transformer
 import ReleaseTransformer from "@transformers/release";
+
+// Store
+import {IS_AUTHORIZED_GETTER} from "@store/app/account/appAccountStore";
 
 // Utils
 import axios from "axios";
@@ -10,50 +11,48 @@ import axios from "axios";
 // Resolvers
 import ErrorResolver from "@@/utils/resolvers/error";
 
+// Getters
+export const IS_IN_FAVORITE_GETTER = 'IS_IN_FAVORITE_GETTER';
 
 // Mutations
 const ADD_ITEM = 'ADD_ITEM';
 const SET_ITEMS = 'SET_ITEMS';
 const SET_LOADING = 'SET_LOADING';
 const REMOVE_ITEM = 'REMOVE_ITEM';
-const SET_SETTINGS_SORT = 'SET_SETTINGS_SORT';
-const SET_SETTINGS_GROUP = 'SET_SETTINGS_GROUP';
-const SET_SETTINGS_SHOW_SEEN = 'SET_SETTINGS_SHOW_SEEN';
-const SET_SETTINGS_YEARS_COLLAPSED = 'SET_SETTINGS_YEARS_COLLAPSED';
+const SET_SORT_SETTINGS = 'SET_SORT_SETTINGS';
+const SET_GROUP_SETTINGS = 'SET_GROUP_SETTINGS';
+const SET_SHOW_SEEN_SETTINGS = 'SET_SHOW_SEEN_SETTINGS';
+const SET_YEARS_COLLAPSED_SETTINGS = 'SET_YEARS_COLLAPSED_SETTINGS';
+
+// Actions
+export const GET_FAVORITES_ACTION = 'GET_FAVORITES_ACTION';
+export const ADD_TO_FAVORITES_ACTION = 'ADD_TO_FAVORITES_ACTION';
+export const SET_SORT_SETTINGS_ACTION = 'SET_SORT_SETTINGS_ACTION';
+export const SET_GROUP_SETTINGS_ACTION = 'SET_GROUP_SETTINGS_ACTION';
+export const REMOVE_FROM_FAVORITES_ACTION = 'REMOVE_FROM_FAVORITES_ACTION';
+export const SET_SEEN_RELEASES_SETTINGS_ACTION = 'SET_SEEN_RELEASES_SETTINGS_ACTION';
 
 // Requests
-let REQUESTS_FOR_CHANGES = {};
-let REQUEST_FOR_FAVORITES = null;
+let FAVORITES_CANCEL_TOKEN = null;
+let FAVORITES_CHANGE_CANCEL_TOKENS = {};
 
+// Persisted
 export const favoritesPersisted = ['favorites.settings'];
 
 export default {
   namespaced: true,
   state: {
     items: [],
-    loading: false,
     settings: {
       sort: 'original',
       group: 'years',
       show_seen: true,
       years_collapsed: [],
     },
-
+    is_loading: false,
   },
 
   getters: {
-
-    /**
-     * Check if user is authorized
-     *
-     * @param s
-     * @param getters
-     * @param rootState
-     * @param rootGetters
-     * @return {*}
-     */
-    isAuthorized: (s, getters, rootState, rootGetters) => rootGetters['app/account/isAuthorized'],
-
 
     /**
      * Check if provided release is in favorite
@@ -61,7 +60,7 @@ export default {
      * @param s
      * @return {function(*): boolean}
      */
-    isInFavorite: s => release => (s.items || []).findIndex(item => item.id === release.id) > -1,
+    [IS_IN_FAVORITE_GETTER]: s => release => (s.items || []).findIndex(item => item.id === release.id) > -1,
 
   },
 
@@ -94,7 +93,7 @@ export default {
      * @param loading
      * @return {*}
      */
-    [SET_LOADING]: (s, loading) => s.loading = loading,
+    [SET_LOADING]: (s, is_loading) => s.is_loading = is_loading,
 
 
     /**
@@ -113,7 +112,7 @@ export default {
      * @param sort
      * @return {*}
      */
-    [SET_SETTINGS_SORT]: (s, sort) => s.settings.sort = sort,
+    [SET_SORT_SETTINGS]: (s, sort) => s.settings.sort = sort,
 
 
     /**
@@ -123,7 +122,7 @@ export default {
      * @param sort
      * @return {*}
      */
-    [SET_SETTINGS_GROUP]: (s, group) => s.settings.group = group,
+    [SET_GROUP_SETTINGS]: (s, group) => s.settings.group = group,
 
 
     /**
@@ -133,7 +132,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_SETTINGS_SHOW_SEEN]: (s, state) => s.settings.show_seen = state,
+    [SET_SHOW_SEEN_SETTINGS]: (s, state) => s.settings.show_seen = state,
 
 
     /**
@@ -143,7 +142,7 @@ export default {
      * @param years
      * @return {*}
      */
-    [SET_SETTINGS_YEARS_COLLAPSED]: (s, years) => s.settings.years_collapsed = years,
+    [SET_YEARS_COLLAPSED_SETTINGS]: (s, years) => s.settings.years_collapsed = years,
 
   },
 
@@ -157,34 +156,36 @@ export default {
      * @param getters
      * @return {Promise<void>}
      */
-    getFavorites: async ({commit, getters}) => {
-      if (getters.isAuthorized) {
+    [GET_FAVORITES_ACTION]: async ({commit, getters, rootGetters}) => {
+      if (rootGetters[`app/account/${IS_AUTHORIZED_GETTER}`] === true) {
         try {
 
           // Set loading
           commit(SET_LOADING, true);
 
           // Cancel previous request if it was stored
-          if (REQUEST_FOR_FAVORITES) {
-            REQUEST_FOR_FAVORITES.cancel();
-          }
+          if (FAVORITES_CANCEL_TOKEN) FAVORITES_CANCEL_TOKEN.cancel();
 
           // Create new request token
-          REQUEST_FOR_FAVORITES = axios.CancelToken.source();
+          FAVORITES_CANCEL_TOKEN = axios.CancelToken.source();
 
           // Get releases from server
           // Transform releases
-          const {items} = (await new FavoritesProxy().getFavorites({cancelToken: REQUEST_FOR_FAVORITES.token}));
-          const releases = (await new ReleaseTransformer()
+          const {items} = (await new FavoritesProxy().getFavorites({cancelToken: FAVORITES_CANCEL_TOKEN.token}));
+
+          // Transform releases
+          const releases = await new ReleaseTransformer()
             .setStore(this)
-            .setCancelToken(REQUEST_FOR_FAVORITES.token)
+            .setCancelToken(FAVORITES_CANCEL_TOKEN.token)
             .setSkipTorrents(true)
             .fetchWithEpisodes(true)
-            .fetchCollection(items))
-            .filter(release => release.episodes.length > 0);
+            .fetchCollection(items);
+
+          // Filter releases
+          const filtered_release = releases.filter(release => release.episodes.length > 0);
 
           // Set releases
-          commit(SET_ITEMS, releases);
+          commit(SET_ITEMS, filtered_release);
 
         } catch (error) {
           if (!axios.isCancel(error)) {
@@ -197,6 +198,7 @@ export default {
           }
         } finally {
           commit(SET_LOADING, false);
+
         }
       }
     },
@@ -212,21 +214,21 @@ export default {
      * @param release
      * @return {Promise<void>}
      */
-    addToFavorites: async ({getters, commit}, release) => {
-      if (release && getters.isAuthorized) {
+    [ADD_TO_FAVORITES_ACTION]: async ({commit, rootGetters}, release) => {
+      if (release && rootGetters[`app/account/${IS_AUTHORIZED_GETTER}`] === true) {
         try {
 
           // Cancel previous request if it was stored
           // Create new request token
-          if (REQUESTS_FOR_CHANGES[release.id]) REQUESTS_FOR_CHANGES[release.id].cancel();
-          REQUESTS_FOR_CHANGES[release.id] = axios.CancelToken.source();
+          if (FAVORITES_CHANGE_CANCEL_TOKENS[release.id]) FAVORITES_CHANGE_CANCEL_TOKENS[release.id].cancel();
+          FAVORITES_CHANGE_CANCEL_TOKENS[release.id] = axios.CancelToken.source();
 
           // Add release to favorites
           commit(ADD_ITEM, release);
 
           // Make request to server
           // On error -> rollback
-          await new FavoritesProxy().addToFavorites(release.id, {cancelToken: REQUESTS_FOR_CHANGES[release.id].token});
+          await new FavoritesProxy().addToFavorites(release.id, {cancelToken: FAVORITES_CHANGE_CANCEL_TOKENS[release.id].token});
 
         } catch (error) {
           if (!axios.isCancel(error)) {
@@ -253,21 +255,21 @@ export default {
      * @param release
      * @return {Promise<void>}
      */
-    removeFromFavorites: async ({getters, commit}, release) => {
-      if (release && getters.isAuthorized) {
+    [REMOVE_FROM_FAVORITES_ACTION]: async ({commit, rootGetters}, release) => {
+      if (release && rootGetters[`app/account/${IS_AUTHORIZED_GETTER}`] === true) {
         try {
 
           // Cancel previous request if it was stored
           // Create new request token
-          if (REQUESTS_FOR_CHANGES[release.id]) REQUESTS_FOR_CHANGES[release.id].cancel();
-          REQUESTS_FOR_CHANGES[release.id] = axios.CancelToken.source();
+          if (FAVORITES_CHANGE_CANCEL_TOKENS[release.id]) FAVORITES_CHANGE_CANCEL_TOKENS[release.id].cancel();
+          FAVORITES_CHANGE_CANCEL_TOKENS[release.id] = axios.CancelToken.source();
 
           // Remove release from favorites
           commit(REMOVE_ITEM, release);
 
           // Make request to server
           // On error -> rollback
-          await new FavoritesProxy().removeFromFavorites(release.id, {cancelToken: REQUESTS_FOR_CHANGES[release.id].token});
+          await new FavoritesProxy().removeFromFavorites(release.id, {cancelToken: FAVORITES_CHANGE_CANCEL_TOKENS[release.id].token});
 
         } catch (error) {
           if (!axios.isCancel(error)) {
@@ -300,7 +302,7 @@ export default {
       if (year_index > -1) years.splice(year_index, 1);
       if (year_index === -1) years.push(year);
 
-      commit(SET_SETTINGS_YEARS_COLLAPSED, years);
+      commit(SET_YEARS_COLLAPSED_SETTINGS, years);
 
     },
 
@@ -312,7 +314,7 @@ export default {
      * @param sort
      * @return {*}
      */
-    setSettingsSort: ({commit}, sort) => commit(SET_SETTINGS_SORT, sort),
+    [SET_SORT_SETTINGS_ACTION]: ({commit}, sort) => commit(SET_SORT_SETTINGS, sort),
 
 
     /**
@@ -322,7 +324,7 @@ export default {
      * @param group
      * @return {*}
      */
-    setSettingsGroup: ({commit}, group) => commit(SET_SETTINGS_GROUP, group),
+    [SET_GROUP_SETTINGS_ACTION]: ({commit}, group) => commit(SET_GROUP_SETTINGS, group),
 
 
     /**
@@ -332,7 +334,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setSettingsShowSeen: ({commit}, state) => commit(SET_SETTINGS_SHOW_SEEN, state)
+    [SET_SEEN_RELEASES_SETTINGS_ACTION]: ({commit}, state) => commit(SET_SHOW_SEEN_SETTINGS, state)
 
   }
 }
