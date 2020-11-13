@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar v-if="this.isWeb" v-model="is_visible" app top right multi-line :timeout="300000">
+  <v-snackbar v-if="isWeb" v-model="is_visible" app top right multi-line :timeout="300000">
     <span>Доступна новая версия приложения</span>
     <v-btn text :loading="is_visible" @click="applyServiceWorker">Обновить</v-btn>
   </v-snackbar>
