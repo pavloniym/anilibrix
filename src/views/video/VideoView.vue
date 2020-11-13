@@ -38,11 +38,12 @@
   import ReleaseTransformer from "@transformers/release";
 
   // Store
-  import {mapState, mapActions} from 'vuex'
+  import {mapState, mapActions, mapGetters} from 'vuex'
 
   // Routes
   import {toBlank} from "@router/blank/blankRoutes";
   import {toVideo} from "@router/video/videoRoutes";
+  import {GET_WATCHED_EPISODE_GETTER, SET_WATCHED_EPISODE_ACTION} from "@store/app/watch/appWatchStore";
 
   const props = {
     anchor: {
@@ -82,6 +83,7 @@
     },
     computed: {
       ...mapState('app/settings', {_quality: s => s.player.quality}),
+      ...mapGetters('app/watch', [GET_WATCHED_EPISODE_GETTER]),
 
 
       /**
@@ -193,7 +195,7 @@
 
     methods: {
       ...{toBlank},
-      ...mapActions('app/watch', {_setWatchedEpisode: 'setWatchedEpisode'}),
+      ...mapActions('app/watch', [SET_WATCHED_EPISODE_ACTION]),
       ...mapActions('app/settings', {_setSettingsValue: 'setSettingsValue'}),
 
       /**
@@ -239,7 +241,7 @@
           const watched_percentage = this.percentage > 100 ? 100 : (this.percentage || 0);
 
           // Set watch data in local store
-          this._setWatchedEpisode({release_id, episode_id, time: watched_time, percentage: watched_percentage})
+          this[SET_WATCHED_EPISODE_ACTION]({release_id, episode_id, time: watched_time, percentage: watched_percentage})
 
         }
       },
@@ -260,10 +262,7 @@
         // Set release to local state
         // Transform episodes
         const response = await new ReleaseProxy().getRelease(parseFloat(release_id));
-        const release = await new ReleaseTransformer()
-          .setStore(this.$store)
-          .fetchWithEpisodes()
-          .fetchItem(response);
+        const release = await new ReleaseTransformer().setStore(this.$store).fetchWithEpisodes().fetchItem(response);
 
         // Try to find current episode
         const episode = release.episodes.find(episode => episode.id === parseFloat(episode_id));
@@ -287,8 +286,15 @@
        * @return {number}
        */
       async getEpisodeInitialTime({release_id, episode_id}) {
-        const watch_item = await this.$store.getters['app/watch/getWatchedEpisode']({release_id, episode_id});
+
+        // Get watch item from store for release and episode
+        const watch_item = await this[GET_WATCHED_EPISODE_GETTER]({release_id, episode_id});
+
+        // Get watch time from this watched episode data
         const watch_time = this.$__get(watch_item, 'time', null) || 0;
+
+        // If not from start -> set last watched time as initial
+        // Or 0 otherwise
         return watch_time && this.from_start === false ? watch_time : 0;
       }
 
