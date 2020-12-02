@@ -13,6 +13,6 @@ module.exports = {
     cleanupOutdatedCaches: true,
   },
   workboxPluginMode: 'GenerateSW',
-  appleMobileWebAppCapable: 'yes',
-  appleMobileWebAppStatusBarStyle: 'black-translucent'
+  //appleMobileWebAppCapable: 'yes',
+  //appleMobileWebAppStatusBarStyle: 'black-translucent'
 };
