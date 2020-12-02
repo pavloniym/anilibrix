@@ -4,6 +4,7 @@
     solo
     clearable
     hide-details
+    class="shrink"
     placeholder="Введите название релиза ..."
     autocomplete="off"
     :autofocus="!this.isMobile"
