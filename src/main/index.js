@@ -11,7 +11,8 @@ import {setUserId, getStore} from '@store'
 import {Main, Torrent} from './utils/windows'
 
 // Download handlers
-import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
+//import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
+
 
 // App Handlers
 import {
@@ -27,6 +28,9 @@ import {broadcastTorrentEvents} from "@main/handlers/torrents/torrentsHandler";
 // Import tray and menu
 import Tray from './utils/tray'
 import Menu from './utils/menu'
+
+// Remote
+require('@electron/remote/main').initialize()
 
 
 // Create tray and menu controller
@@ -60,6 +64,9 @@ app.on('ready', async () => {
   Main.createWindow({title: meta.name}).loadUrl();
   Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
 
+  require('@electron/remote/main').enable(Main.getWindow().webContents);
+  require('@electron/remote/main').enable(Torrent.getWindow().webContents);
+
   // Main window close event
   Main.getWindow().on('close', () => app.quit());
 
@@ -73,6 +80,7 @@ app.on('ready', async () => {
   //downloadHandlers(); // Download handlers
 
 });
+
 
 
 /**
@@ -108,10 +116,10 @@ const torrentHandlers = () => {
 const downloadHandlers = () => {
 
   // Create storage
-  const storage = {};
+//  const storage = {};
 
   // Handlers
-  startingDownload(storage, Main); // Start download
-  cancelingDownload(storage); // Cancel download
-  openingDownload(storage); // Open downloaded file
+ // startingDownload(storage, Main); // Start download
+//  cancelingDownload(storage); // Cancel download
+//  openingDownload(storage); // Open downloaded file
 };

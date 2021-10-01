@@ -1,10 +1,15 @@
 // To keep the UI snappy, we run WebTorrent in its own hidden window, a separate
 // process from the main window.
 
+const http = require('http');
 const path = require('path');
 const rimraf = require('rimraf');
 const webTorrent = require('webtorrent');
 const parseTorrentData = require('parse-torrent');
+const fs = require('fs')
+const {SubtitleParser} = require('matroska-subtitles')
+const got = require('got')
+
 
 // Create WebTorrentClient
 // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
@@ -13,9 +18,12 @@ const torrentClient = new webTorrent();
 
 import app from '@/../package'
 import sentry from './../main/utils/sentry'
-import {remote} from 'electron'
 import {getStore} from '@store'
 
+
+// Subtitles
+import extract from 'rip-subtitles'
+import subtitle from 'subtitle'
 
 // Torrent handlers
 import {
@@ -35,6 +43,7 @@ sentry({store: getStore(), source: 'torrent'});
 // Create local store for torrents
 const store = {
   servers: {}, // servers instances for torrents
+  vttServers: {},
   torrents: {}, // torrents instances
   handlers: {}, // update handlers
   collection: {}, // parsed torrents collection
@@ -46,7 +55,7 @@ const store = {
  *
  * @type {string}
  */
-const torrentPath = path.join(remote.app.getPath('temp'), app.build.appId);
+const torrentPath = path.join(require('@electron/remote').app.getPath('temp'), app.build.appId);
 
 
 /**
@@ -183,10 +192,17 @@ const destroyTorrent = ({torrentId}) => {
 
       // Show in console
       console.log('Destroy Server', {torrentId, server: parse(stringify(store.servers[torrentId]))});
+      console.log('Destroy VTT Server', {torrentId, server: parse(stringify(store.vttServers[torrentId]))});
 
       // Stop and destroy server
       store.servers[torrentId].close();
       store.servers[torrentId] = null;
+
+      // Stop and destroy VTT server
+      if (store.vttServers[torrentId]) {
+        store.vttServers[torrentId].close();
+        store.vttServers[torrentId] = null;
+      }
 
     }
 
@@ -236,23 +252,44 @@ const _startServer = ({torrentId, torrent}) => {
 
     try {
 
+      const parser = new SubtitleParser()
+
       // Create new server
       const server = torrent.createServer();
+      const vttServer = http.createServer(async (req, res) => {
+
+        const url = req.url.slice(1, -4);
+        const {host, fileName, fileIndex} = JSON.parse(decodeURIComponent(url));
+        const fileUrl = `${host}/${fileIndex}/${fileName}`;
+
+        // first an array of subtitle track information is emitted
+        // afterwards each subtitle is emitted
+        //parser.once('tracks', (tracks) => console.log(tracks))
+        parser.on('subtitle', (subtitle, trackNumber) => console.log('Track ' + trackNumber + ':', subtitle))
+
+        http.get(fileUrl, stream => stream.pipe(parser).pipe(res));
+
+      });
 
       // Save server instance to store
       store.servers[torrentId] = server;
+      store.vttServers[torrentId] = vttServer;
 
       // Start server
       server.listen(0, () => {
+        vttServer.listen(0, () => {
 
-        // Create server url
-        const url = `http://localhost:${server.address().port}`;
+          // Create server url
+          const url = `http://localhost:${server.address().port}`;
+          const vttUrl = `http://localhost:${vttServer.address().port}`;
 
-        // Show in console
-        console.log('Start Server', {torrentId, server: parse(stringify(server)), url});
+          // Show in console
+          console.log('Start Server', {torrentId, server: parse(stringify(server)), url});
+          console.log('Start VTT Server', {server: parse(stringify(vttServer)), vttUrl});
 
-        // Resolve url
-        resolve({url, server, torrentId});
+          // Resolve url
+          resolve({url, server, vttUrl, vttServer, torrentId});
+        });
       })
 
     } catch (error) {

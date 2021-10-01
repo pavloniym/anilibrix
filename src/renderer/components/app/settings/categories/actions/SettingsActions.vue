@@ -61,12 +61,12 @@
           {
             title: 'Перезагрузить приложение',
             value: this.shortcuts['reload'],
-            action: () => this.$electron.remote.getCurrentWindow().reload(),
+            action: () => require('@electron/remote').getCurrentWindow().reload(),
           },
           {
             title: 'Свернуть приложение',
             value: this.shortcuts['minimize'],
-            action: () => this.$electron.remote.getCurrentWindow().minimize(),
+            action: () => require('@electron/remote').getCurrentWindow().minimize(),
           },
           {
             title: 'Закрыть приложение',

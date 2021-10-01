@@ -59,7 +59,7 @@ export default {
      * @return void
      */
     setFullscreenState() {
-      this.is_fullscreen = this.$electron.remote.getCurrentWindow().isFullScreen();
+      this.is_fullscreen = require('@electron/remote').getCurrentWindow().isFullScreen();
     }
 
   },
@@ -71,16 +71,16 @@ export default {
     this.setFullscreenState();
 
     // Set fullscreen events
-    this.$electron.remote.getCurrentWindow().on('enter-full-screen', this.setFullscreenState);
-    this.$electron.remote.getCurrentWindow().on('leave-full-screen', this.setFullscreenState);
+    require('@electron/remote').getCurrentWindow().on('enter-full-screen', this.setFullscreenState);
+    require('@electron/remote').getCurrentWindow().on('leave-full-screen', this.setFullscreenState);
   },
 
 
   beforeDestroy() {
 
     // Remove fullscreen events
-    this.$electron.remote.getCurrentWindow().off('enter-full-screen', this.setFullscreenState);
-    this.$electron.remote.getCurrentWindow().off('leave-full-screen', this.setFullscreenState);
+    require('@electron/remote').getCurrentWindow().off('enter-full-screen', this.setFullscreenState);
+    require('@electron/remote').getCurrentWindow().off('leave-full-screen', this.setFullscreenState);
 
   }
 

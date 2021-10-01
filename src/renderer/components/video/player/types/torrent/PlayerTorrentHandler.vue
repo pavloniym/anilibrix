@@ -40,6 +40,12 @@
       PlayerHandler,
     },
 
+    data() {
+      return {
+        mkvUrl: null,
+        vttUrl: null,
+      }
+    },
     computed: {
 
       /**
@@ -82,8 +88,14 @@
             // Listen event with torrent server data
             // Resolve when event is caught
             catchTorrentServer(server => {
+
+              const fileName = encodeURIComponent(payload.file.name);
+
+              const mkvUrl = `${server.url}/${fileIndex}/${fileName}`;
+              const vttUrl = `${server.vttUrl}/${encodeURIComponent(JSON.stringify({host: server.url, fileIndex, fileName}))}.vtt`;
+
               if (server.torrentId === torrentId) {
-                resolve(`${server.url}/${fileIndex}/${encodeURIComponent(payload.file.name)}`);
+                resolve({mkvUrl, vttUrl});
               }
             });
 
@@ -115,8 +127,20 @@
           // Set player source
           player.source = {
             type: 'video',
-            sources: [{src: payload, type: 'video/mp4'}]
+            sources: [
+              {src: payload.mkvUrl, type: 'video/mp4'}
+            ],
+            /*tracks: [
+              {
+                kind: 'captions',
+                label: 'Russian',
+                srclang: 'rus',
+                src: payload.vttUrl,
+                default: true,
+              },
+            ],*/
           };
+
 
           // Set event to forward on current time
           // Play source automatically

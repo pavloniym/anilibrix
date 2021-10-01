@@ -17,7 +17,7 @@ export default class AccountProxy extends BaseProxy {
    */
   async login({login, password}) {
 
-    const data = this.getFormDataObject({mail: login, passwd: password});
+    const data = this.getFormDataObject({mail: login, passwd: password, fa2code: ''});
     const params = {data, headers: data.getHeaders()};
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/login.php', params);
     const status = __get(response, 'data.err');

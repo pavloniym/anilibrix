@@ -50,7 +50,7 @@
        * @return void
        */
       exitApp() {
-        this.$electron.remote.app.exit(0);
+        require('@electron/remote').app.exit(0);
       }
     }
 

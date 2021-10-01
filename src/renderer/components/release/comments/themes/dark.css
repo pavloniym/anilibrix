@@ -1,11 +1,16 @@
 :root {
-  --link-color: #bd636c !important;
+  --text-link: #bd636c !important;
 }
 
 
 html, body {
   height: auto !important;
   overflow: hidden !important;
+  background: #121212 !important;
+}
+
+* a {
+  color:  #bd636c !important;
 }
 
 .wcomments_page{
@@ -49,7 +54,8 @@ div#wcomments_export {
   background: transparent !important;
 }
 
-.page_block {
+.page_block, .post {
+  color: #bdbdbd !important;
   background: #2f2f2f !important;
   box-shadow: none !important;
 }
@@ -65,6 +71,12 @@ div#wcomments_export {
 .wr_header, ._wcomments_more {
   background: #2f2f2f !important;
   color: #a9a6a6 !important;
+}
+
+._wcomments_more {
+  margin-top: 6px !important;
+  margin-left: -15px !important;
+  width: calc(100% + 30px) !important;
 }
 
 #send_post {

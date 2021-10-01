@@ -4,7 +4,9 @@
     <slot name="prepend"/>
 
     <!-- Video container -->
-    <video ref="player" crossorigin="anonymous" autoplay preload="auto"/>
+    <video ref="player" crossorigin="anonymous" autoplay preload="auto">
+      <slot name="video" />
+    </video>
 
     <!-- Interface slot -->
     <slot v-if="player" v-bind="{player}"/>
@@ -44,6 +46,11 @@
           keyboard: {
             global: false,
             focused: false,
+          },
+          captions: {
+            active: true,
+            update: false,
+            language: 'auto',
           },
           resetOnEnd: false,
           fullscreen: {enabled: false},

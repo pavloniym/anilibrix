@@ -61,6 +61,7 @@
 
 
     computed: {
+      ...mapState('app', {_welcome_view: s => s.welcome_view}),
       ...mapState('app/settings/system', {
         _updates_enabled: s => s.updates.enabled,
         _updates_timeout: s => (s.updates.timeout > 0 ? s.updates.timeout : 1) * 60 * 1000
@@ -73,12 +74,23 @@
        */
       layout() {
         return this.$__get(this.$route, 'meta.layout.is', AppBaseLayout);
-      }
+      },
+
+
+      /**
+       * Get current route name
+       *
+       * @return {string|null}
+       */
+      view() {
+        return this.$route.name || null;
+      },
 
     },
 
 
     methods: {
+      ...mapActions('app', {_setWelcomeView: 'setWelcomeView'}),
       ...mapActions('releases', {_getReleases: 'getReleases'}),
       ...mapActions('favorites', {_getFavorites: 'getFavorites'}),
 
@@ -116,6 +128,12 @@
       // Get favorites
       this._getReleases();
       this._getFavorites();
+
+      // Push to saved welcome view
+      if (this._welcome_view !== null && this.view !== this._welcome_view) {
+        this.$router.push({name: this._welcome_view});
+      }
+
     },
 
 
@@ -131,6 +149,13 @@
       _timeout: {
         handler() {
           this.toggleUpdates();
+        }
+      },
+
+
+      view: {
+        handler(view) {
+          if (['releases', 'catalog', 'favorites'].includes(view)) this._setWelcomeView(view);
         }
       }
 

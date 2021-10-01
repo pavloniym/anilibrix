@@ -3,7 +3,10 @@
   export default {
     render: () => null,
     created() {
-      this.$electron.ipcRenderer.on('app:error', (e, error) =>
+
+      const { ipcRenderer } = require('electron')
+
+      ipcRenderer.on('app:error', (e, error) =>
         this.$toasted.show(error, {type: 'error'})
       )
     }

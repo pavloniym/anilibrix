@@ -12,7 +12,7 @@
       icon
       id="toolbar__reload"
       :disabled="_loading"
-      @click="getReleases">
+      @click="() => getReleases()">
       <v-fade-transition mode="out-in">
         <v-progress-circular v-if="_loading" indeterminate size="20"/>
         <v-icon v-else>mdi-refresh</v-icon>

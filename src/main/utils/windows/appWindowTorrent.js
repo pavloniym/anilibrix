@@ -16,6 +16,8 @@ class TorrentWindow extends Window {
       webPreferences: {
         devTools: true,
         nodeIntegration: true,
+        contextIsolation: false,
+        enableRemoteModule: true
       }
     }
   }

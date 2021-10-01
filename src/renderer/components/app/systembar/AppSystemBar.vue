@@ -61,7 +61,7 @@
        * @return void
        */
       closeApp() {
-        this.$electron.remote.app.quit();
+        require('@electron/remote').app.quit();
       },
 
       /**
@@ -70,7 +70,7 @@
        * @return void
        */
       minimizeApp() {
-        this.$electron.remote.getCurrentWindow().minimize();
+        require('@electron/remote').getCurrentWindow().minimize();
       },
 
 
@@ -81,7 +81,7 @@
        */
       maximizeApp() {
 
-        const window = this.$electron.remote.getCurrentWindow();
+        const window = require('@electron/remote').getCurrentWindow();
 
         window.isMaximized()
           ? window.unmaximize()

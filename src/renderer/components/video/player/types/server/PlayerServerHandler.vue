@@ -90,7 +90,7 @@
           player.pause();
 
           // Create hls and attach media element
-          this.hls = new Hls({startPosition: this.time || 0});
+          this.hls = new Hls({startPosition: this.time || 0, maxBufferLength: 300});
           this.hls.attachMedia(player.media);
 
           // When hls instance attached -> load source payload

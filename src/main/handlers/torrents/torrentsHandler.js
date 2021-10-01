@@ -62,7 +62,7 @@ export const catchTorrentParse = (callback) => ipcRenderer.on(TORRENT_PARSE, (e,
  * @param torrent_id
  * @param data
  */
-export const sendTorrentParsedData = (torrent_id, data) => ipcRenderer.send(`${TORRENT_PARSED_DATA}:${torrent_id}`, data);
+export const sendTorrentParsedData = (torrent_id, data) => ipcRenderer.send(`${TORRENT_PARSED_DATA}:${torrent_id}`, JSON.stringify(data));
 
 
 /**
@@ -72,7 +72,7 @@ export const sendTorrentParsedData = (torrent_id, data) => ipcRenderer.send(`${T
  * @param torrent_id
  * @param callback
  */
-export const catchTorrentParsedData = (torrent_id, callback) => ipcMain.on(`${TORRENT_PARSED_DATA}:${torrent_id}`, (e, data) => callback(data));
+export const catchTorrentParsedData = (torrent_id, callback) => ipcMain.on(`${TORRENT_PARSED_DATA}:${torrent_id}`, (e, data) => callback(JSON.parse(data)));
 
 
 /**
@@ -81,7 +81,7 @@ export const catchTorrentParsedData = (torrent_id, callback) => ipcMain.on(`${TO
  *
  * @param payload
  */
-export const sendTorrentServer = (payload) => ipcRenderer.send(TORRENT_SERVER, payload);
+export const sendTorrentServer = (payload) => ipcRenderer.send(TORRENT_SERVER, JSON.stringify(payload));
 
 
 /**
@@ -90,7 +90,7 @@ export const sendTorrentServer = (payload) => ipcRenderer.send(TORRENT_SERVER, p
  * @param callback
  * @return {Electron.IpcRenderer}
  */
-export const catchTorrentServer = (callback) => ipcRenderer.on(TORRENT_SERVER, (e, payload) => callback(payload));
+export const catchTorrentServer = (callback) => ipcRenderer.on(TORRENT_SERVER, (e, payload) => callback(JSON.parse(payload)));
 
 /**
  * Send torrent download
@@ -98,7 +98,7 @@ export const catchTorrentServer = (callback) => ipcRenderer.on(TORRENT_SERVER, (
  *
  * @param payload
  */
-export const sendTorrentDownload = (payload) => ipcRenderer.send(TORRENT_DOWNLOAD, payload);
+export const sendTorrentDownload = (payload) => ipcRenderer.send(TORRENT_DOWNLOAD, JSON.stringify(payload));
 
 
 /**
@@ -107,7 +107,7 @@ export const sendTorrentDownload = (payload) => ipcRenderer.send(TORRENT_DOWNLOA
  *
  * @param callback
  */
-export const catchTorrentDownload = (callback) => ipcRenderer.on(TORRENT_DOWNLOAD, (e, payload) => callback(payload));
+export const catchTorrentDownload = (callback) => ipcRenderer.on(TORRENT_DOWNLOAD, (e, payload) => callback(JSON.parse(payload)));
 
 
 /**
@@ -116,7 +116,7 @@ export const catchTorrentDownload = (callback) => ipcRenderer.on(TORRENT_DOWNLOA
  *
  * @param payload
  */
-export const sendTorrentClear = (payload) => ipcRenderer.send(TORRENT_CLEAR, payload);
+export const sendTorrentClear = (payload) => ipcRenderer.send(TORRENT_CLEAR, JSON.stringify(payload));
 
 
 /**
@@ -125,7 +125,7 @@ export const sendTorrentClear = (payload) => ipcRenderer.send(TORRENT_CLEAR, pay
  * @param callback
  * @return {Electron.IpcRenderer}
  */
-export const catchTorrentClear = (callback) => ipcRenderer.on(TORRENT_CLEAR, (e, payload) => callback(payload));
+export const catchTorrentClear = (callback) => ipcRenderer.on(TORRENT_CLEAR, (e, payload) => callback(JSON.parse(payload)));
 
 
 /**
@@ -134,7 +134,7 @@ export const catchTorrentClear = (callback) => ipcRenderer.on(TORRENT_CLEAR, (e,
  *
  * @param payload
  */
-export const sendTorrentError = (payload) => ipcRenderer.send(TORRENT_ERROR, payload);
+export const sendTorrentError = (payload) => ipcRenderer.send(TORRENT_ERROR, JSON.stringify(payload));
 
 
 /**
@@ -143,7 +143,7 @@ export const sendTorrentError = (payload) => ipcRenderer.send(TORRENT_ERROR, pay
  * @param callback
  * @return {Electron.IpcRenderer}
  */
-export const catchTorrentError = (callback) => ipcRenderer.on(TORRENT_ERROR, (e, payload) => callback(payload));
+export const catchTorrentError = (callback) => ipcRenderer.on(TORRENT_ERROR, (e, payload) => callback(JSON.parse(payload)));
 
 
 /**
@@ -152,7 +152,7 @@ export const catchTorrentError = (callback) => ipcRenderer.on(TORRENT_ERROR, (e,
  * @param torrentId
  * @param fileIndex
  */
-export const sendTorrentStart = (torrentId, fileIndex) => ipcRenderer.send(TORRENT_START, {torrentId, fileIndex});
+export const sendTorrentStart = (torrentId, fileIndex) => ipcRenderer.send(TORRENT_START, JSON.stringify({torrentId, fileIndex}));
 
 
 /**
@@ -161,7 +161,7 @@ export const sendTorrentStart = (torrentId, fileIndex) => ipcRenderer.send(TORRE
  *
  * @param callback
  */
-export const catchTorrentStart = (callback) => ipcRenderer.on(TORRENT_START, (e, payload) => callback(payload));
+export const catchTorrentStart = (callback) => ipcRenderer.on(TORRENT_START, (e, payload) => callback(JSON.parse(payload)));
 
 
 /**
@@ -169,7 +169,7 @@ export const catchTorrentStart = (callback) => ipcRenderer.on(TORRENT_START, (e,
  *
  * @param payload
  */
-export const sendTorrentDestroy = (payload) => ipcRenderer.send(TORRENT_DESTROY, payload);
+export const sendTorrentDestroy = (payload) => ipcRenderer.send(TORRENT_DESTROY, JSON.stringify(payload));
 
 
 /**
@@ -178,4 +178,4 @@ export const sendTorrentDestroy = (payload) => ipcRenderer.send(TORRENT_DESTROY,
  *
  * @param callback
  */
-export const catchTorrentDestroy = (callback) => ipcRenderer.on(TORRENT_DESTROY, (e, payload) => callback(payload));
+export const catchTorrentDestroy = (callback) => ipcRenderer.on(TORRENT_DESTROY, (e, payload) => callback(JSON.parse(payload)));

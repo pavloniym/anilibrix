@@ -4,6 +4,7 @@ import settings from './settings'
 
 const SET_DRAWER = 'SET_DRAWER';
 const SET_SEARCHING = 'SET_SEARCHING';
+const SET_WELCOME_VIEW = 'SET_WELCOME_VIEW';
 
 export default {
   namespaced: true,
@@ -15,6 +16,7 @@ export default {
 
   state: {
     drawer: false,
+    welcome_view: null,
     is_searching: false,
   },
 
@@ -37,6 +39,14 @@ export default {
      */
     [SET_SEARCHING]: (s, state) => s.is_searching = state,
 
+
+    /**
+     * Set welcome view
+     *
+     * @param s
+     * @param welcome_view
+     */
+    [SET_WELCOME_VIEW]: (s, welcome_view) => s.welcome_view = welcome_view,
 
   },
 
@@ -62,6 +72,15 @@ export default {
      * @return {*}
      */
     setSearching: ({commit}, state) => commit(SET_SEARCHING, state),
+
+
+    /**
+     * Set welcome view
+     *
+     * @param commit
+     * @param view
+     */
+    setWelcomeView: ({commit}, welcome_view) => commit(SET_WELCOME_VIEW, welcome_view),
 
   }
 }

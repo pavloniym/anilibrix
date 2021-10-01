@@ -44,7 +44,7 @@
           if (title && name) {
 
             // Set notification name
-            this.$electron.remote.app.setAppUserModelId(meta.name);
+            require('@electron/remote').app.setAppUserModelId(meta.name);
 
             // Create notification
             // If the user clicks in the Notifications Center, show the app

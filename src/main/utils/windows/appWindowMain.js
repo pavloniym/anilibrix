@@ -30,8 +30,10 @@ class MainWindow extends Window {
         webviewTag: true,
         webSecurity: false,
         nodeIntegration: true,
+        contextIsolation: false,
+        enableRemoteModule: true,
         experimentalFeatures: true,
-        allowRunningInsecureContent: true,
+        allowRunningInsecureContent: true
       },
       backgroundColor: '#121212',
     }

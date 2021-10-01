@@ -1,7 +1,7 @@
 <template>
-    <div id="player-container" :class="{'hide-cursor': hideCursor}">
-      <slot/>
-    </div>
+  <div id="player-container" :class="{'hide-cursor': hideCursor}">
+    <slot/>
+  </div>
 </template>
 
 <script>
@@ -20,7 +20,7 @@
     destroyed() {
 
       // Exit fullscreen if video view is exited
-      if(screenfull.isEnabled) screenfull.exit();
+      // if (screenfull.isEnabled) screenfull.exit();
     }
   }
 

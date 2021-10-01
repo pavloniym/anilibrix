@@ -191,7 +191,7 @@
        * @return {void}
        */
       toggleFullscreen() {
-        screenfull.toggle(document.getElementById('player-container'));
+        screenfull.toggle(document.getElementsByName('body')[0]);
       },
 
 

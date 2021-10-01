@@ -1,4 +1,8 @@
-import Vue from 'vue'
-import VueElectron from 'vue-electron'
 
-Vue.use(VueElectron)
+export default {
+  install: function (Vue) {
+
+    Vue.prototype.$electron = require('electron')
+   // Vue.prototype.$electron.remote = require('@electron/remote');
+  }
+}
