@@ -115,7 +115,7 @@
     "@sentry/browser": "^6.13.2",
     "@sentry/electron": "^2.5.4",
     "@sentry/integrations": "^6.13.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "chromecast-api": "^0.3.3",
     "electron-dl": "^3.0.1",
     "electron-promise-ipc": "^2.0.1",
