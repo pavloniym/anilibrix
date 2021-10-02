@@ -6,9 +6,7 @@ const path = require('path');
 const rimraf = require('rimraf');
 const webTorrent = require('webtorrent');
 const parseTorrentData = require('parse-torrent');
-const fs = require('fs')
 const {SubtitleParser} = require('matroska-subtitles')
-const got = require('got')
 
 
 // Create WebTorrentClient
@@ -20,10 +18,6 @@ import app from '@/../package'
 import sentry from './../main/utils/sentry'
 import {getStore} from '@store'
 
-
-// Subtitles
-import extract from 'rip-subtitles'
-import subtitle from 'subtitle'
 
 // Torrent handlers
 import {
