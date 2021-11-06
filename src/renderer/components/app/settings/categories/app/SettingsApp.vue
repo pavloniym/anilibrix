@@ -18,7 +18,7 @@
 
 <script>
 
-  import {meta} from '@package'
+  import {meta, repository} from '@package'
 
   export default {
     computed: {
@@ -33,17 +33,22 @@
           {
             title: 'Анилибрия',
             value: meta.links.anilibria,
-            action: () => this.$electron.shell.openExternal(meta.links.anilibria),
+            action: () => require('@electron/remote').shell.openExternal(meta.links.anilibria),
           },
           {
             title: 'Поддержать проект',
             value: 'Яндекс.Деньги, QIWI, PayPal',
-            action: () => this.$electron.shell.openExternal(meta.links.donate)
+            action: () => require('@electron/remote').shell.openExternal(meta.links.donate)
           },
           {
             title: 'Telegram-канал',
             value: '@anilibrix',
-            action: () => this.$electron.shell.openExternal(meta.links.telegram)
+            action: () => require('@electron/remote').shell.openExternal(meta.links.telegram)
+          },
+          {
+            title: 'Исходный код',
+            value: '/anilibrix',
+            action: () => require('@electron/remote').shell.openExternal(repository.url)
           },
         ]
       },

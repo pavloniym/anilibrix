@@ -12,6 +12,7 @@ import {Main, Torrent} from './utils/windows'
 
 // Download handlers
 //import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
+import { autoUpdater } from "electron-updater"
 
 
 // App Handlers
@@ -47,6 +48,9 @@ if (process.env.NODE_ENV !== 'development') {
 
 // Add command lines arguments
 app.commandLine.appendSwitch('disable-site-isolation-trials');
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+
 
 // Close app on all windows closed (relevant for mac users)
 app.on('window-all-closed', () => app.quit());
@@ -78,6 +82,9 @@ app.on('ready', async () => {
   appHandlers(); // App handlers
   torrentHandlers(); // Torrent handler
   //downloadHandlers(); // Download handlers
+
+  // Auto update
+  Main.getWindow().once('ready-to-show', () => autoUpdater.checkForUpdatesAndNotify());
 
 });
 

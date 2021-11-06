@@ -1,5 +1,5 @@
 <template>
-  <v-layout column class="fill-height">
+  <v-layout column class="fill-height" justify-center>
 
     <slot name="prepend"/>
 

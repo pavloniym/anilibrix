@@ -21,6 +21,9 @@
   // Utils
   import Hls from 'hls.js';
 
+  // Store
+  import {mapState} from 'vuex'
+
   const props = {
     source: {
       type: Object,
@@ -45,6 +48,7 @@
     },
 
     computed: {
+      ...mapState('app/settings/player', {_video_buffer: s => s.video.buffer || 60}),
 
       /**
        * Playback player options
@@ -90,7 +94,7 @@
           player.pause();
 
           // Create hls and attach media element
-          this.hls = new Hls({startPosition: this.time || 0, maxBufferLength: 300});
+          this.hls = new Hls({startPosition: this.time || 0, maxBufferLength: this._video_buffer});
           this.hls.attachMedia(player.media);
 
           // When hls instance attached -> load source payload

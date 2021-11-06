@@ -11,7 +11,7 @@
       <template v-else>
         <v-fade-transition mode="out-in" appear>
           <component :is="layout">
-            <router-view :key="$route.name"/>
+            <router-view :key="$route.fullPath"/>
           </component>
         </v-fade-transition>
       </template>

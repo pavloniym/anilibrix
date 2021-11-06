@@ -1,5 +1,5 @@
 import store from '@store'
-import {meta} from '@package'
+import {meta, repository} from '@package'
 import {Menu, shell} from 'electron'
 
 export const aboutTemplate = [
@@ -13,8 +13,7 @@ export const aboutTemplate = [
   },
   {
     label: 'Исходный код на GitHub',
-    click: () => null,
-    enabled: false
+    click: () => shell.openExternal(repository.url),
   },
   {
     type: 'separator'

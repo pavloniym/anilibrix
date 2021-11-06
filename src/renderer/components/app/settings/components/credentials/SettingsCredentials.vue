@@ -51,7 +51,7 @@
        * @return {string}
        */
       github() {
-        return app.meta.links.github
+        return app.repository.url
       }
     },
 

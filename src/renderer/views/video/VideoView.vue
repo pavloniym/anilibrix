@@ -1,6 +1,6 @@
 <template>
   <video-layout :hide-cursor="cursor_is_hidden">
-    <v-layout fill-height>
+    <v-layout fill-height class="black">
       <v-fade-transition mode="out-in" appear>
         <component
           v-if="is_mounted"

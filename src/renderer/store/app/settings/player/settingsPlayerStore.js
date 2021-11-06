@@ -1,4 +1,5 @@
 const SET_QUALITY = 'SET_QUALITY';
+const SET_VIDEO_BUFFER = 'SET_VIDEO_BUFFER';
 const SET_UPSCALE_BOLD = 'SET_UPSCALE_BOLD';
 const SET_UPSCALE_BLUR = 'SET_UPSCALE_BLUR';
 const SET_EPISODES_SORT = 'SET_EPISODES_SORT';
@@ -23,6 +24,9 @@ export default {
     opening: {
       skip_time: 30,
       skip_button: false,
+    },
+    video: {
+      buffer: 300,
     }
   },
 
@@ -46,6 +50,15 @@ export default {
      * @return {*}
      */
     [SET_EPISODES_SORT]: (s, order) => s.episodes.order = order,
+
+
+    /**
+     * Ser video buffer
+     *
+     * @param s
+     * @param buffer
+     */
+    [SET_VIDEO_BUFFER]: (s, buffer) => s.video.buffer = buffer,
 
 
     /**
@@ -201,6 +214,15 @@ export default {
      * @return {*}
      */
     setOpeningSkipButton: ({commit}, state) => commit(SET_OPENING_SKIP_BUTTON, state),
+
+
+    /**
+     * Set video buffer
+     *
+     * @param commit
+     * @param buffer
+     */
+    setVideoBuffer: ({commit}, buffer) => commit(SET_VIDEO_BUFFER, buffer),
 
   }
 }

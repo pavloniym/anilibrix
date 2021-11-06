@@ -1,9 +1,10 @@
 <template>
   <v-layout
+    v-if="is_fullscreen === false"
     align-center
     class="black system-bar white--text px-2"
     :class="{'is-mac--fullscreen': this.isMacOnFullscreen}"
-    @dblclick="maximizeApp">
+    @dblclick="() => maximizeApp()">
 
     <template v-if="!this.isMac">
       <v-spacer v-if="this.isWindows"/>

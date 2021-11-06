@@ -50,6 +50,31 @@
     </v-card>
 
 
+    <!-- Buffer -->
+    <v-card class="mt-2">
+      <v-card-text class="pb-2 caption">
+        <div>Размер видео буфера</div>
+        <div>Величина буфера подгрузки видео, по умолчанию 5 минут</div>
+      </v-card-text>
+      <v-card-text>
+        <v-text-field
+          outlined
+          hide-details
+          min="60"
+          class="mb-2"
+          type="number"
+          label="Размер буфера в секундах"
+          suffix="сек"
+          :value="_video_buffer"
+          @input="_setVideoBuffer(parseInt($event) > 0 ? parseInt($event) : 60)">
+        </v-text-field>
+      </v-card-text>
+      <v-card-text class="pt-0 caption">
+        <div>Указывает величину буфера, который плеер держит в памяти и предзагружает видео во время просмотра</div>
+      </v-card-text>
+    </v-card>
+
+
     <!-- Opening Skip Button -->
     <v-card class="mt-2">
       <v-list-item dense @click="_setOpeningSkipButton(!_opening_skip_button)">
@@ -94,6 +119,7 @@
   export default {
     computed: {
       ...mapState('app/settings/player', {
+        _video_buffer: s => s.video.buffer,
         _autoplay_next: s => s.autoplayNext,
         _torrents_process: s => s.torrents.process,
         _opening_skip_time: s => s.opening.skip_time,
@@ -104,11 +130,12 @@
 
     methods: {
       ...mapActions('app/settings/player', {
+        _setVideoBuffer: 'setVideoBuffer',
         _setAutoplayNext: 'setAutoplayNext',
         _setTorrentsProcess: 'setTorrentsProcess',
         _setOpeningSkipTime: 'setOpeningSkipTime',
         _setOpeningSkipButton: 'setOpeningSkipButton',
-      })
+      }),
     }
 
   }

@@ -29,11 +29,12 @@ class MainWindow extends Window {
         webgl: true,
         webviewTag: true,
         webSecurity: false,
+        autoplayPolicy: 'no-user-gesture-required',
         nodeIntegration: true,
         contextIsolation: false,
         enableRemoteModule: true,
         experimentalFeatures: true,
-        allowRunningInsecureContent: true
+        allowRunningInsecureContent: true,
       },
       backgroundColor: '#121212',
     }

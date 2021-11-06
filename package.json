@@ -1,17 +1,17 @@
 {
   "name": "anilibrix",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": {
-    "name" : "Anilibria",
-    "email" : "anilibria@protonmail.com",
-    "url" : "https://anilibria.tv"
+    "name": "Anilibria",
+    "email": "anilibria@protonmail.com",
+    "url": "https://anilibria.tv"
   },
   "description": "AniLibrix - AniLibria desktop app",
   "license": null,
   "main": "./dist/electron/main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PavelShar/anilibria"
+    "url": "https://github.com/pavloniym/anilibrix"
   },
   "scripts": {
     "build": "node .electron-vue/build.js",
@@ -67,6 +67,9 @@
     },
     "win": {
       "icon": "build/icons/app/anilibria.ico",
+      "publish": [
+        "github"
+      ],
       "target": [
         {
           "target": "nsis",
@@ -120,7 +123,7 @@
     "electron-dl": "^3.0.1",
     "electron-promise-ipc": "^2.0.1",
     "electron-store": "^8.0.1",
-    "electron-updater": "^4.2.2",
+    "electron-updater": "^4.3.9",
     "flatted": "^3.0.2",
     "form-data": "^3.0.0",
     "fuse.js": "^3.4.6",
@@ -136,7 +139,7 @@
     "object-to-formdata": "^3.0.9",
     "pac-resolver": "^4.0.0",
     "parse-torrent": "^7.0.1",
-    "plyr": "^3.5.7-beta.0",
+    "plyr": "^3.6.9",
     "pretty-bytes": "^5.3.0",
     "rimraf": "^3.0.2",
     "screenfull": "^5.0.2",

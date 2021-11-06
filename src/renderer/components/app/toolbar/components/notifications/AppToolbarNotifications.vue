@@ -11,7 +11,7 @@
       offset-y="20"
       :content="unseen"
       :value="unseen > 0">
-      <v-btn icon @click="_setSeen">
+      <v-btn icon @click="() => _setSeen()">
         <v-icon>mdi-bell</v-icon>
       </v-btn>
     </v-badge>
@@ -26,7 +26,7 @@
         <v-layout align-center class="px-4 py-2">
           <h5 class="grey--text">Последние уведомления за неделю</h5>
           <v-spacer/>
-          <v-btn icon color="grey" @click.stop="_clearNotifications">
+          <v-btn icon color="grey" @click.stop="() => _clearNotifications()">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-layout>
