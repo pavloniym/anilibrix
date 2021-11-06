@@ -67,9 +67,6 @@
     },
     "win": {
       "icon": "build/icons/app/anilibria.ico",
-      "publish": [
-        "github"
-      ],
       "target": [
         {
           "target": "nsis",
