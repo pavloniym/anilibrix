@@ -61,7 +61,7 @@ export default class ReleaseProxy extends BaseProxy {
    */
   async getReleaseTorrent(url, parameters = {}) {
     if (url) {
-      return await this.submit('GET', this.getStaticEndpoint() + url, {...parameters, responseType: 'arraybuffer'});
+      return await this.submit('GET', this.getApiEndpoint() + url, {...parameters, responseType: 'arraybuffer'});
     } else return null;
   }
 
