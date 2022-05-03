@@ -7,7 +7,7 @@
     "url": "https://anilibria.tv"
   },
   "description": "AniLibrix - AniLibria desktop app",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "repository": {
     "type": "git",
