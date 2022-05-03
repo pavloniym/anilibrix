@@ -28,7 +28,7 @@ class MainWindow extends Window {
       width,
       minWidth,
       minHeight,
-      show: true,
+      show: false,
       frame: false,
       darkTheme: true,
       icon: path.join(iconsPath, icons[process.platform]),
