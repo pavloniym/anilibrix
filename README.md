@@ -1,25 +1,40 @@
 # AniLibrix
-
 > Anilibria desktop app
 
-#### Build Setup
+### Сборка и запуск
+
+> Требуемая верси Node.JS - **14.18.0**
+>
+> На других версиях (особенно выше) могут быть проблемы с сборкой нативных модулей
+
+Перед запуском не забудьте скопировать и отредактировать пример `.env` файла:
 
 ``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:9080
-npm run dev
-
-# build electron application for production
-npm run build
-
-
-# lint all JS/Vue component files in `src/`
-npm run lint
-
+cp .env.example .env
 ```
 
----
+``` bash
+# Установка и сборка зависимостей
+yarn install
 
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+# Запуск с горячей перезагрузкой на localhost:9080
+yarn run serve
+
+# Сборка production версии
+yarn run build
+
+# Запуск ESLint --fix для JS/Vue файлов и компонентов в `src/`
+yarn run lint:fix
+
+# Сборка под все платформы
+yarn run release
+
+# Сборка под MacOS
+yarn run release:mac
+
+# Сборка под Windows
+yarn run release:win
+
+# Сборка под Linux
+yarn run release:lin
+```
