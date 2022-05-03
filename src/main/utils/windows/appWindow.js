@@ -58,8 +58,11 @@ export default class Window {
    * @return this
    */
   loadUrl() {
-    if (this.getWindow() && this.getWindowUrl()) {
-      this.getWindow().loadURL(this.getWindowUrl());
+    const window = this.getWindow()
+    const windowUrl = this.getWindowUrl()
+
+    if (window && windowUrl) {
+      window.loadURL(windowUrl);
     }
 
     return this;
@@ -73,9 +76,9 @@ export default class Window {
    * @param payload
    */
   sendToWindow(channel, payload) {
-    if (this.getWindow()) {
-
-      this.getWindow().webContents.send(channel, payload);
+    const window = this.getWindow()
+    if (window) {
+      window.webContents.send(channel, payload);
 
       if (process.env.NODE_ENV === 'development') {
         console.log({channel, payload})
