@@ -22,7 +22,18 @@
             </v-avatar>
           </v-btn>
         </template>
-        <span>{{title}}</span>
+        <span>{{ title }}</span>
+      </v-tooltip>
+
+
+      <!-- Favorites -->
+      <v-tooltip right :attach="$refs.links">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon large @click="() => toFavorites()">
+            <v-icon size="24">mdi-star</v-icon>
+          </v-btn>
+        </template>
+        <span>Избранное</span>
       </v-tooltip>
 
 
@@ -35,6 +46,8 @@
         </template>
         <span>Эпизоды</span>
       </v-tooltip>
+
+
 
 
       <!-- Torrent -->
@@ -51,7 +64,7 @@
       <v-tooltip v-if="_opening_skip_button" right :attach="$refs.links">
         <template v-slot:activator="{on}">
           <v-btn v-on="on" icon large @click="skipOpening">
-            <span class="caption font-weight-bold">+{{_opening_skip_time}}</span>
+            <span class="caption font-weight-bold">+{{ _opening_skip_time }}</span>
           </v-btn>
         </template>
         <span>Перемотка опенинга</span>
@@ -65,7 +78,7 @@
 <script>
 
   import {mapState} from 'vuex'
-  import {toRelease, toReleases} from "@utils/router/views";
+  import {toRelease, toReleases, toFavorites} from "@utils/router/views";
 
   const props = {
     player: {
@@ -128,21 +141,9 @@
     },
     methods: {
 
-
-      /**
-       * Go to releases
-       *
-       * @return void
-       */
-      toReleases,
-
-      /**
-       * Go to release
-       *
-       * @return void
-       */
       toRelease,
-
+      toReleases,
+      toFavorites,
 
       /**
        * Skip opening

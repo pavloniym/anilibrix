@@ -4,6 +4,7 @@ import {
   toLogin,
   toRelease,
   toReleases,
+  toFavorites,
 } from './routerViews'
 
 
@@ -13,4 +14,5 @@ export {
   toLogin,
   toRelease,
   toReleases,
+  toFavorites,
 }

@@ -5,6 +5,7 @@ const VIDEO_VIEW = 'video';
 const BLANK_VIEW = 'blank';
 const RELEASE_VIEW = 'release';
 const RELEASES_VIEW = 'releases';
+const FAVORITES_VIEW = 'favorites';
 const ACCOUNT_LOGIN_VIEW = 'account.login';
 
 
@@ -17,6 +18,18 @@ const ACCOUNT_LOGIN_VIEW = 'account.login';
 export const toLogin = () => {
   if (router.currentRoute.name !== ACCOUNT_LOGIN_VIEW) {
     return router.push({name: ACCOUNT_LOGIN_VIEW});
+  }
+};
+
+
+/**
+ * To favorites
+ *
+ * @return {Promise<Route>}
+ */
+export const toFavorites = () => {
+  if (router.currentRoute.name !== FAVORITES_VIEW) {
+    return router.push({name: FAVORITES_VIEW});
   }
 };
 
