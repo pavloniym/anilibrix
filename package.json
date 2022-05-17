@@ -127,7 +127,7 @@
     "hls.js": "^0.13.1",
     "https-proxy-agent": "^5.0.0",
     "lethargy": "^1.0.9",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "matroska-subtitles": "^3.3.2",
     "moment": "^2.24.0",
     "node-cron": "^2.0.3",
