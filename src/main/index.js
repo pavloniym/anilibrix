@@ -75,10 +75,9 @@ app.on('ready', async () => {
   require('@electron/remote/main').enable(torrentWindow.webContents);
 
   mainWindow
-    // Auto update
     .once('ready-to-show', () => {
       mainWindow.show()
-      autoUpdater.checkForUpdatesAndNotify()
+      autoUpdater.checkForUpdatesAndNotify() // Auto update
     })
     .on('close', () => app.quit()); // Main window close event
 
