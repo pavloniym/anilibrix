@@ -1,4 +1,5 @@
 import Window from './appWindow'
+import * as path from 'path'
 
 class MainWindow extends Window {
 
@@ -15,14 +16,22 @@ class MainWindow extends Window {
     const minWidth = 820;
     const minHeight = 520;
 
+    const iconsPath = path.join(__dirname, '../../build/icons/app');
+    const icons = {
+      win32: 'anilibria.ico',
+      darwin: 'anilibria.icns',
+      linux: '256x256.png'
+    }
+
     return {
       height,
       width,
       minWidth,
       minHeight,
-      show: true,
+      show: false,
       frame: false,
       darkTheme: true,
+      icon: path.join(iconsPath, icons[process.platform]),
       titleBarStyle: 'hiddenInset',
       useContentSize: true,
       webPreferences: {

@@ -68,11 +68,19 @@ app.on('ready', async () => {
   Main.createWindow({title: meta.name}).loadUrl();
   Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
 
-  require('@electron/remote/main').enable(Main.getWindow().webContents);
-  require('@electron/remote/main').enable(Torrent.getWindow().webContents);
+  const mainWindow = Main.getWindow()
+  const torrentWindow = Torrent.getWindow()
 
-  // Main window close event
-  Main.getWindow().on('close', () => app.quit());
+  require('@electron/remote/main').enable(mainWindow.webContents);
+  require('@electron/remote/main').enable(torrentWindow.webContents);
+
+  mainWindow
+    // Auto update
+    .once('ready-to-show', () => {
+      mainWindow.show()
+      autoUpdater.checkForUpdatesAndNotify()
+    })
+    .on('close', () => app.quit()); // Main window close event
 
   // Create menu
   // Create tray icon
@@ -82,10 +90,6 @@ app.on('ready', async () => {
   appHandlers(); // App handlers
   torrentHandlers(); // Torrent handler
   //downloadHandlers(); // Download handlers
-
-  // Auto update
-  Main.getWindow().once('ready-to-show', () => autoUpdater.checkForUpdatesAndNotify());
-
 });
 
 

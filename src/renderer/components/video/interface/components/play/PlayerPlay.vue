@@ -136,6 +136,14 @@
       this.player.on('playing', () => this.is_playing = true);
       this.player.on('pause', () => this.is_playing = false);
 
+      // Fixing unknown bug with muted: true after plyer createing
+      // TODO: Maybe solve this problem in the best way in the future
+      this.player.on('playing', () => {
+        if (this.player.volume > 0 && this.player.config.muted) {
+          console.log('Fix muted:', this.player.volume, this.player.config.muted)
+          document.querySelector('video').muted = false
+        }
+      });
 
       // Handler buffering events
       this.player.on('waiting', () => this.is_buffering = true);
