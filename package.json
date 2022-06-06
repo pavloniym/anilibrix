@@ -1,6 +1,6 @@
 {
   "name": "anilibrix",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "author": {
     "name": "Anilibria",
     "email": "anilibria@protonmail.com",
@@ -17,9 +17,9 @@
     "build": "node .electron-vue/build.js",
     "serve": "node .electron-vue/dev-runner.js",
     "release": "yarn build && electron-builder -wml -c.compression=store",
-    "release:mac": "yarn build && electron-builder -m",
-    "release:win": "yarn build && electron-builder -w -c.compression=store",
-    "release:lin": "yarn build && electron-builder -l -c.compression=store",
+    "release:mac": "yarn build && electron-builder -m -c.compression=store",
+    "release:linux": "electron-builder -l -c.compression=store",
+    "release:windows": "yarn build && electron-builder -w -c.compression=store",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
   },
   "meta": {
@@ -92,6 +92,14 @@
       "target": [
         {
           "target": "AppImage",
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
+        },
+        {
+          "target": "snap",
           "arch": [
             "x64",
             "ia32",
