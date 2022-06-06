@@ -3,7 +3,7 @@
 Анилибрия — так звучит аниме!
 Десктопный кинотеатр Анилибрии.
 
-![Anilibrix](https://raw.githubusercontent.com/pavloniym/anilibrix/.github/assets/anilibrix.png)
+![Anilibrix](https://raw.githubusercontent.com/pavloniym/anilibrix/master/.github/assets/anilibrix.png)
 
 ### Особенности:
 
