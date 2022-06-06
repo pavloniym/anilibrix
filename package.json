@@ -18,7 +18,7 @@
     "serve": "node .electron-vue/dev-runner.js",
     "release": "yarn build && electron-builder -wml -c.compression=store",
     "release:mac": "yarn build && electron-builder -m -c.compression=store",
-    "release:linux": "electron-builder -l -c.compression=store",
+    "release:linux": "electron-builder -l -c.compression=store -p=always",
     "release:windows": "yarn build && electron-builder -w -c.compression=store",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
   },
@@ -105,6 +105,14 @@
             "ia32",
             "arm64"
           ]
+        }
+      ]
+    },
+    "snap": {
+      "publish": [
+        {
+          "repo": "anilibrix",
+          "provider": "snapStore"
         }
       ]
     },
