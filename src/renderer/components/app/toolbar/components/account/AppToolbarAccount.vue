@@ -39,7 +39,7 @@
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title v-text="_profile.login"/>
-              <v-list-item-subtitle>ID: {{_profile.id}}</v-list-item-subtitle>
+              <v-list-item-subtitle>ID: {{ _profile.id }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-divider/>
@@ -120,7 +120,7 @@
         const seconds = Object.values(this._watch || {})
           .reduce((storage, episode) => storage + (episode.time || 0), 0);
 
-        return Math.floor(seconds / 60 / 60);
+        return Math.floor((seconds || 0) / 60 / 60);
       },
 
 
@@ -133,15 +133,15 @@
         return [
           {
             title: 'В избранном',
-            value: stringsPluralize(this.favorites, ['релиз', 'релиза', 'релизов']),
+            value: this.favorites ? stringsPluralize(this.favorites, ['релиз', 'релиза', 'релизов']) : 'Нет данных',
           },
           {
             title: 'Просмотрено',
-            value: stringsPluralize(this.episodes, ['эпизод', 'эпизода', 'эпизодов']),
+            value: this.episodes ? stringsPluralize(this.episodes, ['эпизод', 'эпизода', 'эпизодов']) : 'Нет данных',
           },
           {
             title: 'Потрачено на просмотр',
-            value: stringsPluralize(this.hours, ['час', 'часа', 'часов']),
+            value: this.hours > 0 ? stringsPluralize(this.hours, ['час', 'часа', 'часов']) : 'Нет данных',
           }
         ]
       }
