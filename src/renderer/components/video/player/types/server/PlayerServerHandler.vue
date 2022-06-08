@@ -107,17 +107,10 @@
 
           });
 
-          const hls = this.hls;
 
           this.hls.on(Hls.Events.ERROR, function (event, data) {
-
             console.log('error', {event, data});
-
-            hls.startLoad();
-            hls.recoverMediaError();
-
           });
-
         }
       },
 
