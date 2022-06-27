@@ -131,7 +131,7 @@
       this.plyr.ads.on('error', this.handleError);
 
       // After time is ended
-      // Automatically push to to route
+      // Automatically push to route
       this.plyr.on('adsimpression', () => this.toRoute());
 
       // If no url provided -> push to route

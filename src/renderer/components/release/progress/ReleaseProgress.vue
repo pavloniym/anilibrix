@@ -115,7 +115,7 @@
       },
 
       /**
-       * Check if release if fully watched
+       * Check if release is fully watched
        *
        * @return {boolean}
        */
