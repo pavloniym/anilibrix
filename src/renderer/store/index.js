@@ -30,7 +30,7 @@ const modules = {
 // Get debug state
 // Create storage instance
 const debug = process.env.NODE_ENV !== 'production';
-const storage = new Storage({ name: 'anilibrix' });
+const storage = new Storage({ name: 'anilibrix', clearInvalidConfig: true });
 
 // Create store instance
 const store = new Vuex.Store({
