@@ -1,6 +1,4 @@
 export default () => {
-
-
   function createShader(gl, type, source) {
     var shader = gl.createShader(type);
     gl.shaderSource(shader, source);
@@ -27,7 +25,7 @@ export default () => {
       throw new Error(gl.getProgramInfoLog(program));
     }
 
-    var wrapper = {program: program};
+    var wrapper = { program: program };
 
     var numAttributes = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
     for (var i = 0; i < numAttributes; i++) {
@@ -88,7 +86,6 @@ export default () => {
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     }
   }
-
 
   const quadVert = `
 precision mediump float;
@@ -445,7 +442,6 @@ void main() {
 }
 `;
 
-
   function Scaler(gl) {
     this.gl = gl;
 
@@ -472,7 +468,6 @@ void main() {
     this.blur = 2.0;
   }
 
-
   Scaler.prototype.inputVideo = function (mov) {
     const gl = this.gl;
 
@@ -482,7 +477,7 @@ void main() {
     this.inputWidth = width;
     this.inputHeight = height;
 
-    let emptyPixels = new Uint8Array(width * height * 4);
+    const emptyPixels = new Uint8Array(width * height * 4);
     this.inputTex = createTexture(gl, gl.LINEAR, emptyPixels, width, height);
     this.inputMov = mov;
   }
@@ -496,7 +491,7 @@ void main() {
     gl.canvas.width = width;
     gl.canvas.height = height;
 
-    let emptyPixels = new Uint8Array(width * height * 4);
+    const emptyPixels = new Uint8Array(width * height * 4)
     this.scaleTexture = createTexture(gl, gl.LINEAR, emptyPixels, width, height);
     this.tempTexture = createTexture(gl, gl.LINEAR, emptyPixels, width, height);
     this.tempTexture2 = createTexture(gl, gl.LINEAR, emptyPixels, width, height);
@@ -508,7 +503,6 @@ void main() {
       return;
     }
 
-
     const gl = this.gl;
     const scalePgm = this.scaleProgram;
     const lumPgm = this.lumProgram;
@@ -517,20 +511,16 @@ void main() {
     const finalPgm = this.finalProgram;
     const drawPgm = this.drawProgram;
 
-
     if (this.inputMov) {
       updateTexture(gl, this.inputTex, this.inputMov);
     }
-
 
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.STENCIL_TEST);
 
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-
     // First upscaling with Bicubic interpolation.
-
     bindFramebuffer(gl, this.framebuffer, this.scaleTexture);
 
     gl.useProgram(scalePgm.program);
@@ -543,8 +533,6 @@ void main() {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     // Scaled: scaleTexture
-
-
     bindFramebuffer(gl, this.framebuffer, this.tempTexture);
 
     gl.useProgram(lumPgm.program);
@@ -557,8 +545,6 @@ void main() {
 
     // Scaled: scaleTexture
     // PostKernel: tempTexture
-
-
     bindFramebuffer(gl, this.framebuffer, this.tempTexture2);
 
     gl.useProgram(pushPgm.program);
@@ -576,8 +562,6 @@ void main() {
 
     // Scaled: tempTexture2
     // PostKernel: tempTexture
-
-
     bindFramebuffer(gl, this.framebuffer, this.tempTexture);
 
     gl.useProgram(lumPgm.program);
@@ -590,8 +574,6 @@ void main() {
 
     // Scaled: tempTexture2
     // PostKernel: tempTexture
-
-
     bindFramebuffer(gl, this.framebuffer, this.tempTexture3);
 
     gl.useProgram(gradPgm.program);
@@ -607,8 +589,6 @@ void main() {
 
     // Scaled: tempTexture2
     // PostKernel: tempTexture3
-
-
     bindFramebuffer(gl, this.framebuffer, this.tempTexture);
 
     gl.useProgram(finalPgm.program);
@@ -626,8 +606,6 @@ void main() {
 
     // Scaled: tempTexture
     // PostKernel: tempTexture3
-
-
     bindFramebuffer(gl, null);
 
     gl.useProgram(drawPgm.program);
@@ -640,13 +618,9 @@ void main() {
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   };
-
-
   let scaler = null;
-  let scale = 1;
   let bold = 6;
   let blur = 2;
-
 
   /**
    * Initialize scaling
@@ -657,8 +631,7 @@ void main() {
    * @param boldAmount
    * @param blurAmount
    */
-  function init({video, board, scale = 1.5, boldAmount = 6, blurAmount = 2}) {
-
+  function init({ video, board, scale = 1.5, boldAmount = 6, blurAmount = 2 }) {
     const gl = board.getContext('webgl');
 
     video.preload = 'auto';
@@ -703,10 +676,8 @@ void main() {
     blur = blurAmount;
   }
 
-
   return {
     init,
-    updateParameters,
+    updateParameters
   }
-
 };

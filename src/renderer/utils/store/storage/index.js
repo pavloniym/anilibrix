@@ -1,4 +1,4 @@
-import {getItem, setItem, removeItem} from './storeStorage'
+import { getItem, setItem, removeItem } from './storeStorage'
 
 export {
   getItem,

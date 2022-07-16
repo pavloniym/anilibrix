@@ -3,5 +3,5 @@ import TorrentHandler from './torrent'
 
 export {
   ServerHandler,
-  TorrentHandler,
+  TorrentHandler
 }

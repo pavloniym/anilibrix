@@ -1,3 +1,3 @@
-import FavoritesToolbar  from './FavoritesToolbar'
+import FavoritesToolbar from './FavoritesToolbar'
 
 export default FavoritesToolbar

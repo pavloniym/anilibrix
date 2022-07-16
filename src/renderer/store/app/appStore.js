@@ -17,7 +17,7 @@ export default {
   state: {
     drawer: false,
     welcome_view: null,
-    is_searching: false,
+    is_searching: false
   },
 
   mutations: {
@@ -28,7 +28,7 @@ export default {
      * @param drawer
      * @return {*}
      */
-    [SET_DRAWER]: (s, drawer) => s.drawer = drawer,
+    [SET_DRAWER]: (s, drawer) => (s.drawer = drawer),
 
     /**
      * Set searching state
@@ -37,8 +37,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_SEARCHING]: (s, state) => s.is_searching = state,
-
+    [SET_SEARCHING]: (s, state) => (s.is_searching = state),
 
     /**
      * Set welcome view
@@ -46,12 +45,10 @@ export default {
      * @param s
      * @param welcome_view
      */
-    [SET_WELCOME_VIEW]: (s, welcome_view) => s.welcome_view = welcome_view,
-
+    [SET_WELCOME_VIEW]: (s, welcomeView) => (s.welcome_view = welcomeView)
   },
 
   actions: {
-
 
     /**
      * Set drawer state
@@ -61,8 +58,7 @@ export default {
      * @param dispatch
      * @return {*}
      */
-    setDrawer: ({commit}, drawer) => commit(SET_DRAWER, drawer),
-
+    setDrawer: ({ commit }, drawer) => commit(SET_DRAWER, drawer),
 
     /**
      * Set searching state
@@ -71,16 +67,14 @@ export default {
      * @param state
      * @return {*}
      */
-    setSearching: ({commit}, state) => commit(SET_SEARCHING, state),
-
+    setSearching: ({ commit }, state) => commit(SET_SEARCHING, state),
 
     /**
      * Set welcome view
      *
      * @param commit
-     * @param view
+     * @param welcomeView
      */
-    setWelcomeView: ({commit}, welcome_view) => commit(SET_WELCOME_VIEW, welcome_view),
-
+    setWelcomeView: ({ commit }, welcomeView) => commit(SET_WELCOME_VIEW, welcomeView)
   }
 }

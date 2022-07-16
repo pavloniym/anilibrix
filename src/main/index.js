@@ -1,19 +1,18 @@
 // Main process
 import path from 'path'
-import {app} from 'electron'
-import {meta} from '@package'
+import { app } from 'electron'
+import { meta } from '@package'
 import sentry from './utils/sentry'
 
 // Store
-import {setUserId, getStore} from '@store'
+import { setUserId, getStore } from '@store'
 
 // Windows
-import {Main, Torrent} from './utils/windows'
+import { Main, Torrent } from './utils/windows'
 
 // Download handlers
-//import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
-import { autoUpdater } from "electron-updater"
-
+// import {startingDownload, cancelingDownload, openingDownload} from "@main/handlers/download/downloadHandlers";
+import { autoUpdater } from 'electron-updater'
 
 // App Handlers
 import {
@@ -24,7 +23,7 @@ import {
 } from '@main/handlers/app/appHandlers'
 
 // Torrent Handlers
-import {broadcastTorrentEvents} from "@main/handlers/torrents/torrentsHandler";
+import { broadcastTorrentEvents } from '@main/handlers/torrents/torrentsHandler';
 
 // Import tray and menu
 import Tray from './utils/tray'
@@ -32,7 +31,6 @@ import Menu from './utils/menu'
 
 // Remote
 require('@electron/remote/main').initialize()
-
 
 // Create tray and menu controller
 const trayController = new Tray();
@@ -51,22 +49,20 @@ app.commandLine.appendSwitch('disable-site-isolation-trials');
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
-
 // Close app on all windows closed (relevant for mac users)
 app.on('window-all-closed', () => app.quit());
 
 // App ready handler
 app.on('ready', async () => {
-
   // Set user id
   await setUserId();
 
   // Initialize sentry.io
-  sentry({store: getStore(), source: 'main'});
+  sentry({ store: getStore(), source: 'main' });
 
   // Create windows
-  Main.createWindow({title: meta.name}).loadUrl();
-  Torrent.createWindow({title: `${meta.name} Torrent`}).loadUrl();
+  Main.createWindow({ title: meta.name }).loadUrl();
+  Torrent.createWindow({ title: `${meta.name} Torrent` }).loadUrl();
 
   const mainWindow = Main.getWindow()
   const torrentWindow = Torrent.getWindow()
@@ -84,14 +80,14 @@ app.on('ready', async () => {
   // Create menu
   // Create tray icon
   menuController.setWindows(Main, Torrent).init();
-  trayController.createTrayIcon({iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')}).setTooltip(meta.name);
+  trayController.createTrayIcon({
+    iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')
+  }).setTooltip(meta.name);
 
   appHandlers(); // App handlers
   torrentHandlers(); // Torrent handler
-  //downloadHandlers(); // Download handlers
+  // downloadHandlers(); // Download handlers
 });
-
-
 
 /**
  * App handlers
@@ -100,12 +96,11 @@ app.on('ready', async () => {
  * @return {void}
  */
 const appHandlers = () => {
-  catchAppAboutEvent(); // about dialog
-  catchAppDockNumberEvent(); // app dock number event
-  catchAppDevtoolsMainEvent(); // devtools main
-  catchAppDevtoolsTorrentEvent(); //devtools torrent
+  catchAppAboutEvent(); // About dialog
+  catchAppDockNumberEvent(); // App dock number event
+  catchAppDevtoolsMainEvent(); // Devtools main
+  catchAppDevtoolsTorrentEvent(); // Devtools torrent
 };
-
 
 /**
  * Torrents handlers
@@ -116,7 +111,6 @@ const torrentHandlers = () => {
   broadcastTorrentEvents(); // broadcast all torrent events
 };
 
-
 /**
  * Download handlers
  * Start download, cancel and open file
@@ -124,12 +118,10 @@ const torrentHandlers = () => {
  * @return {void}
  */
 const downloadHandlers = () => {
-
-  // Create storage
-//  const storage = {};
-
-  // Handlers
- // startingDownload(storage, Main); // Start download
-//  cancelingDownload(storage); // Cancel download
-//  openingDownload(storage); // Open downloaded file
+  // // Create storage
+  // const storage = {};
+  // // Handlers
+  // startingDownload(storage, Main); // Start download
+  // cancelingDownload(storage); // Cancel download
+  // openingDownload(storage); // Open downloaded file
 };

@@ -1,12 +1,12 @@
 // Proxy
-import AccountProxy from "@proxies/account";
+import AccountProxy from '@proxies/account';
 
 // Utils
 import __get from 'lodash/get'
-import {v4 as uuid} from 'uuid'
+import { v4 as uuid } from 'uuid'
 
 // Handlers
-import {showAppError} from "@main/handlers/notifications/notificationsHandler";
+import { showAppError } from '@main/handlers/notifications/notificationsHandler';
 
 const SET_USER_ID = 'SET_USER_ID';
 const SET_SESSION = 'SET_SESSION';
@@ -20,7 +20,7 @@ export default {
     profile: {
       id: null,
       login: null,
-      avatar: null,
+      avatar: null
     }
   },
 
@@ -32,8 +32,7 @@ export default {
      * @param s
      * @return {boolean}
      */
-    isAuthorized: s => !!(s.session !== null && s.profile.id !== null),
-
+    isAuthorized: s => !!(s.session !== null && s.profile.id !== null)
   },
 
   mutations: {
@@ -45,7 +44,7 @@ export default {
      * @param uuid
      * @return {*}
      */
-    [SET_USER_ID]: (s, uuid) => s.userId = uuid,
+    [SET_USER_ID]: (s, uuid) => (s.userId = uuid),
 
     /**
      * Set session
@@ -54,8 +53,7 @@ export default {
      * @param session
      * @return {*}
      */
-    [SET_SESSION]: (s, session) => s.session = session,
-
+    [SET_SESSION]: (s, session) => (s.session = session),
 
     /**
      * Set profile data
@@ -75,7 +73,6 @@ export default {
 
   actions: {
 
-
     /**
      * Try to login with provided credentials
      *
@@ -85,66 +82,52 @@ export default {
      * @param password
      * @return {Promise<void>}
      */
-    login: async ({commit, dispatch}, {login, password}) => {
+    login: async ({ commit, dispatch }, { login, password }) => {
       try {
-
         // Reset session and profile
         await dispatch('setSession', null);
         await dispatch('setProfile', null);
 
         // Try to login with provided credentials
-        return await new AccountProxy().login({login, password});
-
+        return await new AccountProxy().login({ login, password });
       } catch (error) {
-
         // Show app error
         // Throw error
         showAppError(error);
         throw error;
-
       }
     },
-
-
     /**
      * Logout user
      *
      * @param dispatch
      * @return {Promise<void>}
      */
-    logout: async ({dispatch}) => {
+    logout: async ({ dispatch }) => {
       try {
-
         await new AccountProxy().logout();
-
       } catch (error) {
-
         // Show app error
         // Throw error
         // showAppError('Произошла ошибка при деавторизации пользователя');
         throw error;
-
       } finally {
-
         // Clear session
         // Clear profile data
         // Even if logout error
         // Reset session and profile
         await dispatch('setSession', null);
         await dispatch('setProfile', null);
-
       }
     },
-
 
     /**
      * Get profile data
      *
      * @return {Promise<*>}
      */
-    getProfile: async ({dispatch}) => {
+    getProfile: async ({ dispatch }) => {
       try {
-
         // Create request to get profile data
         const profile = await new AccountProxy().getProfile();
 
@@ -155,10 +138,8 @@ export default {
         const avatar = new AccountProxy().getAvatarPath(__get(profile, 'avatar'));
 
         // Set profile data
-        await dispatch('setProfile', {id, login, avatar});
-
+        await dispatch('setProfile', { id, login, avatar });
       } catch (error) {
-
         // Reset session and profile on error
         // Reset session and profile
         await dispatch('setSession', null);
@@ -177,10 +158,9 @@ export default {
      * @param state
      * @param uuid
      */
-    setUserId: ({commit, state}) => {
+    setUserId: ({ commit, state }) => {
       if (state.userId === null) commit(SET_USER_ID, uuid());
     },
-
 
     /**
      * Set session value
@@ -189,8 +169,7 @@ export default {
      * @param session
      * @return {*}
      */
-    setSession: ({commit}, session = null) => commit(SET_SESSION, session || null),
-
+    setSession: ({ commit }, session = null) => commit(SET_SESSION, session || null),
 
     /**
      * Set profile data
@@ -199,7 +178,7 @@ export default {
      * @param profile
      * @return {*}
      */
-    setProfile: ({commit}, profile = null) => commit(SET_PROFILE, profile || {})
+    setProfile: ({ commit }, profile = null) => commit(SET_PROFILE, profile || {})
 
   }
 }

@@ -1,12 +1,10 @@
 <template>
   <div>
-
-    <v-btn icon id="toolbar__settings" @click="_setDrawer(!_drawer)">
+    <v-btn icon id="toolbar__settings" v-on:click="_setDrawer(!_drawer)">
       <v-icon>mdi-settings</v-icon>
     </v-btn>
 
     <v-tooltip left activator="#toolbar__settings">Настройки приложения</v-tooltip>
-
   </div>
 </template>
 

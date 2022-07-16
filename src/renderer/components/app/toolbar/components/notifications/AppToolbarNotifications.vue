@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <!-- Icon -->
     <v-badge
       overlap

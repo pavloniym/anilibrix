@@ -11,7 +11,6 @@ export default {
       //
     },
 
-
     /**
      * Handle mouse scroll event
      *
@@ -28,10 +27,8 @@ export default {
     window.addEventListener('mousewheel', this.handleMouseScroll);
   },
 
-
   destroyed() {
     window.removeEventListener('mousemove', this.handleMouseEvents);
     window.removeEventListener('mousewheel', this.handleMouseScroll);
-  },
-
+  }
 }

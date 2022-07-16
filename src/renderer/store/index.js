@@ -3,11 +3,11 @@ import Vuex from 'vuex'
 import Storage from 'electron-store'
 
 import __merge from 'lodash/merge'
-import {getInitialState} from '@utils/store/state'
+import { getInitialState } from '@utils/store/state'
 import createPromiseAction from '@plugins/vuex-promise-action'
 import createPersistedState from 'vuex-persistedstate'
-import {createSharedMutations} from 'vuex-electron'
-import {getItem, setItem, removeItem} from '@utils/store/storage'
+import { createSharedMutations } from 'vuex-electron'
+import { getItem, setItem, removeItem } from '@utils/store/storage'
 
 import app from './app'
 import release from './release'
@@ -15,7 +15,6 @@ import catalog from './catalog'
 import releases from './releases'
 import favorites from './favorites'
 import notifications from './notifications'
-
 
 Vue.use(Vuex);
 
@@ -31,8 +30,7 @@ const modules = {
 // Get debug state
 // Create storage instance
 const debug = process.env.NODE_ENV !== 'production';
-const storage = new Storage({name: 'anilibrix'});
-
+const storage = new Storage({ name: 'anilibrix' });
 
 // Create store instance
 const store = new Vuex.Store({
@@ -45,13 +43,13 @@ const store = new Vuex.Store({
         'app',
         'notifications',
         'catalog.filters',
-        'favorites.settings',
+        'favorites.settings'
       ],
       storage: {
         getItem: getItem(storage),
         setItem: setItem(storage),
-        removeItem: removeItem(storage),
-      },
+        removeItem: removeItem(storage)
+      }
     }),
     createSharedMutations()
   ],
@@ -66,7 +64,6 @@ const store = new Vuex.Store({
      * @return void
      */
     RESET_STORE(s) {
-
       // Get app persisted states
       const account = s.app.account;
       const watch = s.app.watch;
@@ -76,9 +73,8 @@ const store = new Vuex.Store({
 
       // Replace store
       // Merge initial with persisted
-      this.replaceState(__merge(state, {app: {account, watch}}));
+      this.replaceState(__merge(state, { app: { account, watch } }));
     }
-
   },
 
   actions: {
@@ -90,11 +86,11 @@ const store = new Vuex.Store({
      * @return {Promise<*>}
      * @constructor
      */
-    RESET_STORE: async ({commit}) => await commit('RESET_STORE')
+    // eslint-disable-next-line no-return-await
+    RESET_STORE: async ({ commit }) => await commit('RESET_STORE')
   }
 
 });
-
 
 /**
  * Get store
@@ -103,14 +99,13 @@ const store = new Vuex.Store({
  */
 export const getStore = () => store;
 
-
 /**
  * Set user's id on app startup
  *
  * @return {Promise<any>}
  */
-export const setUserId = async () => await store.dispatch('app/account/setUserId');
-
+// eslint-disable-next-line no-return-await
+export const setUserId = async () => await store.dispatch('app/account/setUserId')
 
 /**
  * Export store

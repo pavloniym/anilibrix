@@ -1,5 +1,4 @@
 <script>
-
   export default {
     render: () => null,
     created() {

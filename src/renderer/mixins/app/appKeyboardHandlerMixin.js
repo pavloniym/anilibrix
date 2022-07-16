@@ -17,9 +17,7 @@ export default {
     document.addEventListener('keydown', this.handleKeyboardEvents);
   },
 
-
   destroyed() {
     document.removeEventListener('keydown', this.handleKeyboardEvents);
-  },
-
+  }
 }

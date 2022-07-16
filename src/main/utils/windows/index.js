@@ -3,5 +3,5 @@ import Torrent from './appWindowTorrent'
 
 export {
   Main,
-  Torrent,
+  Torrent
 }

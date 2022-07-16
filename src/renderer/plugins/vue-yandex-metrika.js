@@ -4,8 +4,7 @@ import app from '@/../package'
 import __get from 'lodash/get'
 
 export default {
-  install: (Vue, {id, store, router}) => {
-
+  install: (Vue, { id, store, router }) => {
     const USER_ID = __get(store, 'state.app.account.userId');
     const AUTOPLAY_NEXT = __get(store, 'state.app.settings.player.autoplayNext') ? 1 : 0;
     const PLAYER_QUALITY = __get(store, 'state.app.settings.player.quality');
@@ -38,13 +37,13 @@ export default {
             [`notifications:${NOTIFICATIONS}`]: true,
             [`ads:${ADS}`]: true,
             [`ads:maximum:${ADS_MAXIMUM}`]: true,
-            [`devtools:${DEVTOOLS}`]: true,
+            [`devtools:${DEVTOOLS}`]: true
           },
           webvisor: true,
           clickmap: true,
           trackHash: true,
-          userParams: {UserID: USER_ID},
-          accurateTrackBounce: true,
+          userParams: { UserID: USER_ID },
+          accurateTrackBounce: true
         }
       })
     }

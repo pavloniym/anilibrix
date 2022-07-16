@@ -5,7 +5,6 @@
 </template>
 
 <script>
-
   import LoaderLogo from './components/logo'
 
   export default {

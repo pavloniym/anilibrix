@@ -1,7 +1,6 @@
-import {BrowserWindow} from "electron";
+import { BrowserWindow } from 'electron';
 
 export default class Window {
-
   /**
    * Constructor
    *
@@ -10,7 +9,6 @@ export default class Window {
   constructor() {
     this._window = null;
   }
-
 
   /**
    * Get window configuration
@@ -21,7 +19,6 @@ export default class Window {
     return {};
   }
 
-
   /**
    * Get window url
    *
@@ -30,7 +27,6 @@ export default class Window {
   getWindowUrl() {
     return null;
   }
-
 
   /**
    * Get window
@@ -47,10 +43,9 @@ export default class Window {
    * @return this
    */
   createWindow(configuration) {
-    this._window = new BrowserWindow({...this.getWindowConfiguration(), ...configuration});
+    this._window = new BrowserWindow({ ...this.getWindowConfiguration(), ...configuration });
     return this;
   }
-
 
   /**
    * Load window url
@@ -68,7 +63,6 @@ export default class Window {
     return this;
   }
 
-
   /**
    * Send to window
    *
@@ -81,13 +75,12 @@ export default class Window {
       window.webContents.send(channel, payload);
 
       if (process.env.NODE_ENV === 'development') {
-        console.log({channel, payload})
+        console.log({ channel, payload })
       }
     }
 
     return this;
   }
-
 
   /**
    * Show devtools
@@ -95,7 +88,6 @@ export default class Window {
    * @return void
    */
   showDevTools() {
-    this.getWindow().openDevTools({mode:'detach'});
+    this.getWindow().openDevTools({ mode: 'detach' });
   }
-
 }

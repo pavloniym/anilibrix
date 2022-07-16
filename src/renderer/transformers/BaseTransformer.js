@@ -2,8 +2,6 @@
 import get from 'lodash/get'
 
 export default class BaseTransformer {
-
-
   /**
    * Method used to transform a fetched collection.
    *
@@ -13,7 +11,6 @@ export default class BaseTransformer {
   fetchCollection(items) {
     return (items || []).map(item => this.fetch(item));
   }
-
 
   /**
    * Method used to transform a fetched item
@@ -33,7 +30,6 @@ export default class BaseTransformer {
   fetch(item) {
     //
   }
-
 
   /**
    * Get value from source

@@ -1,16 +1,14 @@
 // Proxy
-import ReleaseProxy from "@proxies/release";
-import FavoritesProxy from "@proxies/favorites";
+import ReleaseProxy from '@proxies/release';
+import FavoritesProxy from '@proxies/favorites';
 
 // Transformer
-import ReleaseTransformer from "@transformers/release";
-import EpisodesTransformer from "@transformers/episode";
+import ReleaseTransformer from '@transformers/release';
+import EpisodesTransformer from '@transformers/episode';
 
 // Utils
-import axios from "axios";
-import {showAppError} from "@main/handlers/notifications/notificationsHandler";
-
-
+import axios from 'axios';
+import { showAppError } from '@main/handlers/notifications/notificationsHandler';
 
 // Mutations
 const ADD_ITEM = 'ADD_ITEM';
@@ -24,7 +22,7 @@ const SET_SETTINGS_YEARS_COLLAPSED = 'SET_SETTINGS_YEARS_COLLAPSED';
 
 // Requests
 let REQUEST_FOR_FAVORITES = null;
-let REQUESTS_FOR_CHANGES = {};
+const REQUESTS_FOR_CHANGES = {};
 
 export default {
   namespaced: true,
@@ -35,9 +33,8 @@ export default {
       sort: 'original',
       group: 'years',
       show_seen: true,
-      years_collapsed: [],
-    },
-
+      years_collapsed: []
+    }
   },
 
   getters: {
@@ -53,14 +50,13 @@ export default {
      */
     isAuthorized: (s, getters, rootState, rootGetters) => rootGetters['app/account/isAuthorized'],
 
-
     /**
      * Check if provided release is in favorite
      *
      * @param s
      * @return {function(*): boolean}
      */
-    isInFavorite: s => release => (s.items || []).findIndex(item => item.id === release.id) > -1,
+    isInFavorite: s => release => ((s.items || []).findIndex(item => item.id === release.id) > -1)
 
   },
 
@@ -75,7 +71,6 @@ export default {
      */
     [ADD_ITEM]: (s, release) => s.items.unshift(release),
 
-
     /**
      * Set items
      *
@@ -83,8 +78,7 @@ export default {
      * @param items
      * @return {*}
      */
-    [SET_ITEMS]: (s, items) => s.items = items,
-
+    [SET_ITEMS]: (s, items) => (s.items = items),
 
     /**
      * Set loading
@@ -93,8 +87,7 @@ export default {
      * @param loading
      * @return {*}
      */
-    [SET_LOADING]: (s, loading) => s.loading = loading,
-
+    [SET_LOADING]: (s, loading) => (s.loading = loading),
 
     /**
      * Remove release from items
@@ -112,8 +105,7 @@ export default {
      * @param sort
      * @return {*}
      */
-    [SET_SETTINGS_SORT]: (s, sort) => s.settings.sort = sort,
-
+    [SET_SETTINGS_SORT]: (s, sort) => (s.settings.sort = sort),
 
     /**
      * Set settings group type
@@ -122,8 +114,7 @@ export default {
      * @param sort
      * @return {*}
      */
-    [SET_SETTINGS_GROUP]: (s, group) => s.settings.group = group,
-
+    [SET_SETTINGS_GROUP]: (s, group) => (s.settings.group = group),
 
     /**
      * Set settings show seen
@@ -132,8 +123,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_SETTINGS_SHOW_SEEN]: (s, state) => s.settings.show_seen = state,
-
+    [SET_SETTINGS_SHOW_SEEN]: (s, state) => (s.settings.show_seen = state),
 
     /**
      * Set years collapsed
@@ -142,12 +132,11 @@ export default {
      * @param years
      * @return {*}
      */
-    [SET_SETTINGS_YEARS_COLLAPSED]: (s, years) => s.settings.years_collapsed = years,
+    [SET_SETTINGS_YEARS_COLLAPSED]: (s, years) => (s.settings.years_collapsed = years)
 
   },
 
   actions: {
-
 
     /**
      * Get favorites
@@ -156,10 +145,9 @@ export default {
      * @param getters
      * @return {Promise<void>}
      */
-    getFavorites: async ({commit, getters}) => {
+    getFavorites: async ({ commit, getters }) => {
       if (getters.isAuthorized) {
         try {
-
           // Set loading
           commit(SET_LOADING, true);
 
@@ -170,7 +158,7 @@ export default {
 
           // Get releases from server
           // Transform releases
-          const {items} = await new FavoritesProxy().getFavorites({cancelToken: REQUEST_FOR_FAVORITES.token});
+          const { items } = await new FavoritesProxy().getFavorites({ cancelToken: REQUEST_FOR_FAVORITES.token });
           const releases = new ReleaseTransformer().fetchCollection(items);
 
           // Load episodes
@@ -192,28 +180,22 @@ export default {
             .filter(promise => promise.status === 'fulfilled')
             .map(promise => promise.value)
             .filter(release => release.episodes.length > 0)
-            .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}));
+            .map(release => ({ ...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster) }));
 
           // Set releases
           commit(SET_ITEMS, processedReleases);
-
         } catch (error) {
           if (!axios.isCancel(error)) {
-
             // Show error
             // Throw error
             showAppError('Произошла ошибка при загрузке избранных релизов');
             throw error;
-
           }
         } finally {
-
           commit(SET_LOADING, false);
-
         }
       }
     },
-
 
     /**
      * Add release to favorites
@@ -225,10 +207,9 @@ export default {
      * @param release
      * @return {Promise<void>}
      */
-    addToFavorites: async ({dispatch, getters, commit}, release) => {
+    addToFavorites: async ({ dispatch, getters, commit }, release) => {
       if (release && getters.isAuthorized) {
         try {
-
           // Cancel previous request if it was stored
           // Create new request token
           if (REQUESTS_FOR_CHANGES[release.id]) REQUESTS_FOR_CHANGES[release.id].cancel();
@@ -239,11 +220,9 @@ export default {
 
           // Make request to server
           // On error -> rollback
-          await new FavoritesProxy().addToFavorites(release.id, {cancelToken: REQUESTS_FOR_CHANGES[release.id].token});
-
+          await new FavoritesProxy().addToFavorites(release.id, { cancelToken: REQUESTS_FOR_CHANGES[release.id].token });
         } catch (error) {
           if (!axios.isCancel(error)) {
-
             // Rollback added release
             commit(REMOVE_ITEM, release);
 
@@ -251,7 +230,6 @@ export default {
             // Throw error
             showAppError(error);
             throw error;
-
           }
         }
       }
@@ -267,10 +245,9 @@ export default {
      * @param release
      * @return {Promise<void>}
      */
-    removeFromFavorites: async ({dispatch, getters, commit}, release) => {
+    removeFromFavorites: async ({ dispatch, getters, commit }, release) => {
       if (release && getters.isAuthorized) {
         try {
-
           // Cancel previous request if it was stored
           // Create new request token
           if (REQUESTS_FOR_CHANGES[release.id]) REQUESTS_FOR_CHANGES[release.id].cancel();
@@ -281,11 +258,9 @@ export default {
 
           // Make request to server
           // On error -> rollback
-          await new FavoritesProxy().removeFromFavorites(release.id, {cancelToken: REQUESTS_FOR_CHANGES[release.id].token});
-
+          await new FavoritesProxy().removeFromFavorites(release.id, { cancelToken: REQUESTS_FOR_CHANGES[release.id].token });
         } catch (error) {
           if (!axios.isCancel(error)) {
-
             // Rollback removed release
             commit(ADD_ITEM, release);
 
@@ -293,7 +268,6 @@ export default {
             // Throw error
             showAppError(error);
             throw error;
-
           }
         }
       }
@@ -306,17 +280,15 @@ export default {
      * @param state
      * @param year
      */
-    setSettingsYearsCollapsed: ({commit, state}, year) => {
-
+    setSettingsYearsCollapsed: ({ commit, state }, year) => {
       const years = [...state.settings.years_collapsed];
-      const year_index = years.findIndex(item => item === year);
+      const yearIndex = years.findIndex(item => item === year);
 
-      if (year_index > -1) years.splice(year_index, 1);
-      if (year_index === -1) years.push(year);
+      if (yearIndex > -1) years.splice(yearIndex, 1);
+      if (yearIndex === -1) years.push(year);
 
       commit(SET_SETTINGS_YEARS_COLLAPSED, years);
     },
-
 
     /**
      * Set settings sort type
@@ -325,8 +297,7 @@ export default {
      * @param sort
      * @return {*}
      */
-    setSettingsSort: ({commit}, sort) => commit(SET_SETTINGS_SORT, sort),
-
+    setSettingsSort: ({ commit }, sort) => commit(SET_SETTINGS_SORT, sort),
 
     /**
      * Set settings group type
@@ -335,8 +306,7 @@ export default {
      * @param group
      * @return {*}
      */
-    setSettingsGroup: ({commit}, group) => commit(SET_SETTINGS_GROUP, group),
-
+    setSettingsGroup: ({ commit }, group) => commit(SET_SETTINGS_GROUP, group),
 
     /**
      * Set settings show seen
@@ -345,7 +315,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setSettingsShowSeen: ({commit}, state) => commit(SET_SETTINGS_SHOW_SEEN, state)
+    setSettingsShowSeen: ({ commit }, state) => commit(SET_SETTINGS_SHOW_SEEN, state)
 
   }
 }

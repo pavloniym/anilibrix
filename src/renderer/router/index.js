@@ -19,7 +19,6 @@ Router.prototype.push = function (location) {
   push.call(this, location).catch(() => null);
 };
 
-
 const router = new Router({
   routes: [].concat(
     ads,
@@ -29,7 +28,7 @@ const router = new Router({
     catalog,
     account,
     releases,
-    favorites,
+    favorites
   )
 });
 

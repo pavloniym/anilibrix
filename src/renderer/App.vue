@@ -1,6 +1,5 @@
 <template>
   <v-app>
-
     <!-- System Bar -->
     <app-system-bar/>
     <app-settings/>

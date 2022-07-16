@@ -1,13 +1,11 @@
 import __get from 'lodash/get'
-import store from "@store/index";
+import store from '@store/index';
 import axios from '@plugins/axios'
 
 import FormData from 'form-data'
-import {version, meta} from '@package'
+import { version, meta } from '@package'
 
 export default class BaseProxy {
-
-
   /**
    * The method used to perform an AJAX-request.
    *
@@ -18,15 +16,14 @@ export default class BaseProxy {
    * @returns {Promise} The result in a promise.
    */
   async submit(method, url, parameters = {}) {
-
     // Set headers
     // Add user-agent
-    const headers = {...parameters.headers, ...this.getRequestHeaders()};
+    const headers = { ...parameters.headers, ...this.getRequestHeaders() };
 
     // Make request
-    return await axios.request({url, method, ...parameters, headers, timeout: 15000});
+    // eslint-disable-next-line no-return-await
+    return await axios.request({ url, method, ...parameters, headers, timeout: 15000 });
   }
-
 
   /**
    * Parse base response model
@@ -35,19 +32,16 @@ export default class BaseProxy {
    * @return {*}
    */
   handleResponse(response) {
-
     const data = __get(response, 'data', null);
     const status = __get(response, 'status', false);
     const message = __get(response, 'error.message', 'Ошибка при запросе');
 
     if (status === true) {
       return data;
-
     } else {
       throw new Error(message);
     }
   }
-
 
   /**
    * Get api endpoint url
@@ -58,7 +52,6 @@ export default class BaseProxy {
     return process.env.API_ENDPOINT_URL;
   }
 
-
   /**
    * Get static endpoint url
    *
@@ -68,7 +61,6 @@ export default class BaseProxy {
     return process.env.STATIC_ENDPOINT_URL;
   }
 
-
   /**
    * Get form data from provided data object
    *
@@ -76,7 +68,6 @@ export default class BaseProxy {
    * @return {FormData}
    */
   getFormDataObject(data = null) {
-
     // Create form data object
     const formData = new FormData();
 
@@ -88,14 +79,12 @@ export default class BaseProxy {
     return formData;
   }
 
-
   /**
    * Get default request headers
    *
    * @return {{}}
    */
   getRequestHeaders() {
-
     // Create headers
     const headers = {};
 
@@ -111,5 +100,4 @@ export default class BaseProxy {
 
     return headers;
   }
-
 }

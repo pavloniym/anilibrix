@@ -1,8 +1,7 @@
 import stripHtml from 'string-strip-html';
-import BaseTransformer from "@transformers/BaseTransformer";
+import BaseTransformer from '@transformers/BaseTransformer';
 
 export default class CatalogTransformer extends BaseTransformer {
-
   /**
    * Transform incoming data
    *
@@ -20,10 +19,9 @@ export default class CatalogTransformer extends BaseTransformer {
       },
       poster: this.get(release, 'poster'),
       genres: this.get(release, 'genres') || [],
-      description: this._stripHtml(this.get(release, 'description')),
+      description: this._stripHtml(this.get(release, 'description'))
     }
   }
-
 
   /**
    * Strip html tags

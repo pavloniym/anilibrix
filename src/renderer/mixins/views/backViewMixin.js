@@ -14,14 +14,11 @@ export default {
      * @return {void}
      */
     async toBack() {
-      await this.$router.replace(this.from || {name: 'releases'});
-    },
-
+      await this.$router.replace(this.from || { name: 'releases' });
+    }
   },
-
 
   beforeRouteEnter(to, from, next) {
-    next(vm => vm.from = from || null)
-  },
-
+    next(vm => (vm.from = from || null))
+  }
 }

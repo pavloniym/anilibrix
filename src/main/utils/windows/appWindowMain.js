@@ -2,15 +2,12 @@ import Window from './appWindow'
 import * as path from 'path'
 
 class MainWindow extends Window {
-
-
   /**
    * Get window configuration
    *
    * @return Object
    */
   getWindowConfiguration() {
-
     const width = 1120;
     const height = 720;
     const minWidth = 820;
@@ -43,12 +40,11 @@ class MainWindow extends Window {
         contextIsolation: false,
         enableRemoteModule: true,
         experimentalFeatures: true,
-        allowRunningInsecureContent: true,
+        allowRunningInsecureContent: true
       },
-      backgroundColor: '#121212',
+      backgroundColor: '#121212'
     }
   }
-
 
   /**
    * Get window url
@@ -60,8 +56,6 @@ class MainWindow extends Window {
       ? 'http://localhost:9080'
       : `file://${__dirname}/index.html`;
   }
-
 }
-
 
 export default new MainWindow();
