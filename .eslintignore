@@ -1,0 +1,4 @@
+dist
+.electron-vue
+webpack.config.js
+node_modules
