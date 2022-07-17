@@ -44,8 +44,8 @@
 </template>
 
 <script>
-
-  import {toVideo} from "@utils/router/views";
+  import { sendEnableSystemSleepBlockerEvent, sendDisableSystemSleepBlockerEvent } from "@main/handlers/app/appHandlers";
+  import { toVideo } from "@utils/router/views";
 
   const props = {
     player: {
@@ -127,6 +127,10 @@
 
     },
 
+    beforeDestroy() {
+      sendDisableSystemSleepBlockerEvent()
+    },
+
     created() {
 
       // Set initial values
@@ -135,6 +139,9 @@
       // Watch for player playing and pause events
       this.player.on('playing', () => this.is_playing = true);
       this.player.on('pause', () => this.is_playing = false);
+
+      this.player.on('playing', () => sendEnableSystemSleepBlockerEvent());
+      this.player.on('pause', () => sendDisableSystemSleepBlockerEvent());
 
       // Fixing unknown bug with muted: true after plyer createing
       // TODO: Maybe solve this problem in the best way in the future
