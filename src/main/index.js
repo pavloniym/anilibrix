@@ -1,7 +1,7 @@
 // Main process
 import path from 'path'
-import { app } from 'electron'
-import { meta } from '@package'
+import { app, BrowserWindow } from 'electron'
+import { meta, version } from '@package'
 import sentry from './utils/sentry'
 
 // Store
@@ -30,6 +30,7 @@ import { broadcastTorrentEvents } from '@main/handlers/torrents/torrentsHandler'
 // Import tray and menu
 import Tray from './utils/tray'
 import Menu from './utils/menu'
+import { openWindowInterceptor } from '@main/utils/windows/openWindowInterceptor'
 
 // Remote
 require('@electron/remote/main').initialize()
@@ -53,6 +54,21 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 // Close app on all windows closed (relevant for mac users)
 app.on('window-all-closed', () => app.quit());
+
+app.on('web-contents-created', (event, webContents) => {
+  webContents.setWindowOpenHandler(openWindowInterceptor)
+  webContents.setUserAgent(`${meta.name}/${version}`)
+  webContents.on('will-attach-webview', (event, webPreferences, params) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false
+
+    // Enable sandbox
+    webPreferences.contextIsolation = true
+  })
+})
 
 // App ready handler
 app.on('ready', async () => {
@@ -81,7 +97,7 @@ app.on('ready', async () => {
 
   // Create menu
   // Create tray icon
-  menuController.setWindows(Main, Torrent).init();
+  menuController.setWindows(mainWindow, torrentWindow).init();
   trayController.createTrayIcon({
     iconPath: path.join(__dirname, '../../build/icons/tray/icon.png')
   }).setTooltip(meta.name);

@@ -56,7 +56,8 @@ export default class AppMenu {
     this._menu = Menu.buildFromTemplate(this._getMenuTemplate());
 
     // Set menu
-    Menu.setApplicationMenu(this._menu);
+    this._mainWindow.setMenu(this._menu)
+    this._torrentWindow.setMenu(this._menu)
 
     return this;
   }
