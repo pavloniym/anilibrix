@@ -104,8 +104,19 @@
 
   }
 </script>
-<style lang="scss" scoped>
 
+<style>
+  /*
+    See: https://github.com/buefy/buefy/issues/2096
+    See: https://stackoverflow.com/questions/14677490/blurry-text-after-using-css-transform-scale-in-chrome
+  */
+  .v-navigation-drawer__content {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+</style>
+
+<style lang="scss" scoped>
   .settings {
 
     ::v-deep {
