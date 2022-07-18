@@ -58,7 +58,7 @@
       configuration() {
         return {
           src: this.src,
-          partition: "release:comments",
+          partition: "persist:release:comments",
           allowpopups: true,
           httpreferrer: this.anilibria,
           disablewebsecurity: true,
