@@ -82,15 +82,14 @@
     },
 
     mounted() {
-
       const webview = this.$refs.comments;
 
       // Hide webview to hide glitched on dom-ready event
-      webview.addEventListener('did-navigate', () => this.visible = false);
+      webview.addEventListener('did-navigate', this.didloadedEvent);
 
       // Added certificate error
-      webview.addEventListener('certificate-error', () => this.$toasted.error('Произошла ошибка при загрузке комментариев. Ошибка с сертификатом'));
-      webview.addEventListener('did-fail-load', () => this.$toasted.error('Произошла ошибка при загрузке комментариев'));
+      webview.addEventListener('certificate-error', this.certError);
+      webview.addEventListener('did-fail-load', this.didFailLoad);
 
 
       // Dom ready event
@@ -121,7 +120,26 @@
 
     },
 
+    methods: {
+      didloadedEvent () {
+        this.visible = false
+        console.log()
+      },
+
+      didFailLoad () {
+        this.$toasted.error('Произошла ошибка при загрузке комментариев')
+      },
+
+      certError () {
+        this.$toasted.error('Произошла ошибка при загрузке комментариев. Ошибка с сертификатом')
+      }
+    },
+
     beforeDestroy() {
+      const webview = this.$refs.comments;
+      webview.removeEventListener('did-navigate', this.didloadedEvent);
+      webview.removeEventListener('certificate-error', this.certError);
+      webview.removeEventListener('did-fail-load', this.didFailLoad);
       if (this.interval) clearInterval(this.interval);
     }
 
