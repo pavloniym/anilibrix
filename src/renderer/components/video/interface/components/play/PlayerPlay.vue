@@ -152,6 +152,13 @@
         }
       });
 
+      // Update PIP video if PIP exists
+      this.player.on('playing', () => {
+        if (document.pictureInPictureElement) {
+          this.player.pip = true
+        }
+      });
+
       // Handler buffering events
       this.player.on('waiting', () => this.is_buffering = true);
       this.player.on('playing', () => this.is_buffering = false);
