@@ -11,9 +11,14 @@
           <v-card-title>Авторизация</v-card-title>
           <v-card-text>
             <div>Укажите данные, с которыми вы зарегистрировались на сайте Анилибрии</div>
-            <div>Приложение не хранит ваши учетные данные ни в каком виде</div>
           </v-card-text>
-
+          <v-alert
+            icon="mdi-shield-lock"
+            dense
+            type="info"
+          >
+            Ваши учетные данные хранятся в зашифрованном виде
+          </v-alert>
           <!-- Login / Email -->
           <!-- Password -->
           <v-layout class="py-6 pt-2">
@@ -58,6 +63,7 @@
   // Utils
   import {required} from 'vuelidate/lib/validators'
   import {BackViewMixin} from '@mixins/views'
+  import { invokeSafeStorageEncrypt } from '@main/handlers/app/appHandlers'
 
   export default {
     name: "Account.Login.View",
@@ -94,6 +100,10 @@
             // Save account session
             const payload = {login: this.login, password: this.password};
             const session = await this.$store.dispatchPromise('app/account/login', payload);
+            await Promise.allSettled([
+              await invokeSafeStorageEncrypt('user.login', this.login),
+              await invokeSafeStorageEncrypt('user.password', this.password)
+            ])
             await this.$store.dispatchPromise('app/account/setSession', session);
 
             // Get profile data

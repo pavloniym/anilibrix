@@ -7,6 +7,8 @@ import { v4 as uuid } from 'uuid'
 
 // Handlers
 import { showAppError } from '@main/handlers/notifications/notificationsHandler';
+import * as safeStorage from '@main/utils/safeStorage'
+import { invokeSafeStorageEncrypt } from '@main/handlers/app/appHandlers'
 
 const SET_USER_ID = 'SET_USER_ID';
 const SET_SESSION = 'SET_SESSION';
@@ -118,6 +120,8 @@ export default {
         // Reset session and profile
         await dispatch('setSession', null);
         await dispatch('setProfile', null);
+        safeStorage.remove('user.login')
+        safeStorage.remove('user.password')
       }
     },
 
@@ -127,7 +131,7 @@ export default {
      * @return {Promise<*>}
      */
     getProfile: async ({ dispatch }) => {
-      try {
+      async function getProfile () {
         // Create request to get profile data
         const profile = await new AccountProxy().getProfile();
 
@@ -139,7 +143,22 @@ export default {
 
         // Set profile data
         await dispatch('setProfile', { id, login, avatar });
+      }
+
+      try {
+        await getProfile()
       } catch (error) {
+        const login = safeStorage.getDecrypted('user.login')
+        const password = safeStorage.getDecrypted('user.password')
+
+        if (login !== false && password !== false) {
+          // Make login request with credentials
+          const session = await dispatch('login', { login, password });
+          await dispatch('setSession', session)
+          await getProfile()
+          return
+        }
+
         // Reset session and profile on error
         // Reset session and profile
         await dispatch('setSession', null);

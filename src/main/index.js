@@ -21,7 +21,8 @@ import {
   catchAppDevtoolsTorrentEvent,
   catchAppDockNumberEvent,
   catchDisableSystemSleepBlockerEvent,
-  catchEnableSystemSleepBlockerEvent
+  catchEnableSystemSleepBlockerEvent,
+  handleSafeStorageEncrypt
 } from '@main/handlers/app/appHandlers'
 
 // Torrent Handlers
@@ -120,6 +121,7 @@ const appHandlers = () => {
   catchAppDevtoolsTorrentEvent(); // Devtools torrent
   catchEnableSystemSleepBlockerEvent(); // Disable system sleep
   catchDisableSystemSleepBlockerEvent(); // Enable system sleep
+  handleSafeStorageEncrypt();
 };
 
 /**
