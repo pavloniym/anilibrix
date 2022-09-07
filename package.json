@@ -151,7 +151,7 @@
     "lethargy": "^1.0.9",
     "lodash": "^4.17.19",
     "matroska-subtitles": "^3.3.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "node-cron": "^2.0.3",
     "node-localstorage": "^2.1.6",
     "object-hash": "^2.0.3",
