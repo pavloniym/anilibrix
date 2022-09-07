@@ -6,9 +6,9 @@ export default [
     meta: {
       layout: {
         hide_scroll: true,
-        hide_toolbar: true,
+        hide_toolbar: true
       }
     },
-    component: () => import('@views/blank'),
+    component: () => import('@views/blank')
   }
 ]

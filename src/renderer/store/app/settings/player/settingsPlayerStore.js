@@ -18,15 +18,15 @@ export default {
       blur: 2,
       process: false
     },
-    episodes: {order: 'asc'},
-    torrents: {process: false},
+    episodes: { order: 'asc' },
+    torrents: { process: false },
     autoplayNext: true,
     opening: {
       skip_time: 30,
-      skip_button: false,
+      skip_button: false
     },
     video: {
-      buffer: 300,
+      buffer: 300
     }
   },
 
@@ -39,8 +39,7 @@ export default {
      * @param quality
      * @return {*}
      */
-    [SET_QUALITY]: (s, quality) => s.quality = quality,
-
+    [SET_QUALITY]: (s, quality) => (s.quality = quality),
 
     /**
      * Set episodes sort
@@ -49,8 +48,7 @@ export default {
      * @param order
      * @return {*}
      */
-    [SET_EPISODES_SORT]: (s, order) => s.episodes.order = order,
-
+    [SET_EPISODES_SORT]: (s, order) => (s.episodes.order = order),
 
     /**
      * Ser video buffer
@@ -58,8 +56,7 @@ export default {
      * @param s
      * @param buffer
      */
-    [SET_VIDEO_BUFFER]: (s, buffer) => s.video.buffer = buffer,
-
+    [SET_VIDEO_BUFFER]: (s, buffer) => (s.video.buffer = buffer),
 
     /**
      * Set torrent process state
@@ -68,8 +65,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_TORRENTS_PROCESS]: (s, state) => s.torrents.process = state,
-
+    [SET_TORRENTS_PROCESS]: (s, state) => (s.torrents.process = state),
 
     /**
      *
@@ -78,8 +74,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_AUTOPLAY_NEXT]: (s, state) => s.autoplayNext = state,
-
+    [SET_AUTOPLAY_NEXT]: (s, state) => (s.autoplayNext = state),
 
     /**
      * Set upscale blur
@@ -88,8 +83,7 @@ export default {
      * @param value
      * @return {number}
      */
-    [SET_UPSCALE_BLUR]: (s, value) => s.upscale.blur = value,
-
+    [SET_UPSCALE_BLUR]: (s, value) => (s.upscale.blur = value),
 
     /**
      * Set upscale bold
@@ -98,8 +92,7 @@ export default {
      * @param value
      * @return {number}
      */
-    [SET_UPSCALE_BOLD]: (s, value) => s.upscale.bold = value,
-
+    [SET_UPSCALE_BOLD]: (s, value) => (s.upscale.bold = value),
 
     /**
      * Set upscale processing state
@@ -108,8 +101,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_UPSCALE_PROCESS]: (s, state) => s.upscale.process = state,
-
+    [SET_UPSCALE_PROCESS]: (s, state) => (s.upscale.process = state),
 
     /**
      * Set opening skip time
@@ -118,8 +110,7 @@ export default {
      * @param time
      * @return {*}
      */
-    [SET_OPENING_SKIP_TIME]: (s, time) => s.opening.skip_time = time,
-
+    [SET_OPENING_SKIP_TIME]: (s, time) => (s.opening.skip_time = time),
 
     /**
      * Set opening skip button state
@@ -128,12 +119,10 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_OPENING_SKIP_BUTTON]: (s, state) => s.opening.skip_button = state,
+    [SET_OPENING_SKIP_BUTTON]: (s, state) => (s.opening.skip_button = state)
   },
 
-
   actions: {
-
 
     /**
      * Set quality alias
@@ -142,8 +131,7 @@ export default {
      * @param quality
      * @return {*}
      */
-    setQuality: ({commit}, quality) => commit(SET_QUALITY, quality),
-
+    setQuality: ({ commit }, quality) => commit(SET_QUALITY, quality),
 
     /**
      * Set episodes sort order
@@ -152,8 +140,7 @@ export default {
      * @param sortOrder
      * @return {*}
      */
-    setEpisodesSort: ({commit}, sortOrder) => commit(SET_EPISODES_SORT, sortOrder),
-
+    setEpisodesSort: ({ commit }, sortOrder) => commit(SET_EPISODES_SORT, sortOrder),
 
     /**
      * Set torrents process
@@ -162,8 +149,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setTorrentsProcess: ({commit}, state) => commit(SET_TORRENTS_PROCESS, state),
-
+    setTorrentsProcess: ({ commit }, state) => commit(SET_TORRENTS_PROCESS, state),
 
     /**
      * Set autoplay next episode
@@ -172,8 +158,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setAutoplayNext: ({commit}, state) => commit(SET_AUTOPLAY_NEXT, state),
-
+    setAutoplayNext: ({ commit }, state) => commit(SET_AUTOPLAY_NEXT, state),
 
     /**
      * Set upscale process
@@ -182,7 +167,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setUpscaleProcess: ({commit}, state) => commit(SET_UPSCALE_PROCESS, state),
+    setUpscaleProcess: ({ commit }, state) => commit(SET_UPSCALE_PROCESS, state),
 
     /**
      * Set upscale parameters
@@ -191,11 +176,10 @@ export default {
      * @param bold
      * @param blur
      */
-    setUpscaleParameters: ({commit}, {bold, blur}) => {
+    setUpscaleParameters: ({ commit }, { bold, blur }) => {
       commit(SET_UPSCALE_BLUR, blur);
       commit(SET_UPSCALE_BOLD, bold);
     },
-
 
     /**
      * Set opening skip time
@@ -204,7 +188,7 @@ export default {
      * @param time
      * @return {*}
      */
-    setOpeningSkipTime: ({commit}, time) => commit(SET_OPENING_SKIP_TIME, time),
+    setOpeningSkipTime: ({ commit }, time) => commit(SET_OPENING_SKIP_TIME, time),
 
     /**
      * Set opening skip button state
@@ -213,8 +197,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setOpeningSkipButton: ({commit}, state) => commit(SET_OPENING_SKIP_BUTTON, state),
-
+    setOpeningSkipButton: ({ commit }, state) => commit(SET_OPENING_SKIP_BUTTON, state),
 
     /**
      * Set video buffer
@@ -222,7 +205,6 @@ export default {
      * @param commit
      * @param buffer
      */
-    setVideoBuffer: ({commit}, buffer) => commit(SET_VIDEO_BUFFER, buffer),
-
+    setVideoBuffer: ({ commit }, buffer) => commit(SET_VIDEO_BUFFER, buffer)
   }
 }

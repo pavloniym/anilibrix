@@ -7,5 +7,4 @@ Vue.use(Toasted, {
   iconPack: 'mdi'
 });
 
-
 export default () => Vue.prototype.$toasted;

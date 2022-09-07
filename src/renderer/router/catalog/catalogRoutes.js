@@ -2,8 +2,8 @@ export default [
   {
     name: 'catalog',
     path: '/catalog',
-    meta: {layout: {show_scroll: true}},
+    meta: { layout: { show_scroll: true } },
     props: true,
-    component: () => import('@views/catalog'),
+    component: () => import('@views/catalog')
   }
 ]

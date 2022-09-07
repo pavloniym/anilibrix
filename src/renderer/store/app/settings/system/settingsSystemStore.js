@@ -19,10 +19,9 @@ export default {
       timeout: 10
     },
     notifications: {
-      system: true,
-    },
+      system: true
+    }
   },
-
 
   mutations: {
 
@@ -33,9 +32,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_UPDATES]: (s, state) => s.updates.enabled = state,
-
-
+    [SET_UPDATES]: (s, state) => (s.updates.enabled = state),
     /**
      * Set updates timeout
      *
@@ -43,8 +40,7 @@ export default {
      * @param timeout
      * @return {*}
      */
-    [SET_UPDATES_TIMEOUT]: (s, timeout) => s.updates.timeout = timeout,
-
+    [SET_UPDATES_TIMEOUT]: (s, timeout) => (s.updates.timeout = timeout),
 
     /**
      * Set system notifications
@@ -53,7 +49,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_SYSTEM_NOTIFICATIONS]: (s, state) => s.notifications.system = state,
+    [SET_SYSTEM_NOTIFICATIONS]: (s, state) => (s.notifications.system = state),
 
     /**
      * Toggle devtools
@@ -61,8 +57,7 @@ export default {
      * @param s
      * @return {boolean}
      */
-    [TOGGLE_DEVTOOLS]: s => s.devtools = !s.devtools,
-
+    [TOGGLE_DEVTOOLS]: s => (s.devtools = !s.devtools),
 
     /**
      * Set ads
@@ -71,8 +66,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_ADS]: (s, state) => s.ads.enabled = state,
-
+    [SET_ADS]: (s, state) => (s.ads.enabled = state),
 
     /**
      * Set ads maximum
@@ -81,7 +75,7 @@ export default {
      * @param state
      * @return {*}
      */
-    [SET_ADS_MAXIMUM]: (s, state) => s.ads.maximum = state,
+    [SET_ADS_MAXIMUM]: (s, state) => (s.ads.maximum = state)
 
   },
 
@@ -94,8 +88,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setUpdates: ({commit}, state) => commit(SET_UPDATES, state),
-
+    setUpdates: ({ commit }, state) => commit(SET_UPDATES, state),
 
     /**
      * Set updates timeout
@@ -104,8 +97,7 @@ export default {
      * @param timeout
      * @return {*}
      */
-    setUpdatesTimeout: ({commit}, timeout) => commit(SET_UPDATES_TIMEOUT, timeout),
-
+    setUpdatesTimeout: ({ commit }, timeout) => commit(SET_UPDATES_TIMEOUT, timeout),
 
     /**
      * Set system notifications
@@ -114,8 +106,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setSystemNotifications: ({commit}, state) => commit(SET_SYSTEM_NOTIFICATIONS, state),
-
+    setSystemNotifications: ({ commit }, state) => commit(SET_SYSTEM_NOTIFICATIONS, state),
 
     /**
      * Toggle devtools
@@ -123,8 +114,7 @@ export default {
      * @param commit
      * @return {*}
      */
-    toggleDevtools: ({commit}) => commit(TOGGLE_DEVTOOLS),
-
+    toggleDevtools: ({ commit }) => commit(TOGGLE_DEVTOOLS),
 
     /**
      * Set ads
@@ -133,8 +123,7 @@ export default {
      * @param state
      * @return {*}
      */
-    setAds: ({commit}, state) => commit(SET_ADS, state),
-
+    setAds: ({ commit }, state) => commit(SET_ADS, state),
 
     /**
      * Set ads maximum
@@ -143,7 +132,6 @@ export default {
      * @param state
      * @return {*}
      */
-    setAdsMaximum: ({commit}, state) => commit(SET_ADS_MAXIMUM, state),
-
+    setAdsMaximum: ({ commit }, state) => commit(SET_ADS_MAXIMUM, state)
   }
 }

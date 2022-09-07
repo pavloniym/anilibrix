@@ -11,5 +11,5 @@ export default {
   Profile,
   Torrents,
   Categories,
-  Connection,
+  Connection
 }

@@ -1,16 +1,15 @@
 // Proxy
-import CatalogProxy from "@proxies/catalog";
-import ReleaseProxy from "@proxies/release";
+import CatalogProxy from '@proxies/catalog';
+import ReleaseProxy from '@proxies/release';
 
 // Transformer
-import CatalogTransformer from "@transformers/catalog";
+import CatalogTransformer from '@transformers/catalog';
 
 // Utils
 import __capitalize from 'lodash/capitalize'
 
 // Handlers
-import {showAppError} from "@main/handlers/notifications/notificationsHandler";
-
+import { showAppError } from '@main/handlers/notifications/notificationsHandler';
 
 // Mutations
 const SET_INITIALIZED = 'SET_INITIALIZED';
@@ -31,22 +30,22 @@ export default {
       page: 1,
       perPage: 12,
       loading: true,
-      pagination: null,
+      pagination: null
     },
     filters: {
       genres: {
         items: [],
         value: [],
-        loading: true,
+        loading: true
       },
       years: {
         items: [],
         value: [],
-        loading: true,
+        loading: true
       },
       sort: {
         value: 1
-      },
+      }
     },
     is_initialized: false
   },
@@ -61,8 +60,7 @@ export default {
      * @param data
      * @return {*}
      */
-    [SET_FILTER_DATA]: (s, {filter, data}) => s.filters[filter].items = data,
-
+    [SET_FILTER_DATA]: (s, { filter, data }) => (s.filters[filter].items = data),
 
     /**
      * Set filter value
@@ -72,8 +70,7 @@ export default {
      * @param value
      * @return {*}
      */
-    [SET_FILTER_VALUE]: (s, {filter, value}) => s.filters[filter].value = value,
-
+    [SET_FILTER_VALUE]: (s, { filter, value }) => (s.filters[filter].value = value),
 
     /**
      * Set filter loading state
@@ -83,8 +80,7 @@ export default {
      * @param loading
      * @return {*}
      */
-    [SET_FILTER_LOADING]: (s, {filter, loading}) => s.filters[filter].loading = loading,
-
+    [SET_FILTER_LOADING]: (s, { filter, loading }) => (s.filters[filter].loading = loading),
 
     /**
      * Set loading state
@@ -93,8 +89,7 @@ export default {
      * @param loading
      * @return {*}
      */
-    [SET_CATALOG_LOADING]: (s, loading) => s.items.loading = loading,
-
+    [SET_CATALOG_LOADING]: (s, loading) => (s.items.loading = loading),
 
     /**
      * Push release to items data array
@@ -104,8 +99,7 @@ export default {
      * @return {*}
      * @constructor
      */
-    [SET_CATALOG_RELEASES]: (s, release) => s.items.data = [...s.items.data, ...release],
-
+    [SET_CATALOG_RELEASES]: (s, release) => (s.items.data = [...s.items.data, ...release]),
 
     /**
      * Clear catalog releases
@@ -113,8 +107,7 @@ export default {
      * @param s
      * @return {*[]}
      */
-    [CLEAR_CATALOG_RELEASES]: s => s.items.data = [],
-
+    [CLEAR_CATALOG_RELEASES]: s => (s.items.data = []),
 
     /**
      * Set catalog pagination
@@ -123,7 +116,7 @@ export default {
      * @param pagination
      * @return {*}
      */
-    [SET_CATALOG_PAGINATION]: (s, pagination) => s.items.pagination = pagination,
+    [SET_CATALOG_PAGINATION]: (s, pagination) => (s.items.pagination = pagination),
 
     /**
      * Set pagination page
@@ -132,8 +125,7 @@ export default {
      * @param page
      * @return {*}
      */
-    [SET_PAGINATION_PAGE]: (s, page) => s.items.page = page,
-
+    [SET_PAGINATION_PAGE]: (s, page) => (s.items.page = page),
 
     /**
      * Set initialized
@@ -141,7 +133,7 @@ export default {
      * @param s
      * @return {boolean}
      */
-    [SET_INITIALIZED]: s => s.is_initialized = true,
+    [SET_INITIALIZED]: s => (s.is_initialized = true)
 
   },
 
@@ -154,9 +146,8 @@ export default {
      * @param reset
      * @return {Promise<void>}
      */
-    getCatalogItems: async ({commit, state}) => {
+    getCatalogItems: async ({ commit, state }) => {
       try {
-
         // Set initialized state
         // Set loading state
         commit(SET_INITIALIZED);
@@ -170,32 +161,27 @@ export default {
 
         // Get items from server
         // Transform items
-        const {items} = await new CatalogProxy().getCatalogReleases({sort, genres, years, page, perPage});
+        const { items } = await new CatalogProxy().getCatalogReleases({ sort, genres, years, page, perPage });
         const releases = new CatalogTransformer().fetchCollection(items);
 
         // Get processed releases
         // Get poster path
         const processedReleases = releases
-          .map(release => ({...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster)}));
+          .map(release => ({ ...release, poster: new ReleaseProxy().getReleasePosterPath(release.poster) }));
 
         // Push catalog releases
         // Set updated pagination data
         commit(SET_CATALOG_RELEASES, processedReleases);
-        commit(SET_CATALOG_PAGINATION, {page, lastItems: processedReleases ? processedReleases.length : 0});
-
+        commit(SET_CATALOG_PAGINATION, { page, lastItems: processedReleases ? processedReleases.length : 0 });
       } catch (error) {
-
         // Show app error
         // Throw error
         showAppError('Произошла ошибка при загрузке релизов');
         throw error;
-
       } finally {
         commit(SET_CATALOG_LOADING, false);
-
       }
     },
-
 
     /**
      * Get genres filter
@@ -203,30 +189,24 @@ export default {
      * @param commit
      * @return {Promise<void>}
      */
-    getCatalogGenresFilter: async ({commit}) => {
+    getCatalogGenresFilter: async ({ commit }) => {
       const filter = 'genres';
       try {
-
-        commit(SET_FILTER_LOADING, {filter, loading: true});
+        commit(SET_FILTER_LOADING, { filter, loading: true });
 
         // Get data
         // Set filter data
         const data = (await new CatalogProxy().getCatalogGenres()).map(genre => __capitalize(genre));
-        commit(SET_FILTER_DATA, {filter, data});
-
+        commit(SET_FILTER_DATA, { filter, data });
       } catch (error) {
-
         // Show app error
         // Throw error
         showAppError('Произошла ошибка при загрузке фильтров по жанрам');
         throw error;
-
       } finally {
-        commit(SET_FILTER_LOADING, {filter, loading: false});
-
+        commit(SET_FILTER_LOADING, { filter, loading: false });
       }
     },
-
 
     /**
      * Get years filter
@@ -234,30 +214,24 @@ export default {
      * @param commit
      * @return {Promise<void>}
      */
-    getCatalogYearsFilter: async ({commit}) => {
+    getCatalogYearsFilter: async ({ commit }) => {
       const filter = 'years';
       try {
-
-        commit(SET_FILTER_LOADING, {filter, loading: true});
+        commit(SET_FILTER_LOADING, { filter, loading: true });
 
         // Get data
         // Set filter data
         const data = await new CatalogProxy().getCatalogYears();
-        commit(SET_FILTER_DATA, {filter, data});
-
+        commit(SET_FILTER_DATA, { filter, data });
       } catch (error) {
-
         // Show app error
         // Throw error
         showAppError('Произошла ошибка при загрузке фильтров по годам');
         throw error;
-
       } finally {
-        commit(SET_FILTER_LOADING, {filter, loading: false});
-
+        commit(SET_FILTER_LOADING, { filter, loading: false });
       }
     },
-
 
     /**
      * Clear catalog releases
@@ -265,8 +239,7 @@ export default {
      * @param commit
      * @return {*}
      */
-    clearCatalogReleases: ({commit}) => commit(CLEAR_CATALOG_RELEASES),
-
+    clearCatalogReleases: ({ commit }) => commit(CLEAR_CATALOG_RELEASES),
 
     /**
      * Set filter value
@@ -276,8 +249,7 @@ export default {
      * @param value
      * @return {*}
      */
-    setFilterValue: ({commit}, {filter, value}) => commit(SET_FILTER_VALUE, {filter, value}),
-
+    setFilterValue: ({ commit }, { filter, value }) => commit(SET_FILTER_VALUE, { filter, value }),
 
     /**
      * Set pagination page
@@ -285,8 +257,6 @@ export default {
      * @param commit
      * @param page
      */
-    setPaginationPage: ({commit}, page) => commit(SET_PAGINATION_PAGE, page),
-
+    setPaginationPage: ({ commit }, page) => commit(SET_PAGINATION_PAGE, page)
   }
-
 }

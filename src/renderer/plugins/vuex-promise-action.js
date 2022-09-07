@@ -3,10 +3,11 @@ const DISPATCH = 'promise-action-dispatch';
 
 export default () => (store) => {
   function renderer () {
-    return store.dispatchPromise = (type, payload) => promiseIpc.send(DISPATCH, {
+    const result = store.dispatchPromise = (type, payload) => promiseIpc.send(DISPATCH, {
       type,
       payload
     })
+    return result
   }
 
   function main (store) {

@@ -1,15 +1,15 @@
 // Proxy
-import ReleaseProxy from "@proxies/release";
+import ReleaseProxy from '@proxies/release';
 
 // Transformers
 import ReleaseTransformer from '@transformers/release'
-import EpisodesTransformer from "@transformers/episode";
+import EpisodesTransformer from '@transformers/episode';
 
 // Utils
-import axios from "axios";
+import axios from 'axios';
 
 // Handlers
-import {showAppError} from "@main/handlers/notifications/notificationsHandler";
+import { showAppError } from '@main/handlers/notifications/notificationsHandler';
 
 // Mutations
 const SET_RELEASE_DATA = 'SET_RELEASE_DATA';
@@ -17,7 +17,6 @@ const SET_RELEASE_LOADING = 'SET_RELEASE_LOADING';
 
 // Requests
 let REQUEST = null;
-
 
 export default {
   namespaced: true,
@@ -36,7 +35,7 @@ export default {
      * @param data
      * @return {*}
      */
-    [SET_RELEASE_DATA]: (s, data) => s.data = data,
+    [SET_RELEASE_DATA]: (s, data) => (s.data = data),
 
     /**
      * Set loading state
@@ -45,12 +44,10 @@ export default {
      * @param loading
      * @return {*}
      */
-    [SET_RELEASE_LOADING]: (s, loading) => s.loading = loading,
-
+    [SET_RELEASE_LOADING]: (s, loading) => (s.loading = loading)
   },
 
   actions: {
-
 
     /**
      * Get release data
@@ -59,11 +56,10 @@ export default {
      * @param commit
      * @param dispatch
      * @param state
-     * @param release_id
+     * @param releaseId
      * @return {Promise<unknown>}
      */
-    getRelease: async ({commit, dispatch, state}, release_id) => {
-
+    getRelease: async ({ commit, dispatch, state }, releaseId) => {
       // Cancel previous request if it was stored
       if (REQUEST !== null) REQUEST.cancel();
 
@@ -76,9 +72,8 @@ export default {
       REQUEST = axios.CancelToken.source();
 
       try {
-
         // Get release data
-        const data = await new ReleaseProxy().getRelease(release_id, {cancelToken: REQUEST.token});
+        const data = await new ReleaseProxy().getRelease(releaseId, { cancelToken: REQUEST.token });
         const release = await new ReleaseTransformer().fetchItem(data);
 
         // Get release poster path
@@ -88,22 +83,16 @@ export default {
 
         // Save release data
         commit(SET_RELEASE_DATA, release);
-
       } catch (error) {
         if (!axios.isCancel(error)) {
-
           // Show app error
           // Throw error
           showAppError('Произошла ошибка при загрузке релиза');
           throw error;
-
         }
       } finally {
-
         commit(SET_RELEASE_LOADING, false);
-
       }
     }
-
   }
 }

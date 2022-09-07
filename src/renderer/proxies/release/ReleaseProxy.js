@@ -1,56 +1,48 @@
-import BaseProxy from "@proxies/BaseProxy";
+import BaseProxy from '@proxies/BaseProxy';
 
 export default class ReleaseProxy extends BaseProxy {
-
-
   /**
    * Get last releases
    *
    * @return {Promise}
    */
   async getReleases(parameters = {}) {
-
-    const data = this.getFormDataObject({query: 'list', perPage: 14});
-    const params = {data, headers: data.getHeaders(), ...parameters};
+    const data = this.getFormDataObject({ query: 'list', perPage: 14 });
+    const params = { data, headers: data.getHeaders(), ...parameters };
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
   }
-
 
   /**
    * Get release with provided id
    *
-   * @param release_id
+   * @param releaseId
    * @param parameters
    * @return {Promise<unknown>}
    */
-  async getRelease(release_id, parameters = {}) {
-
-    const data = this.getFormDataObject({query: 'release', id: release_id});
-    const params = {data, headers: data.getHeaders(), ...parameters};
+  async getRelease(releaseId, parameters = {}) {
+    const data = this.getFormDataObject({ query: 'release', id: releaseId });
+    const params = { data, headers: data.getHeaders(), ...parameters };
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
   }
-
 
   /**
    * Search releases by name
    *
-   * @param search_query
+   * @param searchQuery
    * @param parameters
    * @return {Promise<unknown>}
    */
-  async searchReleases(search_query, parameters = {}) {
-
-    const data = this.getFormDataObject({query: 'search', search: search_query});
-    const params = {data, headers: data.getHeaders(), ...parameters};
+  async searchReleases(searchQuery, parameters = {}) {
+    const data = this.getFormDataObject({ query: 'search', search: searchQuery });
+    const params = { data, headers: data.getHeaders(), ...parameters };
     const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
   }
-
 
   /**
    * Get torrent file
@@ -61,10 +53,12 @@ export default class ReleaseProxy extends BaseProxy {
    */
   async getReleaseTorrent(url, parameters = {}) {
     if (url) {
-      return await this.submit('GET', this.getApiEndpoint() + url, {...parameters, responseType: 'arraybuffer'});
+      // eslint-disable-next-line no-return-await
+      return await this.submit('GET', this.getApiEndpoint() + url, {
+        ...parameters, responseType: 'arraybuffer'
+      });
     } else return null;
   }
-
 
   /**
    * Get release poster
@@ -75,5 +69,4 @@ export default class ReleaseProxy extends BaseProxy {
   getReleasePosterPath(src) {
     return src ? this.getStaticEndpoint() + src : null;
   }
-
 }

@@ -1,11 +1,11 @@
 import store from '@store'
-import {meta, repository} from '@package'
-import {Menu, shell} from 'electron'
+import { meta, repository } from '@package'
+import { Menu, shell } from 'electron'
 
 export const aboutTemplate = [
   {
     role: 'about',
-    label: 'О приложении',
+    label: 'О приложении'
   },
   {
     label: 'Telegram-канал',
@@ -13,7 +13,7 @@ export const aboutTemplate = [
   },
   {
     label: 'Исходный код на GitHub',
-    click: () => shell.openExternal(repository.url),
+    click: () => shell.openExternal(repository.url)
   },
   {
     type: 'separator'
@@ -31,22 +31,20 @@ export const aboutTemplate = [
   },
   {
     role: 'minimize',
-    label: 'Свернуть приложение',
+    label: 'Свернуть приложение'
   },
   {
     role: 'quit',
-    label: 'Закрыть приложение',
+    label: 'Закрыть приложение'
   }
 ];
 
 export default class AppMenu {
-
   constructor() {
     this._menu = null;
     this._mainWindow = null;
     this._torrentWindow = null;
   }
-
 
   /**
    * Init menu
@@ -54,12 +52,12 @@ export default class AppMenu {
    * @return AppMenu
    */
   init() {
-
     // Build from template
     this._menu = Menu.buildFromTemplate(this._getMenuTemplate());
 
     // Set menu
-    Menu.setApplicationMenu(this._menu);
+    this._mainWindow.setMenu(this._menu)
+    this._torrentWindow.setMenu(this._menu)
 
     return this;
   }
@@ -72,14 +70,11 @@ export default class AppMenu {
    * @return {AppMenu}
    */
   setWindows(main = null, torrent = null) {
-
     this._mainWindow = main;
     this._torrentWindow = torrent;
 
     return this;
-
   }
-
 
   /**
    * Get menu template
@@ -91,7 +86,7 @@ export default class AppMenu {
     return [
       {
         label: meta.name,
-        submenu: aboutTemplate,
+        submenu: aboutTemplate
       },
       {
         label: 'Отладка',
@@ -114,27 +109,26 @@ export default class AppMenu {
           },
           {
             label: 'Показать данные хранилища в консоли',
-            click: () => console.log(store.state),
+            click: () => console.log(store.state)
           },
           {
             type: 'separator'
           },
           {
             role: 'forcereload',
-            label: 'Перезагрузить приложение',
+            label: 'Перезагрузить приложение'
           }
-        ],
+        ]
       },
       {
         label: 'Окно',
         submenu: [
-          {role: 'cut'},
-          {role: 'copy'},
-          {role: 'paste'},
-          {role: 'selectall'},
+          { role: 'cut' },
+          { role: 'copy' },
+          { role: 'paste' },
+          { role: 'selectall' }
         ]
       }
     ];
   }
-
 };

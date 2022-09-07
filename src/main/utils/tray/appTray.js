@@ -1,12 +1,10 @@
-import {aboutTemplate} from './../menu/appMenu'
-import {Menu, nativeImage, Tray} from "electron";
+import { aboutTemplate } from './../menu/appMenu'
+import { Menu, nativeImage, Tray } from 'electron';
 
 export default class {
-
   constructor() {
     this._tray = null;
   }
-
 
   /**
    * Get tray template
@@ -17,7 +15,6 @@ export default class {
     return [...aboutTemplate];
   }
 
-
   /**
    * Create tray icon
    *
@@ -25,15 +22,13 @@ export default class {
    * @param iconPath
    * @return this
    */
-  createTrayIcon({iconPath}) {
-
+  createTrayIcon({ iconPath }) {
     this._tray = new Tray(nativeImage.createFromPath(iconPath));
     this._tray.setContextMenu(Menu.buildFromTemplate(this.getTemplate()));
     this._tray.setIgnoreDoubleClickEvents(true);
 
     return this;
   };
-
 
   /**
    * Set tooltip

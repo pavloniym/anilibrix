@@ -1,11 +1,9 @@
 export default {
-
   data() {
     return {
-      is_fullscreen: false,
+      is_fullscreen: false
     }
   },
-
 
   computed: {
 
@@ -24,9 +22,8 @@ export default {
      * @return {boolean}
      */
     isMac() {
-      return process.platform === "darwin";
+      return process.platform === 'darwin';
     },
-
 
     /**
      * Check if windows os
@@ -34,9 +31,8 @@ export default {
      * @return {boolean}
      */
     isWindows() {
-      return process.platform === "win32";
+      return process.platform === 'win32';
     },
-
 
     /**
      * Is mac and on fullscreen
@@ -46,12 +42,9 @@ export default {
     isMacOnFullscreen() {
       return !!(this.isMac && this.isOnFullscreen);
     }
-
-
   },
 
   methods: {
-
 
     /**
      * Set fullscreen state
@@ -64,8 +57,9 @@ export default {
 
   },
 
-
   created() {
+
+    // Check if window is fullscreen
     this.setFullscreenState();
 
     // Set fullscreen events
@@ -73,16 +67,16 @@ export default {
     require('@electron/remote').getCurrentWindow().on('leave-full-screen', this.setFullscreenState);
     require('@electron/remote').getCurrentWindow().on('enter-html-full-screen', this.setFullscreenState);
     require('@electron/remote').getCurrentWindow().on('leave-html-full-screen', this.setFullscreenState);
+    
   },
 
-
   beforeDestroy() {
-
+    
     // Remove fullscreen events
     require('@electron/remote').getCurrentWindow().off('enter-full-screen', this.setFullscreenState);
     require('@electron/remote').getCurrentWindow().off('leave-full-screen', this.setFullscreenState);
     require('@electron/remote').getCurrentWindow().off('enter-html-full-screen', this.setFullscreenState);
     require('@electron/remote').getCurrentWindow().off('leave-html-full-screen', this.setFullscreenState);
+    
   }
-
 }

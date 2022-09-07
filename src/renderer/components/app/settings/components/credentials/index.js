@@ -1,3 +1,3 @@
 import SettingsCredentials from './SettingsCredentials'
 
-export default  SettingsCredentials
+export default SettingsCredentials

@@ -8,12 +8,10 @@ import axios from '@plugins/axios';
  * @return {*}
  */
 const parseHttpProxy = (httpProxyString) => {
-
   const results = [];
   const connections = httpProxyString.split(';');
 
   connections.forEach(connection => {
-
     // Create data object
     const data = {
       host: null,
@@ -32,15 +30,12 @@ const parseHttpProxy = (httpProxyString) => {
 
     // Push results
     results.push(data);
-
   });
-
 
   return results.length > 0
     ? results[0]
     : null;
 };
-
 
 /**
  * Get http proxy connection parameters
@@ -49,15 +44,13 @@ const parseHttpProxy = (httpProxyString) => {
  * @param url
  * @return {Promise}
  */
-export default async ({source, url}) => {
+export default async ({ source, url }) => {
   try {
-
-    const response = await axios.get(source, {timeout: 7000});
+    const response = await axios.get(source, { timeout: 7000 });
     const findProxy = pac(response.data);
     const proxyString = await findProxy(url);
 
     return parseHttpProxy(proxyString);
-
   } catch {
     throw new Error('Ошибка разборе PAC-скрипта')
   }

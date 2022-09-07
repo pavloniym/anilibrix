@@ -5,7 +5,6 @@
 </template>
 
 <script>
-
   // Components
   import AppToolBar from "@components/app/toolbar";
 
@@ -34,24 +33,19 @@
       }
     },
 
-
     computed: {
-
-
       /**
        * Get random tag url from env
        *
        * @return {string|null}
        */
       tagUrl() {
-
         const available_urls = process.env.ADS_URLS;
         const parsed_urls = available_urls ? available_urls.split(',') : [];
         const shuffled_urls = __shuffle(parsed_urls);
 
         return shuffled_urls[0] ? shuffled_urls[0] : null;
       },
-
 
       /**
        * Get options
@@ -80,9 +74,7 @@
           ? {name: this.to.name, params: this.to.params}
           : {name: 'releases'}
       }
-
     },
-
 
     methods: {
 
@@ -116,11 +108,9 @@
           this.toRoute();
         }
       }
-
     },
 
     mounted() {
-
       // Create player
       this.plyr = new this.$plyr(this.$refs.video, this.options);
       this.plyr.on('ready', () => this.plyr.play());
@@ -131,18 +121,15 @@
       this.plyr.ads.on('error', this.handleError);
 
       // After time is ended
-      // Automatically push to to route
+      // Automatically push to route
       this.plyr.on('adsimpression', () => this.toRoute());
 
       // If no url provided -> push to route
       if (this.tagUrl === null) this.toRoute();
     }
-
   }
-
 </script>
 <style lang="scss" scoped>
-
   .ads {
     ::v-deep {
       .plyr__ads {
@@ -153,6 +140,4 @@
 
     }
   }
-
-
 </style>

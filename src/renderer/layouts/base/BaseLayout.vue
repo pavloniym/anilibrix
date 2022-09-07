@@ -4,7 +4,7 @@
     fill-height
     id="container"
     class="base-layout"
-    :class="{showScroll, isOnBlack}">
+    :class="{ showScroll, isOnBlack }">
 
     <!-- App Toolbar -->
     <!-- Content -->

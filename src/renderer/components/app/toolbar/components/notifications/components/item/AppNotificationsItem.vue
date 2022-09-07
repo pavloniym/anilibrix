@@ -1,6 +1,5 @@
 <template>
-  <v-list-item @click="toVideo(release, episode)">
-
+  <v-list-item v-on:click="toVideo(release, episode)">
     <!-- Avatar -->
     <v-list-item-avatar>
       <v-img v-bind="{src}"/>

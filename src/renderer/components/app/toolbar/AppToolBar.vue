@@ -1,8 +1,6 @@
 <template>
   <v-fade-transition appear>
     <v-app-bar v-if="!hideToolbar" flat color="transparent" class="toolbar shrink">
-
-
       <!-- Releases -->
       <v-btn small text exact class="mr-1" height="38" :to="{name: 'releases'}">
         <v-icon size="18" class="mr-2">mdi-view-column</v-icon>

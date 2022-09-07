@@ -5,7 +5,6 @@
  * @return {{}}
  */
 const extrudeSubmodule = (module) => {
-
   const state = module.state || {};
   const submodules = module.modules || {};
 
@@ -16,9 +15,8 @@ const extrudeSubmodule = (module) => {
       [module]: extrudeSubmodule(submodules[module])
     }), {});
 
-  return {...state, ...submodulesState}
+  return { ...state, ...submodulesState }
 };
-
 
 /**
  * Get initial state -> collect from modules
@@ -28,7 +26,6 @@ const extrudeSubmodule = (module) => {
 const initialState = modules =>
   Object
     .keys(modules)
-    .reduce((storage, module) => ({...storage, [module]: extrudeSubmodule(modules[module])}), {});
-
+    .reduce((storage, module) => ({ ...storage, [module]: extrudeSubmodule(modules[module]) }), {});
 
 export default initialState

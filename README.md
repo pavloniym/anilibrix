@@ -1,5 +1,7 @@
 # AniLibrix
 
+[![anilibrix](https://snapcraft.io/anilibrix/badge.svg)](https://snapcraft.io/anilibrix)
+
 ### Десктопный аниме-кинотеатр Анилибрии для любого вашего компьютера.
 
 ![Anilibrix](https://raw.githubusercontent.com/pavloniym/anilibrix/master/.github/assets/anilibrix.png)
@@ -18,6 +20,15 @@
 * Синхронизация избранного
 
 #### Анилибрия — так звучит аниме!
+
+### Горячие клавиши плеера
+
+| Клавиша | Действие                           |
+|---------|------------------------------------|
+| F       | Переключение полноэкранного режима |
+| ←       | Назад                              |
+| →       | Вперед                             |
+| space   | Воспроизведение / пауза            |
 
 ### Сборка и запуск
 

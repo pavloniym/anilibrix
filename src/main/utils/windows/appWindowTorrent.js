@@ -1,14 +1,12 @@
 import Window from './appWindow'
 
 class TorrentWindow extends Window {
-
-
   /**
    * Get window configuration
    *
    * @return Object
    */
-  getWindowConfiguration() {
+  getWindowConfiguration () {
     return {
       show: false,
       skipTaskbar: true,
@@ -22,18 +20,16 @@ class TorrentWindow extends Window {
     }
   }
 
-
   /**
    * Get window url
    *
    * @return {string}
    */
-  getWindowUrl() {
+  getWindowUrl () {
     return process.env.NODE_ENV === 'development'
-      ? `http://localhost:9080/webtorrent.html`
+      ? 'http://localhost:9080/webtorrent.html'
       : `file://${__dirname}/webtorrent.html`;
   }
-
 }
 
 export default new TorrentWindow();

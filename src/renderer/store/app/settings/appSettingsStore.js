@@ -5,6 +5,6 @@ export default {
   namespaced: true,
   modules: {
     player,
-    system,
+    system
   }
 }

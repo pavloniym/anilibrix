@@ -1,9 +1,7 @@
-import stripHtml from "string-strip-html";
-import BaseTransformer from "@transformers/BaseTransformer";
+import stripHtml from 'string-strip-html';
+import BaseTransformer from '@transformers/BaseTransformer';
 
 export default class SearchTransformer extends BaseTransformer {
-
-
   /**
    * Fetch search data
    *
@@ -17,7 +15,7 @@ export default class SearchTransformer extends BaseTransformer {
         ru: this._stripHtml(this.get(release, 'names.0')),
         original: this._stripHtml(this.get(release, 'names.1'))
       },
-      poster: this.get(release, 'poster'),
+      poster: this.get(release, 'poster')
     }
   }
 
@@ -31,5 +29,4 @@ export default class SearchTransformer extends BaseTransformer {
   _stripHtml(value) {
     return value ? stripHtml(value) : null;
   }
-
 }

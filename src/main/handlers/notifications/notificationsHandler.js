@@ -1,9 +1,8 @@
-import {Main} from "@main/utils/windows";
-import {ipcRenderer} from "electron";
+import { Main } from '@main/utils/windows';
+import { ipcRenderer } from 'electron';
 
 export const APP_ERROR = 'app:error';
 export const APP_NOTIFICATION_RELEASE = 'app:notification:release';
-
 
 /**
  * Send app error
@@ -13,7 +12,6 @@ export const APP_NOTIFICATION_RELEASE = 'app:notification:release';
  */
 export const showAppError = (error) => Main.sendToWindow(APP_ERROR, error);
 
-
 /**
  * Show release notification
  *
@@ -21,7 +19,6 @@ export const showAppError = (error) => Main.sendToWindow(APP_ERROR, error);
  * @return {MainWindow}
  */
 export const sendReleaseNotification = (release) => Main.sendToWindow(APP_NOTIFICATION_RELEASE, release);
-
 
 /**
  * Catch release notification

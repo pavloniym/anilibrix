@@ -6,7 +6,7 @@
 
 <script>
 
-  import screenfull from 'screenfull'
+  // import screenfull from 'screenfull'
 
   const props = {
     hideCursor: {
