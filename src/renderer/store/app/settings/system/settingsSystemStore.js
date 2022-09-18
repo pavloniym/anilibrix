@@ -1,137 +1,50 @@
-const SET_ADS = 'SET_ADS';
-const SET_UPDATES = 'SET_UPDATES';
-const TOGGLE_DEVTOOLS = 'TOGGLE_DEVTOOLS';
-const SET_ADS_MAXIMUM = 'SET_ADS_MAXIMUM';
-const SET_UPDATES_TIMEOUT = 'SET_UPDATES_TIMEOUT';
-const SET_SYSTEM_NOTIFICATIONS = 'SET_SYSTEM_NOTIFICATIONS';
+// Mutations
+const SET_HAS_ADS_MUTATION = 'SET_HAS_ADS_MUTATION';
+const SET_SHOW_DEVTOOLS_MUTATION = 'SET_SHOW_DEVTOOLS_MUTATION';
+const SET_HAS_MAXIMUM_ADS_MUTATION = 'SET_HAS_MAXIMUM_ADS_MUTATION';
+const SET_CONNECTION_HOST_MUTATION = 'SET_CONNECTION_HOST_MUTATION';
+const SET_HAS_AUTO_UPDATES_MUTATION = 'SET_HAS_AUTO_UPDATES_MUTATION';
+const SET_HAS_NOTIFICATIONS_MUTATION = 'SET_HAS_NOTIFICATIONS_MUTATION';
+const SET_AUTO_UPDATES_TIMEOUT_MUTATION = 'SET_AUTO_UPDATES_TIMEOUT_MUTATION';
+
+// Actions
+export const SET_HAS_ADS_ACTION = 'SET_HAS_ADS_ACTION';
+export const SET_SHOW_DEVTOOLS_ACTION = 'SET_SHOW_DEVTOOLS_ACTION';
+export const SET_HAS_MAXIMUM_ADS_ACTION = 'SET_HAS_MAXIMUM_ADS_ACTION';
+export const SET_CONNECTION_HOST_ACTION = 'SET_CONNECTION_HOST_ACTION';
+export const SET_HAS_AUTO_UPDATES_ACTION = 'SET_HAS_AUTO_UPDATES_ACTION';
+export const SET_HAS_NOTIFICATIONS_ACTION = 'SET_HAS_NOTIFICATIONS_ACTION';
+export const SET_AUTO_UPDATES_TIMEOUT_ACTION = 'SET_AUTO_UPDATES_TIMEOUT_ACTION';
 
 export default {
-  namespaced: true,
-  state: {
-    ads: {
-      enabled: true,
-      maximum: false
+    namespaced: true,
+    state: {
+        hasAds: true,
+        showDevtools: false,
+        hasMaximumAds: false,
+        hasAutoUpdates: true,
+        connectionHost: 'https://anilibrix.anilib.top',
+        hasNotifications: true,
+        autoUpdatesTimeout: 10,
     },
-    ads__maximum: false,
-    devtools: false,
-    updates: {
-      enabled: true,
-      timeout: 10
+
+    mutations: {
+        [SET_HAS_ADS_MUTATION]: (s, hasAds) => s.hasAds = hasAds === true,
+        [SET_SHOW_DEVTOOLS_MUTATION]: (s, showDevtools) => s.showDevtools = showDevtools === true,
+        [SET_HAS_MAXIMUM_ADS_MUTATION]: (s, hasMaximumAds) => s.hasMaximumAds = hasMaximumAds === true,
+        [SET_CONNECTION_HOST_MUTATION]: (s, connectionHost) => s.connectionHost = connectionHost,
+        [SET_HAS_AUTO_UPDATES_MUTATION]: (s, hasAutoUpdates) => s.hasAutoUpdates = hasAutoUpdates === true,
+        [SET_HAS_NOTIFICATIONS_MUTATION]: (s, hasNotifications) => s.hasNotifications = hasNotifications === true,
+        [SET_AUTO_UPDATES_TIMEOUT_MUTATION]: (s, autoUpdatesTimeout) => s.autoUpdatesTimeout = autoUpdatesTimeout,
     },
-    notifications: {
-      system: true
+
+    actions: {
+        [SET_HAS_ADS_ACTION]: ({commit}, hasAds) => commit(SET_HAS_ADS_MUTATION, hasAds),
+        [SET_SHOW_DEVTOOLS_ACTION]: ({commit}, showDevtools) => commit(SET_SHOW_DEVTOOLS_MUTATION, showDevtools),
+        [SET_HAS_MAXIMUM_ADS_ACTION]: ({commit}, isMaximumAds) => commit(SET_HAS_MAXIMUM_ADS_MUTATION, isMaximumAds),
+        [SET_CONNECTION_HOST_ACTION]: ({commit}, connectionHost) => commit(SET_CONNECTION_HOST_MUTATION, connectionHost),
+        [SET_HAS_AUTO_UPDATES_ACTION]: ({commit}, updatesAreEnabled) => commit(SET_HAS_AUTO_UPDATES_MUTATION, updatesAreEnabled),
+        [SET_HAS_NOTIFICATIONS_ACTION]: ({commit}, hasNotifications) => commit(SET_HAS_NOTIFICATIONS_MUTATION, hasNotifications),
+        [SET_AUTO_UPDATES_TIMEOUT_ACTION]: ({commit}, updatesTimeoutMinutes) => commit(SET_AUTO_UPDATES_TIMEOUT_MUTATION, updatesTimeoutMinutes),
     }
-  },
-
-  mutations: {
-
-    /**
-     * Set updates state
-     *
-     * @param s
-     * @param state
-     * @return {*}
-     */
-    [SET_UPDATES]: (s, state) => (s.updates.enabled = state),
-    /**
-     * Set updates timeout
-     *
-     * @param s
-     * @param timeout
-     * @return {*}
-     */
-    [SET_UPDATES_TIMEOUT]: (s, timeout) => (s.updates.timeout = timeout),
-
-    /**
-     * Set system notifications
-     *
-     * @param s
-     * @param state
-     * @return {*}
-     */
-    [SET_SYSTEM_NOTIFICATIONS]: (s, state) => (s.notifications.system = state),
-
-    /**
-     * Toggle devtools
-     *
-     * @param s
-     * @return {boolean}
-     */
-    [TOGGLE_DEVTOOLS]: s => (s.devtools = !s.devtools),
-
-    /**
-     * Set ads
-     *
-     * @param s
-     * @param state
-     * @return {*}
-     */
-    [SET_ADS]: (s, state) => (s.ads.enabled = state),
-
-    /**
-     * Set ads maximum
-     *
-     * @param s
-     * @param state
-     * @return {*}
-     */
-    [SET_ADS_MAXIMUM]: (s, state) => (s.ads.maximum = state)
-
-  },
-
-  actions: {
-
-    /**
-     * Set updates state
-     *
-     * @param commit
-     * @param state
-     * @return {*}
-     */
-    setUpdates: ({ commit }, state) => commit(SET_UPDATES, state),
-
-    /**
-     * Set updates timeout
-     *
-     * @param commit
-     * @param timeout
-     * @return {*}
-     */
-    setUpdatesTimeout: ({ commit }, timeout) => commit(SET_UPDATES_TIMEOUT, timeout),
-
-    /**
-     * Set system notifications
-     *
-     * @param commit
-     * @param state
-     * @return {*}
-     */
-    setSystemNotifications: ({ commit }, state) => commit(SET_SYSTEM_NOTIFICATIONS, state),
-
-    /**
-     * Toggle devtools
-     *
-     * @param commit
-     * @return {*}
-     */
-    toggleDevtools: ({ commit }) => commit(TOGGLE_DEVTOOLS),
-
-    /**
-     * Set ads
-     *
-     * @param commit
-     * @param state
-     * @return {*}
-     */
-    setAds: ({ commit }, state) => commit(SET_ADS, state),
-
-    /**
-     * Set ads maximum
-     *
-     * @param commit
-     * @param state
-     * @return {*}
-     */
-    setAdsMaximum: ({ commit }, state) => commit(SET_ADS_MAXIMUM, state)
-  }
 }

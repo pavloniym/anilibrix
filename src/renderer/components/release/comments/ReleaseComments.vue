@@ -84,12 +84,11 @@
     mounted() {
       const webview = this.$refs.comments;
 
-      // Hide webview to hide glitched on dom-ready event
-      webview.addEventListener('did-navigate', this.didloadedEvent);
-
       // Added certificate error
-      webview.addEventListener('certificate-error', this.certError);
-      webview.addEventListener('did-fail-load', this.didFailLoad);
+      // Hide webview to hide glitched on dom-ready event
+      webview.addEventListener('did-navigate', this.handleDidNavigate);
+      webview.addEventListener('did-fail-load', this.handleDidFailLoad);
+      webview.addEventListener('certificate-error', this.handleCertificateError);
 
 
       // Dom ready event
@@ -121,25 +120,45 @@
     },
 
     methods: {
-      didloadedEvent () {
+
+      /**
+       * Handle `did-navigate` event
+       *
+       * @return {void}
+       */
+      handleDidNavigate() {
         this.visible = false
-        console.log()
       },
 
-      didFailLoad () {
+
+      /**
+       * Handle `did-fail-load` event
+       *
+       * @return {void}
+       */
+      handleDidFailLoad() {
         this.$toasted.error('Произошла ошибка при загрузке комментариев')
       },
 
-      certError () {
+
+      /**
+       * Handle `certificate-error` event
+       *
+       * @return {void}
+       */
+      handleCertificateError() {
         this.$toasted.error('Произошла ошибка при загрузке комментариев. Ошибка с сертификатом')
       }
     },
 
     beforeDestroy() {
+
       const webview = this.$refs.comments;
-      webview.removeEventListener('did-navigate', this.didloadedEvent);
-      webview.removeEventListener('certificate-error', this.certError);
-      webview.removeEventListener('did-fail-load', this.didFailLoad);
+
+      webview.removeEventListener('did-navigate', this.handleDidNavigate);
+      webview.removeEventListener('did-fail-load', this.handleDidFailLoad);
+      webview.removeEventListener('certificate-error', this.handleCertificateError);
+
       if (this.interval) clearInterval(this.interval);
     }
 

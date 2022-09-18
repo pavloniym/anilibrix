@@ -5,7 +5,7 @@
 
     <!-- Video container -->
     <video ref="player" crossorigin="anonymous" autoplay preload="auto">
-      <slot name="video" />
+      <slot name="video"/>
     </video>
 
     <!-- Interface slot -->
@@ -15,6 +15,9 @@
 </template>
 
 <script>
+
+  // Handlers
+  import {sendPowerSaveSleepIsAllowedEvent, sendPowerSaveSleepIsRestrictedEvent} from "@main/handlers/system/powerSaveHandler";
 
   const props = {
     source: {
@@ -107,10 +110,21 @@
           if (time > 0) this.$emit('update:time', time);
         }
       );
+
+      // Power Safe Events
+      this.player.on('pause', () => sendPowerSaveSleepIsAllowedEvent());
+      this.player.on('playing', () => sendPowerSaveSleepIsRestrictedEvent());
+
+      // Update PIP video if PIP exists
+      if (document.pictureInPictureElement) this.player.on('playing', () => this.player.pip = true);
+
     },
 
 
     async destroyed() {
+
+      // Enable system sleep on player destroy
+      sendPowerSaveSleepIsAllowedEvent();
 
       // Destroy player instance
       if (this.player) {

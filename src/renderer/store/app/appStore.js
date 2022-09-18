@@ -1,6 +1,6 @@
-import watch from './watch'
-import account from './account'
-import settings from './settings'
+import watch from './watch/appWatchStore'
+import account from './account/appAccountStore'
+import settings from './settings/appSettingsStore'
 
 const SET_DRAWER = 'SET_DRAWER';
 const SET_SEARCHING = 'SET_SEARCHING';

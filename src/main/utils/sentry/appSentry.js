@@ -1,6 +1,6 @@
 // Load Sentry.io handler
-import * as Sentry from '@sentry/electron';
 import app from '@/../package';
+import * as Sentry from '@sentry/electron';
 
 /**
  * Enable sentry
@@ -9,7 +9,7 @@ import app from '@/../package';
  * @param process
  * @return void
  */
-export default ({ store, source } = {}) => {
+export const initializeSentryInterceptor = ({ store, source } = {}) => {
   if (process.env.SENTRY_DSN && process.env.NODE_ENV !== 'development') {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,

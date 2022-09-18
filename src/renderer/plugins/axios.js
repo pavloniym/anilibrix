@@ -25,17 +25,21 @@ const axios = Axios.create();
  * @return {Promise<never>}
  */
 const responseErrorHandler = async error => {
-  if (error && error.response) {
-    if (error.response.status !== 401) {
-      console.log(error)
-    }
-    // If server responded with not authorized:
-    if (error.response.status === 401) {
-      // Clear session and profile data
-      await store.dispatch('app/account/setSession');
-      await store.dispatch('app/account/setProfile');
-    }
-  } else console.log(error)
+
+  // If server responded with not authorized:
+  if (error?.response?.status === 401) {
+
+    const accountStorage = require('@store/app/account/appAccountStore')
+
+    // Clear session and profile data
+    await store.commit('app/account/' + accountStorage.SET_SESSION_MUTATION);
+    await store.commit('app/account/' + accountStorage.SET_SESSION_MUTATION);
+
+  }
+
+  if (error?.response?.status !== 401) {
+    console.log(error);
+  }
 
   return Promise.reject(error);
 };

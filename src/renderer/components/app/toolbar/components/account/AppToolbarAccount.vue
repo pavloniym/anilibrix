@@ -70,154 +70,120 @@
 
 <script>
 
-  import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
-  import {mapGetters, mapState} from 'vuex'
-  import {toLogin} from "@utils/router/views";
+// Utils
+import stringsPluralize from "@utils/strings/pluralize/stringsPluralize";
 
-  export default {
-    data() {
-      return {
-        menu: false,
-        loading: false,
-        handler: null,
-      }
-    },
-    computed: {
-      ...mapState('app/watch', {_watch: s => s.items}),
-      ...mapState('favorites', {_favorites: s => s.items}),
-      ...mapState('app/account', {_profile: s => s.profile}),
-      ...mapGetters('app/account', {_isAuthorized: 'isAuthorized'}),
+// Store
+import {mapGetters, mapState} from 'vuex'
+import {LOGOUT_ACTION} from '@store/app/account/appAccountStore'
 
+// Routes
+import {toLogin} from "@utils/router/views";
 
-      /**
-       * Get favorites length
-       *
-       * @return {number}
-       */
-      favorites() {
-        return (this._favorites || []).length
-      },
-
-
-      /**
-       * Get episodes
-       *
-       * @return {number}
-       */
-      episodes() {
-        return Object.values(this._watch || {})
-          .filter(item => item.isSeen)
-          .length;
-      },
-
-
-      /**
-       * Get hours
-       *
-       * @return {number}
-       */
-      hours() {
-        const seconds = Object.values(this._watch || {})
-          .reduce((storage, episode) => storage + (episode.time || 0), 0);
-
-        return Math.floor((seconds || 0) / 60 / 60);
-      },
-
-
-      /**
-       * Get profile statistics
-       *
-       * @return {array}
-       */
-      statistics() {
-        return [
-          {
-            title: 'В избранном',
-            value: this.favorites ? stringsPluralize(this.favorites, ['релиз', 'релиза', 'релизов']) : 'Нет данных',
-          },
-          {
-            title: 'Просмотрено',
-            value: this.episodes ? stringsPluralize(this.episodes, ['эпизод', 'эпизода', 'эпизодов']) : 'Нет данных',
-          },
-          {
-            title: 'Потрачено на просмотр',
-            value: this.hours > 0 ? stringsPluralize(this.hours, ['час', 'часа', 'часов']) : 'Нет данных',
-          }
-        ]
-      }
-
-
-    },
-
-
-    methods: {
-
-      /**
-       * Push to login screen
-       * Check to avoid duplicate navigation error
-       *
-       * @return {void}
-       */
-      toLogin,
-
-
-      /**
-       * Logout
-       * Ignore error
-       *
-       * @return {Promise<void>}
-       */
-      async logout() {
-        try {
-
-          await this.$store.dispatchPromise('app/account/logout');
-
-        } finally {
-
-          // Close menu
-          this.menu = false;
-          this.loading = false;
-        }
-      },
-
-
-      /**
-       * Get profile data
-       *
-       * @return {Promise<void>}
-       */
-      async getProfile() {
-        try {
-
-          this.loading = true;
-          await this.$store.dispatchPromise('app/account/getProfile');
-
-        } catch (e) {
-
-          //
-
-        } finally {
-          this.loading = false;
-        }
-      }
-    },
-
-    async mounted() {
-
-      // Get profile data
-      await this.getProfile();
-
-      // Set profile data
-      this.handler = setInterval(() => this.getProfile(), 1000 * 60 * 60 * 2);
-
-
-    },
-
-    beforeDestroy() {
-      if (this.handler) {
-        clearInterval(this.handler);
-      }
+export default {
+  data() {
+    return {
+      menu: false,
     }
+  },
+  computed: {
+    ...mapState('app/watch', {_watch: s => s.items}),
+    ...mapState('favorites', {_favorites: s => s.items}),
+    ...mapState('app/account', {_profile: s => s.profile}),
+    ...mapGetters('app/account', {_isAuthorized: 'isAuthorized'}),
+
+
+    /**
+     * Get favorites length
+     *
+     * @return {number}
+     */
+    favorites() {
+      return (this._favorites || []).length
+    },
+
+
+    /**
+     * Get episodes
+     *
+     * @return {number}
+     */
+    episodes() {
+      return Object.values(this._watch || {})
+        .filter(item => item.isSeen)
+        .length;
+    },
+
+
+    /**
+     * Get hours
+     *
+     * @return {number}
+     */
+    hours() {
+      const seconds = Object.values(this._watch || {})
+        .reduce((storage, episode) => storage + (episode.time || 0), 0);
+
+      return Math.floor((seconds || 0) / 60 / 60);
+    },
+
+
+    /**
+     * Get profile statistics
+     *
+     * @return {array}
+     */
+    statistics() {
+      return [
+        {
+          title: 'В избранном',
+          value: this.favorites ? stringsPluralize(this.favorites, ['релиз', 'релиза', 'релизов']) : 'Нет данных',
+        },
+        {
+          title: 'Просмотрено',
+          value: this.episodes ? stringsPluralize(this.episodes, ['эпизод', 'эпизода', 'эпизодов']) : 'Нет данных',
+        },
+        {
+          title: 'Потрачено на просмотр',
+          value: this.hours > 0 ? stringsPluralize(this.hours, ['час', 'часа', 'часов']) : 'Нет данных',
+        }
+      ]
+    }
+
+
+  },
+
+
+  methods: {
+
+    /**
+     * Push to login screen
+     * Check to avoid duplicate navigation error
+     *
+     * @return {void}
+     */
+    toLogin,
+
+
+    /**
+     * Logout
+     * Ignore error
+     *
+     * @return {Promise<void>}
+     */
+    async logout() {
+      try {
+
+        await this.$store.dispatchPromise('app/account/' + LOGOUT_ACTION);
+
+      } finally {
+
+        // Close menu
+        this.menu = false;
+      }
+    },
   }
+
+}
 
 </script>

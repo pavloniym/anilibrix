@@ -1,5 +1,5 @@
-import player from './player'
-import system from './system'
+import player from './player/settingsPlayerStore'
+import system from './system/settingsSystemStore'
 
 export default {
   namespaced: true,

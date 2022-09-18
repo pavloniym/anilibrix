@@ -12,13 +12,7 @@
           <v-card-text>
             <div>Укажите данные, с которыми вы зарегистрировались на сайте Анилибрии</div>
           </v-card-text>
-          <v-alert
-            icon="mdi-shield-lock"
-            dense
-            type="info"
-          >
-            Ваши учетные данные хранятся в зашифрованном виде
-          </v-alert>
+          <v-alert dense icon="mdi-shield-lock" type="info">Ваши учетные данные хранятся в зашифрованном виде</v-alert>
           <!-- Login / Email -->
           <!-- Password -->
           <v-layout class="py-6 pt-2">
@@ -57,68 +51,64 @@
 
 <script>
 
-  // Images
-  import LibriaTyan03 from '@assets/images/libria-tyan/LibriaTyan03.svg'
+// Images
+import LibriaTyan03 from '@assets/images/libria-tyan/LibriaTyan03.svg'
 
-  // Utils
-  import {required} from 'vuelidate/lib/validators'
-  import {BackViewMixin} from '@mixins/views'
-  import { invokeSafeStorageEncrypt } from '@main/handlers/app/appHandlers'
+// Utils
+import {required} from 'vuelidate/lib/validators'
+import {BackViewMixin} from '@mixins/views'
 
-  export default {
-    name: "Account.Login.View",
-    mixins: [BackViewMixin],
-    data() {
-      return {
-        tab: 0,
-        from: null,
-        login: null,
-        image: LibriaTyan03,
-        loading: false,
-        password: null,
-      }
-    },
+// Store
+import {LOGIN_ACTION} from '@store/app/account/appAccountStore'
 
-    validations: {
-      login: {required},
-      password: {required},
-    },
+export default {
+  name: "Account.Login.View",
+  mixins: [
+    BackViewMixin
+  ],
+  data() {
+    return {
+      tab: 0,
+      from: null,
+      login: null,
+      image: LibriaTyan03,
+      loading: false,
+      password: null,
+    }
+  },
 
-    methods: {
+  validations: {
+    login: {required},
+    password: {required},
+  },
 
-      /**
-       * Authorize
-       *
-       * @return {Promise<void>}
-       */
-      async authorize() {
-        if (!this.$v.$invalid) {
-          try {
-            this.loading = true;
+  methods: {
 
-            // Make login request with provided credentials
-            // Save account session
-            const payload = {login: this.login, password: this.password};
-            const session = await this.$store.dispatchPromise('app/account/login', payload);
-            await Promise.allSettled([
-              await invokeSafeStorageEncrypt('user.login', this.login),
-              await invokeSafeStorageEncrypt('user.password', this.password)
-            ])
-            await this.$store.dispatchPromise('app/account/setSession', session);
+    /**
+     * Authorize
+     *
+     * @return {Promise<void>}
+     */
+    async authorize() {
+      if (!this.$v.$invalid) {
+        try {
+          this.loading = true;
 
-            // Get profile data
-            await this.$store.dispatchPromise('app/account/getProfile');
-            await this.toBack();
+          const payload = {login: this.login, password: this.password};
 
-            // Get user favorites
-            this.$store.dispatchPromise('favorites/getFavorites');
+          // Make login request with provided credentials
+          await this.$store.dispatchPromise('app/account/' + LOGIN_ACTION, payload);
+          await this.toBack();
 
-          } finally {
-            this.loading = false;
-          }
+          // Get user favorites
+          this.$store.dispatchPromise('favorites/getFavorites');
+
+        } finally {
+          this.loading = false;
         }
       }
     }
-
   }
+
+}
 </script>

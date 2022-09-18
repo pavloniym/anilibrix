@@ -9,6 +9,10 @@ import createPersistedState from 'vuex-persistedstate'
 import { createSharedMutations } from 'vuex-electron'
 import { getItem, setItem, removeItem } from '@utils/store/storage'
 
+
+// Mutations
+import {SET_USER_ID_MUTATION} from './app/account/appAccountStore'
+
 import app from './app'
 import release from './release'
 import catalog from './catalog'
@@ -105,7 +109,7 @@ export const getStore = () => store;
  * @return {Promise<any>}
  */
 // eslint-disable-next-line no-return-await
-export const setUserId = async () => await store.dispatch('app/account/setUserId')
+export const setUserId = async () => await store.commit('app/account/' + SET_USER_ID_MUTATION)
 
 /**
  * Export store

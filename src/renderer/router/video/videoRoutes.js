@@ -12,8 +12,8 @@ export default [
     beforeEnter (to, from, next) {
       // Check if it is allowed to show ads
       // Check if not form ads
-      const ads = store.state.app.settings.system.ads.enabled === true;
-      const adsMaximum = store.state.app.settings.system.ads.maximum === true;
+      const ads = store?.state?.app?.settings?.system?.hasAds === true;
+      const adsMaximum = store?.state?.app?.settings?.system?.hasMaximumAds === true;
 
       const fromAds = from && from.name === 'ads';
       const isShownThisTime = Math.random() >= 0.5 || adsMaximum;

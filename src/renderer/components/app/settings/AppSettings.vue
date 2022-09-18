@@ -1,138 +1,137 @@
 <template>
-  <v-navigation-drawer
-    v-model="drawer"
-    app
-    right
-    fixed
-    temporary
-    width="400"
-    class="settings">
+    <v-navigation-drawer v-model="drawer" app right fixed temporary width="400" class="settings">
 
-    <!-- System bar offset -->
-    <system-bar-placeholder fixed/>
+        <!-- System bar offset -->
+        <system-bar-placeholder fixed/>
 
-    <!-- Header -->
-    <v-toolbar flat class="shrink" color="#363636" :class="{'mt-9': !this.isMacOnFullscreen}">
-      <v-toolbar-title class="body-1">Настройки приложения</v-toolbar-title>
-    </v-toolbar>
-    <v-divider/>
+        <!-- Header -->
+        <v-toolbar flat class="shrink" color="#363636" :class="{'mt-9': !this.isMacOnFullscreen}">
+            <v-toolbar-title class="body-1">Настройки приложения</v-toolbar-title>
+        </v-toolbar>
+        <v-divider/>
 
+        <!-- Search -->
+        <search v-model="search" class="ma-2" />
 
-    <!-- Categories -->
-    <component
-      v-for="(category, k) in categories"
-      class="mb-2"
-      :is="category"
-      :key="k">
-    </component>
+        <!-- Sections -->
+        <template v-for="(section, k) in sections">
+            <component v-bind="{search}" class="mb-4" :is="section" :key="k"/>
+        </template>
 
+        <!-- Credentials -->
+        <credentials/>
 
-    <!-- Credentials -->
-    <credentials/>
-
-
-  </v-navigation-drawer>
+    </v-navigation-drawer>
 </template>
 
 <script>
 
-  import Credentials from './components/credentials'
-  import PlayerSettings from './categories/player'
+    // App Components
+    import SystemBarPlaceholder from './../systembar/placeholder'
 
-  import SystemSettings from './categories/system'
-  import ActionsSettings from './categories/actions'
-  import DevtoolsSettings from './categories/devtools'
-  import AnilibriaSettings from './categories/app'
+    // Components
+    import Search from './_components/search/SettingsSearch'
+    import Credentials from './_components/credentials/SettingsCredentials'
 
-  import SystemBarPlaceholder from './../systembar/placeholder'
+    // Sections
+    import App from './sections/app/SettingsApp'
+    // import Player from './sections/player/SettingsPlayer'
+    import System from './sections/system/SettingsSystem'
+    import Actions from './sections/actions/SettingsActions'
+    import Devtools from './sections/devtools/SettingsDevtools'
 
-  import {AppPlatformMixin} from '@mixins/app'
-  import {mapState, mapActions} from 'vuex'
 
-  export default {
-    mixins: [AppPlatformMixin],
-    components: {
-      Credentials,
-      SystemBarPlaceholder
-    },
-    computed: {
-      ...mapState('app', {_drawer: s => s.drawer}),
-      ...mapState('app/settings/system', {_devtools: s => s.devtools}),
+    // Mixins
+    import {AppPlatformMixin} from '@mixins/app'
 
-      /**
-       * Get categories components
-       *
-       * @return Array
-       */
-      categories() {
-        return [
-          PlayerSettings,
-          SystemSettings,
-          ActionsSettings,
-          AnilibriaSettings,
-          this._devtools ? DevtoolsSettings : null
-        ].filter(category => category)
-      },
+    // Store
+    import {mapState, mapActions} from 'vuex'
 
-      drawer: {
+    export default {
+        mixins: [
+            AppPlatformMixin
+        ],
+        components: {
+            Search,
+            Credentials,
+            SystemBarPlaceholder
+        },
+        data() {
+            return {
+                search: null,
+            }
+        },
+        computed: {
+            ...mapState('app', {_drawer: s => s.drawer}),
 
-        /**
-         * Get drawer state
-         *
-         * @return boolean
-         */
-        get() {
-          return !!this._drawer;
+
+            /**
+             * Get sections
+             *
+             * @return Array
+             */
+            sections() {
+                return [
+                    //  Player,
+                    System,
+                    Actions,
+                    App,
+                    Devtools,
+                ]
+            },
+
+            drawer: {
+
+                /**
+                 * Get drawer state
+                 *
+                 * @return boolean
+                 */
+                get() {
+                    return !!this._drawer;
+                },
+
+                /**
+                 * Set drawer state
+                 *
+                 * @param state
+                 * @return void
+                 */
+                set(state) {
+                    this._setDrawer(state);
+                }
+            }
+
         },
 
-        /**
-         * Set drawer state
-         *
-         * @param state
-         * @return void
-         */
-        set(state) {
-          this._setDrawer(state);
+        methods: {
+            ...mapActions('app', {_setDrawer: 'setDrawer'}),
         }
-      }
 
-    },
-
-    methods: {
-      ...mapActions('app', {_setDrawer: 'setDrawer'}),
     }
-
-  }
 </script>
 
-<style>
-  /*
-    See: https://github.com/buefy/buefy/issues/2096
-    See: https://stackoverflow.com/questions/14677490/blurry-text-after-using-css-transform-scale-in-chrome
-  */
-  .v-navigation-drawer__content {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-  }
-</style>
-
 <style lang="scss" scoped>
-  .settings {
+    .settings {
 
-    ::v-deep {
-      .v-navigation-drawer__content {
-        overflow-y: scroll;
-      }
+        ::v-deep {
+            .v-navigation-drawer__content {
+
+                // @see: https://github.com/buefy/buefy/issues/2096
+                // @see: https://stackoverflow.com/questions/14677490/blurry-text-after-using-css-transform-scale-in-chrome
+                transform: translateZ(0) !important;
+                overflow-y: scroll;
+                backface-visibility: hidden !important;
+            }
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: black;
+        }
+
+        ::-webkit-scrollbar {
+            background-color: transparent;
+        }
     }
-
-
-    ::-webkit-scrollbar-thumb {
-      background-color: black;
-    }
-
-    ::-webkit-scrollbar {
-      background-color: transparent;
-    }
-  }
 
 </style>

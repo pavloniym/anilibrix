@@ -44,7 +44,8 @@
 </template>
 
 <script>
-  import { sendEnableSystemSleepBlockerEvent, sendDisableSystemSleepBlockerEvent } from "@main/handlers/app/appHandlers";
+
+  // Routes
   import { toVideo } from "@utils/router/views";
 
   const props = {
@@ -127,10 +128,6 @@
 
     },
 
-    beforeDestroy() {
-      sendDisableSystemSleepBlockerEvent()
-    },
-
     created() {
 
       // Set initial values
@@ -140,22 +137,12 @@
       this.player.on('playing', () => this.is_playing = true);
       this.player.on('pause', () => this.is_playing = false);
 
-      this.player.on('playing', () => sendEnableSystemSleepBlockerEvent());
-      this.player.on('pause', () => sendDisableSystemSleepBlockerEvent());
-
       // Fixing unknown bug with muted: true after plyer createing
       // TODO: Maybe solve this problem in the best way in the future
       this.player.on('playing', () => {
         if (this.player.volume > 0 && this.player.config.muted) {
           console.log('Fix muted:', this.player.volume, this.player.config.muted)
           document.querySelector('video').muted = false
-        }
-      });
-
-      // Update PIP video if PIP exists
-      this.player.on('playing', () => {
-        if (document.pictureInPictureElement) {
-          this.player.pip = true
         }
       });
 
