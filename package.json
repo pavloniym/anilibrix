@@ -1,242 +1,44 @@
 {
-  "name": "anilibrix",
-  "version": "1.4.3",
-  "author": {
-    "name": "Anilibria",
-    "email": "anilibria@protonmail.com",
-    "url": "https://anilibria.tv"
-  },
-  "description": "AniLibrix - AniLibria desktop app",
-  "license": "MIT",
-  "main": "./dist/electron/main.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/pavloniym/anilibrix"
-  },
-  "scripts": {
-    "build": "node .electron-vue/build.js",
-    "serve": "node .electron-vue/dev-runner.js",
-    "release": "yarn build && electron-builder -wml -c.compression=store",
-    "release:mac": "yarn build && electron-builder -m -c.compression=store",
-    "release:linux": "yarn build && electron-builder -l -c.compression=store",
-    "release:windows": "yarn build && electron-builder -w -c.compression=store",
-    "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
-  },
-  "meta": {
-    "name": "AniLibrix",
-    "links": {
-      "github": "https://github.com/anilibria",
-      "donate": "https://www.anilibria.tv/pages/donate.php",
-      "telegram": "tg://resolve?domain=anilibrix",
-      "anilibria": "https://anilibria.tv"
+    "name": "anilibrix",
+    "version": "1.4.3",
+    "author": {
+        "name": "Anilibria",
+        "email": "anilibria@protonmail.com",
+        "url": "https://anilibria.tv"
+    },
+    "description": "AniLibrix - AniLibria desktop app",
+    "license": "MIT",
+    "main": "packages/main/dist/index.cjs",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pavloniym/anilibrix"
+    },
+    "scripts": {
+        "serve": "node scripts/watch.mjs"
+    },
+    "meta": {
+        "name": "AniLibrix",
+        "links": {
+            "github": "https://github.com/anilibria",
+            "donate": "https://www.anilibria.tv/pages/donate.php",
+            "telegram": "tg://resolve?domain=anilibrix",
+            "anilibria": "https://anilibria.tv"
+        }
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^3.1.2",
+        "electron": "^21.0.1",
+        "electron-builder": "23.3.3",
+        "electron-devtools-installer": "^3.2.0",
+        "sass": "^1.55.0",
+        "vite": "^3.1.6",
+        "vite-plugin-vuetify": "^1.0.0-alpha.17"
+    },
+    "dependencies": {
+        "electron-updater": "^5.3.0",
+        "pinia": "^2.0.23",
+        "vue": "^3.2.40",
+        "vue-router": "^4.1.5",
+        "vuetify": "^3.0.0-beta.13"
     }
-  },
-  "build": {
-    "productName": "AniLibrix",
-    "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
-    "appId": "com.anilibria.anilibrix",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "dist/electron/**/*",
-      "build/icons/**/*"
-    ],
-    "publish": {
-      "provider": "github",
-      "releaseType": "release"
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    },
-    "mac": {
-      "category": "public.app-category.video",
-      "icon": "build/icons/app/anilibria.icns"
-    },
-    "win": {
-      "icon": "build/icons/app/anilibria.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32",
-            "arm64"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64",
-            "ia32",
-            "arm64"
-          ]
-        }
-      ]
-    },
-    "linux": {
-      "icon": "build/icons/app",
-      "category": "Video",
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64",
-            "ia32",
-            "arm64"
-          ]
-        },
-        {
-          "target": "snap",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
-    },
-    "snap": {
-      "publish": [
-        {
-          "provider": "github",
-          "releaseType": "release"
-        },
-        {
-          "repo": "anilibrix",
-          "channels": [
-            "stable"
-          ],
-          "provider": "snapStore",
-          "publishAutoUpdate": false
-        }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": true,
-      "artifactName": "${productName}-${os}-${version}-setup.${ext}",
-      "installerSidebar": "build/installer/installerSidebar.bmp",
-      "deleteAppDataOnUninstall": true,
-      "allowToChangeInstallationDirectory": true
-    }
-  },
-  "dependencies": {
-    "@electron/remote": "^2.0.1",
-    "@mdi/font": "^4.8.95",
-    "@sentry/browser": "^6.13.2",
-    "@sentry/electron": "^2.5.4",
-    "@sentry/integrations": "^6.13.2",
-    "axios": "^0.19.2",
-    "chromecast-api": "^0.3.3",
-    "electron-dl": "^3.0.1",
-    "electron-promise-ipc": "^2.0.1",
-    "electron-store": "^8.0.1",
-    "electron-updater": "^4.3.9",
-    "flatted": "^3.0.2",
-    "form-data": "^3.0.0",
-    "fuse.js": "^3.4.6",
-    "hls.js": "1.1.5",
-    "https-proxy-agent": "^5.0.0",
-    "lethargy": "^1.0.9",
-    "lodash": "^4.17.19",
-    "matroska-subtitles": "^3.3.2",
-    "moment": "^2.29.4",
-    "node-cron": "^2.0.3",
-    "node-localstorage": "^2.1.6",
-    "object-hash": "^2.0.3",
-    "object-to-formdata": "^3.0.9",
-    "pac-resolver": "^4.0.0",
-    "parse-torrent": "^7.0.1",
-    "plyr": "^3.6.9",
-    "pretty-bytes": "^5.3.0",
-    "rimraf": "^3.0.2",
-    "screenfull": "^5.0.2",
-    "set-cookie-parser": "^2.4.6",
-    "string-strip-html": "^4.3.16",
-    "uuid": "^7.0.3",
-    "vue": "^2.6.11",
-    "vue-analytics": "^5.22.1",
-    "vue-clamp": "^0.2.2",
-    "vue-electron": "^1.0.6",
-    "vue-meta": "^2.3.4",
-    "vue-router": "^3.0.1",
-    "vue-script2": "^2.1.0",
-    "vue-toasted": "^1.1.27",
-    "vue-yandex-metrika": "^1.8.3",
-    "vuelidate": "^0.7.5",
-    "vuetify": "^2.2.8",
-    "vuex": "^3.0.1",
-    "vuex-electron": "^1.0.3",
-    "vuex-persistedstate": "^3.0.1",
-    "webtorrent": "^0.107.17"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.4",
-    "@babel/runtime": "^7.8.4",
-    "ajv": "^6.5.0",
-    "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.6",
-    "babel-minify-webpack-plugin": "^0.3.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "cfonts": "^2.1.2",
-    "chalk": "^3.0.0",
-    "copy-webpack-plugin": "^5.1.1",
-    "cross-env": "^7.0.0",
-    "css-loader": "^3.4.2",
-    "deepmerge": "^4.2.2",
-    "del": "^5.1.0",
-    "devtron": "^1.4.0",
-    "dotenv-webpack": "^1.7.0",
-    "electron": "^15.1.0",
-    "electron-builder": "^22.14.3",
-    "electron-debug": "^3.0.1",
-    "electron-devtools-installer": "3.2",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-friendly-formatter": "^4.0.1",
-    "eslint-loader": "^3.0.3",
-    "eslint-plugin-html": "^6.0.0",
-    "eslint-plugin-import": "^2.12.0",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "fibers": "^4.0.2",
-    "file-loader": "^5.0.2",
-    "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "0.9.0",
-    "multispinner": "^0.2.1",
-    "node-loader": "^0.6.0",
-    "node-sass": "^6.0.1",
-    "raw-loader": "^4.0.1",
-    "sass": "^1.25.0",
-    "sass-loader": "^8.0.2",
-    "style-loader": "^1.1.3",
-    "url-loader": "^3.0.0",
-    "vue-html-loader": "^1.2.4",
-    "vue-loader": "^15.2.4",
-    "vue-style-loader": "^4.1.0",
-    "vue-template-compiler": "^2.5.16",
-    "vuetify-loader": "^1.4.3",
-    "webpack": "^4.15.1",
-    "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4",
-    "webpack-hot-middleware": "^2.22.2",
-    "webpack-merge": "^4.1.3"
-  }
 }

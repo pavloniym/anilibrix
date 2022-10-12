@@ -1,30 +1,20 @@
-const path = require('path');
-
-// Resolve path
-// Starting from root by default
-const resolve = function (dir) {
-  return path.join(__dirname, dir);
-};
-
+// Use only for autocompletion in IDE
 module.exports = {
-  resolve: {
-    alias: {
-      '@': resolve('src'),
-      '@main': resolve('src/main'),
-      '@package': resolve('package.json'),
-      '@router': resolve('src/renderer/router'),
-      '@store': resolve('src/renderer/store'),
-      '@plugins': resolve('src/renderer/plugins'),
-      '@views': resolve('src/renderer/views'),
-      '@components': resolve('src/renderer/components'),
-      '@assets': resolve('src/renderer/assets'),
-      '@transformers': resolve('src/renderer/transformers'),
-      '@transformer': resolve('src/renderer/transformers/Transformer'),
-      '@layouts': resolve('src/renderer/layouts'),
-      '@proxies': resolve('src/renderer/proxies'),
-      '@proxy': resolve('src/renderer/proxies/Proxy'),
-      '@utils': resolve('src/renderer/utils'),
-      '@mixins': resolve('src/renderer/mixins'),
-    },
-  },
+    resolve: {
+        alias: {
+            '@': __dirname + '/packages/renderer/src',
+            '@utils': __dirname + '/packages/renderer/src/utils',
+            '@views': __dirname + '/packages/renderer/src/views',
+            '@store': __dirname + '/packages/renderer/src/store',
+            '@mixins': __dirname + '/packages/renderer/src/mixins',
+            '@router': __dirname + '/packages/renderer/src/router',
+            '@assets': __dirname + '/packages/renderer/src/assets',
+            '@package': __dirname + '/package.json',
+            '@plugins': __dirname + '/packages/renderer/src/plugins',
+            '@layouts': __dirname + '/packages/renderer/src/layouts',
+            '@proxies': __dirname + '/packages/renderer/src/proxies',
+            '@components': __dirname + '/packages/renderer/src/components',
+            '@transformers': __dirname + '/packages/renderer/src/transformers',
+        }
+    }
 };
