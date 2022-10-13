@@ -1,6 +1,6 @@
 {
     "name": "anilibrix",
-    "version": "1.4.3",
+    "version": "2.0.0",
     "author": {
         "name": "Anilibria",
         "email": "anilibria@protonmail.com",
@@ -8,13 +8,15 @@
     },
     "description": "AniLibrix - AniLibria desktop app",
     "license": "MIT",
-    "main": "packages/main/dist/index.cjs",
+    "main": "./out/main/index.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/pavloniym/anilibrix"
     },
     "scripts": {
-        "serve": "node scripts/watch.mjs"
+        "dev": "electron-vite dev --watch",
+        "start": "electron-vite preview",
+        "prebuild": "electron-vite build"
     },
     "meta": {
         "name": "AniLibrix",
@@ -26,18 +28,25 @@
         }
     },
     "devDependencies": {
+        "@mdi/font": "^7.0.96",
         "@vitejs/plugin-vue": "^3.1.2",
-        "electron": "^21.0.1",
+        "electron": "^21.1.1",
         "electron-builder": "23.3.3",
         "electron-devtools-installer": "^3.2.0",
+        "electron-vite": "^1.0.10",
         "sass": "^1.55.0",
         "vite": "^3.1.6",
         "vite-plugin-vuetify": "^1.0.0-alpha.17"
     },
     "dependencies": {
+        "axios": "^1.1.2",
         "electron-updater": "^5.3.0",
+        "form-data": "^4.0.0",
         "pinia": "^2.0.23",
+        "plyr": "^3.7.2",
+        "string-strip-html": "^11.6.13",
         "vue": "^3.2.40",
+        "vue-clamp": "^0.4.0",
         "vue-router": "^4.1.5",
         "vuetify": "^3.0.0-beta.13"
     }
