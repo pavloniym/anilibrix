@@ -2,8 +2,9 @@
     <v-layout column id="container" class="layout" :class="{ showScroll, hasBlackBackground }">
 
         <!-- App Toolbar -->
+        <app-toolbar v-if="toolbarIsHidden === false"/>
+
         <!-- Content -->
-        <app-tool-bar v-if="toolbarIsHidden === false"/>
         <slot/>
 
     </v-layout>
@@ -12,7 +13,7 @@
 <script setup>
 
     // Components
-    import AppToolBar from "@components/app/toolbar/AppToolBar";
+    import AppToolbar from "@components/app/toolbar/AppToolbar";
 
     // Vue + Router
     import {computed} from "vue";
@@ -28,9 +29,10 @@
 <style lang="scss" scoped>
 
     .layout {
+        top: 40px;
         width: 100%;
         height: 100vh;
-        padding: 30px 30px;
+        padding: 15px 30px;
         position: absolute;
         overflow-x: hidden;
         overflow-y: overlay;
@@ -47,6 +49,7 @@
             &::-webkit-scrollbar-thumb {
                 background-color: #353535;
             }
+
             &::-webkit-scrollbar {
                 background-color: #1d1d1d;
             }

@@ -1,7 +1,7 @@
 <template>
     <div v-if="isFullscreen === false" class="px-3 panel bg-black d-flex align-center" @dblclick="maximizeWindow">
-        <template v-if="!isWindows">
-            <v-spacer v-if="!isWindows"/>
+        <template v-if="isWindows">
+            <v-spacer v-if="isWindows"/>
             <template v-for="(control, k) in controls" :key="k">
                 <v-btn size="22" color="transparent" class=" panel__button ml-1" @click="control.action">
                     <v-icon size="15" color="grey text-grey-darken-2" :icon="control.icon"/>

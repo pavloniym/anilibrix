@@ -1,48 +1,40 @@
 <template>
-    <v-layout>
+    <div class="d-flex align-center">
         <template v-for="(item, k) in items" :key="k">
-            <v-btn small text class="mr-1" height="38" :to="item.to">
+            <v-btn variant="text" class="mr-1 px-3" height="30" :to="item.to" >
                 <v-icon size="18" class="mr-2">{{ item.icon }}</v-icon>
-                <span class="font-weight-bold text-body-2">{{ item.title }}</span>
+                <span class="fz-.70 font-weight-bold text-h6">{{ item.title }}</span>
             </v-btn>
         </template>
-    </v-layout>
+    </div>
 </template>
 
-<script>
+<script setup>
+
+    // Vue
+    import {computed} from "vue";
 
     // Routes
     import {RELEASES_ROUTE} from "@router/releases/releasesRoutes";
 
+    const items = computed(() => {
+        return [
+            {
+                to: {name: RELEASES_ROUTE},
+                icon: 'mdi-view-column',
+                title: 'Релизы',
+            },
+            {
+                to: {name: RELEASES_ROUTE},
+                icon: 'mdi-folder-text-outline',
+                title: 'Каталог',
+            },
+            {
+                to: {name: RELEASES_ROUTE},
+                icon: 'mdi-star',
+                title: 'Избранное',
+            },
+        ]
+    })
 
-    export default {
-        computed: {
-
-            /**
-             * Get navigation items
-             *
-             * @return {array}
-             */
-            items() {
-                return [
-                    {
-                        to: {name: RELEASES_ROUTE},
-                        icon: 'mdi-view-column',
-                        title: 'Релизы',
-                    },
-                    {
-                        to: {name: RELEASES_ROUTE},
-                        icon: 'mdi-folder-text-outline',
-                        title: 'Каталог',
-                    },
-                    {
-                        to: {name: RELEASES_ROUTE},
-                        icon: 'mdi-star',
-                        title: 'Избранное',
-                    },
-                ]
-            }
-
-        }
-    }
 </script>

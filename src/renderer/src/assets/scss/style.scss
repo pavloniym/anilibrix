@@ -1,8 +1,14 @@
 // Import plugins
-@import "src/renderer/src/assets/scss/plugins/vuetify/style";
+@import "./plugins/vuetify/style";
+
+// Import helpers
+@import "./helpers/font";
+@import "./helpers/text";
 
 html, body {
     overflow-y: hidden !important;
+    text-rendering: unset !important;
+    -webkit-font-smoothing: unset !important;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -14,3 +20,6 @@ html, body {
     width: 9px;
     background-color: #1d1d1d;
 }
+
+//font-family: 'Inter', sans-serif;
+//font-family: 'Montserrat', sans-serif;

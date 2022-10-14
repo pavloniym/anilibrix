@@ -9,6 +9,9 @@ import pinia from './plugins/pinia'
 import router from './plugins/vue-router'
 import vuetify from './plugins/vuetify'
 
+// Import assets
+import '@assets/scss/style.scss'
+
 // Create new app
 const app = createApp(App);
 

@@ -13,7 +13,7 @@ export default class AccountProxy extends BaseProxy {
     async login({login, password}) {
 
         const response = await this.submit({
-            url: `${this.getApiEndpoint()}/public/login.php`,
+            url: `${await this.getApiEndpoint()}/public/login.php`,
             data: {mail: login, passwd: password, fa2code: ''},
             method: 'POST',
         });
@@ -38,7 +38,7 @@ export default class AccountProxy extends BaseProxy {
      */
     async logout() {
         return await this.submit({
-            url: `${this.getApiEndpoint()}/public/logout.php`,
+            url: `${await this.getApiEndpoint()}/public/logout.php`,
             method: 'POST',
         });
     }
@@ -52,7 +52,7 @@ export default class AccountProxy extends BaseProxy {
     async getProfile() {
 
         const response = await this.submit({
-            url: `${this.getApiEndpoint()}/public/api/index.php`,
+            url: `${await this.getApiEndpoint()}/public/api/index.php`,
             data: {query: 'user'},
             method: 'POST',
         })

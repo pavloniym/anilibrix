@@ -1,6 +1,4 @@
 import {name, version} from '@package'
-import {useAppAccountStore} from '@store/app/account/appAccountStore'
-import {useAppSettingsStore} from '@store/app/settings/appSettingsStore'
 
 export default class BaseProxy {
 
@@ -22,7 +20,7 @@ export default class BaseProxy {
                 data,
                 params,
                 method,
-                headers: {...headers, ...this.getRequestHeaders({isFormData})},
+                headers: {...headers, ...(await this.getRequestHeaders({isFormData}))},
                 timeout: 15000,
             }
         );
@@ -31,25 +29,32 @@ export default class BaseProxy {
     /**
      * Get api endpoint url
      *
-     * @return {string}
+     * @return {Promise}
      */
-    getApiEndpoint() {
-        return useAppSettingsStore()?.connectionHost;
+    async getApiEndpoint() {
+
+        const req = () => import ('@store/app/settings/appSettingsStore');
+        const store = await req();
+
+        return store?.useAppSettingsStore()?.connectionHost;
     }
 
 
     /**
      * Get default request headers
      *
-     * @return {*}
+     * @return {Promise}
      */
-    getRequestHeaders({isFormData} = {}) {
+    async getRequestHeaders({isFormData} = {}) {
 
         let headers = {};
 
+        const req = () => import ('@store/app/account/appAccountStore');
+        const store = await req();
+
         if (isFormData === true) headers['Content-Type'] = 'multipart/form-data';
         if (name && version) headers['User-Agent'] = `${name}/${version}`;
-        if (useAppAccountStore()?.sessionId) headers['Cookie'] = `PHPSESSID=${useAppAccountStore()?.sessionId}; Path=/; Secure; HttpOnly`;
+        if (store?.useAppAccountStore()?.sessionId) headers['Cookie'] = `PHPSESSID=${store?.useAppAccountStore()?.sessionId}; Path=/; Secure; HttpOnly`;
 
         return headers;
     }

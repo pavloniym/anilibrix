@@ -49,10 +49,12 @@ export default defineConfig({
             },
             extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
         },
-
         plugins: [
             vue(),
-            vuetify(),
+            vuetify({
+                styles: {configFile: './src/assets/scss/plugins/vuetify/variables.scss'},
+                autoImport: true
+            })
         ],
     }
 })

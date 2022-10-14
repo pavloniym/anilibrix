@@ -11,7 +11,7 @@ export default class ReleasesProxy extends BaseProxy {
     async fetchLatestReleases() {
 
         const response = await this.submit({
-            url: `${this.getApiEndpoint()}/public/api/index.php`,
+            url: `${await this.getApiEndpoint()}/public/api/index.php`,
             data: {query: 'list', perPage: 14},
             method: 'POST',
         });

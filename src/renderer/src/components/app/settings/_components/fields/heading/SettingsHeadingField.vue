@@ -1,15 +1,15 @@
 <template>
-    <div class="pa-4 pb-3 caption grey--text">
-        <div class="body-1">{{ title }}</div>
+    <div class="pa-4 pb-3 text-grey">
+        <div class="text-h6 fz-1">{{ title }}</div>
         <template v-for="(item, k) in subtitle" :key="k">
-            <div >{{ item }}</div>
+            <div class="fz-.70 text-line-height-1.5">{{ item }}</div>
         </template>
     </div>
 </template>
 
-<script>
+<script setup>
 
-    const props = {
+    const props = defineProps({
         title: {
             type: String,
             default: null
@@ -18,9 +18,6 @@
             type: Array,
             default: null
         },
-    }
+    })
 
-    export default {
-        props,
-    }
 </script>

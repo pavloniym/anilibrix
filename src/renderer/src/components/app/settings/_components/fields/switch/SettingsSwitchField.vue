@@ -1,33 +1,42 @@
 <template>
     <v-card>
+        <v-list-item class="py-4" v-bind="{modelValue}" @click="inputHandler(!modelValue)">
 
-        <!-- Switch -->
-        <v-list-item dense @click="inputHandler(!value)">
-            <v-list-item-title>{{ title }}</v-list-item-title>
-            <v-list-item-action class="mr-2">
-                <v-switch :input-value="value" @change="inputHandler"/>
-            </v-list-item-action>
-        </v-list-item>
+            <!-- Title -->
+            <v-list-item-title class="fz-.75 font-weight-bold text-h6">{{ title }}</v-list-item-title>
 
+            <!-- Description -->
+            <v-list-item-subtitle>
+                <template v-for="(item, k) in description" :key="k">
+                    <div class="fz-.70 text-line-height-1.5">{{ item }}</div>
+                </template>
+            </v-list-item-subtitle>
 
-        <!-- Description -->
-        <v-card-text v-if="description" class="pt-2 caption">
-            <template v-for="(item, k) in description" :key="k">
-                <div >{{ item }}</div>
+            <!-- Switch -->
+            <template v-slot:append>
+                <v-list-item-action>
+                    <v-switch
+                        inset
+                        color="white"
+                        density="compact"
+                        :modelValue="modelValue"
+                        @update:modeValue="inputHandler">
+                    </v-switch>
+                </v-list-item-action>
             </template>
-        </v-card-text>
 
+        </v-list-item>
     </v-card>
 </template>
 
-<script>
+<script setup>
 
-    const props = {
+    const props = defineProps({
         title: {
             type: String,
             default: null
         },
-        value: {
+        modelValue: {
             type: Boolean,
             default: null
         },
@@ -39,9 +48,6 @@
             type: Function,
             default: null
         }
-    }
+    })
 
-    export default {
-        props,
-    }
 </script>

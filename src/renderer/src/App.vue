@@ -1,13 +1,10 @@
 <template>
     <v-app>
 
-        <!-- System Bar -->
-        <!--        <app-system-bar/>-->
-        <!--        <app-settings/>-->
-
-        <!-- Panel -->
+        <!-- Bar -->
         <!-- Settings -->
-        <app-panel />
+        <app-bar/>
+        <app-settings/>
 
 
         <!-- Content -->
@@ -32,11 +29,14 @@
 <script setup>
 
     // App Components
-    import AppPanel from "@components/app/panel/AppPanel";
+    import AppBar from "@components/app/bar/AppBar";
     import AppLoader from '@components/app/loader/AppLoader'
+    import AppSettings from '@components/app/settings/AppSettings';
+
+    // Layouts
     import AppBaseLayout from '@layouts/base/BaseLayout'
 
-    //import AppSettings from "@components/app/settings/AppSettings.vue";
+    //
     //import AppErrors from '@components/app/errors/AppErrors'
     //import AppToolBar from "@components/app/toolbar/AppToolBar";
     //import AppSystemBar from '@components/app/systembar/AppSystemBar'
