@@ -9,7 +9,7 @@ export default class CatalogProxy extends BaseProxy {
   async getCatalogGenres() {
     const data = this.getFormDataObject({ query: 'genres' });
     const params = { data, headers: data.getHeaders() };
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+    const response = await this.submit('POST', this.applyEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
   }
@@ -22,7 +22,7 @@ export default class CatalogProxy extends BaseProxy {
   async getCatalogYears() {
     const data = this.getFormDataObject({ query: 'years' });
     const params = { data, headers: data.getHeaders() };
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+    const response = await this.submit('POST', this.applyEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
   }
@@ -49,7 +49,7 @@ export default class CatalogProxy extends BaseProxy {
     });
 
     const params = { data, headers: data.getHeaders(), ...parameters };
-    const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+    const response = await this.submit('POST', this.applyEndpoint() + '/public/api/index.php', params);
 
     return this.handleResponse(response.data);
   }

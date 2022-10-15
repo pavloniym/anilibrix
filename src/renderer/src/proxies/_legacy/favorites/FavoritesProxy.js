@@ -12,7 +12,7 @@ export default class FavoritesProxy extends BaseProxy {
 
         const data = this.getFormDataObject({page: 1, perPage: 15, query: 'favorites'});
         const params = {data, headers: data.getHeaders(), ...parameters};
-        const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+        const response = await this.submit('POST', this.applyEndpoint() + '/public/api/index.php', params);
 
         return this.handleResponse(response.data);
     }
@@ -27,7 +27,7 @@ export default class FavoritesProxy extends BaseProxy {
     async addToFavorites(releaseId, parameters = {}) {
         const data = this.getFormDataObject({id: releaseId, action: 'add', query: 'favorites'});
         const params = {data, headers: data.getHeaders(), ...parameters};
-        const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+        const response = await this.submit('POST', this.applyEndpoint() + '/public/api/index.php', params);
 
         return this.handleResponse(response.data);
     }
@@ -42,7 +42,7 @@ export default class FavoritesProxy extends BaseProxy {
     async removeFromFavorites(releaseId, parameters = {}) {
         const data = this.getFormDataObject({id: releaseId, action: 'delete', query: 'favorites'});
         const params = {data, headers: data.getHeaders(), ...parameters};
-        const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+        const response = await this.submit('POST', this.applyEndpoint() + '/public/api/index.php', params);
 
         return this.handleResponse(response.data);
     }

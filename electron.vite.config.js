@@ -51,10 +51,7 @@ export default defineConfig({
         },
         plugins: [
             vue(),
-            vuetify({
-                styles: {configFile: './src/assets/scss/plugins/vuetify/variables.scss'},
-                autoImport: true
-            })
+            vuetify()
         ],
     }
 })

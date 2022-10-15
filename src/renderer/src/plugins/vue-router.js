@@ -4,11 +4,14 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 //import ads from '@router/ads/adsRoutes'
 //import blank from '@router/blank/blankRoutes'
 //import video from '@router/video/videoRoutes'
-//import release from '@router/release/releaseRoutes'
 //import catalog from '@router/catalog/catalogRoutes'
 //import account from '@router/account/accountRoutes'
-import releases from '@router/releases/releasesRoutes'
 //import favorites from '@router/favorites/favoritesRoutes'
+
+// Routes
+import search from '@router/search/searchRoutes'
+import release from '@router/release/releaseRoutes'
+import releases from '@router/releases/releasesRoutes'
 
 export default createRouter({
     routes: [
@@ -17,9 +20,11 @@ export default createRouter({
         // ...video,
         // ...release,
         // ...catalog,
-        // ...account,
-        ...releases,
+        // ...account
         // ...favorites
+        ...search,
+        ...release,
+        ...releases,
     ],
     history: createWebHashHistory(),
 });

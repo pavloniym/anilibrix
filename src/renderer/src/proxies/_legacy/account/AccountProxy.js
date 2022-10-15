@@ -17,7 +17,7 @@ export default class AccountProxy extends BaseProxy {
     async login({login, password}) {
         const data = this.getFormDataObject({mail: login, passwd: password, fa2code: ''});
         const params = {data, headers: data.getHeaders()};
-        const response = await this.submit('POST', this.getApiEndpoint() + '/public/login.php', params);
+        const response = await this.submit('POST', this.applyEndpoint() + '/public/login.php', params);
         const status = response?.data?.err;
 
         // Get status
@@ -47,7 +47,7 @@ export default class AccountProxy extends BaseProxy {
      */
     async logout() {
         // eslint-disable-next-line no-return-await
-        return await this.submit('POST', this.getApiEndpoint() + '/public/logout.php');
+        return await this.submit('POST', this.applyEndpoint() + '/public/logout.php');
     }
 
     /**
@@ -58,7 +58,7 @@ export default class AccountProxy extends BaseProxy {
     async getProfile() {
         const data = this.getFormDataObject({query: 'user'});
         const params = {data, headers: data.getHeaders()};
-        const response = await this.submit('POST', this.getApiEndpoint() + '/public/api/index.php', params);
+        const response = await this.submit('POST', this.applyEndpoint() + '/public/api/index.php', params);
 
         return this.handleResponse(response.data);
     }

@@ -18,5 +18,24 @@ export const useAppSettingsStore = defineStore('app.settings', {
         autoplayNextEpisode: true,
         manualOpeningSkipButton: true,
         manualOpeningSkipSeconds: 90,
-    })
+    }),
+    actions: {
+
+
+        /**
+         * Apply to connection host
+         *
+         * @param url
+         * @return {string}
+         */
+        applyToConnectionHost(url) {
+            const finalUrl = url?.startsWith('/') ? url?.slice(1, url.length) : url;
+            const finalHost = this.connectionHost.endsWith('/') ? this.connectionHost.slice(0, -1) : this.connectionHost;
+
+            return `${finalHost}/${finalUrl}`;
+        }
+
+
+
+    }
 })

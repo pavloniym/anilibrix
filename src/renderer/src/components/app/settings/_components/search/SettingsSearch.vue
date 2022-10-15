@@ -19,6 +19,7 @@
         density: 'compact',
         clearable: true,
         autofocus: true,
+        hideDetails: true,
         placeholder: 'Поиск по настройкам ...',
         autocomplete: 'off',
     }));

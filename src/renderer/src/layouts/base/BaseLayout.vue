@@ -1,13 +1,13 @@
 <template>
-    <v-layout column id="container" class="layout" :class="{ showScroll, hasBlackBackground }">
+    <div class="layout flex-column" :class="{ showScroll, hasBlackBackground }">
 
         <!-- App Toolbar -->
-        <app-toolbar v-if="toolbarIsHidden === false"/>
+        <app-toolbar v-if="toolbarIsHidden === false" class="mb-4"/>
 
         <!-- Content -->
         <slot/>
 
-    </v-layout>
+    </div>
 </template>
 
 <script setup>
@@ -15,8 +15,10 @@
     // Components
     import AppToolbar from "@components/app/toolbar/AppToolbar";
 
-    // Vue + Router
+    // Vue
     import {computed} from "vue";
+
+    // Router
     import {useRoute} from "vue-router";
 
     // Computed
@@ -29,10 +31,9 @@
 <style lang="scss" scoped>
 
     .layout {
-        top: 40px;
         width: 100%;
         height: 100vh;
-        padding: 15px 30px;
+        padding: 55px 30px 30px;
         position: absolute;
         overflow-x: hidden;
         overflow-y: overlay;

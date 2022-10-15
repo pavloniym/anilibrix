@@ -9,17 +9,19 @@ export default class BaseProxy {
      * @param data
      * @param params
      * @param method
+     * @param signal
      * @param headers
      * @param isFormData
      * @returns {Promise} The result in a promise.
      */
-    async submit({url, method, data, params, headers, isFormData = true} = {}) {
+    async submit({url, method, data, params, headers, signal = null, isFormData = true} = {}) {
         return await window.electron.makeHttpRequest(
             {
                 url,
                 data,
                 params,
                 method,
+                signal,
                 headers: {...headers, ...(await this.getRequestHeaders({isFormData}))},
                 timeout: 15000,
             }
@@ -31,12 +33,12 @@ export default class BaseProxy {
      *
      * @return {Promise}
      */
-    async getApiEndpoint() {
+    async applyEndpoint(url) {
 
         const req = () => import ('@store/app/settings/appSettingsStore');
         const store = await req();
 
-        return store?.useAppSettingsStore()?.connectionHost;
+        return store?.useAppSettingsStore()?.applyToConnectionHost(url);
     }
 
 
@@ -57,5 +59,14 @@ export default class BaseProxy {
         if (store?.useAppAccountStore()?.sessionId) headers['Cookie'] = `PHPSESSID=${store?.useAppAccountStore()?.sessionId}; Path=/; Secure; HttpOnly`;
 
         return headers;
+    }
+
+
+    abortRequest(abortController = null) {
+        if (abortController) {
+
+        }
+
+        return this;
     }
 }

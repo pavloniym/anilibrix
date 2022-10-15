@@ -53,29 +53,26 @@
 
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
-    .settings {
-        overflow: scroll !important;
 
-        /* ::v-deep {
-             .v-navigation-drawer__content {
+    .v-navigation-drawer__content {
 
-                 // @see: https://github.com/buefy/buefy/issues/2096
-                 // @see: https://stackoverflow.com/questions/14677490/blurry-text-after-using-css-transform-scale-in-chrome
-                 transform: translateZ(0) !important;
-                 overflow-y: scroll;
-                 backface-visibility: hidden !important;
-             }
-         }*/
+        // @see: https://github.com/buefy/buefy/issues/2096
+        // @see: https://stackoverflow.com/questions/14677490/blurry-text-after-using-css-transform-scale-in-chrome
+        transform: translateZ(0) !important;
+        overflow-y: scroll;
+        backface-visibility: hidden !important;
 
-        ::-webkit-scrollbar-thumb {
+
+        &::-webkit-scrollbar-thumb {
             background-color: black;
         }
 
-        ::-webkit-scrollbar {
+        &::-webkit-scrollbar {
             background-color: transparent;
         }
+
     }
 
 </style>
