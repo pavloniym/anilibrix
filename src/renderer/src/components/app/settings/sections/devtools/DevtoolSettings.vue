@@ -1,5 +1,5 @@
 <template>
-    <div v-if="items.length > 1 && appSettings.showDevtools">
+    <div v-if="items.length > 1 && settings.showDevtools">
         <template v-for="(item, k) in items" :key="k">
             <component v-bind="item.props" :is="item.is" :class="item.classes"/>
         </template>
@@ -20,12 +20,12 @@
     import { getActivePinia } from "pinia"
 
     // Store
-    import {useAppAccountStore} from "@store/app/account/appAccountStore";
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useAccountStore} from "@store/account/accountStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Store
-    const appAccount = useAppAccountStore();
-    const appSettings = useAppSettingsStore();
+    const account = useAccountStore();
+    const settings = useSettingsStore();
 
 
     // Computed
@@ -58,19 +58,19 @@
             props: {
                 title: 'Кастомная сессия',
                 subtitle: ['Вы можете указать с произвольную сессию'],
-                modelValue: appAccount.sessionId,
+                modelValue: account.sessionId,
                 inputProps: {clearable: true},
-                inputHandler: $event => appAccount.sessionId = $event
+                inputHandler: $event => account.sessionId = $event
             },
             classes: ['mt-2']
         },
     ]
         .filter(item => {
             return 0
-                || !appSettings.searchInSettings
+                || !settings.searchInSettings
                 || item?.searchIgnore === true
-                || item?.props?.title?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
-                || item?.props?.subtitle?.join('.')?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
+                || item?.props?.title?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
+                || item?.props?.subtitle?.join('.')?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
         }))
 
 

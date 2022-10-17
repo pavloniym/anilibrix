@@ -6,6 +6,10 @@ async function createWindow() {
     const browserWindow = new BrowserWindow({
         show: false,
         frame: false,
+        width: 1120,
+        height: 720,
+        minWidth: 820,
+        minHeight: 520,
         darkTheme: true,
         titleBarStyle: 'hiddenInset',
         useContentSize: true,

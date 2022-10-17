@@ -70,6 +70,9 @@
 
 <script>
 
+    // Components
+
+
     // Utils
     import stringsPluralize from "@/renderer/src/utils/strings/pluralize/stringsPluralize";
 

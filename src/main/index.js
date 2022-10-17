@@ -31,7 +31,7 @@ app.whenReady().then(restoreOrCreateWindow).catch(e => console.error('Failed cre
 
 // Install Vue.js or any other extension in development mode only.
 if (import.meta.env.DEV) {
-    app
+ /*   app
         .whenReady()
         .then(() => import('electron-devtools-installer'))
         .then(({default: installExtension, VUEJS3_DEVTOOLS}) => installExtension(VUEJS3_DEVTOOLS, {
@@ -39,7 +39,7 @@ if (import.meta.env.DEV) {
                 allowFileAccess: true,
             },
         }))
-        .catch(e => console.error('Failed install extension:', e));
+        .catch(e => console.error('Failed install extension:', e));*/
 }
 
 // Check for new version of the application - production mode only.

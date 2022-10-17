@@ -17,10 +17,10 @@
     import {computed} from "vue";
 
     // Store
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Store
-    const appSettings = useAppSettingsStore();
+    const settings = useSettingsStore();
 
     // Computed
     const items = computed(() =>
@@ -37,9 +37,9 @@
                 is: Switch,
                 props: {
                     title: 'Показывать системные уведомления',
-                    modelValue: appSettings.hasNotifications,
+                    modelValue: settings.hasNotifications,
                     description: ['Если при загрузке последних релизов приложение обнаружит обновленный релиз, то оно покажет системное уведомление о новом эпизоде'],
-                    inputHandler: $event => appSettings.hasNotifications = $event
+                    inputHandler: $event => settings.hasNotifications = $event
                 },
                 classes: ['mb-2']
             },
@@ -47,9 +47,9 @@
                 is: Switch,
                 props: {
                     title: 'Автоматическое обновление релизов',
-                    modelValue: appSettings.hasAutoUpdates,
+                    modelValue: settings.hasAutoUpdates,
                     description: ['Приложение будет в фоне обновлять последние релизы, даже если оно свернуто'],
-                    inputHandler: $event => appSettings.hasAutoUpdates = $event
+                    inputHandler: $event => settings.hasAutoUpdates = $event
                 },
                 classes: ['mb-2']
             },
@@ -58,12 +58,12 @@
                 props: {
                     title: 'Периодичность обновления релизов',
                     subtitle: ['Вы можете указать с какой периодичностью приложение будет обновлять релизы в фоновом режиме'],
-                    modelValue: appSettings.autoUpdatesTimeout,
+                    modelValue: settings.autoUpdatesTimeout,
                     inputProps: {
                         type: 'number',
                         suffix: 'мин',
                     },
-                    inputHandler: $event => appSettings.autoUpdatesTimeout = $event ? parseInt($event) : 1
+                    inputHandler: $event => settings.autoUpdatesTimeout = $event ? parseInt($event) : 1
                 },
                 classes: ['mb-2']
             },
@@ -71,14 +71,14 @@
                 is: Switch,
                 props: {
                     title: 'Показывать рекламу',
-                    modelValue: appSettings.hasAds,
+                    modelValue: settings.hasAds,
                     description: [
                         'Спасибо, что выбрали Анилибрию!',
                         'Мы понимаем, что реклама никому не нравится, но это бесплатный способ поддержать проект',
                         'Отключение рекламы - абсолютно бесплатно, но, если вы хотите поддержать нас, то оставьте рекламу включенной',
                         'Обещаем, что не будем сильно навязчивыми (✿◠‿◠)',
                     ],
-                    inputHandler: $event => appSettings.hasAds = $event,
+                    inputHandler: $event => settings.hasAds = $event,
                 },
                 classes: ['mb-2']
             },
@@ -86,12 +86,12 @@
                 is: Switch,
                 props: {
                     title: 'Реклама перед каждым эпизодом',
-                    modelValue: appSettings.hasMaximumAds,
+                    modelValue: settings.hasMaximumAds,
                     description: [
                         'Максимальная поддержка проекта!',
                         'Реклама будет показываться перед каждым просмотром любого эпизода'
                     ],
-                    inputHandler: $event => appSettings.hasMaximumAds = $event,
+                    inputHandler: $event => settings.hasMaximumAds = $event,
                 },
                 classes: ['mb-2']
             },
@@ -102,20 +102,20 @@
                     subtitle: [
                         'Вы можете использовать основной домен, если он не заблокирован вашим провайдером, или использовать дополнительные домены'
                     ],
-                    modelValue: appSettings.connectionHost,
+                    modelValue: settings.connectionHost,
                     description: ['После изменения точки доступа рекомендуется перезагрузить приложение'],
-                    inputHandler: $event => appSettings.connectionHost = $event,
+                    inputHandler: $event => settings.connectionHost = $event,
                 },
                 classes: ['mb-2']
             }
         ]
             .filter(item => {
                 return 0
-                    || !appSettings.searchInSettings
+                    || !settings.searchInSettings
                     || item?.searchIgnore === true
-                    || item?.props?.title?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
-                    || item?.props?.subtitle?.join('.')?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
-                    || item?.props?.description?.join('.')?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
+                    || item?.props?.title?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
+                    || item?.props?.subtitle?.join('.')?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
+                    || item?.props?.description?.join('.')?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
             }))
 
 </script>

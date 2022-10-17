@@ -30,13 +30,13 @@
     import {computed} from "vue";
 
     // Store
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Router
     import {RELEASE_ROUTE} from "@router/release/releaseRoutes";
 
     // Store
-    const settings = useAppSettingsStore();
+    const settings = useSettingsStore();
 
     const to = computed(() => ({name: RELEASE_ROUTE, params: {releaseId: props?.release?.id}}));
     const type = computed(() => [props?.release?.year, props?.release?.type].filter(v => v).join(' • '));

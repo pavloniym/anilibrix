@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 
-export const useAppSettingsStore = defineStore('app.settings', {
+export const useSettingsStore = defineStore('settings', {
     state: () => ({
         hasAds: true,
         welcomeView: null,

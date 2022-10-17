@@ -11,7 +11,7 @@
     import {computed} from "vue";
 
     // Store
-    import {useLatestReleasesStore} from "@store/releases/latestReleases/latestReleasesStore";
+    import {useLatestReleasesStore} from "@store/latestReleases/latestReleasesStore";
 
     // Store
     const latestReleases = useLatestReleasesStore();

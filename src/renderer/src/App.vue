@@ -47,20 +47,20 @@
     import {ref, computed, onBeforeMount} from 'vue'
 
     // Store
-    import {useAppAccountStore} from '@store/app/account/appAccountStore'
-    import {useAppSettingsStore} from '@store/app/settings/appSettingsStore'
-    import {useLatestReleasesStore} from "@store/releases/latestReleases/latestReleasesStore";
+    import {useAccountStore} from '@store/account/accountStore'
+    import {useSettingsStore} from '@store/settings/settingsStore'
+    import {useLatestReleasesStore} from "@store/latestReleases/latestReleasesStore";
 
     // State
     const isLoading = ref(true);
 
     // Computed
     const view = computed(() => useRoute()?.name);
-    const layout = computed(() => useRoute()?.meta?.layout?.is || AppBaseLayout);
+    const layout = computed(() => useRoute()?.meta?.layoutComponent || AppBaseLayout);
 
     // Store
-    const account = useAppAccountStore();
-    const settings = useAppSettingsStore();
+    const account = useAccountStore();
+    const settings = useSettingsStore();
     const latestReleases = useLatestReleasesStore();
 
     onBeforeMount(async () => {

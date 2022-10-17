@@ -35,10 +35,10 @@ export default class BaseProxy {
      */
     async applyEndpoint(url) {
 
-        const req = () => import ('@store/app/settings/appSettingsStore');
+        const req = () => import ('@store/settings/settingsStore');
         const store = await req();
 
-        return store?.useAppSettingsStore()?.applyToConnectionHost(url);
+        return store?.useSettingsStore()?.applyToConnectionHost(url);
     }
 
 
@@ -51,12 +51,12 @@ export default class BaseProxy {
 
         let headers = {};
 
-        const req = () => import ('@store/app/account/appAccountStore');
+        const req = () => import ('@store/account/accountStore');
         const store = await req();
 
         if (isFormData === true) headers['Content-Type'] = 'multipart/form-data';
         if (name && version) headers['User-Agent'] = `${name}/${version}`;
-        if (store?.useAppAccountStore()?.sessionId) headers['Cookie'] = `PHPSESSID=${store?.useAppAccountStore()?.sessionId}; Path=/; Secure; HttpOnly`;
+        if (store?.useAccountStore()?.sessionId) headers['Cookie'] = `PHPSESSID=${store?.useAccountStore()?.sessionId}; Path=/; Secure; HttpOnly`;
 
         return headers;
     }

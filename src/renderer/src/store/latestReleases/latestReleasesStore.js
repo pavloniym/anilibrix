@@ -4,7 +4,7 @@ import {defineStore} from 'pinia'
 import ReleasesProxy from "@proxies/releases/ReleasesProxy";
 import ReleaseTransformer from "@transformers/releases/ReleaseTransformer";
 
-export const useLatestReleasesStore = defineStore('releases.latestReleases', {
+export const useLatestReleasesStore = defineStore('latestReleases', {
 
     state: () => ({
         items: [],

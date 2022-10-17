@@ -3,7 +3,7 @@ import {defineStore} from 'pinia'
 // Proxies
 import AccountProxy from "@proxies/account/AccountProxy";
 
-export const useAppAccountStore = defineStore('app.account', {
+export const useAccountStore = defineStore('account', {
     state: () => ({
         profile: {
             id: null,
@@ -28,9 +28,14 @@ export const useAppAccountStore = defineStore('app.account', {
         async login({login, password}) {
 
             // Reset account
-            //this._resetAccount();
-            //const sessionId = await new AccountProxy().login({login, password});
+            this.sessionId = await new AccountProxy().login({login, password});
 
+            // Save login and password in encrypted storage
+            //await saveToEncryptedStorage({key: 'user.login', value: login});
+            //await saveToEncryptedStorage({key: 'user.password', value: password});
+
+            // Fetch profile data from server
+            await this.fetchProfile();
         },
 
 
@@ -70,8 +75,6 @@ export const useAppAccountStore = defineStore('app.account', {
                     this._fetchProfileOfSession()
                         .catch(this._fetchProfileOfSession)
                         .catch(() => {
-
-
                             this.sessionId = null;
                             this.profile.id = null;
                             this.profile.login = null;
@@ -92,12 +95,12 @@ export const useAppAccountStore = defineStore('app.account', {
         async _fetchProfileOfSession() {
 
             // Make request to get profile of user
-            const response = await new AccountProxy().getProfile();
+            const {data} = await new AccountProxy().getProfile();
 
             // Save profile details from response
-            this.profile.id = response?.id;
-            this.profile.login = response?.login;
-            this.profile.avatar = response?.avatar;
+            this.profile.id = data?.id;
+            this.profile.login = data?.login;
+            this.profile.avatar = data?.avatar;
         },
 
 

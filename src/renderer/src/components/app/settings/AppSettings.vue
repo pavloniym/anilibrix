@@ -1,6 +1,6 @@
 <template>
     <v-navigation-drawer
-        v-model="appSettings.settingsAreVisible"
+        v-model="settings.settingsAreVisible"
         width="400"
         class="settings pt-10"
         color="grey bg-grey-darken-3"
@@ -26,10 +26,10 @@
     import {computed} from "vue";
 
     // Store
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Store
-    const appSettings = useAppSettingsStore();
+    const settings = useSettingsStore();
 
     // Components
     import Search from './_components/search/SettingsSearch'

@@ -1,5 +1,5 @@
 <template>
-    <v-text-field v-model="appSettings.searchInSettings" v-bind="options"/>
+    <v-text-field v-model="settings.searchInSettings" v-bind="options"/>
 </template>
 
 <script setup>
@@ -8,10 +8,10 @@
     import {computed} from "vue";
 
     // Store
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Store
-    const appSettings = useAppSettingsStore();
+    const settings = useSettingsStore();
 
     // Computed
     const options = computed(() => ({

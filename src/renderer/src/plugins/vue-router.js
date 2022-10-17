@@ -9,6 +9,7 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 //import favorites from '@router/favorites/favoritesRoutes'
 
 // Routes
+import login from '@router/login/loginRoutes'
 import search from '@router/search/searchRoutes'
 import release from '@router/release/releaseRoutes'
 import releases from '@router/releases/releasesRoutes'
@@ -22,6 +23,7 @@ export default createRouter({
         // ...catalog,
         // ...account
         // ...favorites
+        ...login,
         ...search,
         ...release,
         ...releases,

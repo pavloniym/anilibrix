@@ -37,15 +37,15 @@
     import app from '@package'
 
     // Store
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Store
-    const appSettings = useAppSettingsStore();
+    const settings = useSettingsStore();
 
 
     const showAbout = () => window.electron.showAppAbout();
     const appVersion = app?.version;
-    const toggleDevtools = () => appSettings.showDevtools = !appSettings.showDevtools;
+    const toggleDevtools = () => settings.showDevtools = !settings.showDevtools;
 
 </script>
 

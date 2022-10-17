@@ -1,5 +1,5 @@
 <template>
-    <div class="layout flex-column" :class="{ showScroll, hasBlackBackground }">
+    <div class="base__layout flex-column" :class="{ showScroll, hasBlackBackground }">
 
         <!-- App Toolbar -->
         <app-toolbar v-if="toolbarIsHidden === false" class="mb-4"/>
@@ -28,9 +28,9 @@
 
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 
-    .layout {
+    .base__layout {
         width: 100%;
         height: 100vh;
         padding: 55px 30px 30px;

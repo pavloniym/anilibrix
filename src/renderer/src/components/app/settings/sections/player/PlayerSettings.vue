@@ -17,10 +17,10 @@
     import UserInput from '../../_components/fields/userInput/SettingsUserInputField'
 
     // Store
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Store
-    const appSettings = useAppSettingsStore();
+    const settings = useSettingsStore();
 
     const items = computed(() => [
         {
@@ -35,9 +35,9 @@
             is: Switch,
             props: {
                 title: 'Автовоспроизведение следующего эпизода',
-                modelValue: appSettings.autoplayNextEpisode,
+                modelValue: settings.autoplayNextEpisode,
                 description: ['После окончания эпизода плеер автоматически начнет воспроизведение следующего эпизода в релизе, при его наличии'],
-                inputHandler: $event => appSettings.autoplayNextEpisode = $event
+                inputHandler: $event => settings.autoplayNextEpisode = $event
             },
             classes: ['mb-2']
         },
@@ -46,13 +46,13 @@
             props: {
                 title: 'Размер видео буфера',
                 subtitle: ['Величина буфера подгрузки видео, по умолчанию 5 минут'],
-                modelValue: appSettings.videoBufferSeconds,
+                modelValue: settings.videoBufferSeconds,
                 inputProps: {
                     type: 'number',
                     suffix: 'сек',
                 },
                 description: ['Указывает величину буфера, который плеер держит в памяти и предзагружает видео во время просмотра'],
-                inputHandler: $event => appSettings.videoBufferSeconds = $event ? parseInt($event) : 60
+                inputHandler: $event => settings.videoBufferSeconds = $event ? parseInt($event) : 60
             },
             classes: ['mb-2']
         },
@@ -60,12 +60,12 @@
             is: Switch,
             props: {
                 title: 'Кнопка ручного пропуска опенинга',
-                modelValue: appSettings.manualOpeningSkipButton,
+                modelValue: settings.manualOpeningSkipButton,
                 description: [
                     'В интерфейсе плеера появится дополнительная кнопка, которая перемотает плеер на указанное количество секунд',
                     'Данная кнопка не гарантирует корректный пропуск опенинга'
                 ],
-                inputHandler: $event => appSettings.videoBufferSeconds = $event
+                inputHandler: $event => settings.videoBufferSeconds = $event
             },
             classes: ['mb-2']
         },
@@ -74,23 +74,23 @@
             props: {
                 title: 'Количество секунд для ручного пропуска опенинга',
                 subtitle: ['Вы можете указать на сколько секунд пропускать опенинг'],
-                modelValue: appSettings.manualOpeningSkipSeconds,
+                modelValue: settings.manualOpeningSkipSeconds,
                 inputProps: {
                     type: 'number',
                     suffix: 'сек',
                 },
-                inputHandler: $event => appSettings.videoBufferSeconds = $event ? parseInt($event) : 0
+                inputHandler: $event => settings.videoBufferSeconds = $event ? parseInt($event) : 0
             },
             classes: ['mb-2']
         },
     ]
         .filter(item => {
             return 0
-                || !appSettings.searchInSettings
+                || !settings.searchInSettings
                 || item?.searchIgnore === true
-                || item?.props?.title?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
-                || item?.props?.subtitle?.join('.')?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
-                || item?.props?.description?.join('.')?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
+                || item?.props?.title?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
+                || item?.props?.subtitle?.join('.')?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
+                || item?.props?.description?.join('.')?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
         }));
 
 

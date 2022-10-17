@@ -16,14 +16,14 @@
     import {computed} from "vue";
 
     // Store
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Composables
     import {useAppWindow} from "@composables/app/window/appWindow";
     import {useAppPlatform} from '@composables/app/platform/appPlatform'
 
     // Store
-    const appSettings = useAppSettingsStore();
+    const settings = useSettingsStore();
 
     // Composables
     const {isMac} = useAppPlatform();
@@ -74,10 +74,10 @@
     ]
         .filter(item => {
             return 0
-                || !appSettings.searchInSettings
+                || !settings.searchInSettings
                 || item?.searchIgnore === true
-                || item?.props?.title?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
-                || item?.props?.subtitle?.toLowerCase()?.indexOf(appSettings.searchInSettings?.toLowerCase()) > -1
+                || item?.props?.title?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
+                || item?.props?.subtitle?.toLowerCase()?.indexOf(settings.searchInSettings?.toLowerCase()) > -1
         }))
 
 </script>

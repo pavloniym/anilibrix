@@ -1,5 +1,5 @@
 <template>
-    <v-btn v-bind="options" @click="() => appSettings.settingsAreVisible = true">
+    <v-btn v-bind="options" @click="() => settings.settingsAreVisible = true">
         <v-icon icon="mdi-cog" size="18"/>
         <v-tooltip activator="parent" location="start" text="Настройки приложения"/>
     </v-btn>
@@ -11,10 +11,10 @@
     import {computed} from "vue";
 
     // Store
-    import {useAppSettingsStore} from "@store/app/settings/appSettingsStore";
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Store
-    const appSettings = useAppSettingsStore();
+    const settings = useSettingsStore();
 
     // Computed
     const options = computed(() => {
