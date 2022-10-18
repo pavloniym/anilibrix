@@ -12,7 +12,12 @@ export const useAccountStore = defineStore('account', {
         },
         sessionId: null,
         isLoading: false,
+        credentials: {
+            login: null,
+            password: null,
+        },
     }),
+    persist: true,
     getters: {
         isAuthorized: state => state.sessionId !== null,
     },
@@ -23,39 +28,36 @@ export const useAccountStore = defineStore('account', {
          *
          * @param login
          * @param password
-         * @return {Promise<void>}
+         * @return {Promise}
          */
         async login({login, password}) {
 
             // Reset account
             this.sessionId = await new AccountProxy().login({login, password});
 
-            // Save login and password in encrypted storage
-            //await saveToEncryptedStorage({key: 'user.login', value: login});
-            //await saveToEncryptedStorage({key: 'user.password', value: password});
+            // Save login and password
+            this.credentials.login = login;
+            this.credentials.password = password;
 
             // Fetch profile data from server
             await this.fetchProfile();
         },
 
 
+        /**
+         * Try to logout
+         *
+         * @return {Promise}
+         */
         async logout() {
             if (this.sessionId !== null) {
                 try {
-
                     this.isLoading = true;
                     await new AccountProxy().logout();
-
                 } catch {
-
                     // Ignore errors
-
                 } finally {
-                    this.isLoading = false;
-                    this.sessionId = null;
-                    this.profile.id = null;
-                    this.profile.login = null;
-                    this.profile.avatar = null;
+                    await this._resetState();
                 }
             }
         },
@@ -72,14 +74,13 @@ export const useAccountStore = defineStore('account', {
             if (this.sessionId !== null) {
                 try {
                     this.isLoading = true;
-                    this._fetchProfileOfSession()
-                        .catch(this._fetchProfileOfSession)
-                        .catch(() => {
-                            this.sessionId = null;
-                            this.profile.id = null;
-                            this.profile.login = null;
-                            this.profile.avatar = null;
-                        })
+                    await this._fetchProfileOfSession();
+                } catch {
+                    try {
+                        await this._fetchProfileOfCredentials()
+                    } catch {
+                        await this._resetState();
+                    }
                 } finally {
                     this.isLoading = false;
                 }
@@ -95,12 +96,12 @@ export const useAccountStore = defineStore('account', {
         async _fetchProfileOfSession() {
 
             // Make request to get profile of user
-            const {data} = await new AccountProxy().getProfile();
+            const response = await new AccountProxy().getProfile();
 
             // Save profile details from response
-            this.profile.id = data?.id;
-            this.profile.login = data?.login;
-            this.profile.avatar = data?.avatar;
+            this.profile.id = response?.data?.id;
+            this.profile.login = response?.data?.login;
+            this.profile.avatar = response?.data?.avatar;
         },
 
 
@@ -109,18 +110,34 @@ export const useAccountStore = defineStore('account', {
          *
          * @return {Promise}
          */
-        async _fetchProfileOfEncryptedCredentials() {
+        async _fetchProfileOfCredentials() {
 
-            // Fetch login and password from encrypted storage
-            const login = null; //fetchFromEncryptedStorage('user.login')
-            const password = null; //fetchFromEncryptedStorage('user.password')
+            // Fetch login and password
+            const login = this.credentials.login;
+            const password = this.credentials.password;
 
-            // Make login request with credentials from encrypted storage
+            // Make login request with credentials
             if (login !== null && password !== null) {
                 return await this.login({login, password})
             }
 
             throw new Error;
         },
+
+
+        /**
+         * Reset account state to default
+         *
+         * @return {Promise}
+         * @private
+         */
+        async _resetState() {
+            this.sessionId = null;
+            this.profile.id = null;
+            this.profile.login = null;
+            this.profile.avatar = null;
+            this.credentials.login = null;
+            this.credentials.password = null;
+        }
     }
 })

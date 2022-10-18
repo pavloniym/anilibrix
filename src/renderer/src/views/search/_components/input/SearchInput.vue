@@ -16,6 +16,12 @@
     // Store
     const search = useSearchStore();
 
+    // Toasts
+    import {useToastsEmitter} from "@composables/toasts/toastsEmitter";
+
+    // Toasts
+    const toasts = useToastsEmitter();
+
     // Computed
     const options = computed(() => ({
         variant: 'solo',
@@ -27,7 +33,22 @@
         autocomplete: 'off',
     }))
 
+
+    /**
+     * Search releases
+     *
+     * @return {Promise}
+     */
+    const searchReleases = async () => {
+        try {
+            await search.searchReleases();
+        } catch (e) {
+            toasts.emitError(['Произошла ошибка поискового запроса на сервере', 'Попробуйте повторить Ваш запрос чуть позже ...']);
+        }
+    }
+
+
     // Watch
-    watch(() => search.searchInput, __debounce(search.searchReleases, 500))
+    watch(() => search.searchInput, __debounce(searchReleases, 500));
 
 </script>

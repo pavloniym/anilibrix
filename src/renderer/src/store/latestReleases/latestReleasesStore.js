@@ -5,13 +5,12 @@ import ReleasesProxy from "@proxies/releases/ReleasesProxy";
 import ReleaseTransformer from "@transformers/releases/ReleaseTransformer";
 
 export const useLatestReleasesStore = defineStore('latestReleases', {
-
     state: () => ({
         items: [],
         isLoading: false,
         hashOfLatestRelease: null,
     }),
-
+    persist: true,
     actions: {
 
         /**

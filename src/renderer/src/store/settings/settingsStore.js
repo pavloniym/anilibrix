@@ -19,6 +19,7 @@ export const useSettingsStore = defineStore('settings', {
         manualOpeningSkipButton: true,
         manualOpeningSkipSeconds: 90,
     }),
+    persist: true,
     actions: {
 
 
@@ -26,15 +27,19 @@ export const useSettingsStore = defineStore('settings', {
          * Apply to connection host
          *
          * @param url
-         * @return {string}
+         * @return {string|null}
          */
         applyToConnectionHost(url) {
-            const finalUrl = url?.startsWith('/') ? url?.slice(1, url.length) : url;
-            const finalHost = this.connectionHost.endsWith('/') ? this.connectionHost.slice(0, -1) : this.connectionHost;
+            if (url) {
 
-            return `${finalHost}/${finalUrl}`;
+                const finalUrl = url?.startsWith('/') ? url?.slice(1, url.length) : url;
+                const finalHost = this.connectionHost.endsWith('/') ? this.connectionHost.slice(0, -1) : this.connectionHost;
+
+                return `${finalHost}/${finalUrl}`;
+            }
+
+            return null;
         }
-
 
 
     }

@@ -11,7 +11,7 @@
             <!-- Fields -->
             <!-- Cookies -->
             <v-col cols="6">
-                <form-view v-bind="form">
+                <form-view v-bind="form" @keyup.enter.native="makeLoginRequest">
 
                     <!-- Fields -->
                     <template v-slot:fields>
@@ -72,11 +72,17 @@
     // Store
     import {useAccountStore} from "@store/account/accountStore";
 
+    // Toasts
+    import {useToastsEmitter} from "@composables/toasts/toastsEmitter";
+
     // Store
     const account = useAccountStore();
 
     // Router
     const router = useRouter();
+
+    // Toasts
+    const toasts = useToastsEmitter();
 
     // State
     const login = ref(null);
@@ -103,6 +109,7 @@
             props: {
                 name: 'login',
                 label: 'Логин',
+                color: 'secondary',
                 disabled: isProcessing.value === true,
                 modelValue: login.value,
 
@@ -115,6 +122,7 @@
                 type: 'password',
                 name: 'current-password',
                 label: 'Пароль',
+                color: 'secondary',
                 disabled: isProcessing.value === true,
                 modelValue: password.value,
             },
@@ -147,26 +155,36 @@
     ])
 
 
+    /**
+     * Make login request to server
+     *
+     * @return {Promise}
+     */
     const makeLoginRequest = async () => {
-        try {
+        if (validation?.value?.$invalid === false) {
+            try {
 
-            // Set loading state
-            isProcessing.value = true;
+                // Set loading state
+                isProcessing.value = true;
 
-            // Maker login request
-            // Send provided login and password
-            await account.login({login: login.value, password: password.value})
+                // Maker login request
+                // Send provided login and password
+                await account.login({login: login.value, password: password.value})
 
-            // Push to releases route
-            await router.replace({name: RELEASES_ROUTE});
+                // Push to releases route
+                await router.replace({name: RELEASES_ROUTE});
 
-        } catch (error) {
+                // Emit success toast
+                toasts.emitSuccess(['Вы успешно авторизовались', 'Добро пожаловать и приятного просмотра!'], {timeout: 2000});
 
-            // Show error toast
-            //Toasts.emitError(['Не удается авторизоваться', 'Пожалуйста, проверьте правильность логина и пароля'])
+            } catch (error) {
 
-        } finally {
-            isProcessing.value = false;
+                // Show error toast
+                toasts.emitError(['Не удается авторизоваться', 'Пожалуйста, проверьте правильность логина и пароля']);
+
+            } finally {
+                isProcessing.value = false;
+            }
         }
     }
 

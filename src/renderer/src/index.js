@@ -4,10 +4,12 @@ import {createApp} from 'vue'
 import App from './App';
 
 // Import plugins
-import plyr from './plugins/plyr'
-import pinia from './plugins/pinia'
-import router from './plugins/vue-router'
-import vuetify from './plugins/vuetify'
+import mitt from '@plugins/mitt'
+import plyr from '@plugins/plyr'
+import pinia from '@plugins/pinia'
+import router from '@plugins/vue-router'
+import toasts from '@plugins/vue-toastification'
+import vuetify from '@plugins/vuetify'
 
 // Import assets
 import '@assets/scss/style.scss'
@@ -16,9 +18,11 @@ import '@assets/scss/style.scss'
 const app = createApp(App);
 
 // Apply plugins
+app.use(mitt);
 app.use(plyr);
 app.use(pinia);
 app.use(router);
+app.use(toasts);
 app.use(vuetify);
 
 // Mount app to DOM

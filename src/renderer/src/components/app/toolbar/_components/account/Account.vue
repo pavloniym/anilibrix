@@ -13,6 +13,7 @@
 
     // Components
     import Login from './_components/login/AccountLogin'
+    import Profile from './_components/profile/AccountProfile'
 
     // Store
     import {useAccountStore} from "@store/account/accountStore";
@@ -26,6 +27,10 @@
             {
                 is: Login,
                 isVisible: account.isAuthorized === false,
+            },
+            {
+                is: Profile,
+                isVisible: account.isAuthorized === true,
             }
         ]
             .filter(item => item.isVisible === true)

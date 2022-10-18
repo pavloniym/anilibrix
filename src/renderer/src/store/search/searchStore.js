@@ -9,8 +9,8 @@ export const useSearchStore = defineStore('search', {
         items: [],
         isLoading: false,
         searchInput: null,
-        abortController: null,
     }),
+    persist: true,
     actions: {
 
         /**
@@ -19,40 +19,27 @@ export const useSearchStore = defineStore('search', {
          * @return {Promise}
          */
         async searchReleases() {
-            try {
+            this.items = [];
+            if (this.searchInput?.length >= 3) {
+                try {
+                    this.isLoading = true;
 
-                this.isLoading = true;
+                    // Make request
+                    const searchResponse = await new SearchProxy().searchReleases({searchInput: this.searchInput});
 
-                // Cancel previous request if it was stored
-                // Create new request token if exists
-                //if (REQUEST_FOR_SEARCH) REQUEST_FOR_SEARCH.cancel();
-                //REQUEST_FOR_SEARCH = axios.CancelToken.source();
+                    // Transform releases
+                    this.items = (searchResponse?.data || []).map(release => new SearchTransformer().fetchRelease(release));
 
-                // Get releases
-                const abortController = new AbortController();
+                } catch (error) {
 
-                const searchResponse = await new SearchProxy()
-                    .searchReleases({searchInput: this.searchInput});
+                    // Emit error
+                    throw error;
 
-                // Transform releases
-                this.items = (searchResponse?.data || []).map(release => new SearchTransformer().fetchRelease(release));
-                this.abortController = abortController;
-
-            } catch (error) {
-
-                console.log(error);
-                /*if (!axios.isCancel(error)) {
-                    // Show app error
-                    // Return empty array
-                    showAppError('Произошла ошибка при поиске релизов');
-                    return [];
-                }*/
-
-            } finally {
-                this.isLoading = false;
+                } finally {
+                    this.isLoading = false;
+                }
             }
         }
-
 
     }
 })
