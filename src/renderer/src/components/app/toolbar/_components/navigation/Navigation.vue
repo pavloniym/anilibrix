@@ -15,7 +15,7 @@
     import {computed} from "vue";
 
     // Routes
-    import {RELEASES_ROUTE} from "@router/releases/releasesRoutes";
+    import {RELEASES_ROUTE} from "@router/latestReleases/latestReleasesRoutes";
 
     const items = computed(() => {
         return [

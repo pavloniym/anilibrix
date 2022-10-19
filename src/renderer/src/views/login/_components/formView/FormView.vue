@@ -1,7 +1,7 @@
 <template>
     <v-layout full-height>
         <v-row align="center" justify="center">
-            <v-col cols="9">
+            <v-col cols="10">
                 <div>
 
                     <!-- Title -->
@@ -14,7 +14,7 @@
 
                     <!-- Fields -->
                     <!-- Actions -->
-                    <v-card flat width="100%" class="py-4" color="transparent">
+                    <v-card flat width="100%" class="py-6" color="transparent">
                         <v-form autocomplete="off">
                             <slot name="fields"/>
                         </v-form>

@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar flat color="transparent" height="40" class="w-100 flex-shrink-0">
+    <v-toolbar flat color="transparent" height="40" class="w-100 flex-shrink-0" :style="{zIndex: 1000}">
         <navigation class="mr-1"/>
         <v-spacer/>
         <search class="ml-1"/>

@@ -1,11 +1,15 @@
 <template>
-    <div class="base__layout flex-column" :class="{ showScroll, hasBlackBackground }">
+    <div class="base__layout" :class="{ showScroll, hasBlackBackground, hasFullHeightContent }">
 
         <!-- App Toolbar -->
         <app-toolbar v-if="toolbarIsHidden === false" class="mb-4"/>
 
         <!-- Content -->
-        <slot/>
+
+        <v-main>
+            <slot/>
+        </v-main>
+
 
     </div>
 </template>
@@ -25,18 +29,17 @@
     const showScroll = computed(() => useRoute()?.meta?.showScroll === true);
     const toolbarIsHidden = computed(() => useRoute()?.meta?.toolbarIsHidden === true);
     const hasBlackBackground = computed(() => useRoute()?.meta?.hasBlackBackground === true);
+    const hasFullHeightContent = computed(() => useRoute()?.meta?.hasFullHeightContent === true)
 
 </script>
 
 <style scoped lang="scss">
 
     .base__layout {
-        width: 100%;
         height: 100vh;
         padding: 55px 30px 30px;
-        position: absolute;
-        overflow-x: hidden;
-        overflow-y: overlay;
+        min-height: 100%;
+        overflow-y: scroll;
 
         &::-webkit-scrollbar-thumb {
             background-color: transparent;
@@ -58,6 +61,13 @@
 
         &.hasBlackBackground {
             background: black;
+        }
+
+
+        &.hasFullHeightContent {
+            :deep(.v-main) {
+                height: calc(100% - 56px);
+            }
         }
     }
 

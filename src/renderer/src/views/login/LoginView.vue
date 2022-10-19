@@ -67,7 +67,7 @@
     import {required} from '@vuelidate/validators'
 
     // Routes
-    import {RELEASES_ROUTE} from "@router/releases/releasesRoutes";
+    import {RELEASES_ROUTE} from "@router/latestReleases/latestReleasesRoutes";
 
     // Store
     import {useAccountStore} from "@store/account/accountStore";

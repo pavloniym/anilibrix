@@ -1,10 +1,5 @@
 <template>
-    <v-navigation-drawer
-        v-model="settings.settingsAreVisible"
-        width="400"
-        class="settings pt-10"
-        color="grey bg-grey-darken-3"
-        location="right">
+    <v-navigation-drawer v-bind="options" v-model="settings.settingsAreVisible" class="settings pt-10">
 
         <!-- Search -->
         <search class="mx-2 mt-4"/>
@@ -25,11 +20,8 @@
     // Vue
     import {computed} from "vue";
 
-    // Store
+    // Composables
     import {useSettingsStore} from "@store/settings/settingsStore";
-
-    // Store
-    const settings = useSettingsStore();
 
     // Components
     import Search from './_components/search/SettingsSearch'
@@ -42,14 +34,28 @@
     import Actions from './sections/actions/ActionsSettings'
     import Devtools from './sections/devtools/DevtoolSettings'
 
+    // Bindings
+    const settings = useSettingsStore();
+
+
+    const options = computed(() => ({
+        width: 400,
+        color: 'grey bg-grey-darken-3',
+        location: 'right',
+        disableRouteWatcher: true,
+        disableResizeWatcher: true,
+    }))
+
     // Computed
-    const sections = computed(() => [
-        Player,
-        System,
-        Actions,
-        App,
-        Devtools,
-    ]);
+    const sections = computed(() =>
+        [
+            Player,
+            System,
+            Actions,
+            App,
+            Devtools,
+        ]
+    );
 
 </script>
 

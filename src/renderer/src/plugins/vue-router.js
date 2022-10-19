@@ -12,7 +12,7 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 import login from '@router/login/loginRoutes'
 import search from '@router/search/searchRoutes'
 import release from '@router/release/releaseRoutes'
-import releases from '@router/releases/releasesRoutes'
+import releases from '@router/latestReleases/latestReleasesRoutes'
 
 export default createRouter({
     routes: [

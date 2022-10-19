@@ -1,15 +1,23 @@
 import {join} from 'path';
 import {app, BrowserWindow} from 'electron';
+import windowStateKeeper from 'electron-window-state';
 
 async function createWindow() {
 
+    const stateKeeper = windowStateKeeper({
+        defaultWidth: 1120,
+        defaultHeight: 720
+    });
+
     const browserWindow = new BrowserWindow({
+        x: stateKeeper.x,
+        y: stateKeeper.y,
         show: false,
         frame: false,
-        width: 1120,
-        height: 720,
+        width: stateKeeper.width,
+        height: stateKeeper.height,
         minWidth: 820,
-        minHeight: 520,
+        minHeight: 690,
         darkTheme: true,
         titleBarStyle: 'hiddenInset',
         useContentSize: true,
@@ -18,7 +26,6 @@ async function createWindow() {
             contextIsolation: true,
             sandbox: false, // Sandbox disabled because the demo of preload script depend on the Node.js api
             webviewTag: false, // The webview tag is not recommended. Consider alternatives like an iframe or Electron's BrowserView. @see https://www.electronjs.org/docs/latest/api/webview-tag#warning
-            //preload: join(app.getAppPath(), 'out/preload/index.js'),
             preload: join(__dirname, '../preload/index.js'),
             autoplayPolicy: 'no-user-gesture-required',
             enableRemoteModule: true,
@@ -35,6 +42,13 @@ async function createWindow() {
      * @see https://github.com/electron/electron/issues/25012 for the afford mentioned issue.
      */
     browserWindow.on('ready-to-show', () => browserWindow?.show());
+
+    /**
+     * Use state keeper to save and restore browser window size and position
+     *
+     * @see https://github.com/mawie81/electron-window-state
+     */
+    stateKeeper.manage(browserWindow);
 
     /**
      * URL for main window.
