@@ -4,6 +4,6 @@ export default [
     {
         name: RELEASES_ROUTE,
         path: '/',
-        component: () => import('@views/releases/LatestReleasesView')
+        component: () => import('@views/latestReleases/LatestReleasesView')
     }
 ]

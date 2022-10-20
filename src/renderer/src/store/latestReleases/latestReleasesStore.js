@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 
 // Proxy + Transformer
 import ReleasesProxy from "@proxies/releases/ReleasesProxy";
-import ReleaseTransformer from "@transformers/releases/ReleaseTransformer";
+import ReleasesTransformer from "@transformers/releases/ReleasesTransformer";
 
 export const useLatestReleasesStore = defineStore('latestReleases', {
     state: () => ({
@@ -24,7 +24,7 @@ export const useLatestReleasesStore = defineStore('latestReleases', {
                 this.isLoading = true;
 
                 const response = await new ReleasesProxy().fetchLatestReleases();
-                const latestReleases = (response?.data?.items || []).map(release => ReleaseTransformer.fetchRelease(release))
+                const latestReleases = (response?.data?.items || []).map(release => ReleasesTransformer.fetchRelease(release))
 
                 this.items = latestReleases;
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="base__layout" :class="{ showScroll, hasBlackBackground, hasFullHeightContent }">
+    <div class="base__layout" :class="{ showScroll, hasBlackBackground, isRelativeFullWindow }">
 
         <!-- App Toolbar -->
         <app-toolbar v-if="toolbarIsHidden === false" class="mb-4"/>
@@ -22,14 +22,17 @@
     // Vue
     import {computed} from "vue";
 
-    // Router
+    // Composables
     import {useRoute} from "vue-router";
 
+    // Bindings
+    const route = useRoute();
+
     // Computed
-    const showScroll = computed(() => useRoute()?.meta?.showScroll === true);
-    const toolbarIsHidden = computed(() => useRoute()?.meta?.toolbarIsHidden === true);
-    const hasBlackBackground = computed(() => useRoute()?.meta?.hasBlackBackground === true);
-    const hasFullHeightContent = computed(() => useRoute()?.meta?.hasFullHeightContent === true)
+    const showScroll = computed(() => route?.meta?.showScroll === true);
+    const toolbarIsHidden = computed(() => route?.meta?.toolbarIsHidden === true);
+    const hasBlackBackground = computed(() => route?.meta?.hasBlackBackground === true);
+    const isRelativeFullWindow = computed(() => route?.meta?.isRelativeFullWindow === true)
 
 </script>
 
@@ -38,6 +41,7 @@
     .base__layout {
         height: 100vh;
         padding: 55px 30px 30px;
+        position: relative;
         min-height: 100%;
         overflow-y: scroll;
 
@@ -64,7 +68,7 @@
         }
 
 
-        &.hasFullHeightContent {
+        &.isRelativeFullWindow {
             :deep(.v-main) {
                 height: calc(100% - 56px);
             }

@@ -27,4 +27,3 @@ app.use(vuetify);
 
 // Mount app to DOM
 app.mount('#anilibrix');
-

@@ -67,7 +67,7 @@
     import {required} from '@vuelidate/validators'
 
     // Routes
-    import {RELEASES_ROUTE} from "@router/latestReleases/latestReleasesRoutes";
+    import {LATEST_RELEASES_ROUTE} from "@router/latestReleases/latestReleasesRoutes";
 
     // Store
     import {useAccountStore} from "@store/account/accountStore";
@@ -138,7 +138,7 @@
             class: ['bg-secondary'],
             style: {minWidth: '40px', width: '40px'},
             props: {
-                to: {name: RELEASES_ROUTE},
+                to: {name: LATEST_RELEASES_ROUTE},
                 loading: isProcessing.value === true,
             },
             events: {},
@@ -172,7 +172,7 @@
                 await account.login({login: login.value, password: password.value})
 
                 // Push to releases route
-                await router.replace({name: RELEASES_ROUTE});
+                await router.replace({name: LATEST_RELEASES_ROUTE});
 
                 // Emit success toast
                 toasts.emitSuccess(['Вы успешно авторизовались', 'Добро пожаловать и приятного просмотра!'], {timeout: 2000});

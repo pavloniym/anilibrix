@@ -1,6 +1,8 @@
-import {app} from 'electron';
+import {join} from 'path'
+import {app, session} from 'electron';
 import {applyHandlers} from './handlers'
 import {restoreOrCreateWindow} from './mainWindow';
+
 //import './security-restrictions';
 
 // Prevent electron from running multiple instances.
@@ -31,15 +33,9 @@ app.whenReady().then(restoreOrCreateWindow).catch(e => console.error('Failed cre
 
 // Install Vue.js or any other extension in development mode only.
 if (import.meta.env.DEV) {
- /*   app
+    app
         .whenReady()
-        .then(() => import('electron-devtools-installer'))
-        .then(({default: installExtension, VUEJS3_DEVTOOLS}) => installExtension(VUEJS3_DEVTOOLS, {
-            loadExtensionOptions: {
-                allowFileAccess: true,
-            },
-        }))
-        .catch(e => console.error('Failed install extension:', e));*/
+        .then(async () => await session.defaultSession.loadExtension(join(__dirname, './../../devResources/devtools')))
 }
 
 // Check for new version of the application - production mode only.

@@ -9,11 +9,9 @@
         <app-settings/>
 
         <!-- Content -->
-        <v-fade-transition mode="out-in" appear>
-            <component :is="layout" :key="useRoute().fullPath">
-                <router-view/>
-            </component>
-        </v-fade-transition>
+        <component :is="layout" :key="useRoute().fullPath">
+            <router-view/>
+        </component>
 
     </v-app>
 </template>

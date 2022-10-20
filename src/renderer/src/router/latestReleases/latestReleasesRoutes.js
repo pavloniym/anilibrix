@@ -1,13 +1,15 @@
-export const RELEASES_ROUTE = 'RELEASES_ROUTE';
+import LatestReleasesView from '@views/latestReleases/LatestReleasesView'
+
+export const LATEST_RELEASES_ROUTE = 'LATEST_RELEASES_ROUTE';
 
 export default [
     {
-        name: RELEASES_ROUTE,
+        name: LATEST_RELEASES_ROUTE,
         path: '/',
         meta: {
             showScroll: true,
-            hasFullHeightContent: true
+            isRelativeFullWindow: true
         },
-        component: () => import('@views/releases/LatestReleasesView')
+        component: LatestReleasesView
     }
 ]
