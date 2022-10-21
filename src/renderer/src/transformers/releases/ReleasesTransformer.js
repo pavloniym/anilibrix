@@ -26,6 +26,7 @@ export default class ReleasesTransformer {
                     q480: episode?.sd,
                     q720: episode?.hd,
                     q1080: episode?.fullhd,
+                    name: episode?.name,
                     title: episode?.title,
                     poster: episode?.poster || null,
                     ordinal: episode?.ordinal,

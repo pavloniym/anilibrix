@@ -1,17 +1,8 @@
 <template>
     <v-layout class="h-100 bg-black f-flex flex-column justify-center">
-
-        <!-- Slot:prepend -->
         <slot name="prepend"/>
-
-        <!-- Plyr instance -->
-        <!-- Video container -->
         <video ref="container" muted playsinline controls preload="auto" crossorigin="anonymous"/>
-
-
-        <!-- Slot:append -->
-        <slot name="append"/>
-
+        <slot/>
     </v-layout>
 </template>
 
@@ -24,12 +15,12 @@
     })
 
     // Vue
-    import {inject, ref, onMounted, reactive, onDeactivated} from "vue";
+    import {inject, ref, onMounted, onDeactivated, provide} from "vue";
 
-    // Plyr
+    // State
     const hls = ref(null);
     const player = ref(null);
-    const options = reactive({
+    const options = ref({
         debug: import.meta.env.DEV === true,
         autoplay: false,
         controls: false,
@@ -41,13 +32,26 @@
     const duration = ref(null);
     const container = ref(null);
     const currentTime = ref(null);
+    const isLoadedMetadata = ref(false);
+    const isVisibleInterface = ref(false);
+
+
+    // Provide
+    provide('player', player);
+    provide('duration', duration);
+    provide('currentTime', currentTime);
+    provide('isLoadedMetadata', isLoadedMetadata);
+    provide('isVisibleInterface', isVisibleInterface);
 
 
     // Mounted
     onMounted(() => {
 
         // Inject Plyr instance
+        // Inject HLS instance
         // @see https://github.com/sampotts/plyr
+        // @see https://github.com/video-dev/hls.js/
+        const HLS = inject('$hls');
         const Plyr = inject('$plyr');
 
         // Create player
@@ -55,12 +59,13 @@
 
         // Get duration on initial start
         // Update current player position on time update
-        player?.value?.on('timeupdate', () => currentTime.value = player?.value?.currentTime);
+        player?.value?.on('timeupdate', _ => currentTime.value = player?.value?.currentTime);
+        player?.value?.on('loadedmetadata', _ => isLoadedMetadata.value = true);
         player?.value?.on('loadedmetadata', e => duration.value = e?.detail?.plyr?.duration);
 
-        // Inject HLS instance
-        // @see https://github.com/video-dev/hls.js/
-        const HLS = inject('$hls');
+        // Catch player interface visibility
+        player?.value?.on('controlsshown', _ => isVisibleInterface.value = true);
+        player?.value?.on('controlshidden', _ => isVisibleInterface.value = false);
 
         // Create HLS instance
         hls.value = new HLS({startPosition: props.startPosition || 0});
@@ -82,7 +87,3 @@
     })
 
 </script>
-
-<style scoped lang="scss">
-
-</style>
