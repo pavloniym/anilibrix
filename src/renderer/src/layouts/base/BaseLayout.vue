@@ -40,7 +40,7 @@
 
     .base__layout {
         height: 100vh;
-        padding: 55px 30px 30px;
+        padding: 55px 50px 50px;
         position: relative;
         min-height: 100%;
         overflow-y: scroll;

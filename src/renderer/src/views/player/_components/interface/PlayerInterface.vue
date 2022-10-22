@@ -3,6 +3,7 @@
         <div v-if="1 || isVisibleInterface" class="pa-8 interface">
             <headline/>
             <seekbar/>
+            <controls/>
         </div>
     </v-slide-y-reverse-transition>
 </template>
@@ -15,6 +16,7 @@
     // Components
     import Seekbar from './_components/seekbar/InterfaceSeekbar'
     import Headline from './_components/headline/InterfaceHeadline'
+    import Controls from './_components/controls/InterfaceControls'
 
     // Inject
     const isVisibleInterface = inject('isVisibleInterface');

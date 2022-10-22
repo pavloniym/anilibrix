@@ -1,9 +1,4 @@
-import {ref} from "vue";
-
-
 export function useAppWindow() {
-
-    const isFullscreen = ref(false);
 
     const closeWindow = () => window.electron.controlWindowState.close();
     const reloadWindow = () => window.electron.controlWindowState.reload();
@@ -13,7 +8,6 @@ export function useAppWindow() {
     return {
         closeWindow,
         reloadWindow,
-        isFullscreen,
         minimizeWindow,
         maximizeWindow,
     }

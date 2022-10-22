@@ -17,7 +17,7 @@ async function createWindow() {
         width: stateKeeper.width,
         height: stateKeeper.height,
         minWidth: 820,
-        minHeight: 735,
+        minHeight: 840,
         darkTheme: true,
         titleBarStyle: 'hiddenInset',
         useContentSize: true,

@@ -31,6 +31,7 @@
     });
     const duration = ref(null);
     const container = ref(null);
+    const isPlaying = ref(false);
     const currentTime = ref(null);
     const isLoadedMetadata = ref(false);
     const isVisibleInterface = ref(false);
@@ -39,6 +40,7 @@
     // Provide
     provide('player', player);
     provide('duration', duration);
+    provide('isPlaying', isPlaying);
     provide('currentTime', currentTime);
     provide('isLoadedMetadata', isLoadedMetadata);
     provide('isVisibleInterface', isVisibleInterface);
@@ -66,6 +68,10 @@
         // Catch player interface visibility
         player?.value?.on('controlsshown', _ => isVisibleInterface.value = true);
         player?.value?.on('controlshidden', _ => isVisibleInterface.value = false);
+
+        // Set is playing state
+        player?.value?.on('play', _ => isPlaying.value = true);
+        player?.value?.on('pause', _ => isPlaying.value = false);
 
         // Create HLS instance
         hls.value = new HLS({startPosition: props.startPosition || 0});

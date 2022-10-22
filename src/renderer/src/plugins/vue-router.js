@@ -14,19 +14,19 @@ import player from '@router/player/playerRoutes'
 import search from '@router/search/searchRoutes'
 import release from '@router/release/releaseRoutes'
 import releases from '@router/latestReleases/latestReleasesRoutes'
+import favorites from '@router/favorites/favoritesRoutes'
 
 export default createRouter({
     routes: [
         // ...ads,
         // ...blank,
-        // ...release,
         // ...catalog,
-        // ...favorites
         ...login,
         ...search,
         ...player,
         ...release,
         ...releases,
+        ...favorites,
     ],
     history: createWebHashHistory(),
 });

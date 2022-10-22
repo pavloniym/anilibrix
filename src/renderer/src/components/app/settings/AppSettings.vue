@@ -37,7 +37,7 @@
     // Bindings
     const settings = useSettingsStore();
 
-
+    // Computed
     const options = computed(() => ({
         width: 400,
         color: 'grey bg-grey-darken-3',

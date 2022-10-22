@@ -17,6 +17,7 @@
     const options = computed(() => ({
         variant: 'solo',
         density: 'compact',
+        disabled: settings?.settingsAreVisible === false,
         clearable: true,
         autofocus: true,
         hideDetails: true,

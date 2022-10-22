@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isFullscreen === false" class="px-3 panel bg-black d-flex align-center" @dblclick="maximizeWindow">
+    <div class="px-3 panel bg-black d-flex align-center" @dblclick="maximizeWindow">
         <template v-if="isWindows">
             <v-spacer v-if="isWindows"/>
             <template v-for="(control, k) in controls" :key="k">
@@ -24,7 +24,6 @@
     const {isWindows} = useAppPlatform();
 
     // Window
-    const {isFullscreen} = useAppWindow();
     const {closeWindow, minimizeWindow, maximizeWindow} = useAppWindow();
 
     const controls = computed(() => {
@@ -52,7 +51,6 @@
             user-select: none;
             -webkit-app-region: no-drag;
         }
-
     }
 
 </style>
