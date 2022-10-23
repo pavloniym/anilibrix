@@ -1,5 +1,5 @@
 <template>
-    <div class="thumb bg-secondary" :class="{isOutside}"/>
+    <div class="thumb bg-secondary" :class="{isHovered}"/>
 </template>
 
 <script setup>
@@ -9,7 +9,7 @@
 
     // Inject
     const progress = inject('progress');
-    const isOutside = inject('isOutside');
+    const isHovered = inject('isHovered');
 
 </script>
 
@@ -20,15 +20,15 @@
         left: calc(v-bind(progress) * 1%);
         width: 12px;
         height: 12px;
-        opacity: 1;
+        opacity: 0;
         position: absolute;
         transition: opacity .15s ease;
         margin-top: -6px;
         margin-left: -6px;
         border-radius: 50%;
 
-        &.isOutside {
-            opacity: 0;
+        &.isHovered {
+            opacity: 1;
         }
 
     }

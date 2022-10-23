@@ -15,11 +15,12 @@
     })
 
     // Vue
-    import {inject, ref, onMounted, onDeactivated, provide} from "vue";
+    import {inject, ref, onMounted, onDeactivated, provide, watch} from "vue";
 
     // State
     const hls = ref(null);
     const player = ref(null);
+    const volume = ref(0);
     const options = ref({
         debug: import.meta.env.DEV === true,
         autoplay: false,
@@ -31,6 +32,7 @@
     });
     const duration = ref(null);
     const container = ref(null);
+    const isLoading = ref(true);
     const isPlaying = ref(false);
     const currentTime = ref(null);
     const isLoadedMetadata = ref(false);
@@ -39,7 +41,9 @@
 
     // Provide
     provide('player', player);
+    provide('volume', volume);
     provide('duration', duration);
+    provide('isLoading', isLoading);
     provide('isPlaying', isPlaying);
     provide('currentTime', currentTime);
     provide('isLoadedMetadata', isLoadedMetadata);
@@ -59,6 +63,9 @@
         // Create player
         player.value = new Plyr(container?.value, options?.value);
 
+        // Set initial volume level
+        volume.value = player?.value?.muted === true ? 0 : player?.value?.volume
+
         // Get duration on initial start
         // Update current player position on time update
         player?.value?.on('timeupdate', _ => currentTime.value = player?.value?.currentTime);
@@ -72,6 +79,15 @@
         // Set is playing state
         player?.value?.on('play', _ => isPlaying.value = true);
         player?.value?.on('pause', _ => isPlaying.value = false);
+
+        // Track volume level
+        player?.value?.on('volumechange', _ => volume.value = player?.value?.muted === true ? 0 : player?.value?.volume);
+
+        // Detect loading state
+        player.value.on('seeking', () => isLoading.value = true);
+        player.value.on('waiting', () => isLoading.value = true);
+        player.value.on('stalled', () => isLoading.value = true);
+        player.value.on('canplay', () => isLoading.value = false);
 
         // Create HLS instance
         hls.value = new HLS({startPosition: props.startPosition || 0});

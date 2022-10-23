@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!isOutside" class="bg-black rounded preview">
+    <div v-if="isHovered" class="bg-black rounded preview">
         <canvas ref="canvas" class="rounded" width="100" height="65"/>
     </div>
 </template>
@@ -12,7 +12,7 @@
 
     // Inject
     const player = inject('player');
-    const isOutside = inject('isOutside');
+    const isHovered = inject('isHovered');
     const seekingTime = inject('seekingTime');
     const seekingProgress = inject('seekingProgress');
 
@@ -21,7 +21,7 @@
 
     // Watch
     watch(seekingProgress, () => {
-        if (isOutside?.value === false) {
+        if (isHovered?.value === true) {
             //const context = canvas?.value?.getContext('2d');
             //context?.drawImage(video, 0, 0, 100, 65);
             //console.log({video});

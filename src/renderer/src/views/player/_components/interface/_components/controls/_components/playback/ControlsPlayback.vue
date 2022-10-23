@@ -32,6 +32,7 @@
     const release = inject('release');
     const isPlaying = inject('isPlaying');
     const currentEpisode = inject('episode');
+    const isLoadedMetadata = inject('isLoadedMetadata');
 
     // Computed
     const episodes = computed(() => release?.value?.episodes || []);
@@ -56,7 +57,7 @@
         },
         {
             icon: {icon: isPlaying?.value ? 'mdi-pause' : 'mdi-play', size: 20},
-            props: {flat: true, icon: true, width: 45, height: 45},
+            props: {flat: true, icon: true, class: ['mx-1'], width: 45, height: 45, disabled: isLoadedMetadata?.value !== true},
             events: {click: () => player?.value?.togglePlay()}
         },
         {

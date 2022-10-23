@@ -1,5 +1,5 @@
 <template>
-    <div class="timeline bg-grey" :class="{isOutside}">
+    <div class="timeline bg-grey" :class="{isHovered}">
         <slot/>
     </div>
 </template>
@@ -14,7 +14,7 @@
 
     // Inject
     const seekbar = ref(inject('seekbar'));
-    const isOutside = inject('isOutside');
+    const isHovered = inject('isHovered');
 
     // Bindings
     const {elementHeight} = useMouseInElement(seekbar);
@@ -28,14 +28,14 @@
         left: 0;
         width: 100%;
         height: 6px;
-        max-height: 6px;
+        max-height: 2px;
         position: absolute;
         transition: max-height .2s ease;
         border-radius: 2px;
         pointer-events: none;
 
-        &.isOutside {
-            max-height: 2px;
+        &.isHovered {
+            max-height: 6px;
         }
     }
 

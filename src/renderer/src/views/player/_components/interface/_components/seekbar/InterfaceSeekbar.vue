@@ -22,7 +22,7 @@
 
     // Components
     import Thumb from './_components/thumb/SeekbarThumb'
-    import Preview from './_components/preview/SeekbarPreview'
+    //import Preview from './_components/preview/SeekbarPreview'
     import Timeline from './_components/timeline/SeekbarTimeline'
     import Position from './_components/position/SeekbarPosition'
     import Progression from './_components/progression/SeekbarProgression'
@@ -31,6 +31,7 @@
     const player = inject('player');
     const duration = inject('duration')
     const currentTime = inject('currentTime')
+    const isLoadedMetadata = inject('isLoadedMetadata');
 
     // Refs
     const seekbar = ref(null);
@@ -43,6 +44,7 @@
     const progress = ref(null);
 
     // Computed
+    const isHovered = computed(() => isOutside?.value === false && isLoadedMetadata?.value === true)
     const seekingTime = computed(() => seekingProgress?.value > 0 ? (duration?.value * (seekingProgress?.value / 100)) : null);
     const seekingProgress = computed(() => elementWidth?.value > 0 ? ((elementX?.value / elementWidth?.value) * 100) : null);
     const prettySeekingTime = computed(() => formatDuration(seekingTime?.value * 1000, {leading: true}))
@@ -53,7 +55,6 @@
         if (seekingTime?.value) player.value.currentTime = seekingTime?.value;
     }
 
-
     // Inject
     watch(time, () => progress.value = duration?.value > 0 ? (time?.value / duration?.value * 100) : null);
     watch(currentTime, () => time.value = currentTime?.value);
@@ -63,7 +64,7 @@
     provide('time', time);
     provide('seekbar', seekbar);
     provide('progress', progress);
-    provide('isOutside', isOutside)
+    provide('isHovered', isHovered)
     provide('seekingTime', seekingTime);
     provide('seekingProgress', seekingProgress);
     provide('prettySeekingTime', prettySeekingTime);

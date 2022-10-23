@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-if="episodeOrdinal !== null" class="text-h6 text-line-height-1.3">{{ episodeOrdinal }}</div>
-        <div v-if="episodeName !== null" class="fz-.75">{{ episodeName }}</div>
+        <div v-if="episodeOrdinal !== null" class="text-h6 font-weight-bold">{{ episodeOrdinal }}</div>
+        <div v-if="episodeName !== null" class="fz-.75 text-line-height-1.1">{{ episodeName }}</div>
         <div v-if="releaseName" class="fz-.75">{{ releaseName }}</div>
     </div>
 </template>

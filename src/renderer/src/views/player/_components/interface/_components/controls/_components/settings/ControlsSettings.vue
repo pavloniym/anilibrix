@@ -1,5 +1,8 @@
 <template>
     <div class="d-flex justify-end align-center h-100">
+
+        <volume clas="mr-1" />
+
         <template v-for="button in buttons">
             <v-btn v-on="{...button.events}" v-bind="button.props">
                 <v-icon v-bind="button.icon"/>
@@ -16,6 +19,9 @@
 
     // Vue
     import {computed} from "vue";
+
+    // Components
+    import Volume from './_components/volume/VolumeSettings'
 
     // Composables
     import {useFullscreenWindow} from "@composables/app/fullscreen/appFullscreen";

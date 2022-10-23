@@ -79,7 +79,7 @@
                     type: 'number',
                     suffix: 'сек',
                 },
-                inputHandler: $event => settings.videoBufferSeconds = $event ? parseInt($event) : 0
+                inputHandler: $event => settings.manualOpeningSkipSeconds = $event ? parseInt($event) : 0
             },
             classes: ['mb-2']
         },

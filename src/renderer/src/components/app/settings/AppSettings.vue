@@ -42,6 +42,7 @@
         width: 400,
         color: 'grey bg-grey-darken-3',
         location: 'right',
+        temporary: true,
         disableRouteWatcher: true,
         disableResizeWatcher: true,
     }))

@@ -21,14 +21,17 @@
     // Composables
     import {useAppWindow} from "@composables/app/window/appWindow";
     import {useAppPlatform} from '@composables/app/platform/appPlatform'
+    import {useFullscreenWindow} from "@composables/app/fullscreen/appFullscreen";
 
     // Store
     const settings = useSettingsStore();
 
-    // Composables
+    // Bindings
     const {isMac} = useAppPlatform();
+    const {toggleFullscreen} = useFullscreenWindow();
     const {minimizeWindow, reloadWindow, closeWindow} = useAppWindow();
 
+    // Shortcuts
     const closeShortcut = isMac.value === true ? '⌘Q' : 'Alt + Q';
     const reloadShortcut = isMac.value === true ? '⌘⇧R' : 'Ctrl + Shift + R';
     const minimizeShortcut = isMac.value === true ? '⌘M' : 'Ctrl + M';
@@ -58,6 +61,15 @@
                 title: 'Свернуть приложение',
                 action: minimizeWindow,
                 subtitle: minimizeShortcut,
+                hasDivider: true,
+            },
+        },
+        {
+            is: Action,
+            props: {
+                title: 'На полный экран',
+                action: toggleFullscreen,
+                subtitle: fullscreenShortcut,
                 hasDivider: true,
             },
         },

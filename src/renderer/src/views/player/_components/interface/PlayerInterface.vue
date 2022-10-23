@@ -4,6 +4,8 @@
             <headline/>
             <seekbar/>
             <controls/>
+            <fetching/>
+            <indicators/>
         </div>
     </v-slide-y-reverse-transition>
 </template>
@@ -17,6 +19,8 @@
     import Seekbar from './_components/seekbar/InterfaceSeekbar'
     import Headline from './_components/headline/InterfaceHeadline'
     import Controls from './_components/controls/InterfaceControls'
+    import Fetching from './_components/fetching/InterfaceFetching'
+    import Indicators from './_components/indicators/InterfaceIndicators'
 
     // Inject
     const isVisibleInterface = inject('isVisibleInterface');
