@@ -4,6 +4,7 @@
         <position/>
         <timeline>
             <thumb/>
+            <buffer/>
             <progression/>
         </timeline>
     </div>
@@ -22,6 +23,7 @@
 
     // Components
     import Thumb from './_components/thumb/SeekbarThumb'
+    import Buffer from './_components/buffer/SeekbarBuffer'
     //import Preview from './_components/preview/SeekbarPreview'
     import Timeline from './_components/timeline/SeekbarTimeline'
     import Position from './_components/position/SeekbarPosition'
@@ -55,7 +57,7 @@
         if (seekingTime?.value) player.value.currentTime = seekingTime?.value;
     }
 
-    // Inject
+    // Watch
     watch(time, () => progress.value = duration?.value > 0 ? (time?.value / duration?.value * 100) : null);
     watch(currentTime, () => time.value = currentTime?.value);
 

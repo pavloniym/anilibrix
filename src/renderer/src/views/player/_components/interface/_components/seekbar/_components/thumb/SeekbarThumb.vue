@@ -21,6 +21,7 @@
         width: 12px;
         height: 12px;
         opacity: 0;
+        z-index: 20;
         position: absolute;
         transition: opacity .15s ease;
         margin-top: -6px;
