@@ -63,7 +63,7 @@
             height: 100%;
             opacity: .5;
             position: absolute;
-            border-radius: inherit;
+            border-radius: 2px;
         }
     }
 

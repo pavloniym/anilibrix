@@ -21,8 +21,8 @@
         height: 100%;
         z-index: 50;
         position: absolute;
+        border-radius: 2px;
         pointer-events: none;
-        border-radius: inherit;
     }
 
 </style>
