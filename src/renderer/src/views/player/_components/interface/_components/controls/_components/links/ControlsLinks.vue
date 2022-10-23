@@ -71,7 +71,7 @@
                 icon: {icon: 'mdi-star', size: 20},
                 props: {flat: true, icon: true, width: 35, height: 35, color: 'transparent'},
                 events: {click: async () => await router.push({name: FAVORITES_ROUTE})},
-                tooltip: {title: 'Избарнное', location: 'top'},
+                tooltip: {title: 'Избранное', location: 'top'},
             },
             {
                 icon: {icon: 'mdi-chevron-double-right', size: 20},
