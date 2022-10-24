@@ -1,13 +1,16 @@
 <template>
-    <v-slide-y-reverse-transition>
-        <div v-if="1 || isVisibleInterface" class="pa-8 interface">
-            <headline/>
-            <seekbar/>
-            <controls/>
-            <fetching/>
-            <indicators/>
-        </div>
-    </v-slide-y-reverse-transition>
+    <div>
+        <v-slide-y-reverse-transition>
+            <div v-if="1 || isVisibleInterface" class="pa-8 interface">
+                <headline/>
+                <seekbar/>
+                <controls/>
+                <fetching/>
+                <indicators/>
+            </div>
+        </v-slide-y-reverse-transition>
+        <hotkeys/>
+    </div>
 </template>
 
 <script setup>
@@ -17,6 +20,7 @@
 
     // Components
     import Seekbar from './_components/seekbar/InterfaceSeekbar'
+    import Hotkeys from './_components/hotkeys/InterfaceHotkeys'
     import Headline from './_components/headline/InterfaceHeadline'
     import Controls from './_components/controls/InterfaceControls'
     import Fetching from './_components/fetching/InterfaceFetching'

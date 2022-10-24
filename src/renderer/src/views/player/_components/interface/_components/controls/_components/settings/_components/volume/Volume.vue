@@ -1,10 +1,14 @@
 <template>
-    <div class="d-flex align-center">
-        <v-btn v-bind="button.props" @click="toggleMute">
-            <v-icon v-bind="button.icon"/>
-        </v-btn>
-        <v-slider v-bind="slider" @update:modelValue="setVolume($event)"/>
-    </div>
+    <v-hover>
+        <template v-slot:default="{props, isHovering}">
+            <div v-bind="props" class="d-flex align-center">
+                <v-slider v-if="isHovering" v-bind="slider" class="mr-2" @update:modelValue="setVolume($event)"/>
+                <v-btn v-bind="button.props" @click="toggleMute">
+                    <v-icon v-bind="button.icon"/>
+                </v-btn>
+            </div>
+        </template>
+    </v-hover>
 </template>
 
 <script setup>
@@ -21,10 +25,12 @@
 
     // Computed
     const icon = computed(() => {
+
         if (volume?.value > .66) return 'mdi-volume-high';
         if (volume?.value > .33) return 'mdi-volume-medium';
         if (volume?.value > 0) return 'mdi-volume-low';
         if (volume?.value === 0) return 'mdi-volume-off';
+
         return 'mdi-volume-high';
     })
 
@@ -39,7 +45,7 @@
         min: 0,
         max: 1,
         step: .1,
-        style: {maxWidth: '50px', width: '50px'},
+        style: {maxWidth: '70px', width: '70px'},
         elevation: 0,
         thumbSize: 10,
         modelValue: volume?.value,

@@ -1,5 +1,5 @@
 <template>
-    <player-video v-if="src" v-bind="{src}">
+    <player-video v-if="src" v-bind="{src, poster}">
         <player-interface/>
     </player-video>
 </template>
@@ -15,19 +15,21 @@
     // Vue
     import {computed, provide, ref, watch} from "vue";
 
+    // Components
+    import PlayerVideo from './_components/video/PlayerVideo'
+    import PlayerInterface from './_components/interface/PlayerInterface'
+
     // Proxy + Transformer
     import ReleasesProxy from "@proxies/releases/ReleasesProxy";
     import ReleasesTransformer from "@transformers/releases/ReleasesTransformer";
 
     // Composables
     import {useRoute} from 'vue-router'
-
-    // Components
-    import PlayerVideo from './_components/video/PlayerVideo'
-    import PlayerInterface from './_components/interface/PlayerInterface'
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Bindings
     const route = useRoute();
+    const settings = useSettingsStore();
 
     // State
     const release = ref(null);
@@ -35,6 +37,7 @@
 
     // Computed
     const src = computed(() => episode?.value?.q480);
+    const poster = computed(() => settings.applyToConnectionHost(episode?.value?.poster));
 
     // Provide release + episode
     provide('release', release);

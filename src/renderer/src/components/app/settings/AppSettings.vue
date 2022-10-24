@@ -28,11 +28,11 @@
     import Credentials from './_components/credentials/SettingsCredentials'
 
     // Sections
-    import App from './sections/app/AppSettings'
-    import Player from './sections/player/PlayerSettings'
-    import System from './sections/system/SystemSettings'
-    import Actions from './sections/actions/ActionsSettings'
-    import Devtools from './sections/devtools/DevtoolSettings'
+    import App from './_sections/app/AppSettings'
+    import Player from './_sections/player/PlayerSettings'
+    import System from './_sections/system/SystemSettings'
+    import Actions from './_sections/actions/ActionsSettings'
+    import Devtools from './_sections/devtools/DevtoolSettings'
 
     // Bindings
     const settings = useSettingsStore();

@@ -2,15 +2,12 @@
     <v-card>
         <v-divider v-if="hasDivider"/>
         <v-list-item dense @click="applyAction">
-
             <v-list-item-title v-text="finalTitle" class="fz-.70 font-weight-bold text-h6" :class="finalClasses"/>
-
             <template v-slot:append>
                 <v-list-item-action>
                     <v-list-item-subtitle v-text="subtitle" class="fz-.70 text-h6"/>
                 </v-list-item-action>
             </template>
-
         </v-list-item>
     </v-card>
 </template>

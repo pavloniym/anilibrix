@@ -2,7 +2,7 @@
     <v-layout class="h-100 bg-black f-flex flex-column justify-center">
         <slot name="prepend"/>
         <video ref="container" muted playsinline controls preload="auto" crossorigin="anonymous"/>
-        <slot/>
+        <slot v-if="isReady"/>
     </v-layout>
 </template>
 
@@ -11,18 +11,37 @@
     // Props
     const props = defineProps({
         src: {type: String, default: null},
+        poster: {type: String, default: null},
         startPosition: {type: Number, default: null}
     })
 
     // Vue
-    import {inject, ref, onMounted, onDeactivated, provide, watch} from "vue";
+    import {inject, ref, onMounted, onDeactivated, provide, computed} from "vue";
+
+    // Composables
+    import {useSettingsStore} from "@store/settings/settingsStore";
+
+    // Bindings
+    const settings = useSettingsStore();
 
     // State
     const hls = ref(null);
     const player = ref(null);
     const volume = ref(0);
+    const isReady = ref(false);
+    const duration = ref(null);
+    const container = ref(null);
+    const isLoading = ref(true);
+    const isPlaying = ref(false);
+    const currentTime = ref(null);
+    const currentSpeed = ref(null);
+    const isLoadedMetadata = ref(false);
+    const isVisibleInterface = ref(false);
+
+    // State
     const options = ref({
         debug: import.meta.env.DEV === true,
+        poster: props?.poster,
         autoplay: false,
         controls: false,
         keyboard: {global: false, focused: false},
@@ -30,14 +49,16 @@
         fullscreen: {enabled: false},
         clickToPlay: true,
     });
-    const duration = ref(null);
-    const container = ref(null);
-    const isLoading = ref(true);
-    const isPlaying = ref(false);
-    const currentTime = ref(null);
-    const isLoadedMetadata = ref(false);
-    const isVisibleInterface = ref(false);
 
+    // Computed
+    const hlsOptions = computed(() => ({
+        startPosition: props.startPosition || -1,
+        maxBufferLength: settings?.videoBufferSeconds || 60,
+    }));
+
+    // Methods
+    const decreaseSpeed = (speedValue) => player?.value?.speed - speedValue > 0 ? player.value.speed = player?.value?.speed - speedValue : null;
+    const increaseSpeed = (speedValue) => player?.value?.speed + speedValue <= 2 ? player.value.speed = player?.value?.speed + speedValue : null;
 
     // Provide
     provide('player', player);
@@ -46,9 +67,11 @@
     provide('isLoading', isLoading);
     provide('isPlaying', isPlaying);
     provide('currentTime', currentTime);
+    provide('currentSpeed', currentSpeed);
+    provide('increaseSpeed', increaseSpeed);
+    provide('decreaseSpeed', decreaseSpeed);
     provide('isLoadedMetadata', isLoadedMetadata);
     provide('isVisibleInterface', isVisibleInterface);
-
 
     // Mounted
     onMounted(() => {
@@ -64,7 +87,12 @@
         player.value = new Plyr(container?.value, options?.value);
 
         // Set initial volume level
-        volume.value = player?.value?.muted === true ? 0 : player?.value?.volume
+        // Set initial current speed value
+        volume.value = player?.value?.muted === true ? 0 : player?.value?.volume;
+        currentSpeed.value = player?.value?.speed;
+
+        // Set is ready event
+        player?.value?.on('ready', _ => isReady.value = true);
 
         // Get duration on initial start
         // Update current player position on time update
@@ -81,6 +109,8 @@
         player?.value?.on('pause', _ => isPlaying.value = false);
 
         // Track volume level
+        // Track playback speed value
+        player?.value?.on('ratechange', _ => currentSpeed.value = player?.value?.speed);
         player?.value?.on('volumechange', _ => volume.value = player?.value?.muted === true ? 0 : player?.value?.volume);
 
         // Detect loading state
@@ -90,7 +120,7 @@
         player.value.on('canplay', () => isLoading.value = false);
 
         // Create HLS instance
-        hls.value = new HLS({startPosition: props.startPosition || 0});
+        hls.value = new HLS(hlsOptions?.value);
 
         // Attach HLS to media element
         hls?.value?.attachMedia(player?.value?.media);

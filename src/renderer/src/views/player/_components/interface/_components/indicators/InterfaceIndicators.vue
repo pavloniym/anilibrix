@@ -1,7 +1,8 @@
 <template>
-    <div v-if="icon" class="d-flex align-center justify-center indicators" :key="icon">
+    <div v-if="icon || content" class="d-flex align-center justify-center indicators" :key="key">
         <v-btn icon color="rgba(0, 0, 0, 0.30)">
-            <v-icon v-bind="{icon}"/>
+            <v-icon v-if="icon" v-bind="{icon}"/>
+            <div v-if="content" v-text="content" class="fz-.70 font-weight-bold"/>
         </v-btn>
     </div>
 </template>
@@ -9,38 +10,40 @@
 <script setup>
 
     // Vue
-    import {inject, nextTick, onMounted, ref} from "vue";
+    import {inject, onMounted, ref} from "vue";
 
     // State
+    const key = ref(null);
     const icon = ref(null);
+    const content = ref(null);
     const currentTime = ref(null);
     const timeoutHandler = ref(null);
 
     // Inject
     const player = inject('player');
 
+    // Methods
+    const showIndicatorIcon = (iconValue) => applyAndResetIndicator(() => icon.value = iconValue);
 
-    /**
-     * Show indicator with timeout
-     *
-     * @param iconValue
-     * @return {void}
-     */
-    const showIndicatorWithTimeout = (iconValue) => {
+    // Methods
+    const applyAndResetIndicator = (callback) => {
         clearTimeout(timeoutHandler?.value);
-        icon.value = iconValue;
-        timeoutHandler.value = setTimeout(() => icon.value = null, 1000)
-    };
+        key.value = Date.now();
+        callback();
+        timeoutHandler.value = setTimeout(() => {
+            key.value = null;
+            icon.value = null;
+            content.value = null;
+        }, 1000)
+    }
 
+    // Mounted
     onMounted(() => {
-        nextTick(() => {
-            player?.value?.on('play', () => showIndicatorWithTimeout('mdi-play'));
-            player?.value?.on('pause', () => showIndicatorWithTimeout('mdi-pause'));
-            player?.value?.on('seeking', () => showIndicatorWithTimeout(currentTime?.value <= player?.value?.currentTime ? 'mdi-fast-forward' : 'mdi-rewind'));
-            player?.value?.on('timeupdate', () => currentTime.value = player?.value?.currentTime)
-        })
+        player?.value?.on('play', () => showIndicatorIcon('mdi-play'));
+        player?.value?.on('pause', () => showIndicatorIcon('mdi-pause'));
+        player?.value?.on('seeking', () => showIndicatorIcon(currentTime?.value <= player?.value?.currentTime ? 'mdi-fast-forward' : 'mdi-rewind'));
+        player?.value?.on('timeupdate', () => currentTime.value = player?.value?.currentTime);
     })
-
 
 </script>
 
