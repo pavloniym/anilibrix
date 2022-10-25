@@ -16,6 +16,7 @@
     import CloseMenu from '../../_components/closeMenu/CloseMenu'
 
     // Sections
+    import Speed from '../speed/Speed'
     import Hotkeys from '../hotkeys/Hotkeys'
 
     // Inject
@@ -32,6 +33,7 @@
                 title: 'Скорость',
                 subtitle: `${currentSpeed?.value}x`
             },
+            events: {click: () => setSection(Speed)}
         },
         {
             is: Action,

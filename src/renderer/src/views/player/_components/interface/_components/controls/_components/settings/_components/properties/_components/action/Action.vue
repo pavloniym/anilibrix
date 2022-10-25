@@ -1,13 +1,23 @@
 <template>
     <div>
         <v-list-item nav :style="{minHeight: '25px', height: '25px'}" @click.self="$emit('click')">
-            <v-list-item-title v-text="title" class="fz-.70 text-h6"/>
-            <template v-slot:append>
-                <v-list-item-action>
-                    <v-list-item-subtitle v-text="subtitle" class="fz-.70 text-h6"/>
-                </v-list-item-action>
+
+            <!-- Prepend -->
+            <template v-slot:prepend>
+                <slot name="prepend" />
             </template>
+
+            <!-- Title -->
+            <v-list-item-title v-text="title" class="fz-.75 text-h6"/>
+
+            <!-- Subtitle -->
+            <template v-slot:append>
+                <v-list-item-subtitle v-text="subtitle" class="fz-.70 text-h6 ml-8"/>
+            </template>
+
         </v-list-item>
+
+        <!-- Divider -->
         <v-divider v-if="hasDivider"/>
     </div>
 </template>

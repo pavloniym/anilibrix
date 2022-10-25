@@ -1,8 +1,8 @@
 <template>
     <v-btn v-bind="buttonOptions">
         <v-icon v-bind="iconOptions"/>
-        <v-menu v-model="isVisible" v-bind="menuOptions">
-            <v-card flat class="pa-2">
+        <v-menu v-model="isVisible" v-bind="menuOptions"  nudge-top="200">
+            <v-card flat class="pa-2" min-width="150px">
                 <component v-if="section" :is="section" :key="section"/>
             </v-card>
         </v-menu>
@@ -51,9 +51,5 @@
     // Provide
     provide('setSection', setSection);
     provide('toggleMenu', toggleMenu);
-
-
-    // Watch
-    // watch(isVisible, (isVisible) => isVisible === false ? section.value = TOC : null);
 
 </script>
