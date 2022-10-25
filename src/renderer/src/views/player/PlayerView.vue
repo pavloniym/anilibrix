@@ -1,5 +1,9 @@
 <template>
-    <player-video v-if="src" v-bind="{src, poster}">
+    <player-video
+        v-if="src"
+        v-bind="{src, poster, startPosition}"
+        :key="src"
+        @update:currentTime="startPosition = $event">
         <player-interface/>
     </player-video>
 </template>
@@ -34,23 +38,45 @@
     // State
     const release = ref(null);
     const episode = ref(null);
+    const startPosition = ref(0);
 
     // Computed
-    const src = computed(() => episode?.value?.q480);
-    const poster = computed(() => settings.applyToConnectionHost(episode?.value?.poster));
+    const qualities = computed(() =>
+        [
+            {label: '480p', type: '480', key: 'q480', isAvailable: !!episode?.value?.q480},
+            {label: '720p', type: '720', key: 'q720', isAvailable: !!episode?.value?.q720},
+            {label: '1080p', type: '1080', key: 'q1080', isAvailable: !!episode?.value?.q1080},
+        ]
+            .filter(q => q?.isAvailable === true)
+    );
 
-    // Provide release + episode
+    // Computed
+    const src = computed(() => episode?.value?.[quality?.value?.key]);
+    const poster = computed(() => settings.applyToConnectionHost(episode?.value?.poster));
+    const quality = computed(() => qualities?.value?.find(q => q?.type === settings?.playerQuality) || qualities?.value?.[0])
+
+    // Provide
     provide('release', release);
     provide('episode', episode);
+    provide('quality', quality);
+    provide('qualities', qualities);
 
     // Watch
     watch(
-        () => route,
+        route,
         async (to) => {
+
+            // Make request to fetch release from server
             const response = await new ReleasesProxy().fetchReleaseById({releaseId: to?.params?.releaseId});
 
+            // Set release
+            // Set episode
             release.value = ReleasesTransformer.fetchRelease(response?.data);
             episode.value = (release?.value?.episodes || []).find(episode => episode?.id === to?.params?.episodeId);
+
+            // Reset start position
+            startPosition.value = 0;
+
         },
         {immediate: true}
     )

@@ -6,7 +6,7 @@ export const useSettingsStore = defineStore('settings', {
         welcomeView: null,
         showDevtools: false,
         hasMaximumAds: false,
-        playerQuality: null,
+        playerQuality: '480',
         episodesOrder: 'asc',
         hasAutoUpdates: true,
         connectionHost: 'https://anilibrix.anilib.top',

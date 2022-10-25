@@ -15,8 +15,11 @@
         startPosition: {type: Number, default: null}
     })
 
+    // Emits
+    const emits = defineEmits(['update:currentTime']);
+
     // Vue
-    import {inject, ref, onMounted, onDeactivated, provide, computed} from "vue";
+    import {inject, ref, onMounted, onDeactivated, provide, computed, watch} from "vue";
 
     // Composables
     import {useSettingsStore} from "@store/settings/settingsStore";
@@ -132,10 +135,15 @@
     });
 
 
+    // Destroy
     onDeactivated(() => {
         player?.value?.pause();
         player?.value?.destroy();
         player.value.media.src = '';
     })
+
+
+    // Watch
+    watch(currentTime, currentTime => emits('update:currentTime', currentTime));
 
 </script>

@@ -7,23 +7,29 @@
 
 <script setup>
 
-
     // Vue
     import {computed, inject} from "vue";
+
+    // Composable
+    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Components
     import Action from './../../_components/action/Action'
     import CloseMenu from '../../_components/closeMenu/CloseMenu'
 
     // Sections
-    import Speed from '../speed/Speed'
-    import Hotkeys from '../hotkeys/Hotkeys'
+    import Speed from './../speed/Speed'
+    import Hotkeys from './../hotkeys/Hotkeys'
+    import Quality from './../quality/Quality'
 
     // Inject
     const player = inject('player')
+    const quality = inject('quality');
     const setSection = inject('setSection')
     const currentSpeed = inject('currentSpeed');
 
+    // Bindings
+    const settings = useSettingsStore();
 
     // Computed
     const items = computed(() => [
@@ -39,8 +45,9 @@
             is: Action,
             props: {
                 title: 'Качество',
-                subtitle: '480p'
+                subtitle: quality?.value?.label
             },
+            events: {click: () => setSection(Quality)}
         },
         {
             is: Action,
