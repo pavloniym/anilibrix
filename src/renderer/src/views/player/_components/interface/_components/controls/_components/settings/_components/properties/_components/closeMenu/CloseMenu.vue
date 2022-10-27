@@ -3,7 +3,7 @@
         <v-list-item nav :style="{minHeight: '25px', height: '25px'}" @click="toggleMenu(false)">
             <div class="d-flex align-center">
                 <v-icon icon="mdi-close" size="18" class="mr-2"/>
-                <v-list-item-title class="fz-.70 font-weight-bold">Закрыть</v-list-item-title>
+                <v-list-item-title class="fz-.70 font-weight-bold text-unselect">Закрыть</v-list-item-title>
             </div>
         </v-list-item>
         <v-divider class="my-2"/>

@@ -10,6 +10,7 @@
             </div>
         </v-slide-y-reverse-transition>
         <hotkeys/>
+        <skip-opening/>
     </div>
 </template>
 
@@ -25,6 +26,7 @@
     import Controls from './_components/controls/InterfaceControls'
     import Fetching from './_components/fetching/InterfaceFetching'
     import Indicators from './_components/indicators/InterfaceIndicators'
+    import SkipOpening from './_components/skipOpening/InterfaceSkipOpening'
 
     // Inject
     const isVisibleInterface = inject('isVisibleInterface');

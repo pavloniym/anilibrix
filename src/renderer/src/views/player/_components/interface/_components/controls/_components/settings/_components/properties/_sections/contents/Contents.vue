@@ -15,6 +15,7 @@
 
     // Components
     import Action from './../../_components/action/Action'
+    import Switch from './../../_components/switch/Switch'
     import CloseMenu from '../../_components/closeMenu/CloseMenu'
 
     // Sections
@@ -53,6 +54,22 @@
             is: Action,
             props: {title: 'Горячие клавиши'},
             events: {click: () => setSection(Hotkeys)}
+        },
+        {
+            is: Switch,
+            props: {
+                title: 'Автопропуск опенинга',
+                modelValue: settings.skipOpening
+            },
+            events: {click: () => settings.skipOpening = !settings.skipOpening}
+        },
+        {
+            is: Switch,
+            props: {
+                title: 'Кнопка пропуска опенинга',
+                modelValue: settings.skipOpeningButton
+            },
+            events: {click: () => settings.skipOpeningButton = !settings.skipOpeningButton}
         }
     ])
 

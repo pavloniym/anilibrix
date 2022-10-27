@@ -59,27 +59,27 @@
         {
             is: Switch,
             props: {
-                title: 'Кнопка ручного пропуска опенинга',
-                modelValue: settings.manualOpeningSkipButton,
+                title: 'Кнопка ручной перемотки',
+                modelValue: settings.manualRewindButton,
                 description: [
                     'В интерфейсе плеера появится дополнительная кнопка, которая перемотает плеер на указанное количество секунд',
                     'Данная кнопка не гарантирует корректный пропуск опенинга'
                 ],
-                inputHandler: $event => settings.videoBufferSeconds = $event
+                inputHandler: $event => settings.manualRewindButton = $event
             },
             classes: ['mb-2']
         },
         {
             is: UserInput,
             props: {
-                title: 'Количество секунд для ручного пропуска опенинга',
-                subtitle: ['Вы можете указать на сколько секунд пропускать опенинг'],
-                modelValue: settings.manualOpeningSkipSeconds,
+                title: 'Количество секунд для ручной перемотки',
+                subtitle: ['Вы можете указать на сколько секунд пропускать видео по нажатию на кнопку ручной перемотки'],
+                modelValue: settings.manualRewindSeconds,
                 inputProps: {
                     type: 'number',
                     suffix: 'сек',
                 },
-                inputHandler: $event => settings.manualOpeningSkipSeconds = $event ? parseInt($event) : 0
+                inputHandler: $event => settings.manualRewindSeconds = $event ? parseInt($event) : 0
             },
             classes: ['mb-2']
         },

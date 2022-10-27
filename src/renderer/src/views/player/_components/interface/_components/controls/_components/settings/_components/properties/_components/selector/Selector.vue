@@ -3,12 +3,16 @@
         <v-layout class="align-center">
 
             <!-- Icon -->
-            <div :style="{width: '20px'}">
+            <div class="d-flex align-center" :style="{width: '20px'}">
                 <v-icon v-if="isSelected" v-bind="icon"/>
             </div>
 
             <!-- Title -->
-            <v-list-item-title v-text="title" class="fz-.75" :class="[isSelected ? 'text-white': 'text-grey']"/>
+            <v-list-item-title
+                v-text="title"
+                class="fz-.75 text-unselect"
+                :class="[isSelected ? 'text-white': 'text-grey']">
+            </v-list-item-title>
 
         </v-layout>
     </v-list-item>

@@ -19,7 +19,7 @@
     const emits = defineEmits(['update:currentTime']);
 
     // Vue
-    import {inject, ref, onMounted, onDeactivated, provide, computed, watch} from "vue";
+    import {inject, ref, onMounted, provide, computed, watch, onUnmounted} from "vue";
 
     // Composables
     import {useSettingsStore} from "@store/settings/settingsStore";
@@ -63,6 +63,9 @@
     const decreaseSpeed = (speedValue) => player?.value?.speed - speedValue > 0 ? player.value.speed = player?.value?.speed - speedValue : null;
     const increaseSpeed = (speedValue) => player?.value?.speed + speedValue <= 2 ? player.value.speed = player?.value?.speed + speedValue : null;
 
+    // Watch
+    watch(currentTime, currentTime => emits('update:currentTime', currentTime));
+
     // Provide
     provide('player', player);
     provide('volume', volume);
@@ -99,9 +102,11 @@
 
         // Get duration on initial start
         // Update current player position on time update
+        // Update PIP video if PIP exists
         player?.value?.on('timeupdate', _ => currentTime.value = player?.value?.currentTime);
         player?.value?.on('loadedmetadata', _ => isLoadedMetadata.value = true);
         player?.value?.on('loadedmetadata', e => duration.value = e?.detail?.plyr?.duration);
+        player?.value?.on('loadedmetadata', () => document.pictureInPictureElement ? player.value.pip = true : null);
 
         // Catch player interface visibility
         player?.value?.on('controlsshown', _ => isVisibleInterface.value = true);
@@ -134,16 +139,11 @@
 
     });
 
-
-    // Destroy
-    onDeactivated(() => {
+    onUnmounted(() => {
+        hls?.value?.destroy();
         player?.value?.pause();
         player?.value?.destroy();
-        player.value.media.src = '';
     })
 
-
-    // Watch
-    watch(currentTime, currentTime => emits('update:currentTime', currentTime));
 
 </script>

@@ -3,6 +3,7 @@
         v-if="src"
         v-bind="{src, poster, startPosition}"
         :key="src"
+        @dblclick.native.prevent="toggleFullscreen"
         @update:currentTime="startPosition = $event">
         <player-interface/>
     </player-video>
@@ -30,10 +31,12 @@
     // Composables
     import {useRoute} from 'vue-router'
     import {useSettingsStore} from "@store/settings/settingsStore";
+    import {useFullscreenWindow} from '@composables/app/fullscreen/appFullscreen'
 
     // Bindings
     const route = useRoute();
     const settings = useSettingsStore();
+    const fullscreen = useFullscreenWindow();
 
     // State
     const release = ref(null);
@@ -54,6 +57,9 @@
     const src = computed(() => episode?.value?.[quality?.value?.key]);
     const poster = computed(() => settings.applyToConnectionHost(episode?.value?.poster));
     const quality = computed(() => qualities?.value?.find(q => q?.type === settings?.playerQuality) || qualities?.value?.[0])
+
+    // Methods
+    const toggleFullscreen = () => fullscreen.toggleFullscreen();
 
     // Provide
     provide('release', release);

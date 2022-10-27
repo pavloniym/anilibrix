@@ -76,9 +76,9 @@
             {
                 icon: {icon: 'mdi-chevron-double-right', size: 20},
                 props: {flat: true, icon: true, width: 35, height: 35, color: 'transparent'},
-                events: {click: () => player.value.currentTime = player?.value.currentTime + settings.manualOpeningSkipSeconds},
-                tooltip: {title: `Ручная перемотка`, subtitle: `+${settings.manualOpeningSkipSeconds} секунд`, location: 'top'},
-                isVisible: settings.manualOpeningSkipButton === true,
+                events: {click: () => player.value.currentTime = player?.value.currentTime + settings.manualRewindSeconds},
+                tooltip: {title: `Ручная перемотка`, subtitle: `+${settings.manualRewindSeconds} секунд`, location: 'top'},
+                isVisible: settings.manualRewindButton === true,
             },
         ]
             .filter(b => b?.isVisible !== false)

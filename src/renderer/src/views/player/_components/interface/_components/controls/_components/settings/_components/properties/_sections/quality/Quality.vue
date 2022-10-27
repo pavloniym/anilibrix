@@ -40,7 +40,7 @@
     const items = computed(() => (qualities?.value || []).map(item => ({
             props: {
                 title: item?.label,
-                icon: {size: 12, icon: 'mdi-circle'},
+                icon: {size: 10, icon: 'mdi-circle'},
                 isSelected: item.type === quality?.value?.type
             },
             value: item?.type,

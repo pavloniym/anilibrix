@@ -4,6 +4,7 @@ export const useSettingsStore = defineStore('settings', {
     state: () => ({
         hasAds: true,
         welcomeView: null,
+        skipOpening: true,
         showDevtools: false,
         hasMaximumAds: false,
         playerQuality: '480',
@@ -12,12 +13,13 @@ export const useSettingsStore = defineStore('settings', {
         connectionHost: 'https://anilibrix.anilib.top',
         searchInSettings: null,
         hasNotifications: true,
+        skipOpeningButton: false,
         autoUpdatesTimeout: 10,
         videoBufferSeconds: 300,
         settingsAreVisible: false,
+        manualRewindButton: true,
         autoplayNextEpisode: true,
-        manualOpeningSkipButton: true,
-        manualOpeningSkipSeconds: 90,
+        manualOpeningSkipButton: 90,
     }),
     persist: true,
     actions: {
