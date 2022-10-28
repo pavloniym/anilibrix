@@ -6,12 +6,13 @@
         <v-layout class="align-center justify-space-between">
 
             <!-- Title -->
-            <v-list-item-title v-text="title" class="fz-.75 text-unselect"/>
+            <v-list-item-title v-text="title" class="pr-4 fz-.75 text-unselect"/>
 
             <!-- Switch -->
             <v-switch
+                inset
                 hide-details
-                class="ml-6 switch"
+                class="switch"
                 color="white"
                 :modelValue="modelValue"
                 @update:modelValue.self="$emit('click')">
@@ -37,8 +38,8 @@
         --v-input-control-height: 15px !important;
 
         .v-switch__track {
-            height: 14px;
             width: 34px;
+            height: 14px;
         }
 
         .v-selection-control {
@@ -47,6 +48,10 @@
 
         .v-selection-control__input {
             --v-selection-control-size: 10px !important;
+        }
+
+        .v-selection-control__wrapper {
+            height: auto;
         }
 
         .v-switch__thumb {

@@ -1,16 +1,15 @@
 <template>
     <div>
         <v-slide-y-reverse-transition>
-            <div v-if="1 || isVisibleInterface" class="pa-8 interface">
+            <div v-if="1 || isVisibleInterface" class="pa-8 interface text-unselect">
                 <headline/>
                 <seekbar/>
                 <controls/>
                 <fetching/>
-                <indicators/>
             </div>
         </v-slide-y-reverse-transition>
         <hotkeys/>
-        <skip-opening/>
+        <indicators/>
     </div>
 </template>
 
@@ -26,7 +25,6 @@
     import Controls from './_components/controls/InterfaceControls'
     import Fetching from './_components/fetching/InterfaceFetching'
     import Indicators from './_components/indicators/InterfaceIndicators'
-    import SkipOpening from './_components/skipOpening/InterfaceSkipOpening'
 
     // Inject
     const isVisibleInterface = inject('isVisibleInterface');
@@ -41,7 +39,6 @@
         z-index: 10;
         position: absolute;
         background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 50%, rgba(255, 255, 255, 0) 100%);
-        user-select: none;
     }
 
 </style>
