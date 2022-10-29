@@ -11,17 +11,15 @@
     // Vue
     import {computed} from "vue";
 
-    // Store
+    // Composables
     import {useAccountStore} from "@store/account/accountStore";
-    import {useSettingsStore} from "@store/settings/settingsStore";
 
-    // Store
+    // Bindings
     const account = useAccountStore();
-    const settings = useSettingsStore();
 
     // Computed
     const id = computed(() => account?.profile?.id);
     const login = computed(() => account?.profile?.login);
-    const avatar = computed(() => settings.applyToConnectionHost(account?.profile?.avatar))
+    const avatar = computed(() => account?.profile?.avatar);
 
 </script>

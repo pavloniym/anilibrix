@@ -1,6 +1,6 @@
 <template>
     <v-btn v-bind="props.props" icon size="36" :loading="account.isLoading">
-        <v-avatar size="24" color="bg-grey bg-grey-darken-3">
+        <v-avatar size="24" color="bg-grey bg-grey-darken-3" class="d-flex justify-center">
             <v-img v-if="avatar" :src="avatar"/>
             <span v-else class="fz-.70">{{ label }}</span>
         </v-avatar>
@@ -12,9 +12,8 @@
     // Vue
     import {computed} from "vue";
 
-    // Store
+    // Composables
     import {useAccountStore} from "@store/account/accountStore";
-    import {useSettingsStore} from "@store/settings/settingsStore";
 
     // Props
     const props = defineProps({
@@ -24,12 +23,11 @@
         },
     });
 
-    // Store
+    // Bindings
     const account = useAccountStore();
-    const settings = useSettingsStore();
 
     // Computed
     const label = computed(() => account?.profile?.login ? account?.profile?.login.charAt(0).toUpperCase() : 'A');
-    const avatar = computed(() => settings.applyToConnectionHost(account?.profile?.avatar))
+    const avatar = computed(() => account?.profile?.avatar)
 
 </script>

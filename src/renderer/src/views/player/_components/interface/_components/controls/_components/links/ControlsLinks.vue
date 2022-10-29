@@ -57,7 +57,7 @@
                 tooltip: {title: 'Последние релизы', location: 'top'},
             },
             {
-                image: {src: settings.applyToConnectionHost(release?.value?.poster), cover: true},
+                image: {src: release?.value?.poster, cover: true},
                 props: {flat: true, icon: true, width: 35, height: 35, color: 'transparent'},
                 events: {
                     click: async () => await router.push({

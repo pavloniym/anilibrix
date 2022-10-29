@@ -21,11 +21,6 @@
         }
     });
 
-    // Composables
-    import {useSettingsStore} from "@store/settings/settingsStore";
-
-    // Bindings
-    const settings = useSettingsStore();
 
     // Computed
     const card = computed(() => ({
@@ -36,7 +31,7 @@
     }));
 
     // Computed
-    const poster = computed(() => settings.applyToConnectionHost(props.release?.poster));
+    const poster = computed(() => props.release?.poster);
 
 </script>
 

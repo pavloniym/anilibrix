@@ -1,8 +1,5 @@
 import {defineStore} from 'pinia'
-
-// Proxy + Transfer
-import SearchProxy from "@proxies/search/SearchProxy";
-import SearchTransformer from "@transformers/search/SearchTransformer";
+import {useSearchProxy} from "@proxies/search/searchProxy";
 
 export const useSearchStore = defineStore('search', {
     state: () => ({
@@ -22,13 +19,9 @@ export const useSearchStore = defineStore('search', {
             this.items = [];
             if (this.searchInput?.length >= 3) {
                 try {
+
                     this.isLoading = true;
-
-                    // Make request
-                    const searchResponse = await new SearchProxy().searchReleases({searchInput: this.searchInput});
-
-                    // Transform releases
-                    this.items = (searchResponse?.data || []).map(release => new SearchTransformer().fetchRelease(release));
+                    this.items = (await useSearchProxy().searchReleases({searchInput: this.searchInput}))?.searchedReleases;
 
                 } catch (error) {
 

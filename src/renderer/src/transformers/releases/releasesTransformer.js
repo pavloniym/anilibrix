@@ -1,7 +1,10 @@
 import {stripHtml} from 'string-strip-html';
+import {useSettingsStore} from "@store/settings/settingsStore";
 
-export default class ReleasesTransformer {
+export function useReleasesTransformer() {
 
+    // Bindings
+    const {applyToConnectionHost} = useSettingsStore();
 
     /**
      * Fetch release
@@ -9,7 +12,7 @@ export default class ReleasesTransformer {
      * @param release
      * @returns {*}
      */
-    static fetchRelease(release) {
+    const fetchRelease = (release) => {
         return {
             id: release?.id,
             year: release?.year,
@@ -18,7 +21,7 @@ export default class ReleasesTransformer {
             name: release?.names?.[0] ? stripHtml(release?.names?.[0]).result : null,
             voices: release?.voices || [],
             genres: release?.genres || [],
-            poster: release?.poster,
+            poster: applyToConnectionHost(release?.poster),
             datetime: release?.last ? new Date(release?.last * 1000) : null,
             episodes: (release?.playlist || []).map(episode => {
                 return {
@@ -28,12 +31,12 @@ export default class ReleasesTransformer {
                     q1080: episode?.fullhd,
                     name: episode?.name,
                     title: episode?.title,
-                    poster: episode?.poster || null,
+                    poster: applyToConnectionHost(episode?.poster || null),
                     ordinal: episode?.ordinal,
                     updatedAt: episode?.updated_at ? new Date(episode?.updated_at * 1000) : null,
                     openingSkipTo: episode?.skips?.opening?.[1] || null,
                     openingSkipFrom: episode?.skips?.opening?.[0] || null,
-                    posterThumbnail: episode?.poster_thumbnail || null,
+                    posterThumbnail: applyToConnectionHost(episode?.poster_thumbnail || null),
                 }
             }),
             description: release?.description ? stripHtml(release?.description).result : null,
@@ -42,4 +45,7 @@ export default class ReleasesTransformer {
     }
 
 
+    return {
+        fetchRelease
+    }
 }

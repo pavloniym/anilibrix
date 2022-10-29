@@ -29,19 +29,14 @@
     // Vue
     import {computed} from "vue";
 
-    // Store
-    import {useSettingsStore} from "@store/settings/settingsStore";
-
     // Router
     import {RELEASE_ROUTE} from "@router/release/releaseRoutes";
 
-    // Store
-    const settings = useSettingsStore();
 
     const to = computed(() => ({name: RELEASE_ROUTE, params: {releaseId: props?.release?.id}}));
     const type = computed(() => [props?.release?.year, props?.release?.type].filter(v => v).join(' • '));
     const title = computed(() => props?.release?.name);
-    const poster = computed(() => settings.applyToConnectionHost(props?.release?.poster));
+    const poster = computed(() => props?.release?.poster);
     const subtitle = computed(() => props?.release?.originalName);
 
 </script>

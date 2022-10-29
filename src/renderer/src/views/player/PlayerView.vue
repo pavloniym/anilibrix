@@ -24,12 +24,9 @@
     import PlayerVideo from './_components/video/PlayerVideo'
     import PlayerInterface from './_components/interface/PlayerInterface'
 
-    // Proxy + Transformer
-    import ReleasesProxy from "@proxies/releases/ReleasesProxy";
-    import ReleasesTransformer from "@transformers/releases/ReleasesTransformer";
-
     // Composables
     import {useRoute} from 'vue-router'
+    import {useReleasesProxy} from "@proxies/releases/releasesProxy";
     import {useSettingsStore} from "@store/settings/settingsStore";
     import {useFullscreenWindow} from '@composables/app/fullscreen/appFullscreen'
 
@@ -37,6 +34,7 @@
     const route = useRoute();
     const settings = useSettingsStore();
     const fullscreen = useFullscreenWindow();
+    const releasesProxy = useReleasesProxy();
 
     // State
     const release = ref(null);
@@ -73,12 +71,12 @@
         async (to) => {
 
             // Make request to fetch release from server
-            const response = await new ReleasesProxy().fetchReleaseById({releaseId: to?.params?.releaseId});
+            const response = await releasesProxy?.fetchReleaseById({releaseId: to?.params?.releaseId});
 
             // Set release
             // Set episode
-            release.value = ReleasesTransformer.fetchRelease(response?.data);
-            episode.value = (release?.value?.episodes || []).find(episode => episode?.id === to?.params?.episodeId);
+            release.value = response?.release;
+            episode.value = (response?.release?.episodes || []).find(episode => episode?.id === to?.params?.episodeId);
 
             // Reset start position
             startPosition.value = 0;

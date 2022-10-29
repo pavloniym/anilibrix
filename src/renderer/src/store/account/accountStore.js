@@ -1,7 +1,5 @@
 import {defineStore} from 'pinia'
-
-// Proxies
-import AccountProxy from "@proxies/account/AccountProxy";
+import {useAccountProxy} from '@proxies/account/accountProxy'
 
 export const useAccountStore = defineStore('account', {
     state: () => ({
@@ -33,7 +31,7 @@ export const useAccountStore = defineStore('account', {
         async login({login, password}) {
 
             // Reset account
-            this.sessionId = await new AccountProxy().login({login, password});
+            this.sessionId = (await useAccountProxy().login({login, password})).sessionId;
 
             // Save login and password
             this.credentials.login = login;
@@ -53,7 +51,7 @@ export const useAccountStore = defineStore('account', {
             if (this.sessionId !== null) {
                 try {
                     this.isLoading = true;
-                    await new AccountProxy().logout();
+                    await useAccountProxy().logout();
                 } catch {
                     // Ignore errors
                 } finally {
@@ -96,12 +94,12 @@ export const useAccountStore = defineStore('account', {
         async _fetchProfileOfSession() {
 
             // Make request to get profile of user
-            const response = await new AccountProxy().getProfile();
+            const {profile} = await useAccountProxy().getProfile();
 
             // Save profile details from response
-            this.profile.id = response?.data?.id;
-            this.profile.login = response?.data?.login;
-            this.profile.avatar = response?.data?.avatar;
+            this.profile.id = profile?.id;
+            this.profile.login = profile?.login;
+            this.profile.avatar = profile?.avatar;
         },
 
 
