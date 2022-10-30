@@ -14,8 +14,12 @@
         <!-- Episode -->
         <!-- Favorite toggle -->
         <v-layout class="mt-2">
-            <v-chip v-text="latestEpisode?.title" label class="fz-.75 bg-secondary font-weight-black"
-                    :style="{height: '30px'}"/>
+            <v-chip
+                v-text="latestEpisode?.title"
+                label
+                class="fz-.75 bg-secondary font-weight-black"
+                :style="{height: '30px'}">
+            </v-chip>
             <favorite-toggle v-bind="{release}" class="ml-1"/>
         </v-layout>
 

@@ -1,4 +1,3 @@
-// Composables
 import {useBaseProxy} from "@proxies/base/baseProxy";
 import {useReleasesTransformer} from "@transformers/releases/releasesTransformer";
 
@@ -7,26 +6,6 @@ export function useReleasesProxy() {
     // Bindings
     const {fetchRelease} = useReleasesTransformer();
     const {submitRequest, applyEndpoint} = useBaseProxy();
-
-
-    /**
-     * Fetch latest releases
-     *
-     * @return {Promise<{response: *, latestReleases: array}>}
-     */
-    const fetchLatestReleases = async () => {
-
-        const response = await submitRequest({
-            url: applyEndpoint('/public/api/index.php'),
-            data: {query: 'list', perPage: 14},
-            method: 'POST',
-        });
-
-        return {
-            response: response?.data,
-            latestReleases: (response?.data?.data?.items || []).map(release => fetchRelease(release))
-        };
-    }
 
 
     /**
@@ -48,6 +27,26 @@ export function useReleasesProxy() {
             response: response?.data,
         };
 
+    }
+
+
+    /**
+     * Fetch latest releases
+     *
+     * @return {Promise<{response: *, latestReleases: array}>}
+     */
+    const fetchLatestReleases = async () => {
+
+        const response = await submitRequest({
+            url: applyEndpoint('/public/api/index.php'),
+            data: {query: 'list', perPage: 14},
+            method: 'POST',
+        });
+
+        return {
+            response: response?.data,
+            latestReleases: (response?.data?.data?.items || []).map(release => fetchRelease(release))
+        };
     }
 
     return {

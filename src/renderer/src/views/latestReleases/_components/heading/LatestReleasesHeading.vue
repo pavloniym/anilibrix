@@ -1,13 +1,9 @@
 <template>
-    <div class="d-flex align-center">
+    <div class="mb-6 d-flex align-center">
 
         <!-- Title -->
         <!-- Subtitle -->
-        <div>
-            <div class="font-weight-bold text-grey">{{ title }}</div>
-            <div class="fz-.75 text-grey">{{ subtitle }}</div>
-        </div>
-
+        <heading v-bind="{title, subtitle}"/>
         <v-spacer/>
 
         <!-- Arrows -->
@@ -28,6 +24,9 @@
 
     // Vue
     import {computed, ref} from "vue";
+
+    // Components
+    import Heading from '@components/interface/heading/Heading'
 
     // Composables
     import {onKeyStroke} from '@vueuse/core'

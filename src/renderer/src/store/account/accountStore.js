@@ -36,9 +36,6 @@ export const useAccountStore = defineStore('account', {
             // Save login and password
             this.credentials.login = login;
             this.credentials.password = password;
-
-            // Fetch profile data from server
-            await this.fetchProfile();
         },
 
 

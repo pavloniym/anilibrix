@@ -10,21 +10,19 @@
 
 <script setup>
 
+    // Vue
+    import {computed, provide, ref} from "vue";
 
     // Components
     import Poster from './_components/poster/SliderPoster'
 
-    // Props
-    const props = defineProps({
-        index: {
-            type: Number,
-            default: 0
-        },
-    });
-
     // Composables
     import {useLatestReleasesStore} from "@store/latestReleases/latestReleasesStore";
-    import {computed, provide, ref} from "vue";
+
+    // Props
+    const props = defineProps({
+        index: {type: Number, default: 0},
+    });
 
     // Bindings
     const slider = ref(null);

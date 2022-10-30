@@ -1,7 +1,14 @@
 <template>
-    <v-card class="poster" v-bind="card" :class="{isSelected}">
-        <v-img v-if="poster" cover height="100%" :src="poster" class="bg-black"/>
+    <v-card class="poster" :class="{isSelected}">
+        <v-img v-bind="image" class="bg-black">
+            <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                    <v-progress-circular indeterminate size="70" color="grey-darken-2"/>
+                </div>
+            </template>
+        </v-img>
     </v-card>
+
 </template>
 
 <script setup>
@@ -11,27 +18,18 @@
 
     // Props
     const props = defineProps({
-        release: {
-            type: Object,
-            default: null
-        },
-        isSelected: {
-            type: Boolean,
-            default: false
-        }
+        release: {type: Object, default: null},
+        isSelected: {type: Boolean, default: false}
     });
 
-
     // Computed
-    const card = computed(() => ({
-        width: '14.5vw',
-        height: '34.5vh',
-        minWidth: 175,
-        minHeight: 250,
+    const image = computed(() => ({
+        src: props.release?.poster,
+        cover: true,
+        width: '24vw',
+        lazySrc: props.release?.poster,
+        aspectRatio: 0.7,
     }));
-
-    // Computed
-    const poster = computed(() => props.release?.poster);
 
 </script>
 

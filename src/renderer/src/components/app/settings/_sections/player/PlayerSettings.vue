@@ -34,6 +34,19 @@
         {
             is: Switch,
             props: {
+                title: 'Автоматический пропуск опенинга',
+                modelValue: settings.skipOpening,
+                description: [
+                    'Если для эпизода указаны границы опенинга, то плеер автоматически пропустит эту часть эпизода',
+                    'Пропуск опенинга также можно переключить в настройках плеера'
+                ],
+                inputHandler: $event => settings.skipOpening = $event
+            },
+            classes: ['mb-2']
+        },
+        {
+            is: Switch,
+            props: {
                 title: 'Автовоспроизведение следующего эпизода',
                 modelValue: settings.autoplayNextEpisode,
                 description: ['После окончания эпизода плеер автоматически начнет воспроизведение следующего эпизода в релизе, при его наличии'],

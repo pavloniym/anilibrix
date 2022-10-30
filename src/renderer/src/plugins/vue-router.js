@@ -13,6 +13,7 @@ import login from '@router/login/loginRoutes'
 import player from '@router/player/playerRoutes'
 import search from '@router/search/searchRoutes'
 import release from '@router/release/releaseRoutes'
+import catalog from '@router/catalog/catalogRoutes'
 import releases from '@router/latestReleases/latestReleasesRoutes'
 import favorites from '@router/favorites/favoritesRoutes'
 
@@ -24,6 +25,7 @@ export default createRouter({
         ...login,
         ...search,
         ...player,
+        ...catalog,
         ...release,
         ...releases,
         ...favorites,

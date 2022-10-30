@@ -18,8 +18,8 @@ export const useSettingsStore = defineStore('settings', {
         videoBufferSeconds: 300,
         settingsAreVisible: false,
         manualRewindButton: true,
+        manualRewindSeconds: 90,
         autoplayNextEpisode: true,
-        manualOpeningSkipButton: 90,
     }),
     persist: true,
     actions: {

@@ -54,35 +54,31 @@
 
 <script setup>
 
+    // Vue
+    import {computed, reactive, ref} from "vue";
+
     // Components
     import FormView from './_components/formView/FormView'
     import WelcomeImage from './_components/welcomeImage/WelcomeImage'
 
-    // Vue
-    import {computed, reactive, ref} from "vue";
-    import {useRouter} from 'vue-router'
-
     // Vuelidate
-    import {useVuelidate} from '@vuelidate/core'
     import {required} from '@vuelidate/validators'
+    import {useVuelidate} from '@vuelidate/core'
 
     // Routes
     import {LATEST_RELEASES_ROUTE} from "@router/latestReleases/latestReleasesRoutes";
 
-    // Store
+    // Composables
+    import {useRouter} from 'vue-router'
     import {useAccountStore} from "@store/account/accountStore";
-
-    // Toasts
     import {useToastsEmitter} from "@composables/toasts/toastsEmitter";
+    import {useFavoritesStore} from "@store/favorites/favoritesStore";
 
-    // Store
-    const account = useAccountStore();
-
-    // Router
+    // Bindings
     const router = useRouter();
-
-    // Toasts
     const toasts = useToastsEmitter();
+    const account = useAccountStore();
+    const favorites = useFavoritesStore();
 
     // State
     const login = ref(null);
@@ -170,6 +166,12 @@
                 // Maker login request
                 // Send provided login and password
                 await account.login({login: login.value, password: password.value})
+
+                // Fetch content
+                await Promise.allSettled([
+                    account.fetchProfile(),
+                    favorites.fetchFavorites(),
+                ]);
 
                 // Push to releases route
                 await router.replace({name: LATEST_RELEASES_ROUTE});

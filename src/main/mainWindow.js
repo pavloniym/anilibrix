@@ -5,8 +5,8 @@ import windowStateKeeper from 'electron-window-state';
 async function createWindow() {
 
     const stateKeeper = windowStateKeeper({
-        defaultWidth: 1120,
-        defaultHeight: 720
+        defaultWidth: 1000,
+        defaultHeight: 855
     });
 
     const browserWindow = new BrowserWindow({
