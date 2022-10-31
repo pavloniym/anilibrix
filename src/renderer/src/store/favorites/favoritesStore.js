@@ -5,6 +5,9 @@ import {useFavoritesProxy} from "@proxies/favorites/favoritesProxy";
 export const useFavoritesStore = defineStore('favorites', {
     state: () => ({
         items: [],
+        filters: {
+            searchInput: null,
+        },
         isLoading: false,
     }),
     persist: true,

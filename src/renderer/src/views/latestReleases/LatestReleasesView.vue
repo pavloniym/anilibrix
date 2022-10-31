@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column justify-center">
-        <heading v-model:index="index"/>
+        <heading v-model:index="index" class="mb-3"/>
         <slider v-model:index="index">
             <template v-slot:append>
                 <release v-bind="{index}" class="mt-6"/>

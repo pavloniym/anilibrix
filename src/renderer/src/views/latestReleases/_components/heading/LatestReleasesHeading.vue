@@ -1,5 +1,5 @@
 <template>
-    <div class="mb-6 d-flex align-center">
+    <div class="d-flex align-center">
 
         <!-- Title -->
         <!-- Subtitle -->

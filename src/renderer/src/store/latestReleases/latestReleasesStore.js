@@ -19,10 +19,7 @@ export const useLatestReleasesStore = defineStore('latestReleases', {
             try {
 
                 this.isLoading = true;
-
-                const {latestReleases} = await useReleasesProxy().fetchLatestReleases();
-
-                this.items = latestReleases;
+                this.items = await useReleasesProxy().fetchLatestReleases();
 
             } catch (e) {
 

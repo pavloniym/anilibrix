@@ -12,7 +12,7 @@ export function useReleasesProxy() {
      * Fetch release by id
      *
      * @param releaseId
-     * @return {Promise<{response: *, release: *}>}
+     * @return {Promise}
      */
     const fetchReleaseById = async ({releaseId}) => {
 
@@ -22,10 +22,7 @@ export function useReleasesProxy() {
             method: 'POST',
         });
 
-        return {
-            release: response?.data?.data ? fetchRelease(response?.data?.data) : null,
-            response: response?.data,
-        };
+        return response?.data?.data ? fetchRelease(response?.data?.data) : null;
 
     }
 
@@ -33,7 +30,7 @@ export function useReleasesProxy() {
     /**
      * Fetch latest releases
      *
-     * @return {Promise<{response: *, latestReleases: array}>}
+     * @return {Promise}
      */
     const fetchLatestReleases = async () => {
 
@@ -43,10 +40,7 @@ export function useReleasesProxy() {
             method: 'POST',
         });
 
-        return {
-            response: response?.data,
-            latestReleases: (response?.data?.data?.items || []).map(release => fetchRelease(release))
-        };
+        return (response?.data?.data?.items || []).map(release => fetchRelease(release));
     }
 
     return {

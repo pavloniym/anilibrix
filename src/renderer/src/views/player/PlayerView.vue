@@ -71,12 +71,8 @@
         async (to) => {
 
             // Make request to fetch release from server
-            const response = await releasesProxy?.fetchReleaseById({releaseId: to?.params?.releaseId});
-
-            // Set release
-            // Set episode
-            release.value = response?.release;
-            episode.value = (response?.release?.episodes || []).find(episode => episode?.id === to?.params?.episodeId);
+            release.value = await releasesProxy?.fetchReleaseById({releaseId: to?.params?.releaseId});
+            episode.value = (release?.value?.episodes || []).find(episode => episode?.id === to?.params?.episodeId);
 
             // Reset start position
             startPosition.value = 0;
