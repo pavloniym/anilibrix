@@ -1,5 +1,5 @@
 <template>
-    <v-list-item nav :style="{minHeight: '25px', height: '25px'}">
+    <v-list-item nav link :style="{minHeight: '25px', height: '25px'}">
         <v-layout class="align-center">
 
             <!-- Icon -->

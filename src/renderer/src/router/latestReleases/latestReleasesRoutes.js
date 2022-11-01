@@ -8,7 +8,6 @@ export default [
         path: '/',
         meta: {
             showScroll: true,
-            isRelativeFullWindow: true
         },
         component: LatestReleasesView
     }

@@ -39,11 +39,12 @@
 <style lang="scss" scoped>
 
     .panel {
-        top: 0;
+        // top: 0;
         width: 100%;
         height: 40px;
+        min-height: 40px !important;
         z-index: 1900;
-        position: absolute;
+      //  position: absolute;
         -webkit-app-region: drag;
 
         &__button {

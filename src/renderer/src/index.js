@@ -10,6 +10,7 @@ import pinia from '@plugins/pinia'
 import router from '@plugins/vue-router'
 import toasts from '@plugins/vue-toastification'
 import vuetify from '@plugins/vuetify'
+import vueVirtualScroller from "@plugins/vue-virtual-scroller";
 
 // Import assets
 import '@assets/scss/style.scss'
@@ -24,6 +25,7 @@ app.use(pinia);
 app.use(router);
 app.use(toasts);
 app.use(vuetify);
+app.use(vueVirtualScroller)
 
 // Mount app to DOM
 app.mount('#anilibrix');

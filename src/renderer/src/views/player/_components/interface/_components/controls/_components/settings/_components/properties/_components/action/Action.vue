@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-list-item nav :style="{minHeight: '25px', height: '25px'}" @click.self="$emit('click')">
+        <v-list-item nav link :style="{minHeight: '25px', height: '25px'}" @click.self="$emit('click')">
 
             <!-- Prepend -->
             <template v-slot:prepend>

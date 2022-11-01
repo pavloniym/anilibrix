@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-list-item nav :style="{minHeight: '25px', height: '25px'}" @click="setSection(props?.component)">
+        <v-list-item nav link :style="{minHeight: '25px', height: '25px'}" @click="setSection(props?.component)">
             <div class="d-flex align-center">
                 <v-icon icon="mdi-arrow-left" size="18" class="mr-2"/>
                 <v-list-item-title class="fz-.70 font-weight-bold">Назад</v-list-item-title>

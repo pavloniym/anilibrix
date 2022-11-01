@@ -30,6 +30,7 @@
 
     // Computed
     const options = computed(() => ({
+        max: 6,
         mandatory: true,
         showArrows: false,
         modelValue: props.index,

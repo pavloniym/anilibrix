@@ -1,7 +1,7 @@
 <template>
     <template v-for="(action, k) in actions" :key="k">
         <v-divider v-if="k > 0"/>
-        <v-list-item @click="action.action" min-height="28">
+        <v-list-item @click="action.action" link  min-height="28">
 
             <!-- Icon -->
             <!-- Progress -->

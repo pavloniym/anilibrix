@@ -6,7 +6,11 @@ export const useFavoritesStore = defineStore('favorites', {
     state: () => ({
         items: [],
         filters: {
+            sortType: null,
+            viewType: 'plain',
             searchInput: null,
+            showSettings: false,
+            hideSeenReleases: false,
         },
         isLoading: false,
     }),

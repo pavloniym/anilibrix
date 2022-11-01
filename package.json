@@ -45,10 +45,12 @@
         "@vuelidate/core": "^2.0.0",
         "@vuelidate/validators": "^2.0.0",
         "@vueuse/core": "^9.3.1",
+        "@vueuse/integrations": "^9.4.0",
         "axios": "^1.1.2",
         "electron-updater": "^5.3.0",
         "electron-window-state": "^5.0.3",
         "format-duration": "^2.0.0",
+        "fuse.js": "^6.6.2",
         "hls.js": "^1.2.4",
         "lodash": "^4.17.21",
         "mitt": "^3.0.0",
@@ -60,6 +62,7 @@
         "vue": "^3.2.40",
         "vue-router": "^4.1.5",
         "vue-toastification": "^2.0.0-rc.5",
+        "vue-virtual-scroller": "^2.0.0-beta.3",
         "vue3-text-clamp": "^0.1.1",
         "vuetify": "^3.0.0-beta.15"
     }

@@ -1,16 +1,11 @@
 <template>
-    <div class="base__layout" :class="{ showScroll, hasBlackBackground, isRelativeFullWindow }">
-
-        <!-- App Toolbar -->
-        <app-toolbar v-if="toolbarIsHidden === false" class="mb-4"/>
-
-        <!-- Content -->
-
-        <v-main>
-            <slot/>
-        </v-main>
-
-
+    <div class="base" :class="{ showScroll, hasBlackBackground }">
+        <div class="_container">
+            <app-toolbar v-if="toolbarIsHidden === false" class="mb-4"/>
+            <v-main>
+                <slot/>
+            </v-main>
+        </div>
     </div>
 </template>
 
@@ -32,18 +27,21 @@
     const showScroll = computed(() => route?.meta?.showScroll === true);
     const toolbarIsHidden = computed(() => route?.meta?.toolbarIsHidden === true);
     const hasBlackBackground = computed(() => route?.meta?.hasBlackBackground === true);
-    const isRelativeFullWindow = computed(() => route?.meta?.isRelativeFullWindow === true)
 
 </script>
 
 <style scoped lang="scss">
 
-    .base__layout {
-        height: 100vh;
-        padding: 55px 50px 50px;
-        position: relative;
-        min-height: 100%;
-        overflow-y: scroll;
+    .base {
+        height: calc(100vh - 40px);
+        overflow: hidden;
+
+        ._container {
+            height: 100%;
+            padding: 16px 50px 32px 50px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
 
         &::-webkit-scrollbar-thumb {
             background-color: transparent;
@@ -65,13 +63,6 @@
 
         &.hasBlackBackground {
             background: black;
-        }
-
-
-        &.isRelativeFullWindow {
-            :deep(.v-main) {
-                height: calc(100% - 56px);
-            }
         }
     }
 

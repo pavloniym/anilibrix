@@ -5,8 +5,8 @@ import windowStateKeeper from 'electron-window-state';
 async function createWindow() {
 
     const stateKeeper = windowStateKeeper({
-        defaultWidth: 730,
-        defaultHeight: 760
+        defaultWidth: 1100,
+        defaultHeight: 770
     });
 
     const browserWindow = new BrowserWindow({
@@ -17,7 +17,7 @@ async function createWindow() {
         width: stateKeeper.width,
         height: stateKeeper.height,
         minWidth: 730,
-        minHeight: 760,
+        minHeight: 770,
         darkTheme: true,
         titleBarStyle: 'hiddenInset',
         useContentSize: true,

@@ -1,20 +1,20 @@
 <template>
-    <v-card class="poster" :class="{isSelected}">
-        <v-img v-bind="image" class="bg-black">
+    <v-card class="poster" color="grey-darken-3" :class="{isSelected}">
+        <v-img v-bind="image">
             <template v-slot:placeholder>
-                <div class="d-flex align-center justify-center fill-height">
-                    <v-progress-circular indeterminate size="70" color="grey-darken-2"/>
-                </div>
+                <placeholder/>
             </template>
         </v-img>
     </v-card>
-
 </template>
 
 <script setup>
 
     // Vue
     import {computed} from "vue";
+
+    // Components
+    import Placeholder from '@components/interface/placeholders/logo/LogoPlaceholder'
 
     // Props
     const props = defineProps({
@@ -26,8 +26,7 @@
     const image = computed(() => ({
         src: props.release?.poster,
         cover: true,
-        width: '24vw',
-        lazySrc: props.release?.poster,
+        width: '26vh',
         aspectRatio: 0.7,
     }));
 
