@@ -6,6 +6,7 @@ const SET_CONNECTION_HOST_MUTATION = 'SET_CONNECTION_HOST_MUTATION';
 const SET_HAS_AUTO_UPDATES_MUTATION = 'SET_HAS_AUTO_UPDATES_MUTATION';
 const SET_HAS_NOTIFICATIONS_MUTATION = 'SET_HAS_NOTIFICATIONS_MUTATION';
 const SET_AUTO_UPDATES_TIMEOUT_MUTATION = 'SET_AUTO_UPDATES_TIMEOUT_MUTATION';
+const SET_WIN_FRAME_STYLE_MUTATION = 'SET_WIN_FRAME_STYLE_MUTATION';
 
 // Actions
 export const SET_HAS_ADS_ACTION = 'SET_HAS_ADS_ACTION';
@@ -15,11 +16,13 @@ export const SET_CONNECTION_HOST_ACTION = 'SET_CONNECTION_HOST_ACTION';
 export const SET_HAS_AUTO_UPDATES_ACTION = 'SET_HAS_AUTO_UPDATES_ACTION';
 export const SET_HAS_NOTIFICATIONS_ACTION = 'SET_HAS_NOTIFICATIONS_ACTION';
 export const SET_AUTO_UPDATES_TIMEOUT_ACTION = 'SET_AUTO_UPDATES_TIMEOUT_ACTION';
+export const SET_WIN_FRAME_STYLE_ACTION = 'SET_WIN_FRAME_STYLE_ACTION';
 
 export default {
     namespaced: true,
     state: {
         hasAds: true,
+				winFrameStyle: process.platform === 'win32',
         showDevtools: false,
         hasMaximumAds: false,
         hasAutoUpdates: true,
@@ -34,6 +37,7 @@ export default {
         [SET_HAS_MAXIMUM_ADS_MUTATION]: (s, hasMaximumAds) => s.hasMaximumAds = hasMaximumAds === true,
         [SET_CONNECTION_HOST_MUTATION]: (s, connectionHost) => s.connectionHost = connectionHost,
         [SET_HAS_AUTO_UPDATES_MUTATION]: (s, hasAutoUpdates) => s.hasAutoUpdates = hasAutoUpdates === true,
+        [SET_WIN_FRAME_STYLE_MUTATION]: (s, winFrameStyle) => s.winFrameStyle = winFrameStyle === true,
         [SET_HAS_NOTIFICATIONS_MUTATION]: (s, hasNotifications) => s.hasNotifications = hasNotifications === true,
         [SET_AUTO_UPDATES_TIMEOUT_MUTATION]: (s, autoUpdatesTimeout) => s.autoUpdatesTimeout = autoUpdatesTimeout,
     },
@@ -44,6 +48,7 @@ export default {
         [SET_HAS_MAXIMUM_ADS_ACTION]: ({commit}, isMaximumAds) => commit(SET_HAS_MAXIMUM_ADS_MUTATION, isMaximumAds),
         [SET_CONNECTION_HOST_ACTION]: ({commit}, connectionHost) => commit(SET_CONNECTION_HOST_MUTATION, connectionHost),
         [SET_HAS_AUTO_UPDATES_ACTION]: ({commit}, updatesAreEnabled) => commit(SET_HAS_AUTO_UPDATES_MUTATION, updatesAreEnabled),
+        [SET_WIN_FRAME_STYLE_ACTION]: ({commit}, winFrameStyle) => commit(SET_WIN_FRAME_STYLE_MUTATION, winFrameStyle),
         [SET_HAS_NOTIFICATIONS_ACTION]: ({commit}, hasNotifications) => commit(SET_HAS_NOTIFICATIONS_MUTATION, hasNotifications),
         [SET_AUTO_UPDATES_TIMEOUT_ACTION]: ({commit}, updatesTimeoutMinutes) => commit(SET_AUTO_UPDATES_TIMEOUT_MUTATION, updatesTimeoutMinutes),
     }

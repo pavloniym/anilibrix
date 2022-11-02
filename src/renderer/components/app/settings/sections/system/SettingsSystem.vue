@@ -19,6 +19,7 @@
     import {SET_HAS_NOTIFICATIONS_ACTION} from '@store/app/settings/system/settingsSystemStore'
     import {SET_HAS_ADS_ACTION, SET_HAS_MAXIMUM_ADS_ACTION} from '@store/app/settings/system/settingsSystemStore'
     import {SET_HAS_AUTO_UPDATES_ACTION, SET_AUTO_UPDATES_TIMEOUT_ACTION} from '@store/app/settings/system/settingsSystemStore'
+    import {SET_WIN_FRAME_STYLE_ACTION} from '@store/app/settings/system/settingsSystemStore'
 
 
     const props = {
@@ -38,6 +39,7 @@
                 _hasAutoUpdates: s => s.hasAutoUpdates === true,
                 _hasNotifications: s => s.hasNotifications === true,
                 _autoUpdatesTimeout: s => s.autoUpdatesTimeout,
+                _rightFrameButtons: s => s.winFrameStyle === true
             }),
 
 
@@ -63,6 +65,16 @@
                             value: this._hasNotifications,
                             description: ['Если при загрузке последних релизов приложение обнаружит обновленный релиз, то оно покажет системное уведомление о новом эпизоде'],
                             inputHandler: $event => this[SET_HAS_NOTIFICATIONS_ACTION]($event)
+                        },
+                        classes: ['mb-2']
+                    },
+                    {
+                        is: Switch,
+                        props: {
+                            title: 'Windows-style рамка окна',
+                            value: this._rightFrameButtons,
+                            description: ['Расположение кнопок на рамке окна справа'],
+                            inputHandler: $event => this[SET_WIN_FRAME_STYLE_ACTION]($event)
                         },
                         classes: ['mb-2']
                     },
@@ -149,6 +161,7 @@
             ...mapActions('app/settings/system', [SET_HAS_NOTIFICATIONS_ACTION]),
             ...mapActions('app/settings/system', [SET_HAS_ADS_ACTION, SET_HAS_MAXIMUM_ADS_ACTION]),
             ...mapActions('app/settings/system', [SET_HAS_AUTO_UPDATES_ACTION, SET_AUTO_UPDATES_TIMEOUT_ACTION]),
+            ...mapActions('app/settings/system', [SET_WIN_FRAME_STYLE_ACTION]),
         },
 
 

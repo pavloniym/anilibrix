@@ -61,8 +61,8 @@ yarn run release
 yarn run release:mac
 
 # Сборка под Windows
-yarn run release:win
+yarn run release:windows
 
 # Сборка под Linux
-yarn run release:lin
+yarn run release:linux
 ```

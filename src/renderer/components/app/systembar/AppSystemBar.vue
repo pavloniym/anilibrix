@@ -7,7 +7,7 @@
     @dblclick="() => maximizeApp()">
 
     <template v-if="!this.isMac">
-      <v-spacer v-if="this.isWindows"/>
+      <v-spacer v-if="this._winFrameStyle"/>
       <template v-for="(control, k) in controls">
         <v-btn icon small class="system-bar__button" :key="k" @click="control.action">
           <v-icon small color="grey">{{control.icon}}</v-icon>
@@ -21,11 +21,12 @@
 <script>
 
   import {AppPlatformMixin} from '@mixins/app'
+import { mapState } from 'vuex';
 
   export default {
     mixins: [AppPlatformMixin],
     computed: {
-
+			...mapState('app/settings/system', { _winFrameStyle: s => s.winFrameStyle === true }),
 
       /**
        * Get controls
@@ -36,18 +37,18 @@
         return [
           {
             icon: 'mdi-minus',
-            sort: this.isWindows ? 0 : 1,
+            sort: this._winFrameStyle ? 0 : 1,
             action: () => this.minimizeApp(),
           },
           {
             icon: 'mdi-window-maximize',
             action: () => this.maximizeApp(),
-            sort: this.isWindows ? 1 : 2
+            sort: this._winFrameStyle ? 1 : 2
           },
           {
             icon: 'mdi-close',
             action: () => this.closeApp(),
-            sort: this.isWindows ? 2 : 0
+            sort: this._winFrameStyle ? 2 : 0
           },
         ].sort((a, b) => a.sort - b.sort)
       }
@@ -71,6 +72,7 @@
        * @return void
        */
       minimizeApp() {
+				alert(this._winFrameStyle);
         require('@electron/remote').getCurrentWindow().minimize();
       },
 
