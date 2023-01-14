@@ -32,22 +32,10 @@
 <script setup>
 
     const props = defineProps({
-        title: {
-            type: String,
-            default: null
-        },
-        modelValue: {
-            type: Boolean,
-            default: null
-        },
-        description: {
-            type: Array,
-            default: null
-        },
-        inputHandler: {
-            type: Function,
-            default: null
-        }
+        title: {type: String, default: null},
+        modelValue: {type: Boolean, default: null},
+        description: {type: Array, default: null},
+        inputHandler: {type: Function, default: null}
     })
 
 </script>

@@ -5,9 +5,7 @@ import {createPersistedState} from 'pinia-plugin-persistedstate'
 const pinia = createPinia();
 
 // Apply pinia plugins
-pinia.use(createPersistedState({
-    debug: true
-}))
+pinia.use(createPersistedState())
 
 
 export default pinia

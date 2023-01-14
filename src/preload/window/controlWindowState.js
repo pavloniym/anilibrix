@@ -1,5 +1,5 @@
 import {ipcRenderer} from 'electron'
-import {CLOSE_WINDOW, RELOAD_WINDOW, MINIMIZE_WINDOW, MAXIMIZE_WINDOW} from '@handlers/window/controlWindowState'
+import {CLOSE_WINDOW, RELOAD_WINDOW, MINIMIZE_WINDOW, MAXIMIZE_WINDOW} from '@main/handlers/window/controlWindowState'
 
 export default {
     close: () => ipcRenderer.invoke(CLOSE_WINDOW),

@@ -89,17 +89,26 @@
                     size: 24,
                 },
                 props: {
-                    to: {
-                        name: PLAYER_ROUTE,
-                        params: {releaseId: release?.value?.id, episodeId: latestEpisode?.value?.id}
-                    },
+                    to: release?.value
+                        ? {
+                            name: PLAYER_ROUTE,
+                            params: {releaseId: release?.value?.id, episodeId: latestEpisode?.value?.id}
+                        }
+                        : null,
                     class: ['mr-1', 'pl-2'],
                 },
                 title: 'Смотреть',
             },
             {
                 title: 'Релиз',
-                props: {to: {name: RELEASE_ROUTE, params: {releaseId: release?.value?.id}}},
+                props: {
+                    to: release?.value
+                        ? {
+                            name: RELEASE_ROUTE,
+                            params: {releaseId: release?.value?.id}
+                        }
+                        : null
+                },
             }
         ]
     )

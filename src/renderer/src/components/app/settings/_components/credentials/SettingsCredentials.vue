@@ -21,9 +21,7 @@
 
                 <!-- Devtools -->
                 <div>
-                    <a href="#" @click.prevent="toggleDevtools">
-                        Инструменты отладки
-                    </a>
+                    <a href="#" @click.prevent="toggleDevtools">Инструменты отладки</a>
                 </div>
             </div>
 
@@ -32,6 +30,9 @@
 </template>
 
 <script setup>
+
+    // Vue
+    import {computed} from "vue";
 
     // Utils
     import app from '@package'
@@ -42,9 +43,11 @@
     // Store
     const settings = useSettingsStore();
 
+    // Computed
+    const appVersion = computed(() => app?.version);
 
+    // Methods
     const showAbout = () => window.electron.showAppAbout();
-    const appVersion = app?.version;
     const toggleDevtools = () => settings.showDevtools = !settings.showDevtools;
 
 </script>

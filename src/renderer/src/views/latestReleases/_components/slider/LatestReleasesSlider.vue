@@ -1,11 +1,13 @@
 <template>
-    <slot name="prepend"/>
     <v-slide-group ref="slider" v-bind="options" @update:model-value="$emit('update:index', $event)">
-        <v-slide-group-item v-for="(release, k) in latestReleases?.items" v-slot="{ isSelected, toggle, selectedClass }">
+
+        <!-- Slider -->
+        <!-- Poster -->
+        <v-slide-group-item v-for="(release, k) in items" v-slot="{ isSelected, toggle, selectedClass }">
             <poster v-bind="{release, isSelected}" :class="{'ml-1': k > 0}" @click.native="toggle"/>
         </v-slide-group-item>
+
     </v-slide-group>
-    <slot name="append"/>
 </template>
 
 <script setup>
@@ -27,6 +29,9 @@
     // Bindings
     const slider = ref(null);
     const latestReleases = useLatestReleasesStore();
+
+    // Computed
+    const items = computed(() => latestReleases?.items || [])
 
     // Computed
     const options = computed(() => ({

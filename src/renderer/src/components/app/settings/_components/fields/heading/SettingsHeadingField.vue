@@ -10,14 +10,8 @@
 <script setup>
 
     const props = defineProps({
-        title: {
-            type: String,
-            default: null
-        },
-        subtitle: {
-            type: Array,
-            default: null
-        },
+        title: {type: String, default: null},
+        subtitle: {type: Array, default: null},
     })
 
 </script>

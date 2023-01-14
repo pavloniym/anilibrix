@@ -60,6 +60,7 @@
                 subtitle: ['Вы можете указать с произвольную сессию'],
                 modelValue: account.sessionId,
                 inputProps: {clearable: true},
+                inputClasses: ['fz-.65'],
                 inputHandler: $event => account.sessionId = $event
             },
             classes: ['mt-2']

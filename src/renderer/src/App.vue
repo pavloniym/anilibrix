@@ -25,13 +25,13 @@
     import AppBaseLayout from '@layouts/base/BaseLayout'
 
     // Vue
-    import {computed, onBeforeMount, onMounted, watch} from 'vue'
+    import {computed, onMounted, watch} from 'vue'
 
     // Composables
-    import {useRoute, useRouter} from 'vue-router'
     import {useAccountStore} from '@store/account/accountStore'
     import {useSettingsStore} from '@store/settings/settingsStore'
     import {useFavoritesStore} from "@store/favorites/favoritesStore";
+    import {useRoute, useRouter} from 'vue-router'
     import {useLatestReleasesStore} from "@store/latestReleases/latestReleasesStore";
 
     // Routes
@@ -60,8 +60,8 @@
     // Watch
     watch(view, () => memorableViews?.value.includes(view?.value) ? saveCurrentView() : null)
 
-    // On before mount
-    onBeforeMount(async () => {
+    // On mount
+    onMounted(async () => {
         await Promise.allSettled([
             account.fetchProfile(),
             favorites.fetchFavorites(),

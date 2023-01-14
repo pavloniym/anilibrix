@@ -28,7 +28,7 @@ export function useReleasesTransformer() {
                     id: episode?.uuid,
                     q480: episode?.sd,
                     q720: episode?.hd,
-                    q1080: episode?.fullhd,
+                    q1080: episode?.fullhd?.replace(/de([0-9]+)\.libria\.fun/, 'cache.libria.fun'),
                     name: episode?.name,
                     title: episode?.title,
                     poster: applyToConnectionHost(episode?.poster || null),

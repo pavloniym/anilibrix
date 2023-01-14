@@ -1,5 +1,3 @@
-import LatestReleasesView from '@views/latestReleases/LatestReleasesView'
-
 export const LATEST_RELEASES_ROUTE = 'LATEST_RELEASES_ROUTE';
 
 export default [
@@ -9,6 +7,6 @@ export default [
         meta: {
             showScroll: true,
         },
-        component: LatestReleasesView
+        component: () => import('@views/latestReleases/LatestReleasesView')
     }
 ]

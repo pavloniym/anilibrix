@@ -1,9 +1,10 @@
-import {join} from 'path'
 import {app, session} from 'electron';
-import {applyHandlers} from './handlers'
 import {restoreOrCreateWindow} from './mainWindow';
 
 //import './security-restrictions';
+
+// Utils
+const path = require('path');
 
 // Prevent electron from running multiple instances.
 const isSingleInstance = app.requestSingleInstanceLock();
@@ -25,18 +26,15 @@ if (process.platform !== 'darwin') app.on('window-all-closed', () => app.quit())
 // @see https://www.electronjs.org/docs/latest/api/app#event-activate-macos Event: 'activate'
 app.on('activate', restoreOrCreateWindow);
 
-// Apply handlers
 //Create the application window when the background process is ready.
-app.whenReady().then(() => applyHandlers())
 app.whenReady().then(restoreOrCreateWindow).catch(e => console.error('Failed create window:', e));
 
-
 // Install Vue.js or any other extension in development mode only.
-if (import.meta.env.DEV) {
+/*if (import.meta.env.DEV) {
     app
         .whenReady()
         .then(async () => await session.defaultSession.loadExtension(join(__dirname, './../../devResources/devtools')))
-}
+}*/
 
 // Check for new version of the application - production mode only.
 if (import.meta.env.PROD) {

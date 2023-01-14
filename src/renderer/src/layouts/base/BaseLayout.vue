@@ -1,7 +1,7 @@
 <template>
-    <div class="base" :class="{ showScroll, hasBlackBackground }">
+    <div class="base" :class="{ showScroll, isFullscreen }">
         <div class="_container">
-            <app-toolbar v-if="toolbarIsHidden === false" class="mb-4"/>
+            <app-toolbar class="mb-4"/>
             <v-main>
                 <slot/>
             </v-main>
@@ -19,26 +19,33 @@
 
     // Composables
     import {useRoute} from "vue-router";
+    import {useFullscreenWindow} from "@composables/app/fullscreen/appFullscreen";
 
     // Bindings
     const route = useRoute();
+    const {isFullscreen} = useFullscreenWindow()
 
     // Computed
     const showScroll = computed(() => route?.meta?.showScroll === true);
-    const toolbarIsHidden = computed(() => route?.meta?.toolbarIsHidden === true);
-    const hasBlackBackground = computed(() => route?.meta?.hasBlackBackground === true);
 
 </script>
 
 <style scoped lang="scss">
 
     .base {
-        height: calc(100vh - 40px);
+
+        --windowOffset: 40px;
+        --windowHeight: 100vh;
+        --layoutTopPadding: 16px;
+        --layoutSidePadding: 50px;
+        --layoutBottomPadding: 32px;
+
+        height: calc(var(--windowHeight) - var(--windowOffset));
         overflow: hidden;
 
         ._container {
             height: 100%;
-            padding: 16px 50px 32px 50px;
+            padding: var(--layoutTopPadding) var(--layoutSidePadding) var(--layoutBottomPadding) var(--layoutSidePadding);
             overflow-y: scroll;
             overflow-x: hidden;
         }
@@ -51,6 +58,13 @@
             background-color: transparent;
         }
 
+
+        &.isFullscreen {
+            --windowOffset: 0px;
+            --layoutTopPadding: 56px;
+        }
+
+
         &.showScroll {
             &::-webkit-scrollbar-thumb {
                 background-color: #353535;
@@ -59,10 +73,6 @@
             &::-webkit-scrollbar {
                 background-color: #1d1d1d;
             }
-        }
-
-        &.hasBlackBackground {
-            background: black;
         }
     }
 

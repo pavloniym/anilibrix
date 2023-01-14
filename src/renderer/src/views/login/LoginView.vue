@@ -132,7 +132,7 @@
         {
             icon: 'mdi-arrow-left',
             class: ['bg-secondary'],
-            style: {minWidth: '40px', width: '40px'},
+            style: {minWidth: '50px', width: '50px'},
             props: {
                 to: {name: LATEST_RELEASES_ROUTE},
                 loading: isProcessing.value === true,

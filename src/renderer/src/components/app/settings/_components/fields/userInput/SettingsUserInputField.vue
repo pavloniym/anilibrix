@@ -15,6 +15,7 @@
                 v-bind="{modelValue, ...inputProps}"
                 hide-details
                 variant="outlined"
+                :class="inputClasses"
                 @update:modelValue="inputHandler">
             </v-text-field>
         </v-card-text>
@@ -32,30 +33,13 @@
 <script setup>
 
     const props = defineProps({
-        title: {
-            type: String,
-            default: null
-        },
-        subtitle: {
-            type: Array,
-            default: null
-        },
-        inputProps: {
-            type: Object,
-            default: null
-        },
-        modelValue: {
-            type: [String, Number],
-            default: null
-        },
-        inputHandler: {
-            type: Function,
-            default: null
-        },
-        description: {
-            type: Array,
-            default: null
-        }
+        title: {type: String, default: null},
+        subtitle: {type: Array, default: null},
+        inputProps: {type: Object, default: null},
+        modelValue: {type: [String, Number], default: null},
+        description: {type: Array, default: null},
+        inputHandler: {type: Function, default: null},
+        inputClasses: {type: [Object, Array], default: null},
     });
 
 </script>

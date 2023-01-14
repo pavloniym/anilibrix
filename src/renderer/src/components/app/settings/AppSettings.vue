@@ -1,17 +1,8 @@
 <template>
-    <v-navigation-drawer v-bind="options" v-model="settings.settingsAreVisible" class="settings pt-10">
-
-        <!-- Search -->
+    <v-navigation-drawer v-bind="options" v-model="settings.settingsAreVisible" class="settings">
         <search class="mx-2 mt-4"/>
-
-        <!-- Sections -->
-        <template v-for="(section, k) in sections" :key="k">
-            <component :is="section" :class="{'mt-4': k > 0}"/>
-        </template>
-
-        <!-- Credentials -->
+        <component v-for="(section, k) in sections" :is="section" :key="k" :class="{'mt-4': k > 0}"/>
         <credentials/>
-
     </v-navigation-drawer>
 </template>
 
@@ -73,11 +64,11 @@
 
 
         &::-webkit-scrollbar-thumb {
-            background-color: black;
+            background-color: #151515;
         }
 
         &::-webkit-scrollbar {
-            background-color: transparent;
+            background-color: #525252;
         }
 
     }

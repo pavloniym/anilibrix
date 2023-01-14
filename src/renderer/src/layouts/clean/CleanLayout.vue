@@ -24,7 +24,6 @@
 
     .clean__layout {
         height: 100%;
-        padding-top: 40px;
 
         &.isAbsoluteFullWindow {
             top: 0;

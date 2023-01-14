@@ -5,7 +5,6 @@ export const useLatestReleasesStore = defineStore('latestReleases', {
     state: () => ({
         items: [],
         isLoading: false,
-        hashOfLatestRelease: null,
     }),
     persist: true,
     actions: {
@@ -19,6 +18,8 @@ export const useLatestReleasesStore = defineStore('latestReleases', {
             try {
 
                 this.isLoading = true;
+
+
                 this.items = await useReleasesProxy().fetchLatestReleases();
 
             } catch (e) {

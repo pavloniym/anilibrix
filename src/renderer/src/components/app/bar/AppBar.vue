@@ -1,5 +1,5 @@
 <template>
-    <div class="px-3 panel bg-black d-flex align-center" @dblclick="maximizeWindow">
+    <div v-if="!isFullscreen" class="px-3 panel bg-black d-flex align-center" @dblclick="maximizeWindow">
         <template v-if="isWindows">
             <v-spacer v-if="isWindows"/>
             <template v-for="(control, k) in controls" :key="k">
@@ -19,11 +19,11 @@
     // Composables
     import {useAppWindow} from "@composables/app/window/appWindow";
     import {useAppPlatform} from "@composables/app/platform/appPlatform";
+    import {useFullscreenWindow} from "@composables/app/fullscreen/appFullscreen";
 
-    // Platforms
+    // Bindings
     const {isWindows} = useAppPlatform();
-
-    // Window
+    const {isFullscreen} = useFullscreenWindow()
     const {closeWindow, minimizeWindow, maximizeWindow} = useAppWindow();
 
     const controls = computed(() => {
@@ -39,12 +39,10 @@
 <style lang="scss" scoped>
 
     .panel {
-        // top: 0;
         width: 100%;
         height: 40px;
         min-height: 40px !important;
         z-index: 1900;
-      //  position: absolute;
         -webkit-app-region: drag;
 
         &__button {

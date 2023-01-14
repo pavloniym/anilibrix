@@ -4,8 +4,8 @@ import showAppAbout from './app/showAppAbout'
 import openDevtools from './app/openDevtools';
 import openExternalURL from './app/openExternalURL'
 import makeHttpRequest from './http/makeHttpRequest'
-import toggleFullscreen from './window/toggleFullscreen'
-import controlWindowState from "./window/controlWindowState"
+import controlWindowState from './window/controlWindowState'
+import controlWindowFullscreen from './window/controlWindowFullscreen'
 
 contextBridge.exposeInMainWorld('electron', {
     platform: process.platform,
@@ -13,6 +13,6 @@ contextBridge.exposeInMainWorld('electron', {
     openDevtools: openDevtools,
     openExternalURL: openExternalURL,
     makeHttpRequest: makeHttpRequest,
-    toggleFullscreen: toggleFullscreen,
     controlWindowState: controlWindowState,
+    controlWindowFullscreen: controlWindowFullscreen,
 })

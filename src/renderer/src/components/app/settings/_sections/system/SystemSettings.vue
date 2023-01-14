@@ -67,7 +67,7 @@
                 },
                 classes: ['mb-2']
             },
-            {
+           /*{
                 is: Switch,
                 props: {
                     title: 'Показывать рекламу',
@@ -81,8 +81,8 @@
                     inputHandler: $event => settings.hasAds = $event,
                 },
                 classes: ['mb-2']
-            },
-            {
+            },*/
+            /*{
                 is: Switch,
                 props: {
                     title: 'Реклама перед каждым эпизодом',
@@ -94,7 +94,7 @@
                     inputHandler: $event => settings.hasMaximumAds = $event,
                 },
                 classes: ['mb-2']
-            },
+            },*/
             {
                 is: UserInput,
                 props: {

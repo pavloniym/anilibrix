@@ -19,30 +19,12 @@
 
     // Props
     const props = defineProps({
-        title: {
-            type: String,
-            default: null
-        },
-        action: {
-            type: Function,
-            default: null
-        },
-        subtitle: {
-            type: String,
-            default: null
-        },
-        classes: {
-            type: Array,
-            default: null
-        },
-        hasDivider: {
-            type: Boolean,
-            default: false
-        },
-        hasConfirmation: {
-            type: Boolean,
-            default: false
-        }
+        title: {type: String, default: null},
+        action: {type: Function, default: null},
+        subtitle: {type: String, default: null},
+        classes: {type: Array, default: null},
+        hasDivider: {type: Boolean, default: false},
+        hasConfirmation: {type: Boolean, default: false}
     });
 
 

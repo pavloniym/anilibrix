@@ -1,5 +1,5 @@
-import {BrowserWindow, ipcMain} from "electron";
+import {ipcMain} from "electron";
 
 export const OPEN_DEVTOOLS = 'OPEN_DEVTOOLS';
 
-export default () => ipcMain.handle(OPEN_DEVTOOLS, () => BrowserWindow.getFocusedWindow().webContents.openDevTools())
+export default ({browserWindow}) => ipcMain.handle(OPEN_DEVTOOLS, () => browserWindow.webContents.openDevTools())

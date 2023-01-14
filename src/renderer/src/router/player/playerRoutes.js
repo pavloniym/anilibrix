@@ -1,4 +1,3 @@
-import PlayerView from '@views/player/PlayerView'
 import CleanLayout from "@layouts/clean/CleanLayout";
 
 export const PLAYER_ROUTE = 'PLAYER_ROUTE';
@@ -12,6 +11,6 @@ export default [
             isAbsoluteFullWindow: true,
         },
         props: true,
-        component: PlayerView,
+        component: () => import('@views/player/PlayerView'),
     }
 ]

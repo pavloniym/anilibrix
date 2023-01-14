@@ -1,31 +1,32 @@
-import {join} from 'path'
-import {defineConfig, bytecodePlugin} from 'electron-vite'
+import {fileURLToPath, URL} from "url";
+import {defineConfig, bytecodePlugin, externalizeDepsPlugin} from 'electron-vite'
 
 // Plugins
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify'
 
 // Routes
-const resolveRoot = (path) => join(__dirname, ...path);
-const resolveMain = (path) => join(__dirname, 'src', 'main', ...path);
-const resolvePreload = (path) => join(__dirname, 'src', 'preload', ...path);
-const resolveRenderer = (path) => join(__dirname, 'src', 'renderer', 'src', ...path);
+const resolveRoot = (path) => fileURLToPath(new URL([...path].join('/'), import.meta.url));
+const resolveMain = (path) => fileURLToPath(new URL(['src', 'main', ...path].join('/'), import.meta.url));
+const resolveRenderer = (path) => fileURLToPath(new URL(['src', 'renderer', 'src', ...path].join('/'), import.meta.url));
 
 
 export default defineConfig({
     main: {
         plugins: [
-            bytecodePlugin()
+            bytecodePlugin(),
+            externalizeDepsPlugin(),
         ]
     },
     preload: {
         resolve: {
             alias: {
-                '@handlers': resolveMain(['handlers'])
+                '@main': resolveMain([]),
             }
         },
         plugins: [
-            bytecodePlugin()
+            bytecodePlugin(),
+            externalizeDepsPlugin(),
         ]
     },
     renderer: {
@@ -42,7 +43,6 @@ export default defineConfig({
                 '@plugins': resolveRenderer(['plugins']),
                 '@layouts': resolveRenderer(['layouts']),
                 '@proxies': resolveRenderer(['proxies']),
-                '@preload': resolvePreload(['index.js']),
                 '@components': resolveRenderer(['components']),
                 '@composables': resolveRenderer(['composables']),
                 '@transformers': resolveRenderer(['transformers']),
@@ -52,7 +52,6 @@ export default defineConfig({
         plugins: [
             vue(),
             vuetify(),
-            //vuetify({ styles: { configFile: './src/assets/scss/plugins/vuetify/variables.scss' } })
         ],
     }
 })

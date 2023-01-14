@@ -1,9 +1,12 @@
-import {ref} from "vue";
+import {ref, onBeforeMount} from "vue";
+
+const isFullscreen = ref(false);
 
 export function useFullscreenWindow() {
 
-    const isFullscreen = ref(false);
-    const toggleFullscreen = () => window.electron.toggleFullscreen(true);
+    const toggleFullscreen = () => window.electron.controlWindowFullscreen.toggle();
+
+    onBeforeMount(() => window.electron.controlWindowFullscreen.watch(state => isFullscreen.value = state === true));
 
     return {
         isFullscreen,
