@@ -49,7 +49,7 @@ const torrentPath = path.join(require('@electron/remote').app.getPath('temp'), a
  * @param torrentId
  * @param blob
  */
-const parseTorrent = ({torrentId, blob} = {}) => {
+const parseTorrent = ({ torrent_id: torrentId, blob} = {}) => {
     try {
         let data = null;
         if (blob !== null) {
