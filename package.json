@@ -18,6 +18,9 @@
     "serve": "node .electron-vue/dev-runner.js",
     "release": "yarn build && electron-builder -wml -c.compression=store",
     "release:mac": "yarn build && electron-builder -m -c.compression=store",
+    "release:mac:arm64": "yarn build && electron-builder -m --arm64 -c.compression=store",
+    "release:mac:x64": "yarn build && electron-builder -m --x64 -c.compression=store",
+    "release:mac:universal": "yarn build && electron-builder -m --universal -c.compression=store",
     "release:linux": "yarn build && electron-builder -l -c.compression=store",
     "release:windows": "yarn build && electron-builder -w -c.compression=store",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src"
@@ -35,6 +38,7 @@
     "productName": "AniLibrix",
     "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
     "appId": "com.anilibria.anilibrix",
+    "npmRebuild": false,
     "directories": {
       "output": "release"
     },
@@ -63,7 +67,23 @@
     },
     "mac": {
       "category": "public.app-category.video",
-      "icon": "build/icons/app/anilibria.icns"
+      "icon": "build/icons/app/anilibria.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
     },
     "win": {
       "icon": "build/icons/app/anilibria.ico",
@@ -204,7 +224,7 @@
     "devtron": "^1.4.0",
     "dotenv-webpack": "^1.7.0",
     "electron": "^15.1.0",
-    "electron-builder": "^22.14.3",
+    "electron-builder": "^24.13.3",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "3.2",
     "eslint": "^6.8.0",
@@ -216,13 +236,11 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "fibers": "^4.0.2",
     "file-loader": "^5.0.2",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "0.9.0",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
-    "node-sass": "^6.0.1",
     "raw-loader": "^4.0.1",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",

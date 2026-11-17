@@ -47,7 +47,7 @@ let rendererConfig = {
             options: {
               implementation: require('sass'),
               sassOptions: {
-                fiber: require('fibers')
+                fiber: false,
               },
             },
           },
