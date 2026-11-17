@@ -1,5 +1,11 @@
 'use strict'
 
+const crypto = require('crypto')
+const origCreateHash = crypto.createHash
+crypto.createHash = (algorithm, options) => {
+  return origCreateHash(algorithm === 'md4' ? 'sha256' : algorithm, options)
+}
+
 process.env.NODE_ENV = 'production'
 
 const { say } = require('cfonts')
